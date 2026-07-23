@@ -1,0 +1,422 @@
+//@version=6
+// ════════════════════════════════════════════════════════════════════
+//    SESSION COMPASS — Levels · VWAP · ORB · Checklist  (overlay)
+//    v2.3 · 2026-07-22
+// ════════════════════════════════════════════════════════════════════
+//    One indicator with the core intraday decision levels, designed
+//    to pair with "Session Pulse" so the full system fits within
+//    TradingView's free-plan limit of two indicators.
+//
+//    WHAT'S INCLUDED
+//     · Prior day open/high/low/close + prior week high/low
+//     · Premarket high/low (requires Extended Hours ON in chart)
+//     · Opening Range (configurable window, shaded) + 5-min ORB;
+//       the checklist flags APPROX when the chart timeframe cannot
+//       divide the primary range window exactly
+//     · Session VWAP with ±1σ/±2σ bands (anchored at the RTH open)
+//     · EMA 9/20 momentum pair
+//     · Confluence checklist table — phase, ORB state, VWAP posture,
+//       EMA posture, RVOL, and a CONTEXT readout. The table is a
+//       GATE, not a signal: it only mirrors conditions you defined.
+//       "WAIT" most of the day is correct behavior. When exactly one
+//       gate is missing, the checklist names it ("4 / 5 · EMA").
+//       Outside RTH the table collapses to PHASE + ACTION (toggle);
+//       premarket keeps the full table for prep, with (prev RTH)
+//       marking values intentionally frozen at the prior regular
+//       session close.
+//
+//    QUICK START
+//     1. Add this script + Session Pulse to an intraday chart
+//        (1m–15m), US equities, and turn Extended Hours ON.
+//     2. To wire RVOL into the table: settings → enable "RVOL wired"
+//        → set "RVOL source" to the RVOL plot from Session Pulse.
+//        Keep "Hot RVOL threshold" matched to Pulse's threshold.
+//        If you enable wiring but leave the source at its default,
+//        the table shows MISWIRED and keeps scoring 4 conditions —
+//        a mis-wire can never print a false HOT.
+//     3. Alerts: right-click chart → Add alert → pick a condition
+//        from this indicator. Set the trigger to "Once per bar close"
+//        to avoid intrabar flip-flop.
+//
+//    COLOR SYSTEM (dark-theme tuned · all editable in the Style tab)
+//     Range levels share one gold family — brighter = more current:
+//     today's ORB (brightest) → yesterday's H/L → last week's H/L.
+//     Neutral gray = prior close/open. Sky = premarket range.
+//     Magenta = VWAP (fair value). Teal/blue = EMA 9/20 (momentum).
+//
+//    NOTES
+//     · Status line is kept deliberately clean: input arguments and
+//       plot values are suppressed there. All values remain available
+//       in the data window and on the price scale.
+//     · Session phases default to US market hours (exchange time);
+//       adjust the session inputs for other markets.
+//     · Built for instruments with a regular session (RTH). 24-hour
+//       markets like crypto won't anchor correctly.
+//     · Educational tool. Nothing here is financial advice.
+//
+//    CHANGELOG
+//     v2.3 · 2026-07-22
+//      · Premarket/postmarket VWAP posture and right-edge tag now use
+//        a frozen final-RTH snapshot. They no longer label an
+//        extended-hours-updated VWAP as the previous session's value.
+//      · ORB state distinguishes a fresh BREAK from HOLDING outside
+//        the range; the alert uses the same transition definition.
+//      · Primary ORB row adds APPROX when the selected chart timeframe
+//        cannot divide the requested window exactly (for example, a
+//        15-minute ORB on a 2-minute chart).
+//      · "CONT QUALIFIED" renamed to neutral "CONTEXT ALIGNED" wording;
+//        off-hours ACTION now reads PREP ONLY or SESSION INACTIVE so
+//        completed-session conditions cannot look current.
+//     v2.2 · 2026-07-01
+//      · RVOL mis-wire guard: if "RVOL wired" is ON but the source is
+//        still `close` (price magnitude), the RVOL row reads MISWIRED
+//        in red, HOT is forced off, and the checklist falls back to
+//        4 gates. Fixes the false "747x HOT" → false CONT QUALIFIED
+//        cascade seen live.
+//      · Checklist names the single missing gate ("4 / 5 · EMA");
+//        two or more misses stay a bare count.
+//      · Compact table outside RTH: post-market and closed sessions
+//        collapse to PHASE + ACTION. Premarket keeps the full table.
+//      · Table background fully opaque — level labels no longer
+//        bleed through the rows.
+//      · Status line decluttered: input args hidden and plot values
+//        suppressed from the status line only.
+//     v2.1 · 2026-06
+//      · na-guard on the RVOL cell while Pulse warms up ("n/a"
+//        instead of "NaNx"). Display only; gate scoring untouched.
+//     v2.0 · 2026-06
+//      · Rebranded to Session Compass. Input tooltips, "(prev)"
+//        suffixes on ORB/VWAP rows outside RTH, transition-based
+//        alert conditions, dark-theme palette pass.
+//     v1.x · 2026-06
+//      · Initial "Session Levels + Context": prior day/week levels,
+//        premarket range, ORB, RTH-anchored VWAP bands, EMA 9/20,
+//        confluence checklist gate. Session-start line breaks fixed
+//        (diagonal carryover on RTH-only charts).
+// ════════════════════════════════════════════════════════════════════
+indicator("Session Compass — Levels · VWAP · ORB · Checklist", "COMPASS", overlay = true, max_labels_count = 100)
+
+// ─── Inputs (display.none = keep the status line clean) ─────────────
+gPD = "Prior Day / Week"
+showPD = input.bool(true, "Prior day O / H / L / C", group = gPD, display = display.none)
+showPW = input.bool(true, "Prior week H / L", group = gPD, display = display.none)
+
+gPM = "Premarket"
+showPM  = input.bool(true, "Premarket high / low", group = gPM, display = display.none)
+pmSess  = input.session("0400-0930", "Premarket session", group = gPM, display = display.none)
+shadePM = input.bool(false, "Shade premarket range", group = gPM, display = display.none)
+
+gOR = "Opening Range"
+showORB  = input.bool(true, "ORB high / low (primary)", group = gOR, display = display.none)
+orbMins  = input.int(15, "Primary ORB window (minutes)", minval = 1, maxval = 120, group = gOR, tooltip = "The opening range is built from the first N minutes of the regular session. Use a chart timeframe that divides the window evenly for an exact range (for example: 1m, 3m, 5m or 15m for a 15-minute ORB). Otherwise the ORB row is marked APPROX.", display = display.none)
+show5    = input.bool(true, "Also show 5-min ORB (auto-hides on TF > 5m)", group = gOR, tooltip = "Exact on chart timeframes that divide five minutes evenly (1m or 5m). Other timeframes can include the full bar that crosses the five-minute boundary.", display = display.none)
+shadeORB = input.bool(true, "Shade ORB range", group = gOR, display = display.none)
+
+gVW = "VWAP (RTH-anchored)"
+showVW = input.bool(true, "Session VWAP", group = gVW, display = display.none)
+showB1 = input.bool(false, "±1σ bands", group = gVW, display = display.none)
+showB2 = input.bool(true, "±2σ bands", group = gVW, display = display.none)
+
+gEM = "EMAs"
+showEMA = input.bool(true, "EMA 9 / 20", group = gEM, display = display.none)
+
+gTB = "Confluence table"
+showTbl  = input.bool(true, "Show checklist table", group = gTB, display = display.none)
+compactOff = input.bool(true, "Compact table outside RTH (keeps full table in premarket)", group = gTB, tooltip = "After the close, most rows describe a session that's over. When ON, post-market and closed periods show only PHASE + ACTION. Premarket always keeps the full table — the (prev RTH) rows are frozen prep context.", display = display.none)
+rvWired  = input.bool(false, "RVOL wired (set source below to RVOL plot)", group = gTB, tooltip = "Add the Session Pulse indicator to the chart, then set the 'RVOL source' dropdown below to its RVOL plot. Until wired, the checklist scores 4 conditions and RVOL shows '—'. If you enable this but leave the source at its default (close), the table shows MISWIRED and keeps scoring 4 conditions.", display = display.none)
+rvolSrc  = input.source(close, "RVOL source", group = gTB, tooltip = "Select: Session Pulse → RVOL", display = display.none)
+hotLvl   = input.float(1.5, "Hot RVOL threshold", step = 0.1, group = gTB, tooltip = "Keep this matched to Session Pulse's 'Hot volume threshold' so the two never disagree on what HOT means.", display = display.none)
+sOpen    = input.session("0930-1030", "Opening drive (exchange time)", group = gTB, display = display.none)
+sMid     = input.session("1030-1400", "Midday", group = gTB, display = display.none)
+sAft     = input.session("1400-1500", "Afternoon", group = gTB, display = display.none)
+sPwr     = input.session("1500-1600", "Power hour", group = gTB, display = display.none)
+chopWin  = input.int(6, "EMA chop window (bars since cross)", minval = 1, maxval = 30, group = gTB, tooltip = "If the EMA 9/20 crossed within this many bars, the EMA row reads CHOP and the continuation context remains unaligned. Tune from your trade log, not from theory.", display = display.none)
+
+// ─── Palette (dark-theme tuned; per-user edits live in the Style tab) ─
+C_OR    = #fde047 // today's opening range — brightest of the gold family
+C_GOLD  = #eab308 // yesterday / last week — same family, dimmer
+C_NEU   = #f8fafc // neutral references (prior close / open)
+C_PM    = #7dd3fc // premarket range
+C_VWAP  = #d946ef // fair value
+C_EMA9  = #2dd4bf
+C_EMA20 = #60a5fa
+GRN     = #22c55e // shared "go" green across Compass + Pulse
+
+colPD  = color.new(C_GOLD, 30)
+colPW  = color.new(C_GOLD, 62)
+colPDC = color.new(C_NEU, 50)
+colPDO = color.new(C_NEU, 75)
+colPM  = color.new(C_PM, 40)
+colORB = color.new(C_OR, 0)
+
+// Plots stay on the chart, price scale, and data window — only the
+// status-line value readout is suppressed (the post-"COMPASS" number wall).
+DSP = display.all - display.status_line
+
+// ─── Prior day / week levels ─────────────────────────────────────────
+[pdO, pdH, pdL, pdC] = request.security(syminfo.tickerid, "D", [open[1], high[1], low[1], close[1]], lookahead = barmerge.lookahead_on)
+[pwH, pwL] = request.security(syminfo.tickerid, "W", [high[1], low[1]], lookahead = barmerge.lookahead_on)
+
+newDay = timeframe.change("D")
+sessStartBar = session.isfirstbar_regular
+brk(v) => newDay ? na : v                  // break at the calendar day boundary
+brkV(v) => ta.change(v) != 0 ? na : v      // break exactly when the level's value rolls
+brkS(v) => newDay or sessStartBar ? na : v // break session-anchored series at session start
+
+plot(showPD ? brkV(pdH) : na, "Prev day high",  colPD, 1, plot.style_linebr, display = DSP)
+plot(showPD ? brkV(pdL) : na, "Prev day low",   colPD, 1, plot.style_linebr, display = DSP)
+plot(showPD ? brkV(pdC) : na, "Prev day close", colPDC, 1, plot.style_linebr, display = DSP)
+plot(showPD ? brkV(pdO) : na, "Prev day open",  colPDO, 1, plot.style_linebr, display = DSP)
+plot(showPW ? brkV(pwH) : na, "Prev week high", colPW, 1, plot.style_linebr, display = DSP)
+plot(showPW ? brkV(pwL) : na, "Prev week low",  colPW, 1, plot.style_linebr, display = DSP)
+
+// ─── Premarket high / low ────────────────────────────────────────────
+inPM = not na(time(timeframe.period, pmSess, syminfo.timezone))
+var float pmH = na
+var float pmL = na
+if newDay
+    pmH := na
+    pmL := na
+if inPM
+    pmH := na(pmH) ? high : math.max(pmH, high)
+    pmL := na(pmL) ? low  : math.min(pmL, low)
+
+pPMH = plot(showPM ? brk(pmH) : na, "Premarket high", colPM, 1, plot.style_linebr, display = DSP)
+pPML = plot(showPM ? brk(pmL) : na, "Premarket low",  colPM, 1, plot.style_linebr, display = DSP)
+fill(pPMH, pPML, shadePM ? color.new(C_PM, 96) : na, "PM range shade")
+
+// ─── Opening range (primary + 5-min) ─────────────────────────────────
+var float orbH = na
+var float orbL = na
+var float o5H  = na
+var float o5L  = na
+var int rthStart = na
+
+if sessStartBar
+    rthStart := time
+    orbH := high
+    orbL := low
+    o5H  := high
+    o5L  := low
+else if session.ismarket and not na(rthStart)
+    if time < rthStart + orbMins * 60000
+        orbH := math.max(orbH, high)
+        orbL := math.min(orbL, low)
+    if time < rthStart + 5 * 60000
+        o5H := math.max(o5H, high)
+        o5L := math.min(o5L, low)
+
+inRTH   = session.ismarket
+show5eff = show5 and timeframe.in_seconds() <= 5 * 60
+
+pORH = plot(showORB and inRTH ? brkS(orbH) : na, "ORB high", colORB, 2, plot.style_linebr, display = DSP)
+pORL = plot(showORB and inRTH ? brkS(orbL) : na, "ORB low",  colORB, 2, plot.style_linebr, display = DSP)
+fill(pORH, pORL, shadeORB ? color.new(C_OR, 96) : na, "ORB range shade")
+plot(showORB and show5eff and inRTH ? brkS(o5H) : na, "5m ORB high", color.new(C_OR, 65), 1, plot.style_linebr, display = DSP)
+plot(showORB and show5eff and inRTH ? brkS(o5L) : na, "5m ORB low",  color.new(C_OR, 65), 1, plot.style_linebr, display = DSP)
+
+// ─── Session VWAP with bands (anchored at RTH open) ──────────────────
+[vw,  u1, l1] = ta.vwap(hlc3, sessStartBar, 1)
+[vw2, u2, l2] = ta.vwap(hlc3, sessStartBar, 2)
+
+// Freeze the completed regular-session values for off-hours context.
+// ta.vwap() otherwise keeps consuming extended-hours bars until the next
+// RTH anchor, which made a premarket value labelled "(prev)" misleading.
+var float prevRthVw = na
+var float prevRthU2 = na
+var float prevRthL2 = na
+if session.islastbar_regular
+    prevRthVw := vw
+    prevRthU2 := u2
+    prevRthL2 := l2
+
+plot(showVW and inRTH ? brkS(vw) : na, "VWAP", color.new(C_VWAP, 0), 2, plot.style_linebr, display = DSP)
+plot(showVW and showB1 and inRTH ? brkS(u1) : na, "VWAP +1σ", color.new(C_VWAP, 80), 1, plot.style_linebr, display = DSP)
+plot(showVW and showB1 and inRTH ? brkS(l1) : na, "VWAP -1σ", color.new(C_VWAP, 80), 1, plot.style_linebr, display = DSP)
+plot(showVW and showB2 and inRTH ? brkS(u2) : na, "VWAP +2σ", color.new(C_VWAP, 70), 1, plot.style_linebr, display = DSP)
+plot(showVW and showB2 and inRTH ? brkS(l2) : na, "VWAP -2σ", color.new(C_VWAP, 70), 1, plot.style_linebr, display = DSP)
+
+// ─── EMA pair ────────────────────────────────────────────────────────
+ema9  = ta.ema(close, 9)
+ema20 = ta.ema(close, 20)
+plot(showEMA ? ema9  : na, "EMA 9",  color.new(C_EMA9, 0), 1, display = DSP)
+plot(showEMA ? ema20 : na, "EMA 20", color.new(C_EMA20, 0), 1, display = DSP)
+
+// ─── Right-edge level tags ───────────────────────────────────────────
+tag(_arr, _y, _txt, _col) =>
+    array.push(_arr, label.new(bar_index + 3, _y, _txt, style = label.style_label_left, color = color.new(color.black, 100), textcolor = _col, size = size.small))
+
+var lbls = array.new<label>()
+if barstate.islast
+    while array.size(lbls) > 0
+        label.delete(array.pop(lbls))
+    if showPD
+        tag(lbls, pdH, "PDH", colPD)
+        tag(lbls, pdL, "PDL", colPD)
+        tag(lbls, pdC, "PDC", colPDC)
+        tag(lbls, pdO, "PDO", colPDO)
+    if showPW
+        tag(lbls, pwH, "PWH", colPW)
+        tag(lbls, pwL, "PWL", colPW)
+    if showPM and not na(pmH)
+        tag(lbls, pmH, "PMH", colPM)
+        tag(lbls, pmL, "PML", colPM)
+    if showORB and not na(orbH)
+        tag(lbls, orbH, "ORH", colORB)
+        tag(lbls, orbL, "ORL", colORB)
+    vwTag = inRTH ? vw : prevRthVw
+    if showVW and not na(vwTag)
+        tag(lbls, vwTag, inRTH ? "VWAP" : "VWAP prev RTH", color.new(C_VWAP, 0))
+
+// ─── Confluence checklist (mirror of the playbook — gates, never signals) ──
+inSess(_s) => not na(time(timeframe.period, _s, syminfo.timezone))
+isOpen = inSess(sOpen)
+isMid  = inSess(sMid)
+isAft  = inSess(sAft)
+isPwr  = inSess(sPwr)
+
+phaseName = session.ispremarket ? "PREMARKET" :
+     isOpen ? "OPEN DRIVE" :
+     isMid ? "MIDDAY" :
+     isAft ? "AFTERNOON" :
+     isPwr ? "POWER HOUR" :
+     session.ispostmarket ? "AFTER HOURS" :
+     inRTH ? "RTH" : "CLOSED"
+
+phCol = isOpen ? GRN : isMid ? color.new(#9ca3af, 0) : isAft ? #93c5fd : isPwr ? #fb923c : color.new(color.white, 30)
+
+// ORB state machine. BREAK is a transition on this bar; HOLDING means the
+// close remains outside the range after the original break.
+var int orbState = 0 // 0 inside/forming · 1 broke up · -1 broke down · 2 failed up · -2 failed down
+orbDone = not na(rthStart) and time >= rthStart + orbMins * 60000
+if sessStartBar
+    orbState := 0
+if orbDone and not na(orbH) and inRTH
+    if close > orbH
+        orbState := 1
+    else if close < orbL
+        orbState := -1
+    else if orbState == 1
+        orbState := 2
+    else if orbState == -1
+        orbState := -2
+
+newOrbUp = orbState == 1 and nz(orbState[1], 0) != 1
+newOrbDn = orbState == -1 and nz(orbState[1], 0) != -1
+
+// Timestamp-based accumulation includes complete chart bars. Mark the primary
+// range approximate whenever its requested duration is not evenly divisible
+// by the chart timeframe instead of presenting a widened range as exact.
+tfSecs = timeframe.in_seconds()
+orbSecs = orbMins * 60
+orbWindowExact = timeframe.isintraday and tfSecs <= orbSecs and orbSecs % tfSecs == 0
+
+orbTxt = not orbDone ? "FORMING" :
+     newOrbUp ? "BREAK ↑" :
+     newOrbDn ? "BREAK ↓" :
+     orbState == 1 ? "HOLDING ↑" :
+     orbState == -1 ? "HOLDING ↓" :
+     orbState == 2 ? "FAILED ↑" :
+     orbState == -2 ? "FAILED ↓" : "INSIDE"
+orbTxt := not orbWindowExact ? orbTxt + " · APPROX" : orbTxt
+
+// VWAP posture
+offHrs = session.ispremarket or session.ispostmarket
+vwRef = offHrs ? prevRthVw : vw
+u2Ref = offHrs ? prevRthU2 : u2
+l2Ref = offHrs ? prevRthL2 : l2
+hasVwRef = not na(vwRef) and not na(u2Ref) and not na(l2Ref)
+extUp = hasVwRef and close > u2Ref
+extDn = hasVwRef and close < l2Ref
+extended = extUp or extDn
+vwTxt = not hasVwRef ? "n/a" : extUp ? "EXTENDED ↑" : extDn ? "EXTENDED ↓" : close > vwRef ? "ABOVE" : "BELOW"
+
+// Outside regular hours the ORB and VWAP rows reflect the PRIOR session
+// (state resets at the open); label them so that's unambiguous.
+orbTxt := offHrs and orbDone ? orbTxt + " (prev RTH)" : orbTxt
+vwTxt  := offHrs and hasVwRef ? vwTxt + " (prev RTH)" : vwTxt
+
+// EMA posture
+sinceX = nz(ta.barssince(ta.cross(ema9, ema20)), 999)
+emaChop = sinceX <= chopWin
+emaTxt = emaChop ? "CHOP" : ema9 > ema20 ? "BULL" : "BEAR"
+
+// ─── RVOL (only if wired to the Session Pulse plot) ──────────────────
+// Sanity guard: `rvolSrc` DEFAULTS to `close`. If "RVOL wired" is enabled
+// but the source dropdown was never rebound to Session Pulse → RVOL, this
+// cell reads the PRICE and stamps HOT forever (seen live: "747x HOT" on a
+// 0.4x tape) — which then poisons c5, the checklist count, and the ACTION
+// engine. Real RVOL multiples live in low single digits; anything at price
+// magnitude is a mis-wire → drop back to unwired behavior (4 gates) and
+// say so loudly in the table.
+RVOL_CEIL = 50.0
+rvMiswired = rvWired and not na(rvolSrc) and (rvolSrc < 0 or rvolSrc >= RVOL_CEIL)
+rvLive = rvWired and not rvMiswired // wired to a plausible source (na = warming up, still counts as live)
+rvHot = rvLive and not na(rvolSrc) and rvolSrc >= hotLvl
+rvTxt = not rvWired ? "—" :
+     rvMiswired ? "MISWIRED" :
+     na(rvolSrc) ? "n/a" :
+     str.tostring(rvolSrc, "#.##") + "x" + (rvHot ? " HOT" : "")
+
+// Checklist score (continuation, direction set by ORB state)
+dir = orbState == 1 ? 1 : orbState == -1 ? -1 : 0
+c1 = isOpen or isPwr
+c2 = dir != 0
+c3 = hasVwRef and (dir == 1 ? close > vwRef : dir == -1 ? close < vwRef : false)
+c4 = not emaChop and (dir == 1 ? ema9 > ema20 : dir == -1 ? ema9 < ema20 : false)
+c5 = rvHot
+score = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0) + (rvLive and c5 ? 1 : 0)
+denom = rvLive ? 5 : 4
+
+// Name the blocker when exactly one gate is missing — "4 / 5 · EMA" is
+// actionable, a bare count is not. Two or more misses stay a bare count.
+missTxt = denom - score != 1 ? "" :
+     not c1 ? " · PHASE" :
+     not c2 ? " · ORB" :
+     not c3 ? " · VWAP" :
+     not c4 ? " · EMA" : " · RVOL"
+
+contextAligned = dir != 0 and score == denom
+actTxt = not inRTH ? (session.ispremarket ? "PREP ONLY" : "SESSION INACTIVE") :
+     contextAligned ? "CONTEXT " + (dir == 1 ? "↑" : "↓") + " ALIGNED" :
+     extended and rvHot ? "EXT + HOT VOL — NO FADE" :
+     extended and isMid ? "REVERSION WATCH" : "WAIT"
+actCol = contextAligned ? color.new(GRN, 0) :
+     extended and isMid and not rvHot ? color.new(color.orange, 0) :
+     color.new(color.gray, 20)
+
+hd(_t, _r, _k, _v, _c) =>
+    table.cell(_t, 0, _r, _k, text_color = color.new(color.white, 45), text_size = size.tiny, text_halign = text.align_left)
+    table.cell(_t, 1, _r, _v, text_color = _c, text_size = size.small, text_halign = text.align_right)
+
+// Opaque background — level labels (PMH/ORH/…) were bleeding through at 25.
+// Post-market / closed: collapse to PHASE + ACTION (the other rows describe
+// a finished session). Premarket keeps the full table — that's prep context.
+var table t = table.new(position.bottom_right, 2, 7, bgcolor = color.new(color.black, 0), border_width = 1, border_color = color.new(color.gray, 80))
+compactNow = compactOff and not inRTH and not session.ispremarket
+if showTbl and barstate.islast
+    table.clear(t, 0, 0, 1, 6)
+    wht = color.white
+    if compactNow
+        hd(t, 0, "PHASE", phaseName, phCol)
+        hd(t, 1, "ACTION", actTxt, actCol)
+    else
+        hd(t, 0, "PHASE", phaseName, phCol)
+        hd(t, 1, "ORB", orbTxt, orbState == 1 ? GRN : orbState == -1 ? color.red : math.abs(orbState) == 2 ? color.orange : wht)
+        hd(t, 2, "VWAP", vwTxt, not hasVwRef ? wht : extended ? color.orange : close > vwRef ? GRN : color.red)
+        hd(t, 3, "EMA", emaTxt, emaChop ? color.gray : ema9 > ema20 ? GRN : color.red)
+        hd(t, 4, "RVOL", rvTxt, rvMiswired ? color.new(color.red, 0) : rvHot ? GRN : wht)
+        hd(t, 5, "CHECKLIST", str.tostring(score) + " / " + str.tostring(denom) + missTxt, contextAligned ? GRN : wht)
+        hd(t, 6, "ACTION", actTxt, actCol)
+
+// ─── Alerts (fire on transition, not every bar) ──────────────────────
+// Wire via: right-click chart → Add alert → condition → this indicator
+// Use "Once per bar close" as the trigger to avoid intrabar flip-flop.
+alignedUp = dir == 1 and score == denom
+alignedDn = dir == -1 and score == denom
+revWatch = extended and isMid and not rvHot
+brokeNow = newOrbUp or newOrbDn
+alertcondition(alignedUp and not alignedUp[1], "Context ↑ aligned", "COMPASS: bullish continuation context aligned on {{ticker}} at {{close}}")
+alertcondition(alignedDn and not alignedDn[1], "Context ↓ aligned", "COMPASS: bearish continuation context aligned on {{ticker}} at {{close}}")
+alertcondition(brokeNow, "ORB break", "COMPASS: opening range broken on {{ticker}} at {{close}}")
+alertcondition(revWatch and not revWatch[1], "Reversion watch", "COMPASS: 2σ midday extension without hot volume on {{ticker}}")

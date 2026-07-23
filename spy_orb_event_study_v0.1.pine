@@ -1,0 +1,310 @@
+//@version=6
+// ════════════════════════════════════════════════════════════════════
+//    SPY ORB EVENT STUDY — Baseline · Ablation · Follow-through
+//    v0.1 · 2026-07-22
+// ════════════════════════════════════════════════════════════════════
+//    Research companion for Session Compass + Session Pulse.
+//
+//    PURPOSE
+//     Measure whether the first confirmed SPY opening-range break of
+//     each regular session contains directional information. This is
+//     an event study, not an execution strategy: it creates no orders,
+//     position sizing, stops, targets, or simulated account P&L.
+//
+//    BASELINE EVENT
+//     · Build the opening range from the first N RTH minutes.
+//     · Observe only the first close outside that completed range.
+//     · Reference the next one-minute bar's open as the delayed entry.
+//     · Measure direction-adjusted returns after 15 / 30 / 60 minutes.
+//     · Measure maximum favorable/adverse excursion through 60 minutes.
+//     · Maximum one event per regular session.
+//
+//    ABLATION ROWS
+//     The table evaluates the same event population through six nested
+//     cohorts. This lets each existing Compass/Pulse condition show
+//     whether it improves the baseline instead of hiding inside one
+//     combined score:
+//      1. ORB only
+//      2. ORB + directional VWAP posture
+//      3. ORB + directional EMA 9/20 posture
+//      4. ORB + directional EMA posture + no recent EMA cross
+//      5. ORB + hot same-minute RVOL
+//      6. All existing context gates together
+//
+//    HOW TO READ THE TABLE
+//     · N       = completed 60-minute observations
+//     · Win30   = percent with positive direction-adjusted return at 30m
+//     · Avg15/30/60 = average direction-adjusted return, in basis points
+//     · MFE/MAE = average favorable/adverse excursion through 60m, bps
+//     Positive return means movement in the breakout direction. MAE is
+//     displayed as a positive magnitude so larger values are worse.
+//
+//    IMPORTANT CONSTRAINTS
+//     · Use a standard 1-minute chart. The study intentionally refuses
+//       to calculate on other timeframes so ORB and horizon timestamps
+//       stay exact and comparable.
+//     · Results cover the history loaded on the chart, not Deep
+//       Backtesting history. Reloading or changing inputs recalculates.
+//     · Extended Hours may remain on; events are restricted to RTH.
+//     · Test long and short first breaks separately with the Direction
+//       input. A direction filter never substitutes a later second break.
+//     · All cohorts share the same RVOL-history readiness floor, even
+//       when RVOL is not their filter. This keeps row comparisons on a
+//       common date/event population after the warm-up period.
+//     · SPY underlying movement does not model options prices, spreads,
+//       implied volatility, decay, or execution.
+//     · Research/education only. A historical association is not a
+//       guarantee of future performance.
+//
+//    CHANGELOG
+//     v0.1 · 2026-07-22
+//      · Initial research baseline.
+//      · First-break event identity with next-bar-open reference.
+//      · 15/30/60-minute return and 60-minute MFE/MAE measurements.
+//      · Six-cohort filter ablation table using existing Compass/Pulse
+//        VWAP, EMA, chop, and same-minute RVOL definitions.
+// ════════════════════════════════════════════════════════════════════
+indicator("SPY ORB Event Study — Baseline · Ablation", "ORB STUDY", overlay = true)
+
+// ─── Inputs ─────────────────────────────────────────────────────────
+gEvent = "Baseline event"
+orbMins = input.int(15, "Opening range (minutes)", minval = 5, maxval = 60, group = gEvent,
+     tooltip = "Built from the first N one-minute RTH bars.")
+triggerCutoffMins = input.int(60, "First-break cutoff (minutes after open)", minval = 16, maxval = 180, group = gEvent,
+     tooltip = "Default 60 means the first confirmed break must occur before 10:30 ET.")
+directionMode = input.string("Both", "Direction", options = ["Both", "Long first breaks", "Short first breaks"], group = gEvent,
+     tooltip = "The first break is fixed before this filter is applied. Long-only mode will not replace an earlier short break with a later long break.")
+
+gContext = "Existing Compass / Pulse definitions"
+emaFastLen = input.int(9, "Fast EMA", minval = 1, group = gContext)
+emaSlowLen = input.int(20, "Slow EMA", minval = 2, group = gContext)
+chopBars = input.int(6, "Recent-cross window (bars)", minval = 1, maxval = 30, group = gContext)
+rvolLookback = input.int(20, "Same-minute RVOL lookback", minval = 2, maxval = 60, group = gContext)
+rvolMinSamples = input.int(10, "RVOL minimum real samples", minval = 1, maxval = 60, group = gContext)
+rvolHot = input.float(1.5, "Hot RVOL threshold", minval = 0.1, step = 0.1, group = gContext)
+
+gDisplay = "Display"
+showLevels = input.bool(true, "Plot study ORB", group = gDisplay)
+showEvents = input.bool(true, "Mark first break and delayed reference", group = gDisplay)
+showTable = input.bool(true, "Show event-study table", group = gDisplay)
+
+// Exactness is a deliberate research constraint, not merely a warning.
+oneMinute = timeframe.isintraday and timeframe.in_seconds() == 60
+inRTH = session.ismarket
+rthFirst = session.isfirstbar_regular
+
+// ─── Opening range and first-event identity ─────────────────────────
+var int rthStart = na
+var float orbH = na
+var float orbL = na
+var bool eventTaken = false
+
+// Pending signal state: the study references the following bar's open.
+var bool pendingEntry = false
+var int pendingDir = 0
+var array<bool> pendingCohort = array.new<bool>(6, false)
+
+// Active event state.
+var bool activeEvent = false
+var int eventDir = 0
+var float eventEntry = na
+var int eventEntryTime = na
+var float eventMfe = 0.0
+var float eventMae = 0.0
+var float eventR15 = na
+var float eventR30 = na
+var float eventR60 = na
+var array<bool> eventCohort = array.new<bool>(6, false)
+
+if rthFirst
+    rthStart := time
+    orbH := high
+    orbL := low
+    eventTaken := false
+    pendingEntry := false
+    activeEvent := false
+    pendingDir := 0
+    eventDir := 0
+    eventEntry := na
+    eventEntryTime := na
+    eventMfe := 0.0
+    eventMae := 0.0
+    eventR15 := na
+    eventR30 := na
+    eventR60 := na
+    array.fill(pendingCohort, false)
+    array.fill(eventCohort, false)
+else if oneMinute and inRTH and not na(rthStart) and time < rthStart + orbMins * 60000
+    orbH := math.max(orbH, high)
+    orbL := math.min(orbL, low)
+
+orbDone = oneMinute and inRTH and not na(rthStart) and time >= rthStart + orbMins * 60000
+insideTriggerWindow = orbDone and time < rthStart + triggerCutoffMins * 60000
+
+plot(showLevels and oneMinute and inRTH ? orbH : na, "Study ORH", color.new(#fde047, 0), 2, plot.style_linebr)
+plot(showLevels and oneMinute and inRTH ? orbL : na, "Study ORL", color.new(#fde047, 0), 2, plot.style_linebr)
+
+// ─── Existing context definitions ──────────────────────────────────
+[sessionVwap, _, _] = ta.vwap(hlc3, rthFirst, 1)
+emaFast = ta.ema(close, emaFastLen)
+emaSlow = ta.ema(close, emaSlowLen)
+barsSinceCross = nz(ta.barssince(ta.cross(emaFast, emaSlow)), 999)
+noRecentCross = barsSinceCross > chopBars
+
+// Same-minute RVOL copied from Session Pulse's core definition. The
+// historical array is updated only after the current confirmed bar is
+// evaluated, so today's bar never contaminates its own baseline.
+type Slot
+    array<float> vols
+
+var slots = map.new<int, Slot>()
+timeKey = hour(time, syminfo.timezone) * 100 + minute(time, syminfo.timezone)
+Slot slot = map.get(slots, timeKey)
+if na(slot)
+    slot := Slot.new(array.new<float>())
+    map.put(slots, timeKey, slot)
+
+realSamples = 0
+for sample in slot.vols
+    if sample > 0
+        realSamples += 1
+
+slotAverage = array.size(slot.vols) > 0 ? array.avg(slot.vols) : na
+enoughRvolHistory = realSamples >= math.min(rvolMinSamples, rvolLookback) and not na(slotAverage) and slotAverage > 0
+sameMinuteRvol = enoughRvolHistory ? volume / slotAverage : na
+
+if barstate.isconfirmed
+    array.push(slot.vols, volume)
+    if array.size(slot.vols) > rvolLookback
+        array.shift(slot.vols)
+
+// ─── Cohort accumulators ────────────────────────────────────────────
+var array<int> sampleCount = array.new<int>(6, 0)
+var array<int> wins30 = array.new<int>(6, 0)
+var array<float> sumR15 = array.new<float>(6, 0.0)
+var array<float> sumR30 = array.new<float>(6, 0.0)
+var array<float> sumR60 = array.new<float>(6, 0.0)
+var array<float> sumMfe = array.new<float>(6, 0.0)
+var array<float> sumMae = array.new<float>(6, 0.0)
+
+// ─── Delayed reference and outcome measurement ─────────────────────
+entryReferenceNow = false
+if oneMinute and barstate.isconfirmed and pendingEntry and inRTH
+    activeEvent := true
+    pendingEntry := false
+    eventDir := pendingDir
+    eventEntry := open
+    eventEntryTime := time
+    eventMfe := 0.0
+    eventMae := 0.0
+    eventR15 := na
+    eventR30 := na
+    eventR60 := na
+    for i = 0 to 5
+        array.set(eventCohort, i, array.get(pendingCohort, i))
+    entryReferenceNow := true
+
+if oneMinute and barstate.isconfirmed and activeEvent and not na(eventEntry)
+    favorableBps = eventDir == 1 ? (high - eventEntry) / eventEntry * 10000 : (eventEntry - low) / eventEntry * 10000
+    adverseBps = eventDir == 1 ? (eventEntry - low) / eventEntry * 10000 : (high - eventEntry) / eventEntry * 10000
+    eventMfe := math.max(eventMfe, favorableBps)
+    eventMae := math.max(eventMae, adverseBps)
+
+    directionalReturn = eventDir * (close - eventEntry) / eventEntry * 10000
+    if na(eventR15) and time_close >= eventEntryTime + 15 * 60000
+        eventR15 := directionalReturn
+    if na(eventR30) and time_close >= eventEntryTime + 30 * 60000
+        eventR30 := directionalReturn
+    if na(eventR60) and time_close >= eventEntryTime + 60 * 60000
+        eventR60 := directionalReturn
+
+    if not na(eventR60)
+        for i = 0 to 5
+            if array.get(eventCohort, i)
+                array.set(sampleCount, i, array.get(sampleCount, i) + 1)
+                array.set(wins30, i, array.get(wins30, i) + (eventR30 > 0 ? 1 : 0))
+                array.set(sumR15, i, array.get(sumR15, i) + eventR15)
+                array.set(sumR30, i, array.get(sumR30, i) + eventR30)
+                array.set(sumR60, i, array.get(sumR60, i) + eventR60)
+                array.set(sumMfe, i, array.get(sumMfe, i) + eventMfe)
+                array.set(sumMae, i, array.get(sumMae, i) + eventMae)
+        activeEvent := false
+
+// ─── First confirmed close outside the completed range ─────────────
+firstBreakUp = false
+firstBreakDown = false
+if oneMinute and barstate.isconfirmed and insideTriggerWindow and not eventTaken
+    breakDir = close > orbH ? 1 : close < orbL ? -1 : 0
+    if breakDir != 0
+        // Event identity is fixed here even when Direction later excludes it.
+        eventTaken := true
+        firstBreakUp := breakDir == 1
+        firstBreakDown := breakDir == -1
+
+        directionAllowed = directionMode == "Both" or
+             (directionMode == "Long first breaks" and breakDir == 1) or
+             (directionMode == "Short first breaks" and breakDir == -1)
+
+        // Use one common post-warm-up population for every row. Without this
+        // guard, ORB-only would include early dates that the RVOL rows could
+        // never observe, making the ablation comparison misleading.
+        if directionAllowed and enoughRvolHistory
+            vwapAligned = breakDir == 1 ? close > sessionVwap : close < sessionVwap
+            emaAligned = breakDir == 1 ? emaFast > emaSlow : emaFast < emaSlow
+            emaStable = emaAligned and noRecentCross
+            hotRvol = not na(sameMinuteRvol) and sameMinuteRvol >= rvolHot
+            allAligned = vwapAligned and emaStable and hotRvol
+
+            array.set(pendingCohort, 0, true)
+            array.set(pendingCohort, 1, vwapAligned)
+            array.set(pendingCohort, 2, emaAligned)
+            array.set(pendingCohort, 3, emaStable)
+            array.set(pendingCohort, 4, hotRvol)
+            array.set(pendingCohort, 5, allAligned)
+            pendingDir := breakDir
+            pendingEntry := true
+
+plotshape(showEvents and firstBreakUp, "First break up", shape.triangleup, location.belowbar, color.new(#22c55e, 0), size = size.tiny, text = "BREAK")
+plotshape(showEvents and firstBreakDown, "First break down", shape.triangledown, location.abovebar, color.new(#ef4444, 0), size = size.tiny, text = "BREAK")
+plotshape(showEvents and entryReferenceNow, "Next-bar-open reference", shape.circle, location.belowbar, color.new(#ffffff, 0), size = size.tiny, text = "REF")
+
+// ─── Event-study table ──────────────────────────────────────────────
+var table study = table.new(position.top_right, 8, 8, bgcolor = color.new(color.black, 0), border_width = 1, border_color = color.new(color.gray, 80))
+if barstate.isfirst
+    table.merge_cells(study, 0, 0, 7, 0)
+
+cohortName(_i) =>
+    _i == 0 ? "ORB only" :
+     _i == 1 ? "+ VWAP" :
+     _i == 2 ? "+ EMA dir" :
+     _i == 3 ? "+ EMA stable" :
+     _i == 4 ? "+ RVOL" : "All gates"
+
+if showTable and barstate.islast
+    table.clear(study, 0, 0, 7, 7)
+    if not oneMinute
+        table.cell(study, 0, 0, "ORB EVENT STUDY · USE A STANDARD 1-MINUTE CHART", text_color = color.orange, text_size = size.small)
+    else
+        table.cell(study, 0, 0, "SPY ORB EVENT STUDY v0.1 · " + directionMode, text_color = color.white, text_size = size.small)
+
+        headers = array.from("COHORT", "N", "WIN30", "AVG15", "AVG30", "AVG60", "MFE", "MAE")
+        for c = 0 to 7
+            table.cell(study, c, 1, array.get(headers, c), text_color = color.new(color.white, 35), text_size = size.tiny)
+
+        for i = 0 to 5
+            n = array.get(sampleCount, i)
+            winText = n == 0 ? "—" : str.tostring(array.get(wins30, i) * 100.0 / n, "#.0") + "%"
+            avg15Text = n == 0 ? "—" : str.tostring(array.get(sumR15, i) / n, "#.0")
+            avg30Text = n == 0 ? "—" : str.tostring(array.get(sumR30, i) / n, "#.0")
+            avg60Text = n == 0 ? "—" : str.tostring(array.get(sumR60, i) / n, "#.0")
+            mfeText = n == 0 ? "—" : str.tostring(array.get(sumMfe, i) / n, "#.0")
+            maeText = n == 0 ? "—" : str.tostring(array.get(sumMae, i) / n, "#.0")
+            row = i + 2
+            table.cell(study, 0, row, cohortName(i), text_color = i == 0 ? color.white : color.new(color.white, 25), text_size = size.tiny, text_halign = text.align_left)
+            table.cell(study, 1, row, str.tostring(n), text_color = color.white, text_size = size.tiny)
+            table.cell(study, 2, row, winText, text_color = color.white, text_size = size.tiny)
+            table.cell(study, 3, row, avg15Text, text_color = color.white, text_size = size.tiny)
+            table.cell(study, 4, row, avg30Text, text_color = color.white, text_size = size.tiny)
+            table.cell(study, 5, row, avg60Text, text_color = color.white, text_size = size.tiny)
+            table.cell(study, 6, row, mfeText, text_color = color.new(#22c55e, 0), text_size = size.tiny)
+            table.cell(study, 7, row, maeText, text_color = color.new(#ef4444, 0), text_size = size.tiny)

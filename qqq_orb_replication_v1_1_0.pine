@@ -1,0 +1,258 @@
+//@version=6
+// ════════════════════════════════════════════════════════════════════
+//    QQQ 5-MIN ORB — REPLICATION ATTEMPT (Zarattini & Aziz 2023)
+//    v1.1.0-rep · 2026-07-22 · FROZEN for the Premium campaign
+// ════════════════════════════════════════════════════════════════════
+//    Implements Zarattini & Aziz (2023), SSRN 4416622, for QQQ:
+//     · First 5-min bar rises -> BUY at the start of the second bar;
+//       falls -> SELL SHORT; open == close -> no trade (see D2).
+//     · Stop at the first bar's LOW (long) / HIGH (short).
+//     · Target at 10x the entry-to-stop distance.
+//     · Neither hit -> liquidate at the market close.
+//     · Size so a stop costs 1% of current equity; 4x leverage cap;
+//       $25,000 start; $0.0005/share commission; no slippage.
+//
+//    v1.1.0 supersedes v1.0.0, which was NEVER RUN. v1.0.0 defects
+//    (external audit, pre-execution): (a) compile blocker — global
+//    mutated inside a function; (b) CRITICAL — bracket submitted one
+//    bar after the fill, leaving the entire second bar unprotected;
+//    (c) ambiguity counter could never fire and could mis-attribute
+//    pre-bracket movement; (d) fill-vs-intent audits absent;
+//    (e) intrabar fill model not frozen.
+//
+//    ─── BRACKET TIMING (the v1.1.0 fix) ──────────────────────────────
+//    strategy.exit is submitted in the SAME execution as strategy.entry
+//    (first bar's close). An exit bound by from_entry activates when the
+//    entry fills, so the STOP — the first bar's extreme, exactly known
+//    in advance — protects from the second bar's first tick. The TARGET
+//    needs the actual entry price, unknowable until the fill; it is
+//    placed initially from the estimated entry (first bar's close) and
+//    re-issued from strategy.position_avg_price at the next execution.
+//    Residual approximation: during the fill bar only, the target sits
+//    at 11x(estimated-entry error) from its true level, on a level 10R
+//    away — a touch there in one 5-min bar is near-impossible, and
+//    fill-bar target exits are counted (nFillBarTargets) so the
+//    magnitude of this approximation is measurable, not assumed.
+//    calc_on_order_fills stays FALSE: deterministic once-per-bar
+//    execution, and TradingView warns that recalculation-on-fill can
+//    create unrealistic historical behavior.
+//
+//    ─── INTRABAR FILL MODEL — FROZEN ─────────────────────────────────
+//    use_bar_magnifier = false, set explicitly in the declaration so
+//    Strategy Properties cannot decide it invisibly. Rationale: the
+//    magnifier's lower-timeframe coverage is finite, so a 2016-2023 run
+//    would mix fill models across eras. One uniform (coarser) model
+//    beats a silently inconsistent one. A magnifier-ON sensitivity run
+//    may be added as a separately labelled exploratory item.
+//
+//    ─── WHAT SURVIVES INTO A DEEP EXPORT ─────────────────────────────
+//    Deep Backtesting renders nothing on the chart; the table below
+//    reflects CHART-LOADED history only. Provenance that DOES survive
+//    into the exported List of Trades:
+//     · Entry comment  "QQQREP|L|v1.1.0" (direction, version)
+//     · Exit comments  "TGT" / "STP" / "EOD" (comment_profit /
+//       comment_loss / EOD close) — every exit self-classifies.
+//    Counters that do NOT survive deep export: dojis, zero-qty skips,
+//    ambiguous bars, session count. Mitigation: verify these on the
+//    chart-loaded window (where the table works) as a spot check, and
+//    audit the deep export offline — actual leverage is reconstructable
+//    from qty x entry / running equity, and gap-through-stop events
+//    appear as same-bar stop exits with losses exceeding ~1% of equity.
+//
+//    ─── DOCUMENTED DEVIATIONS FROM THE PAPER ─────────────────────────
+//     D1 · Paper trades at recorded 9:35:00 prices; emulator fills at
+//          the second bar's open. Feed and rounding differences apply.
+//     D2 · "About the same" (no-trade condition) unquantified in the
+//          paper; implemented as open == close exactly; dojis counted.
+//     D3 · Sizing estimates entry at the first bar's close (true entry
+//          unknowable at submission). Fill-vs-intent audits below
+//          measure the consequence instead of assuming it away.
+//     D4 · EOD flat via strategy.close_all(immediately = true) on
+//          session.islastbar_regular — fills at that bar's close.
+//          Calendar-triggered, never price-triggered: the ONLY
+//          permitted use of `immediately` in this project. Handles
+//          half-days correctly by construction.
+//     D5 · Emulator assumes an intrabar path when stop and target both
+//          lie inside one bar; such bars are counted (nAmbiguous) over
+//          the chart-loaded window.
+//     D6 · Deep data coverage decides the tested period. If 5m data
+//          does not reach 2016, this is a PARTIAL replication and the
+//          ledger must say so.
+// ════════════════════════════════════════════════════════════════════
+strategy("QQQ 5m ORB — Replication (Z&A 2023)", "QQQ REP",
+     overlay                 = true,
+     initial_capital         = 25000,
+     default_qty_type        = strategy.fixed,
+     default_qty_value       = 0,
+     commission_type         = strategy.commission.cash_per_contract,
+     commission_value        = 0.0005,
+     slippage                = 0,
+     pyramiding              = 0,
+     margin_long             = 25,
+     margin_short            = 25,
+     calc_on_every_tick      = false,
+     calc_on_order_fills     = false,
+     process_orders_on_close = false,
+     use_bar_magnifier       = false,
+     max_labels_count        = 50)
+
+SCRIPT_VERSION = "1.1.0-rep"
+
+gP = "Paper parameters (change = no longer the replication)"
+riskPct = input.float(1.0, "Risk per trade (% of equity)", minval = 0.1, step = 0.1, group = gP)
+rMult = input.float(10.0, "Profit target (R multiple)", minval = 1, step = 0.5, group = gP)
+levCap = input.float(4.0, "Leverage cap (x equity)", minval = 1, step = 0.5, group = gP)
+showTable = input.bool(true, "Show diagnostics (chart-loaded only)", group = gP)
+
+// ─── Guards ─────────────────────────────────────────────────────────
+fiveMin = timeframe.isintraday and timeframe.in_seconds() == 300
+chartOk = fiveMin and chart.is_standard
+rthFirst = session.isfirstbar_regular
+rthLast = session.islastbar_regular
+
+// ─── Invariants (array pattern: functions cannot assign globals) ────
+var array<int> invN = array.new<int>(1, 0)
+inv(_c, _m) =>
+    if _c
+        array.set(invN, 0, array.get(invN, 0) + 1)
+        runtime.error("INVARIANT FAILURE · " + _m + " · " + str.tostring(time))
+
+// ─── Counters (chart-loaded population only — see header) ───────────
+var int nSessions = 0
+var int nDoji = 0
+var int nSignals = 0
+var int nZeroQty = 0
+var int nEodExits = 0
+var int nAmbiguous = 0
+var int nFillBarTargets = 0     // target exit on the fill bar (est-target era)
+var int nGapThroughStop = 0     // entry filled at/beyond the stop level
+var int nLevBreach = 0          // actual exposure exceeded the cap
+var int nRiskBreach = 0         // actual risk exceeded intent by >20%
+
+// ─── Per-signal state ───────────────────────────────────────────────
+var int armedDir = 0
+var float armedStop = na
+var float eqAtSignal = na
+var bool corrected = false
+var float activeStop = na
+var float activeTarg = na
+var int seenClosed = 0
+
+if rthFirst
+    inv(strategy.position_size != 0, "position survived into a new session")
+    strategy.cancel_all()
+    nSessions += 1
+    armedDir := 0
+    corrected := false
+    activeStop := na
+    activeTarg := na
+
+// ─── Signal + FULL bracket at the first bar's close ─────────────────
+// Guard `not rthLast`: on a one-bar session the entry would otherwise
+// fill at the NEXT session's open.
+if chartOk and barstate.isconfirmed and rthFirst and not rthLast
+    dir = close > open ? 1 : close < open ? -1 : 0
+    if dir == 0
+        nDoji += 1
+    else
+        stopPx = dir == 1 ? low : high
+        riskPerShare = math.abs(close - stopPx)
+        if riskPerShare > 0
+            qtyRisk = math.floor(strategy.equity * riskPct / 100 / riskPerShare)
+            qtyLev = math.floor(strategy.equity * levCap / close)
+            qty = math.min(qtyRisk, qtyLev)
+            if qty < 1
+                nZeroQty += 1
+            else
+                armedDir := dir
+                armedStop := stopPx
+                eqAtSignal := strategy.equity
+                corrected := false
+                estTarg = close + dir * rMult * riskPerShare      // D3 estimate
+                activeStop := stopPx
+                activeTarg := estTarg
+                nSignals += 1
+                strategy.entry("REP", dir == 1 ? strategy.long : strategy.short,
+                     qty = qty, comment = "QQQREP|" + (dir == 1 ? "L" : "S") + "|v" + SCRIPT_VERSION)
+                // Same-execution bracket: activates on the entry fill,
+                // so the (exact) stop covers the fill bar's first tick.
+                strategy.exit("X", from_entry = "REP", stop = stopPx, limit = estTarg,
+                     comment_profit = "TGT", comment_loss = "STP")
+
+// ─── One bar after the fill: true-entry target + fill audits ────────
+if strategy.position_size != 0 and not corrected
+    ep = strategy.position_avg_price
+    d = strategy.position_size > 0 ? 1 : -1
+    inv(armedDir == 0, "fill without an armed signal")
+    inv(d != armedDir, "direction changed between signal and fill")
+    trueTarg = ep + d * rMult * math.abs(ep - armedStop)
+    strategy.exit("X", from_entry = "REP", stop = armedStop, limit = trueTarg,
+         comment_profit = "TGT", comment_loss = "STP")
+    activeTarg := trueTarg
+    // D3 audits: measure the sizing deviation instead of assuming it.
+    qtyNow = math.abs(strategy.position_size)
+    actualRiskPct = qtyNow * math.abs(ep - armedStop) / eqAtSignal * 100
+    actualLev = qtyNow * ep / eqAtSignal
+    if actualLev > levCap * 1.001
+        nLevBreach += 1
+    if actualRiskPct > riskPct * 1.2
+        nRiskBreach += 1
+    if d == 1 ? ep <= armedStop : ep >= armedStop
+        nGapThroughStop += 1
+    corrected := true
+
+// ─── Ambiguity + fill-bar-target counters ───────────────────────────
+// Evaluated on every bar where the bracket was live at any point: the
+// position is open now, OR a trade closed during this bar. This is the
+// v1.0.0 fix — the old check ran only while still open, so any bar
+// that actually filled a bracket leg was skipped by construction.
+tradeClosedThisBar = strategy.closedtrades > seenClosed
+bracketLive = not na(activeStop) and (strategy.position_size != 0 or tradeClosedThisBar)
+if bracketLive
+    d = armedDir
+    hitStop = d == 1 ? low <= activeStop : high >= activeStop
+    hitTarg = d == 1 ? high >= activeTarg : low <= activeTarg
+    if hitStop and hitTarg
+        nAmbiguous += 1
+if tradeClosedThisBar
+    if not corrected
+        // Closed on the fill bar itself, before target correction —
+        // if profitable, it exited at the ESTIMATED target (D3 residual).
+        lastIdx = strategy.closedtrades - 1
+        if strategy.closedtrades.profit(lastIdx) > 0
+            nFillBarTargets += 1
+    seenClosed := strategy.closedtrades
+    activeStop := na
+    activeTarg := na
+    armedDir := 0
+
+// ─── EOD flat (D4 — sole permitted `immediately`) ───────────────────
+if rthLast and strategy.position_size != 0
+    nEodExits += 1
+    strategy.close_all(comment = "EOD", immediately = true)
+
+// ─── Diagnostics (CHART-LOADED ONLY) ────────────────────────────────
+var table t = table.new(position.top_right, 2, 13, bgcolor = color.new(color.black, 0), border_width = 1, border_color = color.new(color.gray, 80))
+r(_i, _k, _v, _c) =>
+    table.cell(t, 0, _i, _k, text_color = color.new(color.white, 45), text_size = size.tiny, text_halign = text.align_left)
+    table.cell(t, 1, _i, _v, text_color = _c, text_size = size.tiny, text_halign = text.align_right)
+
+if showTable and barstate.islast
+    table.clear(t, 0, 0, 1, 12)
+    if not chartOk
+        r(0, "REJECTED", not chart.is_standard ? "NON-STANDARD DATA" : "USE 5m CHART", color.orange)
+    else
+        iv = array.get(invN, 0)
+        r(0, "⚠", "CHART-LOADED ONLY — NOT DEEP REPORT", color.orange)
+        r(1, "MODEL", "QQQ-REP v" + SCRIPT_VERSION + " | " + syminfo.tickerid, color.white)
+        r(2, "INVARIANTS", iv == 0 ? "clean" : str.tostring(iv), iv == 0 ? #22c55e : #ef4444)
+        r(3, "Sessions", str.tostring(nSessions), color.white)
+        r(4, "Signals / dojis / zero-qty", str.tostring(nSignals) + " / " + str.tostring(nDoji) + " / " + str.tostring(nZeroQty), color.white)
+        r(5, "EOD liquidations", str.tostring(nEodExits), color.new(color.white, 40))
+        r(6, "Ambiguous bars", str.tostring(nAmbiguous), nAmbiguous > 0 ? color.orange : color.new(color.white, 40))
+        r(7, "Fill-bar targets (est-targ era)", str.tostring(nFillBarTargets), nFillBarTargets > 0 ? color.orange : color.new(color.white, 40))
+        r(8, "Gap-through-stop entries", str.tostring(nGapThroughStop), nGapThroughStop > 0 ? color.orange : color.new(color.white, 40))
+        r(9, "Leverage / risk breaches", str.tostring(nLevBreach) + " / " + str.tostring(nRiskBreach), (nLevBreach + nRiskBreach) > 0 ? color.orange : color.new(color.white, 40))
+        r(10, "Closed trades", str.tostring(strategy.closedtrades), color.white)
+        r(11, "Net profit", str.tostring(strategy.netprofit, "#.##"), strategy.netprofit > 0 ? #22c55e : #ef4444)
+        r(12, "Equity", str.tostring(strategy.equity, "#"), color.new(color.white, 40))

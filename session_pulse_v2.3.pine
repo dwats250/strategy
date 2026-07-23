@@ -1,0 +1,186 @@
+//@version=6
+// ════════════════════════════════════════════════════════════════════
+//    SESSION PULSE — Time-of-Day RVOL + Session Phase  (pane)
+//    v2.3 · 2026-07-22
+// ════════════════════════════════════════════════════════════════════
+//    Answers two questions at a glance: WHEN in the session are you,
+//    and is participation REAL right now. Pairs with "Session
+//    Compass" (overlay) — together they fit TradingView's free-plan
+//    two-indicator limit.
+//
+//    RELATIVE VOLUME (the columns)
+//     This bar's volume ÷ the average volume at the SAME minute of
+//     day over the last N sessions. That removes the natural U-shaped
+//     volume curve (busy open, dead lunch), so 1.0x always means
+//     "normal for this time of day."
+//      · WHITE column  = hot (≥ threshold): unusual participation
+//      · slate column  = normal tape
+//      · dim column    = quiet participation context
+//     A huge multiple at a normally-dead hour is the most
+//     information-rich reading this tool produces — useful context,
+//     not automatically a setup. Heat coloring applies around the clock.
+//
+//    SESSION PHASES (the background tint)
+//     emerald = opening drive — primary observation window
+//     gray    = midday — quieter / more rotational conditions
+//     indigo  = afternoon — watch for trend re-ignition
+//     magenta = power hour — trend context and MOC flows
+//     Tints are deliberately dark, rich hues built for dark themes —
+//     they read as intentional washes instead of muddy blends. Edit
+//     hue and opacity in settings; phases default to US market hours
+//     in exchange time.
+//
+//    NOTES
+//     · Status line is kept deliberately clean: input arguments are
+//       suppressed. The live RVOL plot value is intentionally kept
+//       visible next to "PULSE".
+//     · Keep "Hot volume threshold" matched to Session Compass's
+//       "Hot RVOL threshold" so the two never disagree on HOT.
+//     · Intraday timeframes (1m–15m). RVOL needs ~N sessions of
+//       loaded history to calibrate; early-history readings are thin.
+//     · Built for instruments with a regular session (RTH).
+//     · Educational tool. Nothing here is financial advice.
+//
+//    CHANGELOG
+//     v2.3 · 2026-07-22
+//      · Reworded phase/playbook captions as neutral market context.
+//        Removed prescriptive sizing and setup language that RVOL and
+//        clock phase alone cannot justify.
+//      · Clarified that HOT means unusual same-time participation, not
+//        an independently qualified breakout.
+//     v2.2 · 2026-07-01
+//      · Caption background fully opaque (matches Compass table fix).
+//      · Status line decluttered: input args hidden; RVOL plot value
+//        deliberately kept.
+//     v2.1 · 2026-06
+//      · After-hours RVOL artifact guard: RVOL prints only after
+//        enough SAME-MINUTE sessions carry real volume (min real
+//        sessions + optional avg-volume floor); otherwise na instead
+//        of a bogus "hot" multiple. Also suppresses thin
+//        early-history spikes. Caption moved to bottom-right.
+//     v2.0 · 2026-06
+//      · Rebranded to Session Pulse. Dark-native phase washes,
+//        playbook captions, input tooltips.
+//     v1.x · 2026-06
+//      · Initial time-of-day RVOL pane: per-minute-slot rolling
+//        average, hot/quiet thresholds, session phase tints.
+// ════════════════════════════════════════════════════════════════════
+indicator("Session Pulse — Time-of-Day RVOL + Phase", "PULSE", overlay = false, precision = 2)
+
+// ─── Inputs (display.none = keep the status line clean) ─────────────
+lookback = input.int(20, "RVOL lookback (sessions)", minval = 2, maxval = 60, tooltip = "How many past sessions to average for each minute-of-day slot. 20 ≈ one trading month.", display = display.none)
+hotLvl   = input.float(1.5, "Hot volume threshold", step = 0.1, tooltip = "Keep this matched to Session Compass's 'Hot RVOL threshold' so the two never disagree on what HOT means.", display = display.none)
+quietLvl = input.float(0.7, "Quiet volume threshold", step = 0.1, display = display.none)
+minSamp  = input.int(10, "RVOL min real sessions (history floor)", minval = 1, maxval = 60, tooltip = "RVOL prints only after this many SAME-MINUTE sessions have carried real (non-zero) volume. Below it the column stays neutral with no multiple. This is what removes the fake 'hot' after-hours columns — those minute slots have almost no history to average, so an ordinary print divides out to a bogus multiple. Also suppresses the thin first sessions of loaded history. Capped at the lookback.", display = display.none)
+minVol   = input.float(0, "RVOL min avg-volume floor", minval = 0, tooltip = "Absolute floor on the averaged same-minute volume before RVOL is trusted — guards the divisor from collapsing on all-tiny slots. 0 = off (default). Instrument-specific: for liquid US equities try ~500–1000; leave at 0 on thin / low-priced symbols so legitimately low-volume bars aren't suppressed.", display = display.none)
+
+gS = "Session phases (exchange time)"
+sOpen = input.session("0930-1030", "Opening drive", group = gS, display = display.none)
+sMid  = input.session("1030-1400", "Midday", group = gS, display = display.none)
+sAft  = input.session("1400-1500", "Afternoon", group = gS, display = display.none)
+sPwr  = input.session("1500-1600", "Power hour", group = gS, display = display.none)
+showBG  = input.bool(true, "Phase background tint", group = gS, display = display.none)
+showTbl = input.bool(true, "Phase / playbook table", group = gS, display = display.none)
+
+// ─── Phase colors (dark-native washes — edit hue and opacity here) ───
+gC = "Phase colors"
+tintOpen = input.color(color.new(#065f46, 40), "Opening drive", group = gC, display = display.none)
+tintMid  = input.color(color.new(#374151, 75), "Midday", group = gC, display = display.none)
+tintAft  = input.color(color.new(#1e3a8a, 55), "Afternoon", group = gC, display = display.none)
+tintPwr  = input.color(color.new(#86198f, 45), "Power hour", group = gC, display = display.none)
+
+// Bright partner hues for table text (tints are too dark to read as text)
+TXT_OPEN = #34d399
+TXT_MID  = #9ca3af
+TXT_AFT  = #93c5fd
+TXT_PWR  = #e879f9
+
+// ─── Time-of-day relative volume ─────────────────────────────────────
+type Slot
+    array<float> vols
+
+var slots = map.new<int, Slot>()
+tKey = hour(time, syminfo.timezone) * 100 + minute(time, syminfo.timezone)
+
+Slot s = map.get(slots, tKey)
+if na(s)
+    s := Slot.new(array.new<float>())
+    map.put(slots, tKey, s)
+
+// Count stored samples that carry real volume. After-hours / holiday minutes
+// store near-empty prints, so a slot can look "full" yet have almost no real
+// history to average — which is what makes an ordinary AH bar divide out to a
+// fake "hot" multiple (and what makes thin early-history bars spike). Require
+// enough real same-minute sessions AND a volume floor before trusting rvol;
+// otherwise stay neutral (na) rather than printing a bogus multiple.
+realCount = 0
+for v in s.vols
+    if v > 0
+        realCount += 1
+baseVol = array.size(s.vols) > 0 ? array.avg(s.vols) : na
+enoughHist = realCount >= math.min(minSamp, lookback) and not na(baseVol) and baseVol > 0 and baseVol >= minVol
+rvol = enoughHist ? volume / baseVol : na
+
+if barstate.isconfirmed
+    array.push(s.vols, volume)
+    if array.size(s.vols) > lookback
+        array.shift(s.vols)
+
+// ─── Session phase detection ─────────────────────────────────────────
+inSess(_s) => not na(time(timeframe.period, _s, syminfo.timezone))
+
+isOpen = inSess(sOpen)
+isMid  = inSess(sMid)
+isAft  = inSess(sAft)
+isPwr  = inSess(sPwr)
+isPre  = session.ispremarket
+isPost = session.ispostmarket
+
+phaseName = isPre ? "Premarket" :
+     isOpen ? "Opening drive" :
+     isMid ? "Midday" :
+     isAft ? "Afternoon" :
+     isPwr ? "Power hour" :
+     isPost ? "After hours" :
+     session.ismarket ? "RTH" : "Closed"
+
+playbook = isPre ? "Map levels · note gap vs PM range" :
+     isOpen ? "Primary observation window · ORB / momentum context" :
+     isMid ? "Quieter tape · rotational / VWAP context" :
+     isAft ? "Watch for trend re-ignition · prepare power-hour context" :
+     isPwr ? "Trend context · VWAP response · MOC flows" :
+     isPost ? "Review · journal" : "—"
+
+phaseTint = isOpen ? tintOpen :
+     isMid ? tintMid :
+     isAft ? tintAft :
+     isPwr ? tintPwr :
+     color.new(color.black, 100)
+
+phaseTxtCol = isOpen ? TXT_OPEN :
+     isMid ? TXT_MID :
+     isAft ? TXT_AFT :
+     isPwr ? TXT_PWR :
+     color.new(color.white, 30)
+
+bgcolor(showBG ? phaseTint : na, title = "Phase tint")
+
+// ─── Plot: white = hot, slate = normal, dim = quiet ──────────────────
+barCol = na(rvol) ? color.new(#475569, 70) :
+     rvol >= hotLvl ? color.new(#ffffff, 0) :
+     rvol <= quietLvl ? color.new(#475569, 55) :
+     color.new(#64748b, 25)
+
+plot(rvol, "RVOL", barCol, style = plot.style_columns)
+hline(1.0, "Average", color.new(color.white, 65), hline.style_dotted)
+hline(hotLvl, "Hot", color.new(color.white, 45), hline.style_dashed)
+hline(quietLvl, "Quiet", color.new(#475569, 40), hline.style_dashed)
+
+// ─── Phase / playbook table ──────────────────────────────────────────
+// Opaque background — matches the Compass table fix so columns can't bleed
+// through the caption.
+var table t = table.new(position.bottom_right, 1, 2, bgcolor = color.new(color.black, 0))
+if showTbl and barstate.islast
+    rvTxt = na(rvol) ? "" : "  ·  RVOL " + str.tostring(rvol, "#.##") + "x"
+    table.cell(t, 0, 0, phaseName + rvTxt, text_color = phaseTxtCol, text_size = size.small)
+    table.cell(t, 0, 1, playbook, text_color = color.new(color.white, 30), text_size = size.tiny)

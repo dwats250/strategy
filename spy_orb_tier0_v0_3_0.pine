@@ -1,0 +1,573 @@
+//@version=6
+// ════════════════════════════════════════════════════════════════════
+//    SPY ORB FIRST-BREAK — TIER 0 EXPERIMENT
+//    v0.3.0-tier0 · 2026-07-22
+// ════════════════════════════════════════════════════════════════════
+//    Narrow experimental script. Deliberately boring: every feature not
+//    required to answer the primary question has been left out, because
+//    each one adds another way for the result to be accidentally
+//    favourable.
+//
+//    WHAT THIS IS NOT
+//     · Not a replication of Zarattini & Aziz (2023). Different opening
+//       range, different trigger, different exits.
+//     · Not informed by Zarattini, Barbon & Aziz (2024) in any
+//       reproducible sense. That paper selects across a 7,000-stock
+//       cross-section; a single SPY chart has no cross-section. The
+//       RVOL cohorts here are a VOLUME-MOTIVATED HYPOTHESIS INFORMED BY
+//       that work, and must never be described as replicating it.
+//     · Not a validated strategy. The historical run is EXPLORATORY.
+//       The holdout is forward paper trading, not any slice of history.
+//
+//    ─── FILL SEMANTICS (specification, not approximation) ────────────
+//    Let B be the bar whose close first prints outside the completed
+//    opening range, with opening timestamp t.
+//
+//     · Signal knowable ....... at the close of bar B (t + TF).
+//     · Order submitted ....... end of bar B's execution.
+//     · Emulator first fills .. the open of bar B+1, timestamp t + TF.
+//     · process_orders_on_close = FALSE. Entries and exits both fill at
+//       a bar open. `immediately` is NOT used anywhere in this script.
+//     · Bar Magnifier .......... irrelevant. No intrabar stop or target
+//       exists, so no fill in this script depends on intrabar path.
+//     · First excursion bar .... B+1, the fill bar. Its high and low ARE
+//       included; the fill occurred at its open.
+//     · Last excursion bar ..... the final bar fully held. The exit bar's
+//       high and low are EXCLUDED, because the exit filled at that bar's
+//       open and everything after is post-trade.
+//     · Exit timing ............ the close order is submitted on the bar
+//       whose close lands at fill + N minutes, so it fills at the open of
+//       the next bar: exactly N minutes after the entry fill.
+//
+//    Verify this on several trades against the List of Trades before
+//    trusting any aggregate. Timestamps and prices, not vibes.
+//
+//    ─── LOOKAHEAD POSTURE ────────────────────────────────────────────
+//     · All conditions evaluated on confirmed bars only.
+//     · The RVOL sample for a bar is appended AFTER that bar's decision,
+//       so no bar contaminates its own baseline.
+//     · No request.security() anywhere, therefore no lookahead_on.
+//     · No logic depends on calc_on_every_tick; it is off.
+//     · Standard-price data only. Heikin-Ashi, Renko, Kagi, Point &
+//       Figure, Line Break and Range charts are rejected outright.
+//
+//    ─── WARM-UP vs SCORED PERIOD ─────────────────────────────────────
+//    EMA, VWAP and same-slot RVOL all depend on prior history, so the
+//    point where calculation begins changes results. Scoring is
+//    therefore separated from calculation:
+//     · Calculation begins at the first loaded bar, always.
+//     · Events are scored only between "Scored start" and "Scored end".
+//    Moving the scored window does NOT rebuild the RVOL baseline from
+//    zero. The table reports how many sessions warm-up consumed.
+//
+//    ─── ON-CHART DIAGNOSTICS vs DEEP BACKTESTING ─────────────────────
+//    Deep Backtesting results appear only in the Strategy Report and are
+//    never drawn on the chart. Custom tables — including this one — are
+//    computed from chart-loaded history. Under Deep mode the table and
+//    the report describe DIFFERENT POPULATIONS and both are correct.
+//    The banner says so permanently. Per-trade provenance is also
+//    encoded into order comments, which DO survive into the exported
+//    List of Trades, so deep-run rows remain self-identifying.
+//
+//    ─── CHART REQUIREMENTS ───────────────────────────────────────────
+//    The timeframe must divide the opening range, the trigger cutoff and
+//    the exit horizon exactly. With the defaults (15 / 60 / 30) that
+//    permits 1m, 3m, 5m and 15m. Anything else is refused.
+//
+//    PROTOCOL: the primary experiment runs on the 15m chart, RTH only
+//    (~318 sessions on a 10,000-bar plan). 5m is a cross-check with a
+//    different event definition (~110 sessions), not a substitute. 1m
+//    (~25 sessions) is for Replay verification only, never inference.
+//
+//    CHANGELOG
+//     v0.3.0-tier0 · 2026-07-22
+//      · RESULT-CHANGING: slippage 1 tick -> 0. "Gross" is now literal.
+//        Results shift ~+0.31 bps/trade vs v0.2.x; new ledger rows only.
+//      · table.clear now covers every row (v0.2.1 left 26-31 stale —
+//        a silent patch failure, found in external audit).
+//      · Warm-up counter now counts real sessions begun before RVOL
+//        readiness; break-level exclusions counted separately.
+//      · Cohort labels no longer imply a cumulative ladder.
+//      · Order comment carries script version + ticker. Fingerprint
+//        adds tickerid and all EMA/chop/RVOL parameters.
+//      · "Events scored" relabeled "Filled-trade range" (which is what
+//        it always was); scored window is configuration, shown in inputs.
+//     v0.2.1-tier0 · 2026-07-22
+//      · DISPLAY ONLY. No change to signal, fill, exit, RVOL or
+//        population logic, so 0.2.0 and 0.2.1 results are directly
+//        comparable and may share a ledger.
+//      · Table reports loaded bar range and scored event range, so an
+//        export is self-describing without reconstructing it from CSV.
+//      · Added profit factor, average win, average loss and peak-to-
+//        trough drawdown of the cumulative bps curve.
+//     v0.2.0-tier0 · 2026-07-22
+//      · Rewritten as the narrow Tier 0 experiment.
+//      · Retest entry, stop, target and trailing logic REMOVED.
+//      · Warm-up / scored-period split with session accounting.
+//      · Exchange-session anchoring; session-end order cancellation.
+//      · Standard-price data guard; exact-divisor timeframe guard.
+//      · Invariant checks with runtime halt.
+//      · Self-computed MFE/MAE frozen at the fill, precisely specified.
+//      · Distribution diagnostics: median, extremes, top-5 concentration,
+//        long/short split, consecutive losses.
+//      · Configuration fingerprint and comment-encoded provenance.
+//     v0.1 · 2026-07-22 · Initial executable baseline.
+// ════════════════════════════════════════════════════════════════════
+strategy("SPY ORB First-Break — Tier 0", "ORB T0",
+     overlay                 = true,
+     initial_capital         = 100000,
+     default_qty_type        = strategy.fixed,
+     default_qty_value       = 100,
+     commission_type         = strategy.commission.cash_per_order,
+     commission_value        = 0.0,
+     slippage                = 0,
+     pyramiding              = 0,
+     calc_on_every_tick      = false,
+     calc_on_order_fills     = false,
+     process_orders_on_close = false)
+
+SCRIPT_VERSION = "0.3.0-tier0"
+MODEL_ID = "SPY-EXP"
+
+// ─── Inputs · event ─────────────────────────────────────────────────
+gEvent = "Baseline event"
+orbMins = input.int(15, "Opening range (minutes)", minval = 5, maxval = 60, group = gEvent)
+triggerCutoffMins = input.int(60, "First-break cutoff (minutes after open)", minval = 16, maxval = 180, group = gEvent,
+     tooltip = "60 = the first confirmed break must occur before 10:30 ET.")
+directionMode = input.string("Both", "Direction", options = ["Both", "Long first breaks", "Short first breaks"], group = gEvent,
+     tooltip = "The first break is identified BEFORE this filter. Long-only will not promote a later long break in place of an earlier short one.")
+cohort = input.string("C0 · baseline", "Filter cohort",
+     options = ["C0 · baseline", "C1 · VWAP-aligned", "C2 · EMA-aligned", "C3 · EMA-stable", "C4 · RVOL-hot", "C5 · intersection"],
+     group = gEvent, tooltip = "One cohort per run. C0 is the primary pre-registered test. If C0 shows nothing, a filtered cohort looking good is a warning, not a discovery.")
+holdMins = input.int(30, "Time exit (minutes in trade)", minval = 1, maxval = 390, group = gEvent,
+     tooltip = "The only exit. No stop, no target, no trail — by design.")
+
+// ─── Inputs · scored period ─────────────────────────────────────────
+gWindow = "Scored period (calculation always starts at the first loaded bar)"
+// timestamp() with numeric arguments returns `simple int`; input.time
+// requires `const int`. The date-string overload returns const.
+scoredStart = input.time(timestamp("2000-01-01T00:00:00"), "Scored start", group = gWindow,
+     tooltip = "Events before this are skipped but still build RVOL history. Leave early to score everything once RVOL is ready.")
+scoredEnd = input.time(timestamp("2099-12-31T00:00:00"), "Scored end", group = gWindow)
+
+// ─── Inputs · context (Compass / Pulse definitions, verbatim) ───────
+gContext = "Existing Compass / Pulse definitions"
+emaFastLen = input.int(9, "Fast EMA", minval = 1, group = gContext)
+emaSlowLen = input.int(20, "Slow EMA", minval = 2, group = gContext)
+chopBars = input.int(6, "Recent-cross window (bars)", minval = 1, maxval = 30, group = gContext)
+rvolLookback = input.int(20, "Same-slot RVOL lookback (sessions)", minval = 2, maxval = 60, group = gContext)
+rvolMinSamples = input.int(10, "RVOL min real sessions", minval = 1, maxval = 60, group = gContext)
+rvolMinVol = input.float(0, "RVOL min avg-volume floor", minval = 0, group = gContext,
+     tooltip = "Keep equal to Session Pulse or the two tools will disagree on HOT.")
+rvolHot = input.float(1.5, "Hot RVOL threshold", minval = 0.1, step = 0.1, group = gContext)
+requireRvolHistory = input.bool(true, "All cohorts wait for RVOL history", group = gContext,
+     tooltip = "ON is the correct research setting: every cohort trades one common date population. OFF lets C0 trade sessions C4 and C5 can never see, which makes the ablation meaningless.")
+
+gGuard = "Guards"
+haltOnInvariant = input.bool(true, "Halt on invariant failure", group = gGuard,
+     tooltip = "ON stops the script with a runtime error the moment an impossible state occurs — this survives Deep Backtesting, where the table is not drawn. Turn OFF only to inspect a failure you have already seen.")
+showTable = input.bool(true, "Show diagnostics table", group = gGuard)
+
+// ─── Chart guards ───────────────────────────────────────────────────
+tfSecs = timeframe.in_seconds()
+orbSecs = orbMins * 60
+cutSecs = triggerCutoffMins * 60
+holdSecs = holdMins * 60
+tfDivides = timeframe.isintraday and tfSecs <= orbSecs and orbSecs % tfSecs == 0 and cutSecs % tfSecs == 0 and holdSecs % tfSecs == 0
+chartOk = tfDivides and chart.is_standard
+tfMins = tfSecs / 60
+
+inRTH = session.ismarket
+rthFirst = session.isfirstbar_regular
+rthLast = session.islastbar_regular
+
+// ─── Invariant plumbing ─────────────────────────────────────────────
+// Arrays are references, so a function may mutate them. Plain globals
+// cannot be assigned from inside a function in Pine.
+var array<int> invN = array.new<int>(1, 0)
+var array<string> invLast = array.new<string>(1, "")
+
+inv(_cond, _msg) =>
+    if _cond
+        array.set(invN, 0, array.get(invN, 0) + 1)
+        array.set(invLast, 0, _msg)
+        if haltOnInvariant
+            runtime.error("INVARIANT FAILURE · " + _msg + " · bar time " + str.tostring(time))
+
+// ─── Session accounting ─────────────────────────────────────────────
+var int nSessions = 0
+var int nHalfDays = 0
+var int nWarmupSessions = 0      // sessions begun before RVOL first ready
+var int nBreaksPreReady = 0      // first breaks excluded for RVOL/window
+var bool extHoursSeen = false
+var bool rvolEverReady = false
+
+if not inRTH and not na(close)
+    extHoursSeen := true
+
+// ─── Opening range ──────────────────────────────────────────────────
+var int rthStart = na
+var float orbH = na
+var float orbL = na
+var bool eventTaken = false
+var bool armedPending = false
+var int armedDir = 0
+var string armedCohort = ""
+
+if rthFirst
+    // A market order submitted on the previous session's last bar must
+    // have filled at that session's close. Anything still pending here
+    // is a broken assumption, not a trade.
+    inv(armedPending, "pending order survived into a new session")
+    strategy.cancel_all()
+    nSessions += 1
+    if not rvolEverReady
+        nWarmupSessions += 1
+    rthStart := time
+    orbH := high
+    orbL := low
+    eventTaken := false
+    armedPending := false
+    armedDir := 0
+else if chartOk and inRTH and not na(rthStart) and time < rthStart + orbSecs * 1000
+    orbH := math.max(orbH, high)
+    orbL := math.min(orbL, low)
+
+// Shortened sessions are counted for inspection. They cannot affect the
+// time-exit baseline, whose last exit lands around 11:31 ET, but a
+// silent half-day is exactly the kind of thing that invalidates a
+// later end-of-day variant.
+if rthLast
+    closeMin = hour(time, syminfo.timezone) * 60 + minute(time, syminfo.timezone)
+    if closeMin < 900
+        nHalfDays += 1
+
+orbDone = chartOk and inRTH and not na(rthStart) and time >= rthStart + orbSecs * 1000
+inTriggerWindow = orbDone and time < rthStart + cutSecs * 1000
+
+plot(chartOk and inRTH ? orbH : na, "ORH", color.new(#fde047, 0), 2, plot.style_linebr)
+plot(chartOk and inRTH ? orbL : na, "ORL", color.new(#fde047, 0), 2, plot.style_linebr)
+
+// ─── Context ────────────────────────────────────────────────────────
+[sessionVwap, _u, _l] = ta.vwap(hlc3, rthFirst, 1)
+emaFast = ta.ema(close, emaFastLen)
+emaSlow = ta.ema(close, emaSlowLen)
+noRecentCross = nz(ta.barssince(ta.cross(emaFast, emaSlow)), 999) > chopBars
+
+// Same-slot RVOL — Session Pulse v2.3's definition. The slot key is the
+// bar's opening clock time in exchange timezone, so on a 5m chart the
+// cohort is the same 5-minute slot across sessions.
+type Slot
+    array<float> vols
+
+var slots = map.new<int, Slot>()
+slotKey = hour(time, syminfo.timezone) * 100 + minute(time, syminfo.timezone)
+Slot slot = map.get(slots, slotKey)
+if na(slot)
+    slot := Slot.new(array.new<float>())
+    map.put(slots, slotKey, slot)
+
+realSamples = 0
+for v in slot.vols
+    if v > 0
+        realSamples += 1
+
+slotAvg = array.size(slot.vols) > 0 ? array.avg(slot.vols) : na
+rvolReady = realSamples >= math.min(rvolMinSamples, rvolLookback) and not na(slotAvg) and slotAvg > 0 and slotAvg >= rvolMinVol
+slotRvol = rvolReady ? volume / slotAvg : na
+
+// Appended only after this bar's decision has been made.
+if barstate.isconfirmed
+    array.push(slot.vols, volume)
+    if array.size(slot.vols) > rvolLookback
+        array.shift(slot.vols)
+
+// ─── Exclusion counters (the funnel) ────────────────────────────────
+var int nBreaks = 0
+var int xOutsideWindow = 0
+var int xRvolNotReady = 0
+var int xDirection = 0
+var int xCohort = 0
+var int nArmed = 0
+var int nFills = 0
+
+// ─── First confirmed close outside the completed range ──────────────
+if chartOk and barstate.isconfirmed and inTriggerWindow and not eventTaken and not rthLast
+    breakDir = close > orbH ? 1 : close < orbL ? -1 : 0
+    if breakDir != 0
+        inv(strategy.position_size != 0, "break armed while a position was already open")
+        eventTaken := true
+        nBreaks += 1
+
+        scored = time >= scoredStart and time <= scoredEnd
+        historyOk = rvolReady or not requireRvolHistory
+        if rvolReady
+            rvolEverReady := true
+
+        dirOk = directionMode == "Both" or
+             (directionMode == "Long first breaks" and breakDir == 1) or
+             (directionMode == "Short first breaks" and breakDir == -1)
+
+        if not scored
+            xOutsideWindow += 1
+        else if not historyOk
+            xRvolNotReady += 1
+            nBreaksPreReady += 1
+        else if not dirOk
+            xDirection += 1
+        else
+            vwapAligned = breakDir == 1 ? close > sessionVwap : close < sessionVwap
+            emaAligned = breakDir == 1 ? emaFast > emaSlow : emaFast < emaSlow
+            emaStable = emaAligned and noRecentCross
+            hotRvol = not na(slotRvol) and slotRvol >= rvolHot
+
+            // Parallel filters on the same event stream, NOT a ladder.
+            // Empirical topology at 15m: C1 = C0 in-sample (the gate
+            // rejected 0/318 — structural during the first hour, since
+            // session VWAP averages prices inside the range a first
+            // break just cleared); C3 ⊂ C2; C4 independent; C5 = C3∩C4.
+            pass = cohort == "C0 · baseline" ? true :
+                 cohort == "C1 · VWAP-aligned" ? vwapAligned :
+                 cohort == "C2 · EMA-aligned" ? emaAligned :
+                 cohort == "C3 · EMA-stable" ? emaStable :
+                 cohort == "C4 · RVOL-hot" ? hotRvol :
+                 vwapAligned and emaStable and hotRvol
+
+            if not pass
+                xCohort += 1
+            else
+                armedDir := breakDir
+                armedPending := true
+                armedCohort := str.substring(cohort, 0, 2)
+                nArmed += 1
+                cmt = armedCohort + "|" + (breakDir == 1 ? "L" : "S") + "|MKT|" + timeframe.period + "|v" + SCRIPT_VERSION + "|" + syminfo.ticker
+                strategy.entry("ORB", breakDir == 1 ? strategy.long : strategy.short, comment = cmt)
+
+// ─── Excursion, frozen at the fill ──────────────────────────────────
+// Runs on every bar the position is actually held. Because the entry
+// fills at the open of the fill bar and the exit fills at the open of
+// the exit bar, strategy.position_size is non-zero on exactly the bars
+// from the fill bar through the last fully-held bar — which is the
+// window specified in the header. No pre-fill movement can enter MFE.
+var float liveMfe = 0.0
+var float liveMae = 0.0
+var int liveDir = 0
+var bool tradeOpen = false
+
+if strategy.position_size != 0
+    ep = strategy.opentrades.entry_price(0)
+    d = strategy.position_size > 0 ? 1 : -1
+    if not tradeOpen
+        tradeOpen := true
+        liveMfe := 0.0
+        liveMae := 0.0
+        liveDir := d
+        nFills += 1
+        armedPending := false
+        inv(armedDir == 0, "fill occurred with no armed event")
+        inv(armedDir != d, "direction changed between signal and fill")
+        inv(armedCohort == "", "trade opened with no recorded cohort")
+    if not na(ep) and ep > 0
+        fav = d == 1 ? (high - ep) / ep * 10000 : (ep - low) / ep * 10000
+        adv = d == 1 ? (ep - low) / ep * 10000 : (high - ep) / ep * 10000
+        liveMfe := math.max(liveMfe, fav)
+        liveMae := math.max(liveMae, adv)
+
+// ─── Exit: the clock, and nothing else ──────────────────────────────
+if strategy.position_size != 0
+    et = strategy.opentrades.entry_time(0)
+    if not na(et) and time_close >= et + holdSecs * 1000
+        strategy.close_all("TX" + str.tostring(holdMins))
+
+// ─── Per-trade collection ───────────────────────────────────────────
+// Loaded range and scored range, so an export describes its own window.
+var int firstBarT = na
+var int lastEventT = na
+var int firstEventT = na
+if na(firstBarT)
+    firstBarT := time
+
+// Cumulative bps curve and its peak-to-trough decline. Fixed share
+// sizing means bps are additive, so this is an arithmetic drawdown of
+// the return stream, not a compounded equity drawdown.
+var float cumBps = 0.0
+var float peakBps = 0.0
+var float maxDDBps = 0.0
+
+var int nDone = 0
+var array<float> tBps = array.new<float>()
+var array<float> tMfe = array.new<float>()
+var array<float> tMae = array.new<float>()
+var array<int> tDir = array.new<int>()
+var int maxConsecLoss = 0
+var int curConsecLoss = 0
+
+if strategy.closedtrades > nDone
+    for i = nDone to strategy.closedtrades - 1
+        sz = strategy.closedtrades.size(i)
+        entryPx = strategy.closedtrades.entry_price(i)
+        exitPx = strategy.closedtrades.exit_price(i)
+        if not na(entryPx) and not na(exitPx) and entryPx > 0 and sz != 0
+            d = sz > 0 ? 1 : -1
+            bps = d * (exitPx - entryPx) / entryPx * 10000
+            array.push(tBps, bps)
+            array.push(tMfe, liveMfe)
+            array.push(tMae, liveMae)
+            array.push(tDir, d)
+            cumBps += bps
+            peakBps := math.max(peakBps, cumBps)
+            maxDDBps := math.max(maxDDBps, peakBps - cumBps)
+            if na(firstEventT)
+                firstEventT := strategy.closedtrades.entry_time(i)
+            lastEventT := strategy.closedtrades.entry_time(i)
+            if bps <= 0
+                curConsecLoss += 1
+                maxConsecLoss := math.max(maxConsecLoss, curConsecLoss)
+            else
+                curConsecLoss := 0
+    nDone := strategy.closedtrades
+    tradeOpen := false
+    armedDir := 0
+    armedCohort := ""
+
+// The custom count must equal the engine's count. If it ever does not,
+// every aggregate below is describing a different population than the
+// Strategy Report.
+if barstate.islast
+    inv(array.size(tBps) != strategy.closedtrades, "custom trade count differs from Strategy Report count")
+
+// ─── Diagnostics table ──────────────────────────────────────────────
+var table t = table.new(position.top_right, 2, 33, bgcolor = color.new(color.black, 0), border_width = 1, border_color = color.new(color.gray, 80))
+
+r(_i, _k, _v, _c) =>
+    table.cell(t, 0, _i, _k, text_color = color.new(color.white, 45), text_size = size.tiny, text_halign = text.align_left)
+    table.cell(t, 1, _i, _v, text_color = _c, text_size = size.tiny, text_halign = text.align_right)
+
+f(_v) => na(_v) ? "—" : str.tostring(_v, "#.0")
+
+if showTable and barstate.islast
+    table.clear(t, 0, 0, 1, 32)
+    W = color.white
+    DIM = color.new(color.white, 40)
+    GRN = #22c55e
+    RED = #ef4444
+
+    if not chartOk
+        r(0, "CHART REJECTED", not chart.is_standard ? "NON-STANDARD DATA" : "TIMEFRAME", color.orange)
+        r(1, "REQUIRED", "TF must divide " + str.tostring(orbMins) + "/" + str.tostring(triggerCutoffMins) + "/" + str.tostring(holdMins) + "m", DIM)
+        r(2, "VALID HERE", "1m · 3m · 5m · 15m", DIM)
+    else
+        n = array.size(tBps)
+        // Concentration: strip the five largest winners and re-average.
+        float exTop5 = na
+        float top5Share = na
+        float med = na
+        float best = na
+        float worst = na
+        if n > 0
+            srt = array.copy(tBps)
+            array.sort(srt, order.descending)
+            med := array.median(tBps)
+            best := array.get(srt, 0)
+            worst := array.get(srt, n - 1)
+            grossProfit = 0.0
+            for v in tBps
+                if v > 0
+                    grossProfit += v
+            top5 = 0.0
+            k = math.min(5, n)
+            for j = 0 to k - 1
+                top5 += math.max(array.get(srt, j), 0)
+            top5Share := grossProfit > 0 ? top5 / grossProfit * 100 : na
+            if n > k
+                rest = 0.0
+                for j = k to n - 1
+                    rest += array.get(srt, j)
+                exTop5 := rest / (n - k)
+
+        nWin = 0
+        sum = 0.0
+        nLong = 0
+        sumLong = 0.0
+        nShort = 0
+        sumShort = 0.0
+        if n > 0
+            for idx = 0 to n - 1
+                v = array.get(tBps, idx)
+                sum += v
+                if v > 0
+                    nWin += 1
+                if array.get(tDir, idx) == 1
+                    nLong += 1
+                    sumLong += v
+                else
+                    nShort += 1
+                    sumShort += v
+
+        fp = SCRIPT_VERSION + "|" + syminfo.tickerid + "|" + str.substring(cohort, 0, 2) + "|" +
+             (directionMode == "Both" ? "B" : directionMode == "Long first breaks" ? "L" : "S") + "|" +
+             timeframe.period + "|OR" + str.tostring(orbMins) + "|CUT" + str.tostring(triggerCutoffMins) +
+             "|EX" + str.tostring(holdMins) + "|MKT"
+        fp2 = "EMA" + str.tostring(emaFastLen) + "/" + str.tostring(emaSlowLen) + "|CHOP" + str.tostring(chopBars) +
+             "|RV" + str.tostring(rvolLookback) + "/" + str.tostring(rvolMinSamples) + "/" + str.tostring(rvolHot) +
+             (requireRvolHistory ? "|GATED" : "|UNGATED")
+
+        invCount = array.get(invN, 0)
+
+        r(0, "⚠", "ON-CHART DIAGNOSTICS — NOT DEEP REPORT", color.orange)
+        r(1, "CONFIG", fp, W)
+        r(2, "CONFIG 2", fp2, DIM)
+        r(3, "EXT HOURS", extHoursSeen ? "ON — turn off" : "off", extHoursSeen ? color.orange : DIM)
+        r(4, "INVARIANTS", invCount == 0 ? "clean" : str.tostring(invCount) + " · " + array.get(invLast, 0), invCount == 0 ? GRN : RED)
+
+        r(6, "── POPULATION", "", DIM)
+        r(6, "Sessions loaded", str.tostring(nSessions), W)
+        r(7, "Warm-up sessions (pre-RVOL)", str.tostring(nWarmupSessions), DIM)
+        r(8, "Half-days", str.tostring(nHalfDays), DIM)
+        r(9, "First breaks", str.tostring(nBreaks), W)
+        r(10, "  skipped · window", str.tostring(xOutsideWindow), DIM)
+        r(11, "  skipped · RVOL", str.tostring(xRvolNotReady), DIM)
+        r(12, "  skipped · direction", str.tostring(xDirection), DIM)
+        r(13, "  skipped · cohort", str.tostring(xCohort), DIM)
+        r(14, "Armed → filled", str.tostring(nArmed) + " → " + str.tostring(nFills), W)
+
+        r(15, "── RESULT (bps, gross: $0 comm, 0 slip)", "", DIM)
+        r(16, "Trades", str.tostring(n), W)
+        r(17, "Win %", n == 0 ? "—" : f(nWin * 100.0 / n) + "%", DIM)
+        r(18, "Avg trade", n == 0 ? "—" : f(sum / n), n == 0 ? W : sum > 0 ? GRN : RED)
+        r(19, "Median trade", f(med), na(med) ? W : med > 0 ? GRN : RED)
+        r(20, "Avg ex-top5", f(exTop5), na(exTop5) ? W : exTop5 > 0 ? GRN : RED)
+        r(21, "Top5 % of gross", na(top5Share) ? "—" : f(top5Share) + "%", not na(top5Share) and top5Share > 60 ? color.orange : DIM)
+        r(22, "Best / worst", f(best) + " / " + f(worst), DIM)
+        r(23, "Long n · avg", str.tostring(nLong) + " · " + (nLong > 0 ? f(sumLong / nLong) : "—"), DIM)
+        r(24, "Short n · avg", str.tostring(nShort) + " · " + (nShort > 0 ? f(sumShort / nShort) : "—"), DIM)
+        r(25, "Median MFE / MAE", (array.size(tMfe) > 0 ? f(array.median(tMfe)) : "—") + " / " + (array.size(tMae) > 0 ? f(array.median(tMae)) : "—"), DIM)
+        r(26, "Max consec losses", str.tostring(maxConsecLoss), DIM)
+
+        // Gross-profit / gross-loss view of the same population.
+        gp = 0.0
+        gl = 0.0
+        nW = 0
+        nL = 0
+        if n > 0
+            for idx2 = 0 to n - 1
+                v2 = array.get(tBps, idx2)
+                if v2 > 0
+                    gp += v2
+                    nW += 1
+                else
+                    gl += math.abs(v2)
+                    nL += 1
+        pf = gl > 0 ? gp / gl : na
+        r(27, "Profit factor", f(pf), na(pf) ? W : pf > 1 ? GRN : RED)
+        r(28, "Avg win / avg loss", (nW > 0 ? f(gp / nW) : "—") + " / " + (nL > 0 ? f(-gl / nL) : "—"), DIM)
+        r(29, "Max drawdown", f(maxDDBps) + " bps", RED)
+
+        r(30, "── WINDOW", "", DIM)
+        ld = (na(firstBarT) ? "—" : str.format_time(firstBarT, "yyyy-MM-dd", syminfo.timezone)) + " → " +
+             str.format_time(time, "yyyy-MM-dd", syminfo.timezone)
+        sc = na(firstEventT) ? "—" :
+             str.format_time(firstEventT, "yyyy-MM-dd", syminfo.timezone) + " → " +
+             str.format_time(lastEventT, "yyyy-MM-dd", syminfo.timezone)
+        r(31, "Bars loaded", ld, DIM)
+        r(32, "Filled-trade range", sc, DIM)

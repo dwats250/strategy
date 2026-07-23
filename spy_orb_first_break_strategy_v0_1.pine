@@ -1,0 +1,362 @@
+//@version=6
+// ════════════════════════════════════════════════════════════════════
+//    SPY ORB FIRST-BREAK — STRATEGY
+//    v0.1 · 2026-07-22
+// ════════════════════════════════════════════════════════════════════
+//    Executable counterpart to "SPY ORB Event Study v0.1". Same event
+//    identity, same context definitions (lifted from Session Compass
+//    v2.3 and Session Pulse v2.3), but placing real orders so the
+//    TradingView strategy tester can price fills, costs and equity.
+//
+//    THE EVENT (unchanged from the study)
+//     · Opening range = first N RTH minutes (default 15 → 09:30–09:45).
+//     · Event = the FIRST confirmed close outside the completed range.
+//     · Trigger window closes at N minutes after the open (default 60
+//       → 10:30 ET). No event after that.
+//     · Maximum one event per regular session. No re-entry, ever.
+//     · Direction filter is applied AFTER the first break is fixed.
+//       "Long only" will not substitute a later long break for an
+//       earlier short one — that would be a different study.
+//
+//    ONE COHORT PER RUN
+//     The study table showed six cohorts side by side. A strategy can
+//     only hold one configuration, so the cohort is an input. Run each
+//     in turn and record the result; that IS the ablation.
+//      C0  ORB only                          (baseline)
+//      C1  ORB + directional VWAP
+//      C2  ORB + directional EMA 9/20
+//      C3  ORB + directional EMA + no recent cross
+//      C4  ORB + same-minute RVOL ≥ threshold
+//      C5  all context gates together
+//     Every cohort — including C0 — waits for the RVOL history floor
+//     before trading, so all six runs share one date population.
+//     Turning that guard off makes C0 non-comparable to C4/C5.
+//
+//    ═══ ASSUMPTIONS CURRENTLY IN FORCE ═══════════════════════════════
+//    These were never decided. They are set to explicit, visible
+//    placeholders — not hidden defaults. Change them deliberately.
+//      Stop-loss ........ NONE      (stopBps = 0)
+//      Profit target .... NONE      (targetBps = 0)
+//      Trailing exit .... NOT IMPLEMENTED in v0.1, by design
+//      Time exit ........ 30 minutes in trade (study horizons 15/30/60)
+//      Position size .... 100 shares fixed, $100,000 initial capital
+//      Commission ....... $0.00 per order  ← set yours in Properties
+//      Slippage ......... 1 tick ($0.01)   ← one SPY spread crossing
+//      Re-entry ......... none, one event per session
+//      VIX filter ....... none
+//      Options .......... not modelled. This trades SPY shares only.
+//    Position size and capital are chosen so the tester runs cleanly;
+//    they do not affect the bps table below, which is size-independent.
+//
+//    HOW TO READ THE RESULT
+//     The on-chart table reports per-trade outcomes in basis points,
+//     computed from actual fill prices and GROSS of commission — the
+//     same units as the event study, so the two are comparable.
+//     Read AVG TRADE, not WIN %. TradingView's Performance Summary
+//     reports the NET figures after costs and slippage; use that to
+//     see how much of the edge survives friction.
+//
+//    KNOWN DIVERGENCE FROM THE EVENT STUDY
+//     The study samples the CLOSE of the bar N minutes after the
+//     reference. A strategy cannot fill on a close it is still
+//     observing, so the exit is submitted one bar earlier and fills at
+//     the OPEN of that same bar — the identical clock instant, but a
+//     tick or a gap apart. Expect small differences between the two
+//     tools. That gap is real execution cost, not an error.
+//
+//    CONSTRAINTS
+//     · Standard 1-minute chart only. The script refuses to trade on
+//       any other timeframe so ORB and horizon timestamps stay exact.
+//     · Sample size is bounded by loaded chart history. On 1m, one RTH
+//       day is 390 bars, and one event per day means events accumulate
+//       slowly. Without Deep Backtesting you may be reading a few
+//       dozen trades — treat that as anecdote, not evidence.
+//     · Extended Hours may stay on; entries are restricted to RTH.
+//     · Historical association is not a guarantee of anything.
+//
+//    CHANGELOG
+//     v0.1 · 2026-07-22
+//      · Initial executable baseline. First-break event identity,
+//        next-bar-open reference entry, time-based exit, six-cohort
+//        input ablation, bps expectancy table, optional retest entry.
+// ════════════════════════════════════════════════════════════════════
+strategy("SPY ORB First-Break — Strategy", "ORB STRAT",
+     overlay              = true,
+     initial_capital      = 100000,
+     default_qty_type     = strategy.fixed,
+     default_qty_value    = 100,
+     commission_type      = strategy.commission.cash_per_order,
+     commission_value     = 0.0,
+     slippage             = 1,
+     pyramiding           = 0,
+     calc_on_every_tick   = false,
+     calc_on_order_fills  = false,
+     process_orders_on_close = false,
+     max_labels_count     = 100)
+
+// ─── Inputs · event ─────────────────────────────────────────────────
+gEvent = "Baseline event"
+orbMins = input.int(15, "Opening range (minutes)", minval = 5, maxval = 60, group = gEvent,
+     tooltip = "Built from the first N one-minute RTH bars. 15 = 09:30–09:45 ET.")
+triggerCutoffMins = input.int(60, "First-break cutoff (minutes after open)", minval = 16, maxval = 180, group = gEvent,
+     tooltip = "Default 60 means the first confirmed break must occur before 10:30 ET.")
+directionMode = input.string("Both", "Direction", options = ["Both", "Long first breaks", "Short first breaks"], group = gEvent,
+     tooltip = "The first break is identified BEFORE this filter runs. Long-only will not promote a later long break in place of an earlier short one.")
+cohort = input.string("C0 · ORB only", "Filter cohort",
+     options = ["C0 · ORB only", "C1 · + VWAP", "C2 · + EMA dir", "C3 · + EMA stable", "C4 · + RVOL hot", "C5 · all gates"],
+     group = gEvent, tooltip = "One cohort per run. Record each, then compare. This is the ablation.")
+
+// ─── Inputs · trade management (the undecided block) ────────────────
+gExit = "Trade management — UNDECIDED, set deliberately"
+holdMins = input.int(30, "Time exit (minutes in trade)", minval = 1, maxval = 390, group = gExit,
+     tooltip = "The study's horizons are 15, 30 and 60. Run all three before adding any stop or target.")
+stopBps = input.float(0.0, "Stop loss (bps from entry, 0 = off)", minval = 0, step = 5, group = gExit,
+     tooltip = "0 keeps the baseline pure. Any non-zero value makes this no longer the event study.")
+targetBps = input.float(0.0, "Profit target (bps from entry, 0 = off)", minval = 0, step = 5, group = gExit,
+     tooltip = "0 keeps the baseline pure. Compare against the study's MFE column before picking a number.")
+entryStyle = input.string("Market at next open", "Entry style", options = ["Market at next open", "Limit retest at broken level"], group = gExit,
+     tooltip = "Market = the study's reference price, the following bar's open. Limit retest rests an order back at the broken ORB level and may never fill — the table reports the no-fill count.")
+retestBars = input.int(10, "Retest order timeout (bars)", minval = 1, maxval = 60, group = gExit,
+     tooltip = "Cancel an unfilled retest order after this many bars. Only used by the limit-retest style.")
+flatSess = input.session("1555-1600", "Force-flat window (exchange time)", group = gExit,
+     tooltip = "Safety net only. With the default cutoff and horizons the last exit lands around 11:31 ET, so this never fires. Half-day sessions are not covered by a clock window — widen the horizon at your own risk.")
+
+// ─── Inputs · context (verbatim from Compass / Pulse) ───────────────
+gContext = "Existing Compass / Pulse definitions"
+emaFastLen = input.int(9, "Fast EMA", minval = 1, group = gContext)
+emaSlowLen = input.int(20, "Slow EMA", minval = 2, group = gContext)
+chopBars = input.int(6, "Recent-cross window (bars)", minval = 1, maxval = 30, group = gContext,
+     tooltip = "Matches Compass's EMA chop window. A cross within this many bars means 'not stable'.")
+rvolLookback = input.int(20, "Same-minute RVOL lookback (sessions)", minval = 2, maxval = 60, group = gContext)
+rvolMinSamples = input.int(10, "RVOL min real sessions", minval = 1, maxval = 60, group = gContext)
+rvolMinVol = input.float(0, "RVOL min avg-volume floor", minval = 0, group = gContext,
+     tooltip = "Matches Session Pulse. 0 = off. Keep this equal to Pulse's value or the two tools will disagree on HOT.")
+rvolHot = input.float(1.5, "Hot RVOL threshold", minval = 0.1, step = 0.1, group = gContext,
+     tooltip = "Keep matched to Pulse's 'Hot volume threshold' and Compass's 'Hot RVOL threshold'.")
+requireRvolHistory = input.bool(true, "All cohorts wait for RVOL history", group = gContext,
+     tooltip = "ON is the correct research setting: every cohort trades the same date population. Turning this OFF lets C0 trade early sessions that C4 and C5 can never see, which makes the ablation a lie.")
+
+gDisplay = "Display"
+showLevels = input.bool(true, "Plot opening range", group = gDisplay)
+showMarks = input.bool(true, "Mark first break", group = gDisplay)
+showTable = input.bool(true, "Show bps result table", group = gDisplay)
+
+// ─── Timeframe and session gates ────────────────────────────────────
+oneMinute = timeframe.isintraday and timeframe.in_seconds() == 60
+inRTH = session.ismarket
+rthFirst = session.isfirstbar_regular
+inFlatWindow = not na(time(timeframe.period, flatSess, syminfo.timezone))
+
+// ─── Opening range construction ─────────────────────────────────────
+var int rthStart = na
+var float orbH = na
+var float orbL = na
+var bool eventTaken = false
+
+if rthFirst
+    rthStart := time
+    orbH := high
+    orbL := low
+    eventTaken := false
+else if oneMinute and inRTH and not na(rthStart) and time < rthStart + orbMins * 60000
+    orbH := math.max(orbH, high)
+    orbL := math.min(orbL, low)
+
+orbDone = oneMinute and inRTH and not na(rthStart) and time >= rthStart + orbMins * 60000
+insideTriggerWindow = orbDone and time < rthStart + triggerCutoffMins * 60000
+
+plot(showLevels and oneMinute and inRTH ? orbH : na, "ORH", color.new(#fde047, 0), 2, plot.style_linebr)
+plot(showLevels and oneMinute and inRTH ? orbL : na, "ORL", color.new(#fde047, 0), 2, plot.style_linebr)
+
+// ─── Context definitions (identical to Compass v2.3) ────────────────
+[sessionVwap, _u, _l] = ta.vwap(hlc3, rthFirst, 1)
+emaFast = ta.ema(close, emaFastLen)
+emaSlow = ta.ema(close, emaSlowLen)
+barsSinceCross = nz(ta.barssince(ta.cross(emaFast, emaSlow)), 999)
+noRecentCross = barsSinceCross > chopBars
+
+// Same-minute RVOL — Session Pulse v2.3's definition, including the
+// real-sample floor and the average-volume floor. The current bar is
+// pushed into its slot only AFTER it has been evaluated, so it never
+// contaminates its own baseline.
+type Slot
+    array<float> vols
+
+var slots = map.new<int, Slot>()
+timeKey = hour(time, syminfo.timezone) * 100 + minute(time, syminfo.timezone)
+Slot slot = map.get(slots, timeKey)
+if na(slot)
+    slot := Slot.new(array.new<float>())
+    map.put(slots, timeKey, slot)
+
+realSamples = 0
+for sample in slot.vols
+    if sample > 0
+        realSamples += 1
+
+slotAverage = array.size(slot.vols) > 0 ? array.avg(slot.vols) : na
+enoughRvolHistory = realSamples >= math.min(rvolMinSamples, rvolLookback) and not na(slotAverage) and slotAverage > 0 and slotAverage >= rvolMinVol
+sameMinuteRvol = enoughRvolHistory ? volume / slotAverage : na
+
+if barstate.isconfirmed
+    array.push(slot.vols, volume)
+    if array.size(slot.vols) > rvolLookback
+        array.shift(slot.vols)
+
+// ─── First confirmed close outside the completed range ──────────────
+var bool orderWorking = false
+var int orderAge = 0
+var int noFillCount = 0
+
+firstBreakUp = false
+firstBreakDown = false
+armedDir = 0
+
+if oneMinute and barstate.isconfirmed and insideTriggerWindow and not eventTaken and strategy.position_size == 0 and not orderWorking
+    breakDir = close > orbH ? 1 : close < orbL ? -1 : 0
+    if breakDir != 0
+        // Event identity is fixed here, even when a later filter excludes it.
+        eventTaken := true
+        firstBreakUp := breakDir == 1
+        firstBreakDown := breakDir == -1
+
+        directionAllowed = directionMode == "Both" or
+             (directionMode == "Long first breaks" and breakDir == 1) or
+             (directionMode == "Short first breaks" and breakDir == -1)
+
+        historyOk = enoughRvolHistory or not requireRvolHistory
+
+        if directionAllowed and historyOk
+            vwapAligned = breakDir == 1 ? close > sessionVwap : close < sessionVwap
+            emaAligned = breakDir == 1 ? emaFast > emaSlow : emaFast < emaSlow
+            emaStable = emaAligned and noRecentCross
+            hotRvol = not na(sameMinuteRvol) and sameMinuteRvol >= rvolHot
+            allAligned = vwapAligned and emaStable and hotRvol
+
+            cohortPass = cohort == "C0 · ORB only" ? true :
+                 cohort == "C1 · + VWAP" ? vwapAligned :
+                 cohort == "C2 · + EMA dir" ? emaAligned :
+                 cohort == "C3 · + EMA stable" ? emaStable :
+                 cohort == "C4 · + RVOL hot" ? hotRvol : allAligned
+
+            if cohortPass
+                armedDir := breakDir
+
+// ─── Order placement ────────────────────────────────────────────────
+// Market style: submitted on the break bar's close, filled at the next
+// bar's open — exactly the study's reference price.
+// Retest style: a limit order rested back at the broken level, which
+// may expire unfilled. Cohort gates are evaluated at the BREAK, not at
+// the fill, so both styles judge the same information set.
+if armedDir != 0
+    if entryStyle == "Market at next open"
+        strategy.entry("ORB", armedDir == 1 ? strategy.long : strategy.short, comment = armedDir == 1 ? "BRK UP" : "BRK DN")
+    else
+        retestLevel = armedDir == 1 ? orbH : orbL
+        strategy.entry("ORB", armedDir == 1 ? strategy.long : strategy.short, limit = retestLevel, comment = "RETEST")
+        orderWorking := true
+        orderAge := 0
+
+// Age and expire an unfilled retest order.
+if orderWorking
+    if strategy.position_size != 0
+        orderWorking := false
+    else
+        orderAge += 1
+        if orderAge > retestBars or not inRTH or not oneMinute
+            strategy.cancel("ORB")
+            orderWorking := false
+            noFillCount += 1
+
+// ─── Exits ──────────────────────────────────────────────────────────
+// Optional stop / target. Re-issued each bar under the same id, which
+// updates rather than duplicates the order.
+if strategy.position_size != 0 and (stopBps > 0 or targetBps > 0)
+    ep = strategy.opentrades.entry_price(0)
+    isLong = strategy.position_size > 0
+    stopPx = stopBps > 0 ? (isLong ? ep * (1 - stopBps / 10000) : ep * (1 + stopBps / 10000)) : na
+    targPx = targetBps > 0 ? (isLong ? ep * (1 + targetBps / 10000) : ep * (1 - targetBps / 10000)) : na
+    strategy.exit("X", from_entry = "ORB", stop = stopPx, limit = targPx, comment = "STOP/TGT")
+
+// Time exit. Submitting when this bar CLOSES at entry + N minutes puts
+// the fill at the open of the bar that is exactly N minutes out.
+if strategy.position_size != 0
+    entryTime = strategy.opentrades.entry_time(0)
+    if not na(entryTime) and time_close >= entryTime + holdMins * 60000
+        strategy.close_all("Time exit")
+
+// Safety net only — unreachable with the default cutoff and horizons.
+if strategy.position_size != 0 and (inFlatWindow or not inRTH)
+    strategy.close_all("Forced flat")
+
+plotshape(showMarks and firstBreakUp, "First break up", shape.triangleup, location.belowbar, color.new(#22c55e, 0), size = size.tiny, text = "BRK")
+plotshape(showMarks and firstBreakDown, "First break down", shape.triangledown, location.abovebar, color.new(#ef4444, 0), size = size.tiny, text = "BRK")
+
+// ─── Per-trade statistics in basis points ───────────────────────────
+// Computed from fill prices, gross of commission, and independent of
+// position size — directly comparable to the event study's columns.
+// TradingView's Performance Summary carries the net-of-cost view.
+var int nDone = 0
+var int nWin = 0
+var float sumBps = 0.0
+var float sumWinBps = 0.0
+var float sumLossBps = 0.0
+var float sumMfeBps = 0.0
+var float sumMaeBps = 0.0
+
+if strategy.closedtrades > nDone
+    for i = nDone to strategy.closedtrades - 1
+        sz = strategy.closedtrades.size(i)
+        qty = math.abs(sz)
+        dir = sz > 0 ? 1 : -1
+        entryPx = strategy.closedtrades.entry_price(i)
+        exitPx = strategy.closedtrades.exit_price(i)
+        if not na(entryPx) and not na(exitPx) and entryPx > 0 and qty > 0
+            retBps = dir * (exitPx - entryPx) / entryPx * 10000
+            notional = entryPx * qty
+            mfeBps = nz(strategy.closedtrades.max_runup(i)) / notional * 10000
+            maeBps = nz(strategy.closedtrades.max_drawdown(i)) / notional * 10000
+            sumBps += retBps
+            sumMfeBps += mfeBps
+            sumMaeBps += maeBps
+            if retBps > 0
+                nWin += 1
+                sumWinBps += retBps
+            else
+                sumLossBps += math.abs(retBps)
+    nDone := strategy.closedtrades
+
+// ─── Result table ───────────────────────────────────────────────────
+var table res = table.new(position.top_right, 2, 12, bgcolor = color.new(color.black, 0), border_width = 1, border_color = color.new(color.gray, 80))
+
+row(_r, _k, _v, _c) =>
+    table.cell(res, 0, _r, _k, text_color = color.new(color.white, 45), text_size = size.tiny, text_halign = text.align_left)
+    table.cell(res, 1, _r, _v, text_color = _c, text_size = size.tiny, text_halign = text.align_right)
+
+if showTable and barstate.islast
+    table.clear(res, 0, 0, 1, 11)
+    if not oneMinute
+        row(0, "ORB STRATEGY", "USE A 1-MINUTE CHART", color.orange)
+    else
+        n = nDone
+        winPct = n == 0 ? na : nWin * 100.0 / n
+        avgBps = n == 0 ? na : sumBps / n
+        avgWin = nWin == 0 ? na : sumWinBps / nWin
+        avgLoss = (n - nWin) == 0 ? na : sumLossBps / (n - nWin)
+        pf = sumLossBps > 0 ? sumWinBps / sumLossBps : na
+        avgMfe = n == 0 ? na : sumMfeBps / n
+        avgMae = n == 0 ? na : sumMaeBps / n
+        f(_v) => na(_v) ? "—" : str.tostring(_v, "#.0")
+
+        row(0, "COHORT", str.substring(cohort, 0, 2) + " · " + directionMode, color.white)
+        row(1, "EXIT", str.tostring(holdMins) + "m" + (stopBps > 0 ? " · S" + str.tostring(stopBps, "#") : "") + (targetBps > 0 ? " · T" + str.tostring(targetBps, "#") : ""), color.new(color.white, 20))
+        row(2, "TRADES", str.tostring(n), color.white)
+        row(3, "NO FILL", entryStyle == "Market at next open" ? "n/a" : str.tostring(noFillCount), color.new(color.white, 30))
+        row(4, "WIN %", na(winPct) ? "—" : f(winPct) + "%", color.new(color.white, 30))
+        row(5, "AVG TRADE", f(avgBps) + " bps", na(avgBps) ? color.white : avgBps > 0 ? color.new(#22c55e, 0) : color.new(#ef4444, 0))
+        row(6, "AVG WIN", f(avgWin) + " bps", color.new(#22c55e, 0))
+        row(7, "AVG LOSS", f(avgLoss) + " bps", color.new(#ef4444, 0))
+        row(8, "PROFIT FACTOR", f(pf), color.white)
+        row(9, "AVG MFE", f(avgMfe) + " bps", color.new(#22c55e, 0))
+        row(10, "AVG MAE", f(avgMae) + " bps", color.new(#ef4444, 0))
+        row(11, "", "gross of costs", color.new(color.white, 55))
