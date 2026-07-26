@@ -1,0 +1,6 @@
+# Raw vendor exports for the CuttingBoard audit: untracked pending provenance and
+# redistribution review. See audits/cuttingboard-engine-strategy-audit/data/README.md.
+#
+# Deliberately narrow. This lab tracks study CSV exports under studies/*/exports/ —
+# do not broaden this into a blanket *.csv rule.
+audits/cuttingboard-engine-strategy-audit/data/raw/
