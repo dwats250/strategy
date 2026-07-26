@@ -191,3 +191,97 @@ Each was approved by Dustin during the organization pass.
 
 No Pine was written. No market data was downloaded or committed. No threshold was tuned. No
 frozen TV-0 document was edited. CuttingBoard was not modified. Nothing was merged.
+
+---
+
+# Post-TV-0R effective authority
+
+Added: 2026-07-26. Status: `BINDING ONCE THE AMENDMENT PR IS MERGED AND HASHES VERIFY`
+
+Everything above this line is the original installation record and is **unchanged**. The
+frozen TV-0 hashes recorded above still verify byte-exact and are not superseded,
+re-issued, or replaced by anything in this section.
+
+## Chain of custody
+
+TV-0R was performed substantively by fresh-context GPT-5.6 / Sol **outside this
+repository**, and its result was delivered directly to Dustin. No repository review
+artifact was created, so `reviews/` holds no TV-0R review output. Dustin adjudicated the
+delivered result and authorized a narrow amendment. Claude acted as scribe for that
+amendment only and is not the TV-0R reviewer.
+
+Full detail:
+[`adjudications/TV-0R-DUSTIN-ADJUDICATION.md`](adjudications/TV-0R-DUSTIN-ADJUDICATION.md).
+
+## Amendment records and hashes
+
+| Path | Role | SHA-256 |
+|---|---|---|
+| [`adjudications/TV-0R-DUSTIN-ADJUDICATION.md`](adjudications/TV-0R-DUSTIN-ADJUDICATION.md) | Dustin adjudication record | `a0020ae97bfa579a14bb37f22a6d335cc1ad53b57f553b955b31a29c3a50999d` |
+| [`spec/TV-0R-LITERAL-RULE-APPENDIX.md`](spec/TV-0R-LITERAL-RULE-APPENDIX.md) | Active narrow implementation clarification — R-01, R-02, R-05, E-04 only | `f01b8d939f99c736449e425ab68d9d39f21e5421fd8d5cd81a8640e0373fb83d` |
+| [`spec/TV-0R-BACKTEST-INTERPRETATION-AMENDMENT.md`](spec/TV-0R-BACKTEST-INTERPRETATION-AMENDMENT.md) | Active narrow interpretation correction — 2022–2026 window only | `dd65f878d35c5db3b109c45eab38e27488390f1550d2cb115e28b3f48a484b36` |
+
+## Precedence
+
+Read in this order. A lower-numbered rule wins only within the gap it is scoped to.
+
+1. **Frozen TV-0 authority governs by default.** The four documents hashed above remain
+   intact, unedited, and controlling for everything.
+2. **The literal-rule appendix controls the implementation literals of R-01, R-02, R-05,
+   and E-04 — and nothing else.** It supplements the frozen matrix for those four gates.
+   It silently redefines no other gate, row, classification, variant, or safeguard. Where
+   it is silent, `spec/GATE_TRANSLATION_MATRIX.md` governs.
+3. **The backtest interpretation amendment controls the naming and interpretation of the
+   2022-01-01 – 2026-07-24 period — and nothing else.** It supersedes the frozen protocol
+   only to that extent. Every guard condition, window, threshold, export, and acceptance
+   criterion in `spec/BACKTEST_PROTOCOL.md` is unchanged.
+4. **This installation record remains binding for repository paths only**, per its
+   original scope statement. It is not an audit authority and cannot alter a gate formula,
+   threshold, classification, variant, safeguard, or review rule.
+
+Where an amendment and a frozen document disagree about anything outside the two
+adjudicated gaps, the frozen document governs.
+
+## TV-1 effective-authority manifest
+
+A TV-1 session must read all of the following, and confirm in its preflight report that
+it has done so:
+
+| # | Document | Why |
+|---|---|---|
+| 1 | `README.md` | TV-0 authority |
+| 2 | `spec/GATE_TRANSLATION_MATRIX.md` | TV-0 authority — governing matrix |
+| 3 | `spec/BACKTEST_PROTOCOL.md` | TV-0 authority — governing protocol |
+| 4 | `charges/TV-1-PINE-IMPLEMENTATION.md` | TV-0 authority — the charge itself |
+| 5 | `spec/TV-0R-LITERAL-RULE-APPENDIX.md` | Literals for R-01, R-02, R-05, E-04 |
+| 6 | `spec/TV-0R-BACKTEST-INTERPRETATION-AMENDMENT.md` | 2022–2026 window naming |
+| 7 | `adjudications/TV-0R-DUSTIN-ADJUDICATION.md` | Accepted dispositions and amendment scope |
+| 8 | This record, in full | Repository-path correction, preflight, and this section |
+| 9 | `docs/conventions.md` (§g, §h, §i) and root `CLAUDE.md` / `AGENTS.md` | Standing lab rules and cross-repository isolation |
+
+TV-0R's raw findings are **not** part of the handoff, and the reviewer's own report is
+held by Dustin outside this repository. The implementer receives the frozen documents,
+the accepted dispositions, and these amendments — not an invitation to reinterpret them.
+
+Every earlier requirement in this record still applies to TV-1 unchanged: the binding
+repository-path correction, its scope limit, the change-surface ceiling, the
+CuttingBoard-mutation ban, the no-merge rule, and the mandatory repository preflight.
+
+## TV-1 is blocked
+
+**TV-1 must not begin.** It remains blocked until both of the following hold:
+
+1. the amendment pull request carrying this section is **merged** into
+   `dwats250/strategy` `main`; and
+2. the three amendment-record SHA-256 hashes above are **independently verified** against
+   the merged files.
+
+A hash mismatch between what was adjudicated and what a later stage consumes means the
+authority drifted, and the later stage stops. See `docs/conventions.md` §h.
+
+## Source pin — unchanged
+
+`dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518`, committed
+`2026-07-26T01:35:59Z`. Mutation permission: **NONE**. Read only at the pin, read-only
+inspection only, never from a local CuttingBoard working tree. Nothing in this amendment
+authorizes any CuttingBoard change or back-feed.
