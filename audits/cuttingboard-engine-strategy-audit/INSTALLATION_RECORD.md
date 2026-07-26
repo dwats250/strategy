@@ -55,6 +55,37 @@ pin with a dirty working tree. Pinned evidence must be read with
 `git show 59f8279d796335149afdec4aa507b6f927233518:<path>`, never from that working tree.
 Reading the working tree would silently substitute unpinned code for pinned evidence.
 
+Read-only inspection only. Do not fetch, checkout, switch, branch, stash, commit, reset,
+merge, rebase, push, modify remotes, or run any command that changes that checkout's Git
+metadata or working tree. See `docs/conventions.md` §i.
+
+## Cross-repository isolation
+
+The binding rule is `docs/conventions.md` §i, carried in brief in the root `CLAUDE.md` and
+`AGENTS.md`. In short: `dwats250/strategy` is the only repository this audit may mutate;
+`dwats250/cuttingboard` — its remote, its PRs and issues, and every local checkout — is a
+read-only evidence source and a forbidden mutation target.
+
+Every GitHub or connector mutation must supply its repository target explicitly, and that
+target must be exactly `dwats250/strategy`. A missing, inferred, or ambiguous target is a
+STOP condition; a CuttingBoard target is a STOP condition outright.
+
+### D-3 disposition — credential capability
+
+`KNOWN RESIDUAL CAPABILITY — GOVERNED BY EXPLICIT DENY RULE`
+
+The observation stands and is not softened: the credentials available in these sessions are
+technically capable of writing to `dwats250/cuttingboard`. No technical barrier prevents such
+a write.
+
+That capability is now governed by the explicit deny rule in `docs/conventions.md` §i rather
+than by procedural convention alone. **Capability is not authorization.** An action is
+authorized because a charge permits it, never because the token allowed it to succeed.
+
+This disposition changes no key, token, remote, GitHub setting, or Claude permission setting.
+It records the residual capability and binds it. TV-0R reviews whether that binding is
+sufficient; it does not reopen whether the capability exists.
+
 ## Binding repository-path correction to TV-1
 
 `charges/TV-1-PINE-IMPLEMENTATION.md` names "a separate `cuttingboard-gate-lab` companion
@@ -110,6 +141,27 @@ frozen documents and the accepted disposition — not an invitation to reinterpr
 
 A TV-1 session that has not read this record will resolve `Allowed files` to repository-root
 paths and write outside the audit folder. That is a boundary violation, not a path typo.
+
+### Mandatory TV-1 repository preflight
+
+`TV-1-PINE-IMPLEMENTATION.md` is a frozen authority and cannot be amended in place, so this
+requirement is imposed here and is binding on the implementer. It **adds to** TV-1's own
+mandatory preflight; it replaces none of it.
+
+Before editing any file, a TV-1 session reports:
+
+1. `pwd -P`
+2. Resolved Git repository root
+3. Exact `origin` URL
+4. Current branch and HEAD
+5. Working-tree status
+6. Sole authorized mutation target: `dwats250/strategy`
+7. Forbidden mutation target: `dwats250/cuttingboard`
+
+**If the working repository or remote is not exactly `dwats250/strategy`, STOP.** Do not
+switch repositories or branches to make the preflight pass — report the mismatch and wait for
+Dustin. This is in addition to TV-1's own requirement to confirm that
+`dwats250/cuttingboard` is not the writable repository and that the pinned SHA resolves.
 
 ## Declared deviations from the primary charge's preferred tree
 

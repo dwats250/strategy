@@ -16,6 +16,26 @@ This review may audit CuttingBoard. It may not mutate CuttingBoard, and no findi
 authorizes a CuttingBoard change. Backtest performance alone cannot authorize an engine
 change; this review sees no performance results at all.
 
+## Mandatory repository preflight
+
+Report all of the following **before** acting:
+
+1. `pwd -P`
+2. Resolved Git repository root
+3. Exact `origin` URL
+4. Current branch and HEAD
+5. Working-tree status
+6. Sole authorized mutation target: `dwats250/strategy`
+7. Forbidden mutation target: `dwats250/cuttingboard`
+
+**If the working repository or remote is not exactly `dwats250/strategy`, STOP.** Do not
+switch repositories or branches to make the preflight pass — report the mismatch and wait
+for Dustin.
+
+This reviewer edits nothing in any repository, so the boundary matters here for evidence
+integrity rather than write safety: a session rooted in the wrong repository will cite the
+wrong source. See `docs/conventions.md` §i.
+
 ## Preconditions
 
 Do not begin until all hold:
@@ -46,6 +66,11 @@ Read pinned evidence with `git show 59f8279d796335149afdec4aa507b6f927233518:<pa
 Do **not** read the working tree of any local CuttingBoard clone. The known local clone is
 ahead of the pin with uncommitted changes; reading it would silently substitute unpinned
 code for pinned evidence and invalidate every citation in this review.
+
+Read-only inspection only. Do not fetch, checkout, switch, branch, stash, commit, reset,
+merge, rebase, push, modify remotes, or run any command that changes a CuttingBoard
+checkout's Git metadata or working tree. Prefer immutable remote content or
+commit-addressed evidence.
 
 ## Review questions
 
@@ -110,12 +135,26 @@ correction in `../INSTALLATION_RECORD.md`.
 Confirm the correction changes only repository paths and does not widen TV-1's change
 surface, relax its CuttingBoard-mutation ban, or weaken its no-merge rule.
 
-### D-3 — Procedural, not enforced, read-only status
+### D-3 — Residual credential capability
 
-CuttingBoard read-only status is procedural. The operator's GitHub credentials carry write
-access to `dwats250/cuttingboard`; no technical barrier prevents a write. Assess whether the
-TV-0 safeguards are sufficient given that the guarantee is procedural, and whether any
-stronger recorded control is warranted.
+Disposition: `KNOWN RESIDUAL CAPABILITY — GOVERNED BY EXPLICIT DENY RULE`
+
+The factual observation stands: the operator's GitHub credentials carry write access to
+`dwats250/cuttingboard`, and no technical barrier prevents a write.
+
+Since this finding was first raised, that capability has been bound by an explicit deny rule
+rather than procedural convention alone — `docs/conventions.md` §i, carried in brief in the
+root `CLAUDE.md` and `AGENTS.md`, with the mandatory repository preflight and STOP condition
+now imposed on every TV-0R, TV-1, and TV-1R session.
+
+Assess whether that binding is sufficient: whether the rule's prohibited-operation list is
+complete, whether the preflight would actually catch a misrooted session, and whether any
+gap remains between what the credential can do and what the rule forbids.
+
+**Out of scope for this review:** the credential itself. Do not propose rotating, scoping,
+restricting, or inspecting Dustin's keys, tokens, remotes, GitHub settings, or Claude
+permission settings. The question is whether the governing rule is adequate, not how the key
+is provisioned.
 
 ## Output contract
 

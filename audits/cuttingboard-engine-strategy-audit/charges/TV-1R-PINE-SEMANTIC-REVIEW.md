@@ -13,6 +13,22 @@ session that performed TV-0R.
 - File edit permission: **NONE**
 - Merge permission: **NONE**
 
+## Mandatory repository preflight
+
+Report all of the following **before** acting:
+
+1. `pwd -P`
+2. Resolved Git repository root
+3. Exact `origin` URL
+4. Current branch and HEAD
+5. Working-tree status
+6. Sole authorized mutation target: `dwats250/strategy`
+7. Forbidden mutation target: `dwats250/cuttingboard`
+
+**If the working repository or remote is not exactly `dwats250/strategy`, STOP.** Do not
+switch repositories or branches to make the preflight pass — report the mismatch and wait
+for Dustin. See `docs/conventions.md` §i.
+
 ## Preconditions
 
 Do not begin until all hold:
@@ -32,7 +48,10 @@ Do not begin until all hold:
 - `../spec/PARITY_CASES.md` and the recorded proxy exceptions
 - `../INSTALLATION_RECORD.md`
 - Read-only pinned CuttingBoard source, read via
-  `git show 59f8279d796335149afdec4aa507b6f927233518:<path>` — never from a local working tree
+  `git show 59f8279d796335149afdec4aa507b6f927233518:<path>` — never from a local working tree.
+  Read-only inspection only: do not fetch, checkout, switch, branch, stash, commit, reset,
+  merge, rebase, push, modify remotes, or run any command that changes a CuttingBoard
+  checkout's Git metadata or working tree.
 
 ## Scope
 
