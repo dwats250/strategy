@@ -285,3 +285,84 @@ authority drifted, and the later stage stops. See `docs/conventions.md` §h.
 `2026-07-26T01:35:59Z`. Mutation permission: **NONE**. Read only at the pin, read-only
 inspection only, never from a local CuttingBoard working tree. Nothing in this amendment
 authorizes any CuttingBoard change or back-feed.
+
+---
+
+# Post-TV-1 literal-recovery effective authority
+
+Added: 2026-07-26. Status: `ACTIVE`
+
+Everything above this line — the original installation record and the post-TV-0R
+effective-authority section — is **unchanged**. The five frozen TV-0 hashes and the three
+TV-0R amendment hashes recorded above still verify byte-exact and are not superseded,
+re-issued, or replaced by anything in this section.
+
+## Authorization and chain of custody
+
+A fresh-context source-pin evidence recovery was performed against
+`dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518` using immutable
+commit-addressed reads only — no clone, no working tree, no branch tip. It recovered the
+executable literals for the three gate rows that the frozen matrix classified
+`EXACT_FORMULA` / `FORMULA_EXACT_DATA_PROXY` while omitting the literals a translation
+requires: **S-02, S-03/S-04, and D-02**. These are the same defect class as accepted TV-0R
+finding F-2, for gate rows F-2's remedy did not reach.
+
+**Dustin authorized this documentation-only amendment directly on 2026-07-26.** Unlike the
+TV-0R amendments there is no separate adjudication-record document; this section is the
+record of the authorization and its scope. Claude acted as scribe for the transcription
+only, and is not a reviewer or adjudicator of it.
+
+## Amendment record and hash
+
+| Path | Role | SHA-256 |
+|---|---|---|
+| [`spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md`](spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md) | Active narrow implementation clarification — S-02, S-03/S-04, D-02 only | `ec56939c65313b1b936892285a3bcb8fcd561fe8ae9c9deaa3d111744b5c3869` |
+
+Verify this hash before consuming the document. A mismatch between what was authorized and
+what a later stage consumes means the authority drifted, and the later stage stops. See
+`docs/conventions.md` §h.
+
+## Precedence — extends the list above, replaces none of it
+
+The four-item precedence order in *Post-TV-0R effective authority* stands unchanged. This
+amendment inserts one further narrow overlay, at the same standing as the TV-0R
+literal-rule appendix and scoped as narrowly:
+
+> **The TV-1 literal-recovery amendment controls the implementation literals of S-02,
+> S-03/S-04, and D-02 — and nothing else.** It supplements the frozen matrix for those
+> three rows. It silently redefines no other gate, row, classification, variant, threshold,
+> or safeguard. Where it is silent, `spec/GATE_TRANSLATION_MATRIX.md` governs.
+
+It does not modify, reopen, or overlap `spec/TV-0R-LITERAL-RULE-APPENDIX.md`, whose scope
+remains exactly R-01, R-02, R-05 and E-04. Where this amendment and a frozen document
+disagree about anything outside the three adjudicated rows, the frozen document governs.
+
+## TV-1 effective-authority manifest — item 10
+
+The nine-item manifest above is unchanged and still binding in full. One document is added
+to it:
+
+| # | Document | Why |
+|---|---|---|
+| 10 | `spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md` | Literals for S-02, S-03/S-04, D-02 |
+
+Any session consuming the TV-1 effective authority must read all ten documents and confirm
+in its preflight report that it has done so.
+
+## Scope limit
+
+This section registers one document and records its hash. It is not an audit authority in
+its own right, and — like the rest of this record — it cannot alter a gate formula,
+threshold, classification, variant, safeguard, or review rule.
+
+It changes no TV-1 or TV-1R status. It does not correct, endorse, or invalidate the held
+pre-parity implementation checkpoint, authorize a merge or a pull request, lift any review
+requirement, or authorize compilation, a chart run, or TV-2. Checking any implementation
+against these literals remains TV-2's task under the frozen contract.
+
+## Source pin — still unchanged
+
+`dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518`, committed
+`2026-07-26T01:35:59Z`. Mutation permission: **NONE**. CuttingBoard was read only at the
+pin, through immutable commit-addressed reads, and was not modified in any way. Nothing in
+this amendment authorizes any CuttingBoard change or back-feed.
