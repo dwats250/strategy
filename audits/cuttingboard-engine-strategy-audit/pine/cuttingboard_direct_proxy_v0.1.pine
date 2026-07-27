@@ -1,0 +1,1130 @@
+//@version=6
+// =============================================================================
+// CuttingBoard Direct-Path Proxy — TV-1 Pine v6 implementation, v0.1
+// =============================================================================
+//
+// Packet          : TV-1 (charges/TV-1-PINE-IMPLEMENTATION.md)
+// Repository      : dwats250/strategy  (sole authorized mutation target)
+// Pinned evidence : dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518
+//                   Mutation permission: NONE. Read-only evidence at the pin.
+//
+// EFFECTIVE AUTHORITY CONSUMED BY THIS FILE
+//   1  README.md                                       (TV-0 authority)
+//   2  spec/GATE_TRANSLATION_MATRIX.md                 (TV-0 authority — governing matrix)
+//   3  spec/BACKTEST_PROTOCOL.md                       (TV-0 authority — governing protocol)
+//   4  charges/TV-1-PINE-IMPLEMENTATION.md             (TV-0 authority — the charge)
+//   5  spec/TV-0R-LITERAL-RULE-APPENDIX.md             (literals: R-01, R-02, R-05, E-04)
+//   6  spec/TV-0R-BACKTEST-INTERPRETATION-AMENDMENT.md (2022–2026 window naming)
+//   7  adjudications/TV-0R-DUSTIN-ADJUDICATION.md      (accepted dispositions)
+//   8  INSTALLATION_RECORD.md                          (paths, preflight, manifest)
+//   9  docs/conventions.md §g §h §i + root CLAUDE.md / AGENTS.md
+//
+//   Frozen authority governs by default. The literal-rule appendix controls ONLY the
+//   implementation literals of R-01, R-02, R-05 and E-04. The interpretation amendment
+//   controls ONLY the naming of the 2022-01-01 – 2026-07-24 period. Where an amendment is
+//   silent, the frozen document governs.
+//
+// TV-1 PREFLIGHT RECORD (charge § Mandatory preflight)
+//   1 Repository / remote ....... dwats250/strategy — PASS
+//   2 Branch .................... claude/pr2-post-merge-integrity-o5rrto
+//   3 Starting SHA .............. d17ca53dd0f0796d72ec2abbc518c9bf1bf9d55e
+//   4 Clean working tree ........ PASS
+//   5 cuttingboard not writable . PASS (confirmed; mutation permission NONE)
+//   6 Pinned SHA resolves ....... UNAVAILABLE-IN-SESSION — NOT confirmed, NOT passing.
+//                                 No local CuttingBoard checkout exists in the TV-1
+//                                 container and session GitHub access is scoped to
+//                                 dwats250/strategy, so the pin could not be resolved.
+//                                 Recorded as unavailable per docs/conventions.md §h;
+//                                 Dustin authorized proceeding on the hash-verified
+//                                 effective-authority manifest, which carries every
+//                                 literal this file implements. TV-2 must resolve the pin.
+//   7 All manifest docs read .... PASS (all 9)
+//   8 No superseding Pine ....... PASS (no .pine under audits/ before this file)
+//
+// SAFEGUARDS (audit README § Non-negotiable safeguards)
+//   Historical simulation only. No broker connection, no alerts, no alerts-to-orders, no
+//   automated execution, no order routing. Standard SPY daily candles only. No future data
+//   and no repainting. No parameter optimization. Unavailable gates are labeled unavailable
+//   and are never silently treated as validated. This file may audit CuttingBoard; it can
+//   never mutate CuttingBoard.
+//
+// TERMINOLOGY CONSTRAINT (TV-0R interpretation amendment, binding)
+//   The 2022-01-01 – 2026-07-24 period is a `deferred-inspection descriptive window`.
+//   It is NOT a forward out-of-sample holdout and is never labeled one here.
+//
+// INTERPRETATIONS
+//
+// DI-1, DI-2 and DI-3 are no longer declared choices. Their literals are quoted from
+// spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md, which transcribes them from the pinned source for
+// gate rows S-02, S-03/S-04 and D-02.
+//   DI-1  S-02 REVERSAL: the EMA9/21 spread denominator is EMA21; the stored value is signed
+//         and the absolute value is taken at the point of use; both comparisons are strict.
+//   DI-2  S-03/S-04: bull-aligned, close >= EMA9 is TREND, else close >= EMA21 is PULLBACK,
+//         else CHOP; bear mirrored with <=. Both boundary comparisons are inclusive.
+//   DI-3  D-02: TR = max(H-L, |H-C[1]|, |L-C[1]|), the first TR is H-L, and the RMA
+//         (alpha = 1/14, adjust=False equivalent) is seeded on it.
+//
+// DI-4 .. DI-6 remain DECLARED_INTERPRETATION — where the frozen matrix is silent on a
+// literal, the choice is declared here and in spec/PARITY_CASES.md, and left for TV-2 to
+// resolve against the pinned source. None is called exact.
+//   DI-4  C-01 NEUTRAL direction taken from the RAW net_score sign (the reported field).
+//   DI-5  Q-08 regime multiplier outside RISK_ON / RISK_OFF / EXPANSION is not supplied by
+//         TV-0; the gate is marked UNAVAILABLE_LITERAL there and never treated as passing.
+//   DI-6  Execution proxy: protective distances are expressed in ticks from the actual
+//         fill, so they carry one-tick quantization.
+//
+// =============================================================================
+
+strategy(
+     title                        = "CuttingBoard Direct-Path Proxy v0.1 (TV-1)",
+     shorttitle                   = "CB-DIRECT-v0.1",
+     overlay                      = true,
+     pyramiding                   = 0,
+     initial_capital              = 100000,
+     default_qty_type             = strategy.fixed,
+     default_qty_value            = 1,
+     currency                     = currency.USD,
+     commission_type              = strategy.commission.percent,
+     commission_value             = 0.0,
+     slippage                     = 0,
+     calc_on_every_tick           = false,
+     process_orders_on_close      = false,
+     fill_orders_on_standard_ohlc = true,
+     max_labels_count             = 500)
+
+// Declared friction: the values above are the PARITY scenario (zero commission, zero
+// slippage). BASE (0.01% / 1 tick) and STRESS (0.03% / 3 ticks) are set in the strategy
+// Properties tab, which overrides these declaration values, and are recorded in the run
+// manifest. See spec/BACKTEST_PROTOCOL.md § Friction scenarios. Friction is never optimized.
+
+// =============================================================================
+// 0. RUNTIME REFUSALS — frozen instrument and timeframe
+// =============================================================================
+
+tf_is_one_day = timeframe.isdaily and timeframe.multiplier == 1
+chart_is_std  = not (chart.is_heikinashi or chart.is_renko or chart.is_kagi or chart.is_linebreak or chart.is_pnf or chart.is_range)
+
+if barstate.isfirst and not tf_is_one_day
+    runtime.error("TV-1 REFUSAL — BACKTEST_PROTOCOL.md freezes the timeframe at one day. This script evaluates confirmed daily bars only and refuses every other timeframe.")
+
+if barstate.isfirst and not chart_is_std
+    runtime.error("TV-1 REFUSAL — BACKTEST_PROTOCOL.md freezes standard OHLC candles. Heikin-Ashi, Renko, Range, Kagi, Line Break and Point & Figure are refused.")
+
+// =============================================================================
+// 1. INPUTS — variant, windows, cross-symbol contract, display
+// =============================================================================
+
+// --- Incremental variant (BACKTEST_PROTOCOL.md § Incremental variants) -------
+// Thresholds and formulas are identical in every variant. Only gate-family activation
+// changes. Every variant runs from this one source and produces a variant_id.
+G_VAR = "Variant (gate-family activation only — no threshold changes)"
+i_variant = input.string("V6", "Variant", options = ["V0", "V1", "V2", "V3", "V4", "V5", "V6"], group = G_VAR, tooltip = "V0 regime direction only (posture ignored) | V1 +posture/confidence | V2 +structure/CHOP | V3 +available soft gates (stop-distance, extension) | V4 +kill switch | V5 +macro-pressure conflict | V6 full reproducible direct proxy incl. diagnostic thesis/invalidation/entry-quality, excluding unavailable gates")
+
+// --- Study window (BACKTEST_PROTOCOL.md § Predetermined study windows) -------
+// NOTE: the 2022-01-01 – 2026-07-24 period is named `deferred-inspection descriptive
+// window` per the TV-0R interpretation amendment. It is not a forward holdout.
+G_WIN = "Study window"
+i_window = input.string("Full chart history", "Predetermined window", group = G_WIN, options = ["Full chart history", "Warm-up / data-availability observation (2015)", "In-sample descriptive (2016-2021)", "Deferred-inspection descriptive (2022-01-01 - 2026-07-24)", "Combined descriptive (2016-2026)", "Custom"], tooltip = "The deferred-inspection descriptive window may be inspected only after TV-2 parity acceptance, and no threshold may change after it is inspected.")
+i_custom_from = input.time(timestamp("UTC", 2016, 1, 1, 0, 0), "Custom start", group = G_WIN)
+i_custom_to   = input.time(timestamp("UTC", 2026, 7, 24, 0, 0), "Custom end", group = G_WIN)
+
+// --- Cross-symbol data contract (BACKTEST_PROTOCOL.md § Cross-symbol data contract) ---
+// Every external symbol is an explicit input with a visible default. No provider-specific
+// ticker ID is buried inside a gate. Missing requested values remain missing.
+G_IDX = "Cross-symbol IDs — indices (config.INDICES)"
+i_spy = input.symbol("AMEX:SPY", "SPY", group = G_IDX)
+i_qqq = input.symbol("NASDAQ:QQQ", "QQQ", group = G_IDX)
+i_iwm = input.symbol("AMEX:IWM", "IWM", group = G_IDX)
+
+G_MAC = "Cross-symbol IDs — macro drivers (config.MACRO_DRIVERS, non-tradable)"
+i_vix = input.symbol("CBOE:VIX", "VIX  (^VIX)", group = G_MAC)
+i_dxy = input.symbol("TVC:DXY", "DXY  (DX-Y.NYB)", group = G_MAC)
+i_tnx = input.symbol("TVC:TNX", "TNX  (^TNX)", group = G_MAC)
+i_btc = input.symbol("BITSTAMP:BTCUSD", "BTC  (BTC-USD)", group = G_MAC)
+
+G_CMD = "Cross-symbol IDs — commodities (config.COMMODITIES, tradable)"
+i_gld = input.symbol("AMEX:GLD", "GLD", group = G_CMD)
+i_slv = input.symbol("AMEX:SLV", "SLV", group = G_CMD)
+i_gdx = input.symbol("AMEX:GDX", "GDX", group = G_CMD)
+i_paas = input.symbol("NASDAQ:PAAS", "PAAS", group = G_CMD)
+i_uso = input.symbol("AMEX:USO", "USO", group = G_CMD)
+i_xle = input.symbol("AMEX:XLE", "XLE", group = G_CMD)
+
+G_HB = "Cross-symbol IDs — high beta (config.HIGH_BETA, tradable)"
+i_nvda = input.symbol("NASDAQ:NVDA", "NVDA", group = G_HB)
+i_tsla = input.symbol("NASDAQ:TSLA", "TSLA", group = G_HB)
+i_aapl = input.symbol("NASDAQ:AAPL", "AAPL", group = G_HB)
+i_meta = input.symbol("NASDAQ:META", "META", group = G_HB)
+i_amzn = input.symbol("NASDAQ:AMZN", "AMZN", group = G_HB)
+i_coin = input.symbol("NASDAQ:COIN", "COIN", group = G_HB)
+i_mstr = input.symbol("NASDAQ:MSTR", "MSTR", group = G_HB)
+
+// The configured leadership list is reproduced VERBATIM, including SMCI. Recorded as found
+// at the pin: SMCI is absent from ALL_SYMBOLS, so it can never appear in valid_quotes and
+// can never contribute a leader. It is declared here and structurally ineligible below — it
+// is not substituted, dropped, or supplemented, and it is never requested.
+G_LEAD = "Cross-symbol IDs — expansion leadership (config.EXPANSION_LEADERSHIP_SYMBOLS)"
+i_smci = input.symbol("NASDAQ:SMCI", "SMCI (declared verbatim; structurally ineligible)", group = G_LEAD, tooltip = "EXPANSION_LEADERSHIP_SYMBOLS = [NVDA, COIN, MSTR, SMCI, TSLA]. SMCI is not in ALL_SYMBOLS, so at the pinned SHA it cannot be present in valid_quotes and the effective leadership pool is NVDA, COIN, MSTR, TSLA. Recorded as observed; not corrected.")
+
+G_DSP = "Display"
+i_show_state = input.bool(true, "Show state table", group = G_DSP)
+i_show_rej = input.bool(true, "Show cumulative rejection table", group = G_DSP)
+i_show_ema = input.bool(true, "Plot EMA 9 / 21 / 50", group = G_DSP)
+i_show_levels = input.bool(true, "Plot stop / target while open", group = G_DSP)
+
+// =============================================================================
+// 2. FROZEN LITERALS — transcribed, never tuned
+// =============================================================================
+
+// R-01 (literal-rule appendix § R-01)
+EXPANSION_VIX_PCT_THRESHOLD = -0.01
+EXPANSION_MIN_BREADTH = 0.70
+EXPANSION_LEADERSHIP_MIN_PCT = 0.015
+EXPANSION_LEADERSHIP_MIN_COUNT = 2
+// The breadth denominator is the CONFIGURED tradable universe, not the symbols that
+// reported: ALL_SYMBOLS minus NON_TRADABLE_SYMBOLS = 16 symbols. Float, because Pine
+// performs integer division on two ints.
+TRADABLE_UNIVERSE_SIZE = 16.0
+
+// R-02 vote cutoffs (literal-rule appendix § R-02) — all six comparisons are strict
+VOTE_SPY_ON_GT = 0.003
+VOTE_SPY_OFF_LT = -0.003
+VOTE_QQQ_ON_GT = 0.003
+VOTE_QQQ_OFF_LT = -0.003
+VOTE_IWM_ON_GT = 0.004
+VOTE_IWM_OFF_LT = -0.004
+VOTE_VIXLVL_ON_LT = 18.0
+VOTE_VIXLVL_OFF_GT = 25.0
+VOTE_VIXPCT_ON_LT = -0.03
+VOTE_VIXPCT_OFF_GT = 0.05
+VOTE_DXY_ON_LT = -0.002
+VOTE_DXY_OFF_GT = 0.003
+VOTE_TNX_ON_LT = -0.005
+VOTE_TNX_OFF_GT = 0.008
+VOTE_BTC_ON_GT = 0.015
+VOTE_BTC_OFF_LT = -0.020
+STRUCTURAL_VOTE_COUNT = 8
+STRUCTURAL_VOTE_COUNT_F = 8.0
+
+// R-04 classification / R-05 posture
+VIX_CHAOTIC_SPIKE = 0.15
+MIN_REGIME_CONFIDENCE = 0.50
+CONF_HIGH_CLASSIFY = 0.60
+CONF_AGGRESSIVE_LONG = 0.75
+CONF_CONTROLLED = 0.55
+POSTURE_VIX_HIGH_GT = 25.0
+POSTURE_VIX_MIN_GTE = 18.0
+
+// K-01 kill switch — strict comparisons
+KILL_VIX_LEVEL_GT = 35.0
+KILL_VIX_PCT_GT = 0.15
+KILL_SPY_ABS_GT = 0.03
+
+// D-01 .. D-04 / S-01 .. S-02
+EMA_FAST_LEN = 9
+EMA_MID_LEN = 21
+EMA_SLOW_LEN = 50
+ATR_LEN = 14
+MOM_LOOKBACK = 5
+VOL_AVG_LEN = 20
+BREAKOUT_ABS_MOM_GT = 0.02
+BREAKOUT_VOL_RATIO_GT = 1.3
+REVERSAL_SPREAD_LT = 0.002
+REVERSAL_ABS_MOM_GT = 0.003
+
+// Q-02 / Q-06 / Q-07 / Q-08 / Q-10
+GATE2_MIN_CONFIDENCE = 0.50
+GATE6_MIN_RISK_PCT = 0.01
+GATE7_MIN_RR = 2.0
+GATE7_MIN_RR_NEUTRAL = 3.0
+GATE8_DEBIT_MAX_LOSS = 150.0
+GATE8_BUDGET_DIRECTIONAL = 400.0
+GATE10_EXT_ATR_MULT = 1.5
+
+// E-04 macro-pressure component cutoffs (literal-rule appendix § E-04).
+// Units recorded as found: change_pct is PERCENTAGE POINTS (pct_change_decimal * 100),
+// change_bps is pct_change_decimal * price * 100. The cutoffs below are in those units and
+// are not rescaled, normalized, or "corrected". All four comparisons are inclusive.
+MP_VOL_ON_LTE = -0.01
+MP_VOL_OFF_GTE = 0.01
+MP_DOL_ON_LTE = -0.0025
+MP_DOL_OFF_GTE = 0.0025
+MP_RATE_ON_LTE = -3.0
+MP_RATE_OFF_GTE = 3.0
+MP_BTC_ON_GTE = 0.01
+MP_BTC_OFF_LTE = -0.01
+
+// Enumerations
+REG_UNKNOWN = 0
+REG_RISK_ON = 1
+REG_RISK_OFF = 2
+REG_NEUTRAL = 3
+REG_CHAOTIC = 4
+REG_EXPANSION = 5
+POS_STAY_FLAT = 0
+POS_AGGRESSIVE_LONG = 1
+POS_CONTROLLED_LONG = 2
+POS_DEFENSIVE_SHORT = 3
+POS_NEUTRAL_PREMIUM = 4
+POS_EXPANSION_LONG = 5
+STR_CHOP = 0
+STR_TREND_UP = 1
+STR_TREND_DOWN = 2
+STR_PULLBACK_UP = 3
+STR_PULLBACK_DOWN = 4
+STR_BREAKOUT_UP = 5
+STR_BREAKOUT_DOWN = 6
+STR_REVERSAL = 7
+VOTE_ON = 1
+VOTE_OFF = -1
+VOTE_NEU = 0
+VOTE_MISS = 9
+MP_UNKNOWN = 0
+MP_RISK_ON = 1
+MP_RISK_OFF = 2
+MP_NEUTRAL = 3
+MP_MIXED = 4
+DIR_NONE = 0
+DIR_LONG = 1
+DIR_SHORT = -1
+
+// Gate availability metadata (GATE_TRANSLATION_MATRIX.md § Gate inventory)
+GS_AVAILABLE = "AVAILABLE"
+GS_INERT = "INERT"
+GS_UNAVAILABLE = "UNAVAILABLE"
+
+// =============================================================================
+// 3. CROSS-SYMBOL ACQUISITION — daily, lookahead off, missing stays missing
+// =============================================================================
+
+f_pct(simple string sym) =>
+    request.security(sym, "D", close[1] != 0 ? (close - close[1]) / close[1] : na, lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true)
+
+f_pct_and_price(simple string sym) =>
+    [p, pr] = request.security(sym, "D", [close[1] != 0 ? (close - close[1]) / close[1] : na, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true)
+    [p, pr]
+
+q_spy_pct = f_pct(i_spy)
+q_qqq_pct = f_pct(i_qqq)
+q_iwm_pct = f_pct(i_iwm)
+q_gld_pct = f_pct(i_gld)
+q_slv_pct = f_pct(i_slv)
+q_gdx_pct = f_pct(i_gdx)
+q_paas_pct = f_pct(i_paas)
+q_uso_pct = f_pct(i_uso)
+q_xle_pct = f_pct(i_xle)
+q_nvda_pct = f_pct(i_nvda)
+q_tsla_pct = f_pct(i_tsla)
+q_aapl_pct = f_pct(i_aapl)
+q_meta_pct = f_pct(i_meta)
+q_amzn_pct = f_pct(i_amzn)
+q_coin_pct = f_pct(i_coin)
+q_mstr_pct = f_pct(i_mstr)
+[q_vix_pct, q_vix_lvl] = f_pct_and_price(i_vix)
+q_dxy_pct = f_pct(i_dxy)
+[q_tnx_pct, q_tnx_lvl] = f_pct_and_price(i_tnx)
+q_btc_pct = f_pct(i_btc)
+
+// SMCI is declared verbatim above and is NEVER requested: at the pinned SHA it cannot be a
+// member of valid_quotes, so a quote for it would be information the engine does not have.
+r01_smci_eligible = false
+
+// Missing-data mask (protocol § Required exports)
+miss_spy = na(q_spy_pct)
+miss_qqq = na(q_qqq_pct)
+miss_iwm = na(q_iwm_pct)
+miss_vix = na(q_vix_pct) or na(q_vix_lvl)
+miss_dxy = na(q_dxy_pct)
+miss_tnx = na(q_tnx_pct) or na(q_tnx_lvl)
+miss_btc = na(q_btc_pct)
+miss_gld = na(q_gld_pct)
+miss_slv = na(q_slv_pct)
+miss_gdx = na(q_gdx_pct)
+miss_paas = na(q_paas_pct)
+miss_uso = na(q_uso_pct)
+miss_xle = na(q_xle_pct)
+miss_nvda = na(q_nvda_pct)
+miss_tsla = na(q_tsla_pct)
+miss_aapl = na(q_aapl_pct)
+miss_meta = na(q_meta_pct)
+miss_amzn = na(q_amzn_pct)
+miss_coin = na(q_coin_pct)
+miss_mstr = na(q_mstr_pct)
+
+f_i(bool b) =>
+    b ? 1 : 0
+
+missing_symbol_count = f_i(miss_spy) + f_i(miss_qqq) + f_i(miss_iwm) + f_i(miss_vix) + f_i(miss_dxy) + f_i(miss_tnx) + f_i(miss_btc) + f_i(miss_gld) + f_i(miss_slv) + f_i(miss_gdx) + f_i(miss_paas) + f_i(miss_uso) + f_i(miss_xle) + f_i(miss_nvda) + f_i(miss_tsla) + f_i(miss_aapl) + f_i(miss_meta) + f_i(miss_amzn) + f_i(miss_coin) + f_i(miss_mstr)
+
+// =============================================================================
+// 4. R-01 — detect_expansion_regime (evaluated BEFORE the vote model)
+// =============================================================================
+
+// Condition 1 — index alignment: both present, both strictly greater than zero.
+r01_c1 = not miss_spy and not miss_qqq and q_spy_pct > 0 and q_qqq_pct > 0
+
+// Condition 2 — VIX confirmation: present and pct_change_decimal <= -0.01.
+r01_c2 = not miss_vix and q_vix_pct <= EXPANSION_VIX_PCT_THRESHOLD
+
+// Condition 3 — breadth over the CONFIGURED tradable universe (denominator 16).
+// A symbol absent from valid_quotes counts as not advancing.
+f_adv(float p) =>
+    not na(p) and p > 0 ? 1 : 0
+
+r01_advancing = f_adv(q_spy_pct) + f_adv(q_qqq_pct) + f_adv(q_iwm_pct) + f_adv(q_gld_pct) + f_adv(q_slv_pct) + f_adv(q_gdx_pct) + f_adv(q_paas_pct) + f_adv(q_uso_pct) + f_adv(q_xle_pct) + f_adv(q_nvda_pct) + f_adv(q_tsla_pct) + f_adv(q_aapl_pct) + f_adv(q_meta_pct) + f_adv(q_amzn_pct) + f_adv(q_coin_pct) + f_adv(q_mstr_pct)
+r01_breadth_ratio = r01_advancing / TRADABLE_UNIVERSE_SIZE
+r01_c3 = r01_breadth_ratio >= EXPANSION_MIN_BREADTH
+// Recorded as found: with a denominator of 16, >= 0.70 requires >= 11.2, i.e. at least 12
+// advancing symbols. Eleven advancing (0.6875) fails.
+
+// Condition 4 — leadership over EXPANSION_LEADERSHIP_SYMBOLS, present and >= 1.5%.
+f_lead(float p) =>
+    not na(p) and p >= EXPANSION_LEADERSHIP_MIN_PCT ? 1 : 0
+
+// SMCI's term is structurally zero because it can never be in valid_quotes. The list member
+// is preserved; its contribution is not.
+r01_lead_smci = r01_smci_eligible ? 1 : 0
+r01_leading = f_lead(q_nvda_pct) + f_lead(q_coin_pct) + f_lead(q_mstr_pct) + r01_lead_smci + f_lead(q_tsla_pct)
+r01_c4 = r01_leading >= EXPANSION_LEADERSHIP_MIN_COUNT
+
+is_expansion = r01_c1 and r01_c2 and r01_c3 and r01_c4
+
+// =============================================================================
+// 5. R-02 — compute_regime vote model, missing-vote bounding, aggregation
+// =============================================================================
+
+f_vote_pct_up(float p, float on_gt, float off_lt) =>
+    na(p) ? VOTE_MISS : p > on_gt ? VOTE_ON : p < off_lt ? VOTE_OFF : VOTE_NEU
+
+f_vote_pct_low(float p, float on_lt, float off_gt) =>
+    na(p) ? VOTE_MISS : p < on_lt ? VOTE_ON : p > off_gt ? VOTE_OFF : VOTE_NEU
+
+f_vote_lvl_low(float l, float on_lt, float off_gt) =>
+    na(l) ? VOTE_MISS : l < on_lt ? VOTE_ON : l > off_gt ? VOTE_OFF : VOTE_NEU
+
+vote_spy = f_vote_pct_up(q_spy_pct, VOTE_SPY_ON_GT, VOTE_SPY_OFF_LT)
+vote_qqq = f_vote_pct_up(q_qqq_pct, VOTE_QQQ_ON_GT, VOTE_QQQ_OFF_LT)
+vote_iwm = f_vote_pct_up(q_iwm_pct, VOTE_IWM_ON_GT, VOTE_IWM_OFF_LT)
+vote_vixlvl = f_vote_lvl_low(q_vix_lvl, VOTE_VIXLVL_ON_LT, VOTE_VIXLVL_OFF_GT)
+vote_vixpct = f_vote_pct_low(q_vix_pct, VOTE_VIXPCT_ON_LT, VOTE_VIXPCT_OFF_GT)
+vote_dxy = f_vote_pct_low(q_dxy_pct, VOTE_DXY_ON_LT, VOTE_DXY_OFF_GT)
+vote_tnx = f_vote_pct_low(q_tnx_pct, VOTE_TNX_ON_LT, VOTE_TNX_OFF_GT)
+vote_btc = f_vote_pct_up(q_btc_pct, VOTE_BTC_ON_GT, VOTE_BTC_OFF_LT)
+
+f_count(int v, int want) =>
+    v == want ? 1 : 0
+
+risk_on_votes = f_count(vote_spy, VOTE_ON) + f_count(vote_qqq, VOTE_ON) + f_count(vote_iwm, VOTE_ON) + f_count(vote_vixlvl, VOTE_ON) + f_count(vote_vixpct, VOTE_ON) + f_count(vote_dxy, VOTE_ON) + f_count(vote_tnx, VOTE_ON) + f_count(vote_btc, VOTE_ON)
+risk_off_votes = f_count(vote_spy, VOTE_OFF) + f_count(vote_qqq, VOTE_OFF) + f_count(vote_iwm, VOTE_OFF) + f_count(vote_vixlvl, VOTE_OFF) + f_count(vote_vixpct, VOTE_OFF) + f_count(vote_dxy, VOTE_OFF) + f_count(vote_tnx, VOTE_OFF) + f_count(vote_btc, VOTE_OFF)
+neutral_votes = f_count(vote_spy, VOTE_NEU) + f_count(vote_qqq, VOTE_NEU) + f_count(vote_iwm, VOTE_NEU) + f_count(vote_vixlvl, VOTE_NEU) + f_count(vote_vixpct, VOTE_NEU) + f_count(vote_dxy, VOTE_NEU) + f_count(vote_tnx, VOTE_NEU) + f_count(vote_btc, VOTE_NEU)
+
+// R-03 — missing votes are skipped; bounding shrinks the surviving leader toward zero and is
+// clamped at zero so it never crosses sign. Confidence uses the structural eight-vote
+// denominator, not total_votes. A net_score of exactly 0 takes the second branch.
+vote_total_raw = risk_on_votes + risk_off_votes + neutral_votes
+net_score_raw = risk_on_votes - risk_off_votes
+missing_votes = STRUCTURAL_VOTE_COUNT - vote_total_raw
+bounded_net = net_score_raw > 0 ? math.max(0, net_score_raw - missing_votes) : math.min(0, net_score_raw + missing_votes)
+bounded_conf = math.abs(bounded_net) / STRUCTURAL_VOTE_COUNT_F
+
+// R-04 — classification consumes bounded_net and the bounded confidence; vix_pct is the RAW
+// ^VIX pct_change_decimal, unaffected by bounding.
+f_classify(int bnet, float conf, float vixpct) =>
+    int res = REG_NEUTRAL
+    if not na(vixpct) and vixpct > VIX_CHAOTIC_SPIKE
+        res := REG_CHAOTIC
+    else if bnet >= 4 and conf >= CONF_HIGH_CLASSIFY
+        res := REG_RISK_ON
+    else if bnet >= 2
+        res := REG_RISK_ON
+    else if bnet <= -4 and conf >= CONF_HIGH_CLASSIFY
+        res := REG_RISK_OFF
+    else if bnet <= -2
+        res := REG_RISK_OFF
+    res
+
+computed_regime = f_classify(bounded_net, bounded_conf, q_vix_pct)
+
+// EXPANSION short-circuit: when R-01 is true, compute_regime returns immediately. The
+// eight-vote model never runs and the posture function is never called. The returned
+// RegimeState reports the RAW net_score; on the EXPANSION path every vote field is zeroed.
+regime = is_expansion ? REG_EXPANSION : computed_regime
+confidence = is_expansion ? 1.0 : bounded_conf
+net_score = is_expansion ? 0 : net_score_raw
+vote_coverage = is_expansion ? 0 : vote_total_raw
+missing_votes_r = is_expansion ? 0 : missing_votes
+bounded_net_r = is_expansion ? 0 : bounded_net
+
+// =============================================================================
+// 6. R-05 — _determine_posture(regime, bounded confidence, raw VIX level)
+// =============================================================================
+
+f_posture(int reg, float conf, float vixlvl) =>
+    int res = POS_STAY_FLAT
+    if reg == REG_CHAOTIC or conf < MIN_REGIME_CONFIDENCE
+        res := POS_STAY_FLAT
+    else if reg == REG_RISK_ON
+        res := conf >= CONF_AGGRESSIVE_LONG ? POS_AGGRESSIVE_LONG : conf >= CONF_CONTROLLED ? POS_CONTROLLED_LONG : POS_STAY_FLAT
+    else if reg == REG_RISK_OFF
+        res := conf >= CONF_CONTROLLED ? POS_DEFENSIVE_SHORT : POS_STAY_FLAT
+    else if reg == REG_NEUTRAL
+        // A missing ^VIX level falls through both tests to STAY_FLAT.
+        res := not na(vixlvl) and vixlvl > POSTURE_VIX_HIGH_GT ? POS_STAY_FLAT : not na(vixlvl) and vixlvl >= POSTURE_VIX_MIN_GTE ? POS_NEUTRAL_PREMIUM : POS_STAY_FLAT
+    res
+
+// EXPANSION posture is assigned directly and never passes through the posture function.
+posture = is_expansion ? POS_EXPANSION_LONG : f_posture(computed_regime, bounded_conf, q_vix_lvl)
+
+// =============================================================================
+// 7. K-01 — kill switch (strict comparisons, confirmed daily values)
+// =============================================================================
+
+kill_vix_level = not na(q_vix_lvl) and q_vix_lvl > KILL_VIX_LEVEL_GT
+kill_vix_pct = not na(q_vix_pct) and q_vix_pct > KILL_VIX_PCT_GT
+kill_spy_move = not na(q_spy_pct) and math.abs(q_spy_pct) > KILL_SPY_ABS_GT
+kill_switch = kill_vix_level or kill_vix_pct or kill_spy_move
+
+// =============================================================================
+// 8. D-01 .. D-04 — EMA, ATR, momentum, volume ratio (SPY chart series)
+// =============================================================================
+
+// D-01 — Pine EMA for v0, as the matrix directs. The pandas-equivalent recursion
+// (ewm adjust=False, seeded on the first observation) is computed alongside purely as a
+// warm-up divergence diagnostic; it never feeds a gate.
+ema9 = ta.ema(close, EMA_FAST_LEN)
+ema21 = ta.ema(close, EMA_MID_LEN)
+ema50 = ta.ema(close, EMA_SLOW_LEN)
+
+f_ewm_adjust_false(float src, simple int len) =>
+    a = 2.0 / (len + 1)
+    var float e = na
+    e := na(e[1]) ? src : e[1] + a * (src - e[1])
+    e
+
+ema9_pandas = f_ewm_adjust_false(close, EMA_FAST_LEN)
+ema21_pandas = f_ewm_adjust_false(close, EMA_MID_LEN)
+ema9_div_pct = ema9 != 0 ? (ema9 - ema9_pandas) / ema9 : na
+ema21_div_pct = ema21 != 0 ? (ema21 - ema21_pandas) / ema21 : na
+
+// D-02 — pandas ewm(alpha=1/14, adjust=False) on true range, implemented as a custom
+// recursive equivalent seeded on the first true range. Pine's ta.atr seeds with an SMA, so
+// it is NOT called exact; it is computed only to expose the initialization divergence.
+// DI-3: the true-range definition and the first-bar seed are quoted from
+// spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md § D-02.
+true_range = na(close[1]) ? high - low : math.max(high - low, math.max(math.abs(high - close[1]), math.abs(low - close[1])))
+var float atr_cb = na
+atr_cb := na(atr_cb[1]) ? true_range : atr_cb[1] + (true_range - atr_cb[1]) / ATR_LEN
+atr_pine = ta.atr(ATR_LEN)
+atr_div_pct = atr_cb != 0 ? (atr_cb - atr_pine) / atr_cb : na
+
+// D-03 — momentum, literal
+mom5 = not na(close[MOM_LOOKBACK]) and close[MOM_LOOKBACK] != 0 ? (close - close[MOM_LOOKBACK]) / close[MOM_LOOKBACK] : na
+
+// D-04 — volume ratio; the current session is excluded from the denominator
+vol_avg20 = ta.sma(volume[1], VOL_AVG_LEN)
+vol_ratio = not na(vol_avg20) and vol_avg20 != 0 ? volume / vol_avg20 : na
+
+// =============================================================================
+// 9. S-01 .. S-04 — structure, literal priority order
+// =============================================================================
+// Priority: missing metrics -> CHOP; BREAKOUT; REVERSAL; TREND/PULLBACK from EMA alignment;
+// degraded alignment or fallthrough -> CHOP.
+// DI-1: the EMA9/21 spread denominator is EMA21, quoted from
+// spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md § S-02.
+// DI-2: the TREND / PULLBACK / degraded band definition is quoted from
+// spec/TV-1-LITERAL-RECOVERY-AMENDMENT.md § S-03/S-04; both EMA9 and EMA21 boundary
+// comparisons are inclusive.
+
+metrics_missing = na(ema9) or na(ema21) or na(ema50) or na(mom5) or na(vol_ratio)
+
+// S-01 BREAKOUT — momentum/volume/EMA condition only. No recent-high/low break is added.
+s01_breakout_up = not metrics_missing and math.abs(mom5) > BREAKOUT_ABS_MOM_GT and vol_ratio > BREAKOUT_VOL_RATIO_GT and mom5 > 0 and close > ema9
+s01_breakout_down = not metrics_missing and math.abs(mom5) > BREAKOUT_ABS_MOM_GT and vol_ratio > BREAKOUT_VOL_RATIO_GT and mom5 < 0 and close < ema9
+
+// S-02 REVERSAL — current EMA-spread approximation. No actual crossover test is added.
+// Stored signed, as the pinned field is; the absolute value is taken only at the point of use.
+ema_spread_pct = not na(ema9) and not na(ema21) and ema21 != 0 ? (ema9 - ema21) / ema21 : na
+s02_reversal = not metrics_missing and not na(ema_spread_pct) and math.abs(ema_spread_pct) < REVERSAL_SPREAD_LT and math.abs(mom5) > REVERSAL_ABS_MOM_GT
+
+// S-03 TREND / PULLBACK from alignment and price relative to EMA9/21
+aligned_bull = not metrics_missing and ema9 > ema21 and ema21 > ema50
+aligned_bear = not metrics_missing and ema9 < ema21 and ema21 < ema50
+
+int structure = STR_CHOP
+if metrics_missing
+    structure := STR_CHOP
+else if s01_breakout_up
+    structure := STR_BREAKOUT_UP
+else if s01_breakout_down
+    structure := STR_BREAKOUT_DOWN
+else if s02_reversal
+    structure := STR_REVERSAL
+else if aligned_bull
+    structure := close >= ema9 ? STR_TREND_UP : close >= ema21 ? STR_PULLBACK_UP : STR_CHOP
+else if aligned_bear
+    structure := close <= ema9 ? STR_TREND_DOWN : close <= ema21 ? STR_PULLBACK_DOWN : STR_CHOP
+
+structure_is_chop = structure == STR_CHOP
+structure_bias = structure == STR_TREND_UP or structure == STR_PULLBACK_UP or structure == STR_BREAKOUT_UP ? DIR_LONG : structure == STR_TREND_DOWN or structure == STR_PULLBACK_DOWN or structure == STR_BREAKOUT_DOWN ? DIR_SHORT : DIR_NONE
+
+// =============================================================================
+// 10. C-01 / C-02 — candidate direction and reference geometry
+// =============================================================================
+// C-01 is CURRENTLY_INERT: the same regime function creates the direction and checks it.
+// DI-4: the NEUTRAL branch reads the sign of the RAW net_score, the reported field.
+
+int candidate_direction = DIR_NONE
+if regime == REG_RISK_ON or regime == REG_EXPANSION
+    candidate_direction := DIR_LONG
+else if regime == REG_RISK_OFF
+    candidate_direction := DIR_SHORT
+else if regime == REG_NEUTRAL
+    candidate_direction := net_score > 0 ? DIR_LONG : net_score < 0 ? DIR_SHORT : DIR_NONE
+
+// C-02 — qualification uses signal-close reference geometry; the simulated fill and the
+// protective levels are re-anchored to the actual next open by the execution block.
+atr_signal = atr_cb
+ref_entry = close
+ref_stop = candidate_direction == DIR_LONG ? ref_entry - atr_signal : candidate_direction == DIR_SHORT ? ref_entry + atr_signal : na
+ref_target = candidate_direction == DIR_LONG ? ref_entry + 2 * atr_signal : candidate_direction == DIR_SHORT ? ref_entry - 2 * atr_signal : na
+ref_risk = na(ref_stop) ? na : math.abs(ref_entry - ref_stop)
+ref_reward = na(ref_target) ? na : math.abs(ref_target - ref_entry)
+ref_rr = not na(ref_risk) and ref_risk != 0 ? ref_reward / ref_risk : na
+
+// =============================================================================
+// 11. GATES 1..11 and Q-12 — named booleans with explicit availability metadata
+// =============================================================================
+
+// Gate 1 REGIME — AVAILABLE. STAY_FLAT hard-rejects. Posture rejections are counted
+// separately from every other gate, per the matrix R-05 treatment.
+g1_state = GS_AVAILABLE
+g1_pass = posture != POS_STAY_FLAT
+
+// Gate 2 CONFIDENCE — INERT. Preserved and counted; posture normally blocks first.
+g2_state = GS_INERT
+g2_pass = confidence >= GATE2_MIN_CONFIDENCE
+
+// Gate 3 DIRECTION — INERT. Constructed to pass: the candidate direction is generated from
+// the same regime it is checked against.
+g3_state = GS_INERT
+g3_long_ok = candidate_direction == DIR_LONG and (regime == REG_RISK_ON or regime == REG_EXPANSION or (regime == REG_NEUTRAL and net_score > 0))
+g3_short_ok = candidate_direction == DIR_SHORT and (regime == REG_RISK_OFF or (regime == REG_NEUTRAL and net_score < 0))
+g3_pass = g3_long_ok or g3_short_ok
+
+// Gate 4 STRUCTURE — AVAILABLE. CHOP hard-rejects.
+g4_state = GS_AVAILABLE
+g4_pass = not structure_is_chop
+
+// Gate 5 STOP_DEFINED — INERT invariant. Direct one-ATR geometry normally guarantees it.
+g5_state = GS_INERT
+g5_pass = not na(ref_stop) and ref_stop > 0 and ref_stop != ref_entry
+
+// Gate 6 STOP_DISTANCE — AVAILABLE. Risk must be at least 1% of entry AND at least one ATR.
+// The ATR leg is equality by construction, leaving ATR/price >= 1% as the meaningful test.
+g6_state = GS_AVAILABLE
+g6_leg_pct = not na(ref_risk) and ref_entry != 0 and ref_risk / ref_entry >= GATE6_MIN_RISK_PCT
+g6_leg_atr = not na(ref_risk) and not na(atr_signal) and ref_risk >= atr_signal
+g6_pass = g6_leg_pct and g6_leg_atr
+
+// Gate 7 RR_RATIO — INERT. Direct geometry manufactures exactly 2R before this gate runs.
+g7_state = GS_INERT
+g7_required = regime == REG_NEUTRAL ? GATE7_MIN_RR_NEUTRAL : GATE7_MIN_RR
+g7_pass = not na(ref_rr) and ref_rr >= g7_required
+
+// Gate 8 MAX_RISK — INERT, audit display only. The regime multiplier outside
+// RISK_ON / RISK_OFF / EXPANSION is not supplied by TV-0 (DI-5): there the gate is marked
+// UNAVAILABLE_LITERAL and is never treated as passing.
+g8_budget_defined = regime == REG_RISK_ON or regime == REG_RISK_OFF or regime == REG_EXPANSION
+g8_budget = g8_budget_defined ? GATE8_BUDGET_DIRECTIONAL : na
+g8_state = g8_budget_defined ? GS_INERT : "UNAVAILABLE_LITERAL"
+g8_pass = g8_budget_defined and GATE8_DEBIT_MAX_LOSS <= GATE8_BUDGET_DIRECTIONAL
+
+// Gate 9 EARNINGS — INERT, SKIPPED_FAIL_OPEN. No earnings data is sourced in v0.
+g9_state = GS_INERT
+g9_pass = true
+
+// Gate 10 EXTENSION — AVAILABLE. Entry must be within 1.5 x ATR14 of EMA21.
+g10_state = GS_AVAILABLE
+g10_pass = not na(ema21) and not na(atr_signal) and math.abs(ref_entry - ema21) <= GATE10_EXT_ATR_MULT * atr_signal
+
+// Gate 11 TIME — UNAVAILABLE. A daily proxy cannot honestly reproduce live run time, so the
+// gate is removed from the soft-failure arithmetic rather than assumed to pass. It carries
+// no boolean at all: it is never PASS and never FAIL.
+g11_state = GS_UNAVAILABLE
+float g11_export = na
+
+// Q-12 soft aggregation over the DECLARED AVAILABLE soft gates only (Gate 6, Gate 10).
+// Zero misses qualifies, one miss watchlists, two or more reject. Gate 11 is excluded and
+// reported separately; excluding it is not treating it as satisfied.
+soft_fail_count = (g6_pass ? 0 : 1) + (g10_pass ? 0 : 1)
+soft_state = soft_fail_count == 0 ? "QUALIFIED" : soft_fail_count == 1 ? "WATCHLIST" : "REJECT"
+soft_qualified = soft_fail_count == 0
+excluded_soft_gates = 1
+
+// =============================================================================
+// 12. E-04 — macro pressure (unit-faithful) and its conflict-only effect
+// =============================================================================
+
+mp_vol_value = na(q_vix_pct) ? na : q_vix_pct * 100.0
+mp_dol_value = na(q_dxy_pct) ? na : q_dxy_pct * 100.0
+mp_rate_value = na(q_tnx_pct) or na(q_tnx_lvl) ? na : q_tnx_pct * q_tnx_lvl * 100.0
+mp_btc_value = na(q_btc_pct) ? na : q_btc_pct * 100.0
+
+f_mp_std(float v, float on_lte, float off_gte) =>
+    na(v) ? MP_UNKNOWN : v <= on_lte ? MP_RISK_ON : v >= off_gte ? MP_RISK_OFF : MP_NEUTRAL
+
+f_mp_inv(float v, float on_gte, float off_lte) =>
+    na(v) ? MP_UNKNOWN : v >= on_gte ? MP_RISK_ON : v <= off_lte ? MP_RISK_OFF : MP_NEUTRAL
+
+mp_volatility = f_mp_std(mp_vol_value, MP_VOL_ON_LTE, MP_VOL_OFF_GTE)
+mp_dollar = f_mp_std(mp_dol_value, MP_DOL_ON_LTE, MP_DOL_OFF_GTE)
+mp_rates = f_mp_std(mp_rate_value, MP_RATE_ON_LTE, MP_RATE_OFF_GTE)
+mp_bitcoin = f_mp_inv(mp_btc_value, MP_BTC_ON_GTE, MP_BTC_OFF_LTE)
+
+mp_unknown_count = f_count(mp_volatility, MP_UNKNOWN) + f_count(mp_dollar, MP_UNKNOWN) + f_count(mp_rates, MP_UNKNOWN) + f_count(mp_bitcoin, MP_UNKNOWN)
+mp_known = 4 - mp_unknown_count
+mp_on_count = f_count(mp_volatility, MP_RISK_ON) + f_count(mp_dollar, MP_RISK_ON) + f_count(mp_rates, MP_RISK_ON) + f_count(mp_bitcoin, MP_RISK_ON)
+mp_off_count = f_count(mp_volatility, MP_RISK_OFF) + f_count(mp_dollar, MP_RISK_OFF) + f_count(mp_rates, MP_RISK_OFF) + f_count(mp_bitcoin, MP_RISK_OFF)
+mp_neu_count = f_count(mp_volatility, MP_NEUTRAL) + f_count(mp_dollar, MP_NEUTRAL) + f_count(mp_rates, MP_NEUTRAL) + f_count(mp_bitcoin, MP_NEUTRAL)
+
+// Order matters: a single RISK_ON with no opposing and no second agreeing component falls
+// through every branch to the terminal MIXED.
+int macro_pressure = MP_MIXED
+if mp_known == 0
+    macro_pressure := MP_UNKNOWN
+else if mp_on_count >= 2 and mp_off_count == 0
+    macro_pressure := MP_RISK_ON
+else if mp_off_count >= 2 and mp_on_count == 0
+    macro_pressure := MP_RISK_OFF
+else if mp_on_count >= 1 and mp_off_count >= 1
+    macro_pressure := MP_MIXED
+else if mp_neu_count == mp_known
+    macro_pressure := MP_NEUTRAL
+
+// Conflict-only behavior. Pressure blocks ONLY on direct directional conflict. The size
+// multipliers it would otherwise apply belong to E-01 (EXCLUDED_OPERATIONAL): the simulated
+// quantity stays one directional unit, so they are recorded, not applied.
+macro_conflict = (macro_pressure == MP_RISK_OFF and candidate_direction == DIR_LONG) or (macro_pressure == MP_RISK_ON and candidate_direction == DIR_SHORT)
+macro_pass = not macro_conflict
+macro_size_note = macro_pressure == MP_MIXED ? "size*0.75 (recorded, not applied)" : macro_pressure == MP_RISK_OFF or macro_pressure == MP_RISK_ON ? "size*0.5 or BLOCK (recorded, not applied)" : "size unchanged"
+
+// =============================================================================
+// 13. X-03 / T-01 / I-01 / E-05 — diagnostics only
+// =============================================================================
+
+// X-03 correlation policy changes a sizing modifier only; it never creates an entry in v0.
+x03_available = not miss_gld and not miss_dxy
+x03_gld_up = not na(q_gld_pct) and q_gld_pct > 0
+x03_dxy_up = not na(q_dxy_pct) and q_dxy_pct > 0
+
+// T-01 thesis gate — built from existing outputs; expected to add no rejection power to a
+// fully formed direct candidate that already survived macro pressure.
+t01_catalyst = regime != REG_UNKNOWN and not structure_is_chop
+t01_confirmation = structure_bias == DIR_NONE or structure_bias == candidate_direction
+t01_invalidation = g5_pass
+t01_conflicted = structure_bias != DIR_NONE and candidate_direction != DIR_NONE and structure_bias != candidate_direction
+t01_complete = t01_catalyst and t01_confirmation and t01_invalidation and not t01_conflicted
+t01_status = t01_conflicted ? "CONFLICTED" : t01_complete ? "COMPLETE" : "INCOMPLETE"
+
+// I-01 invalidation gate — re-expresses adverse thesis status; no price-action invalidation
+// beyond the fixed stop is invented.
+i01_pass = g5_pass and not t01_conflicted
+i01_status = i01_pass ? "VALID" : "ADVERSE"
+
+// E-05 entry-quality gate — blocks missing, stale, conflicted or unconfirmed entries.
+e05_pass = not na(close) and not structure_is_chop and candidate_direction != DIR_NONE and not t01_conflicted and barstate.isconfirmed
+e05_status = e05_pass ? "CLEAN" : "DEGRADED"
+
+// =============================================================================
+// 14. STUDY WINDOW
+// =============================================================================
+
+float win_from = na
+float win_to = na
+if i_window == "Warm-up / data-availability observation (2015)"
+    win_from := timestamp("UTC", 2015, 1, 1, 0, 0)
+    win_to := timestamp("UTC", 2015, 12, 31, 23, 59)
+else if i_window == "In-sample descriptive (2016-2021)"
+    win_from := timestamp("UTC", 2016, 1, 1, 0, 0)
+    win_to := timestamp("UTC", 2021, 12, 31, 23, 59)
+else if i_window == "Deferred-inspection descriptive (2022-01-01 - 2026-07-24)"
+    win_from := timestamp("UTC", 2022, 1, 1, 0, 0)
+    win_to := timestamp("UTC", 2026, 7, 24, 23, 59)
+else if i_window == "Combined descriptive (2016-2026)"
+    win_from := timestamp("UTC", 2016, 1, 1, 0, 0)
+    win_to := timestamp("UTC", 2026, 7, 24, 23, 59)
+else if i_window == "Custom"
+    win_from := i_custom_from
+    win_to := i_custom_to
+
+in_window = (na(win_from) or time >= win_from) and (na(win_to) or time <= win_to)
+
+// =============================================================================
+// 15. VARIANT ACTIVATION AND ENTRY CONDITIONS
+// =============================================================================
+
+variant_id = i_variant
+v_index = i_variant == "V0" ? 0 : i_variant == "V1" ? 1 : i_variant == "V2" ? 2 : i_variant == "V3" ? 3 : i_variant == "V4" ? 4 : i_variant == "V5" ? 5 : 6
+
+use_posture = v_index >= 1
+use_structure = v_index >= 2
+use_softgates = v_index >= 3
+use_killswitch = v_index >= 4
+use_macro = v_index >= 5
+use_diagnostic = v_index >= 6
+
+// V0 — the regime class supplies the direction and posture is ignored. The protocol supplies
+// LONG for RISK_ON/EXPANSION and SHORT for RISK_OFF only, so a computed NEUTRAL supplies no
+// V0 direction even though C-01 would manufacture one from the net sign.
+v0_direction = regime == REG_RISK_ON or regime == REG_EXPANSION ? DIR_LONG : regime == REG_RISK_OFF ? DIR_SHORT : DIR_NONE
+v0_pass = v0_direction != DIR_NONE
+
+// V1 — computed posture/confidence permission (Gate 1).
+posture_direction = posture == POS_AGGRESSIVE_LONG or posture == POS_CONTROLLED_LONG or posture == POS_EXPANSION_LONG ? DIR_LONG : posture == POS_DEFENSIVE_SHORT ? DIR_SHORT : DIR_NONE
+v1_pass = g1_pass and posture_direction != DIR_NONE and posture_direction == v0_direction
+
+entry_direction = use_posture ? posture_direction : v0_direction
+
+v2_pass = g4_pass
+v3_pass = soft_qualified
+v4_pass = not kill_switch
+v5_pass = macro_pass
+v6_pass = t01_complete and i01_pass and e05_pass
+
+// First rejection reason, evaluated in gate order and restricted to the gates the selected
+// variant actually activates. Inert and unavailable gates never create a rejection.
+string first_rejection = "NONE"
+if not in_window
+    first_rejection := "OUT_OF_WINDOW"
+else if use_killswitch and not v4_pass
+    first_rejection := "K-01_KILL_SWITCH"
+else if not v0_pass
+    first_rejection := "V0_NO_REGIME_DIRECTION"
+else if use_posture and not g1_pass
+    first_rejection := "GATE1_REGIME_POSTURE"
+else if use_posture and not v1_pass
+    first_rejection := "V1_POSTURE_DIRECTION"
+else if use_structure and not v2_pass
+    first_rejection := "GATE4_STRUCTURE_CHOP"
+else if use_softgates and not g6_pass
+    first_rejection := "GATE6_STOP_DISTANCE"
+else if use_softgates and not g10_pass
+    first_rejection := "GATE10_EXTENSION"
+else if use_softgates and not v3_pass
+    first_rejection := "Q12_SOFT_AGGREGATION"
+else if use_macro and not v5_pass
+    first_rejection := "E-04_MACRO_PRESSURE_CONFLICT"
+else if use_diagnostic and not t01_complete
+    first_rejection := "T-01_THESIS"
+else if use_diagnostic and not i01_pass
+    first_rejection := "I-01_INVALIDATION"
+else if use_diagnostic and not e05_pass
+    first_rejection := "E-05_ENTRY_QUALITY"
+
+signal_pass = in_window and v0_pass and (not use_posture or v1_pass) and (not use_structure or v2_pass) and (not use_softgates or v3_pass) and (not use_killswitch or v4_pass) and (not use_macro or v5_pass) and (not use_diagnostic or v6_pass)
+
+// =============================================================================
+// 16. EXECUTION — confirmed-bar signal, next-open fill, protective geometry
+// =============================================================================
+// No same-bar reversal: a new signal may enter only after the prior position is closed AND a
+// later bar confirms. Requiring flat on this bar and on the previous bar enforces that.
+
+flat_now = strategy.position_size == 0
+flat_prev = strategy.position_size[1] == 0
+can_enter_bar = flat_now and flat_prev and barstate.isconfirmed and tf_is_one_day and chart_is_std
+
+geometry_ok = not na(atr_signal) and atr_signal > 0 and syminfo.mintick > 0
+enter_long = can_enter_bar and signal_pass and entry_direction == DIR_LONG and geometry_ok
+enter_short = can_enter_bar and signal_pass and entry_direction == DIR_SHORT and geometry_ok
+
+// Protective distances are expressed in ticks from the ACTUAL fill, so the simulated stop
+// and target are anchored to the t+1 fill exactly as the protocol requires. DI-6: the
+// one-tick quantization this introduces is declared, not hidden. The exit is submitted on
+// the signal bar so it is live on the fill bar itself.
+stop_ticks = atr_signal / syminfo.mintick
+target_ticks = 2 * atr_signal / syminfo.mintick
+
+var float entry_atr = na
+var bool amb_flagged = false
+
+if enter_long
+    strategy.entry("CB_LONG", strategy.long, comment = variant_id + " LONG")
+    strategy.exit("CB_LONG_X", from_entry = "CB_LONG", loss = stop_ticks, profit = target_ticks, comment_loss = "STOP", comment_profit = "TARGET")
+    entry_atr := atr_signal
+    amb_flagged := false
+
+if enter_short
+    strategy.entry("CB_SHORT", strategy.short, comment = variant_id + " SHORT")
+    strategy.exit("CB_SHORT_X", from_entry = "CB_SHORT", loss = stop_ticks, profit = target_ticks, comment_loss = "STOP", comment_profit = "TARGET")
+    entry_atr := atr_signal
+    amb_flagged := false
+
+in_position = strategy.position_size != 0
+fill_price = in_position ? strategy.position_avg_price : na
+live_stop = in_position and not na(entry_atr) ? (strategy.position_size > 0 ? fill_price - entry_atr : fill_price + entry_atr) : na
+live_target = in_position and not na(entry_atr) ? (strategy.position_size > 0 ? fill_price + 2 * entry_atr : fill_price - 2 * entry_atr) : na
+
+// AMBIGUOUS_INTRABAR: both protective levels sit inside the same daily candle. The headline
+// result uses the conservative stop-first treatment; the flag is exported so offline
+// intraday data can resolve the bar later.
+amb_this_bar = in_position and not na(live_stop) and not na(live_target) and (strategy.position_size > 0 ? high >= live_target and low <= live_stop : low <= live_target and high >= live_stop)
+if amb_this_bar
+    amb_flagged := true
+
+var int amb_trade_count = 0
+var int closed_trade_count = 0
+trade_closed = flat_now and not flat_prev
+if trade_closed
+    closed_trade_count += 1
+    if amb_flagged
+        amb_trade_count += 1
+    amb_flagged := false
+
+// =============================================================================
+// 17. CUMULATIVE REJECTION COUNTERS
+// =============================================================================
+// A gate's counter increments whenever that gate is false on an evaluated bar, whether or
+// not the selected variant activates it — that is what makes incremental attribution
+// possible. `first_rejection` separately records what actually blocked.
+
+evaluating = in_window and can_enter_bar
+
+var int rej_v0 = 0
+var int rej_g1 = 0
+var int rej_posture = 0
+var int rej_g2 = 0
+var int rej_g3 = 0
+var int rej_g4 = 0
+var int rej_g5 = 0
+var int rej_g6 = 0
+var int rej_g7 = 0
+var int rej_g8 = 0
+var int rej_g10 = 0
+var int rej_q12 = 0
+var int rej_kill = 0
+var int rej_macro = 0
+var int rej_t01 = 0
+var int rej_i01 = 0
+var int rej_e05 = 0
+var int cnt_eval = 0
+var int cnt_signal = 0
+var int cnt_g11_unavailable = 0
+var int cnt_missing_bars = 0
+
+if evaluating
+    cnt_eval += 1
+    cnt_g11_unavailable += 1
+    if missing_symbol_count > 0
+        cnt_missing_bars += 1
+    if not v0_pass
+        rej_v0 += 1
+    if not g1_pass
+        rej_g1 += 1
+        rej_posture += 1
+    if not g2_pass
+        rej_g2 += 1
+    if not g3_pass
+        rej_g3 += 1
+    if not g4_pass
+        rej_g4 += 1
+    if not g5_pass
+        rej_g5 += 1
+    if not g6_pass
+        rej_g6 += 1
+    if not g7_pass
+        rej_g7 += 1
+    if not g8_pass
+        rej_g8 += 1
+    if not g10_pass
+        rej_g10 += 1
+    if not soft_qualified
+        rej_q12 += 1
+    if kill_switch
+        rej_kill += 1
+    if macro_conflict
+        rej_macro += 1
+    if not t01_complete
+        rej_t01 += 1
+    if not i01_pass
+        rej_i01 += 1
+    if not e05_pass
+        rej_e05 += 1
+    if signal_pass
+        cnt_signal += 1
+
+// =============================================================================
+// 18. VISIBILITY — plots, data window, tables
+// =============================================================================
+
+plot(i_show_ema ? ema9 : na, "EMA 9", color = color.new(color.aqua, 0), linewidth = 1)
+plot(i_show_ema ? ema21 : na, "EMA 21", color = color.new(color.orange, 0), linewidth = 1)
+plot(i_show_ema ? ema50 : na, "EMA 50", color = color.new(color.purple, 0), linewidth = 1)
+plot(i_show_levels and in_position ? live_stop : na, "Simulated stop", color = color.new(color.red, 0), style = plot.style_linebr, linewidth = 1)
+plot(i_show_levels and in_position ? live_target : na, "Simulated target", color = color.new(color.green, 0), style = plot.style_linebr, linewidth = 1)
+
+// Data-window state exposure — every value the run manifest and trade ledger need
+plot(v_index, "variant_index", display = display.data_window)
+plot(regime, "regime_code", display = display.data_window)
+plot(posture, "posture_code", display = display.data_window)
+plot(structure, "structure_code", display = display.data_window)
+plot(candidate_direction, "candidate_direction", display = display.data_window)
+plot(entry_direction, "entry_direction", display = display.data_window)
+plot(confidence, "confidence_bounded", display = display.data_window)
+plot(net_score, "net_score_raw", display = display.data_window)
+plot(bounded_net_r, "bounded_net", display = display.data_window)
+plot(vote_coverage, "vote_coverage", display = display.data_window)
+plot(missing_votes_r, "missing_votes", display = display.data_window)
+plot(vote_spy, "vote_spy", display = display.data_window)
+plot(vote_qqq, "vote_qqq", display = display.data_window)
+plot(vote_iwm, "vote_iwm", display = display.data_window)
+plot(vote_vixlvl, "vote_vix_level", display = display.data_window)
+plot(vote_vixpct, "vote_vix_pct", display = display.data_window)
+plot(vote_dxy, "vote_dxy", display = display.data_window)
+plot(vote_tnx, "vote_tnx", display = display.data_window)
+plot(vote_btc, "vote_btc", display = display.data_window)
+plot(r01_advancing, "r01_advancing_of_16", display = display.data_window)
+plot(r01_leading, "r01_leading", display = display.data_window)
+plot(is_expansion ? 1 : 0, "r01_expansion", display = display.data_window)
+plot(atr_cb, "atr14_cb_equivalent", display = display.data_window)
+plot(atr_div_pct, "atr_div_vs_pine_pct", display = display.data_window)
+plot(ema9_div_pct, "ema9_div_vs_pandas", display = display.data_window)
+plot(ema21_div_pct, "ema21_div_vs_pandas", display = display.data_window)
+plot(mom5, "momentum_5d", display = display.data_window)
+plot(vol_ratio, "volume_ratio", display = display.data_window)
+plot(ema_spread_pct, "ema9_21_spread_pct", display = display.data_window)
+plot(ref_entry, "ref_entry", display = display.data_window)
+plot(ref_stop, "ref_stop", display = display.data_window)
+plot(ref_target, "ref_target", display = display.data_window)
+plot(ref_rr, "ref_rr", display = display.data_window)
+plot(g1_pass ? 1 : 0, "gate1_regime", display = display.data_window)
+plot(g2_pass ? 1 : 0, "gate2_confidence_INERT", display = display.data_window)
+plot(g3_pass ? 1 : 0, "gate3_direction_INERT", display = display.data_window)
+plot(g4_pass ? 1 : 0, "gate4_structure", display = display.data_window)
+plot(g5_pass ? 1 : 0, "gate5_stop_defined_INERT", display = display.data_window)
+plot(g6_pass ? 1 : 0, "gate6_stop_distance", display = display.data_window)
+plot(g7_pass ? 1 : 0, "gate7_rr_INERT", display = display.data_window)
+plot(g8_pass ? 1 : 0, "gate8_max_risk_INERT", display = display.data_window)
+plot(g10_pass ? 1 : 0, "gate10_extension", display = display.data_window)
+plot(g11_export, "gate11_time_UNAVAILABLE", display = display.data_window)
+plot(soft_fail_count, "soft_fail_count_available_only", display = display.data_window)
+plot(macro_pressure, "macro_pressure_code", display = display.data_window)
+plot(kill_switch ? 1 : 0, "kill_switch", display = display.data_window)
+plot(missing_symbol_count, "missing_symbol_count", display = display.data_window)
+plot(signal_pass ? 1 : 0, "signal_pass", display = display.data_window)
+plot(amb_this_bar ? 1 : 0, "ambiguous_intrabar", display = display.data_window)
+
+f_regime_str(int r) =>
+    r == REG_RISK_ON ? "RISK_ON" : r == REG_RISK_OFF ? "RISK_OFF" : r == REG_NEUTRAL ? "NEUTRAL" : r == REG_CHAOTIC ? "CHAOTIC" : r == REG_EXPANSION ? "EXPANSION" : "UNKNOWN"
+
+f_posture_str(int p) =>
+    p == POS_AGGRESSIVE_LONG ? "AGGRESSIVE_LONG" : p == POS_CONTROLLED_LONG ? "CONTROLLED_LONG" : p == POS_DEFENSIVE_SHORT ? "DEFENSIVE_SHORT" : p == POS_NEUTRAL_PREMIUM ? "NEUTRAL_PREMIUM" : p == POS_EXPANSION_LONG ? "EXPANSION_LONG" : "STAY_FLAT"
+
+f_struct_str(int s) =>
+    s == STR_TREND_UP ? "TREND_UP" : s == STR_TREND_DOWN ? "TREND_DOWN" : s == STR_PULLBACK_UP ? "PULLBACK_UP" : s == STR_PULLBACK_DOWN ? "PULLBACK_DOWN" : s == STR_BREAKOUT_UP ? "BREAKOUT_UP" : s == STR_BREAKOUT_DOWN ? "BREAKOUT_DOWN" : s == STR_REVERSAL ? "REVERSAL" : "CHOP"
+
+f_dir_str(int d) =>
+    d == DIR_LONG ? "LONG" : d == DIR_SHORT ? "SHORT" : "NONE"
+
+f_mp_str(int m) =>
+    m == MP_RISK_ON ? "RISK_ON" : m == MP_RISK_OFF ? "RISK_OFF" : m == MP_MIXED ? "MIXED" : m == MP_NEUTRAL ? "NEUTRAL" : "UNKNOWN"
+
+f_gate_str(bool p, string state) =>
+    (p ? "PASS" : "FAIL") + "  (" + state + ")"
+
+var table t_state = table.new(position.top_right, 2, 25, bgcolor = color.new(color.black, 15), border_width = 1, frame_width = 1)
+
+if i_show_state and barstate.islast
+    table.cell(t_state, 0, 0, "CB DIRECT PROXY v0.1", text_color = color.white, bgcolor = color.new(color.blue, 40))
+    table.cell(t_state, 1, 0, variant_id + "  |  " + syminfo.ticker + "  " + timeframe.period, text_color = color.white, bgcolor = color.new(color.blue, 40))
+    table.cell(t_state, 0, 1, "Regime", text_color = color.silver)
+    table.cell(t_state, 1, 1, f_regime_str(regime), text_color = color.white)
+    table.cell(t_state, 0, 2, "Posture", text_color = color.silver)
+    table.cell(t_state, 1, 2, f_posture_str(posture), text_color = color.white)
+    table.cell(t_state, 0, 3, "Structure", text_color = color.silver)
+    table.cell(t_state, 1, 3, f_struct_str(structure), text_color = color.white)
+    table.cell(t_state, 0, 4, "Confidence / bounded net", text_color = color.silver)
+    table.cell(t_state, 1, 4, str.tostring(confidence, "#.###") + "  /  " + str.tostring(bounded_net_r), text_color = color.white)
+    table.cell(t_state, 0, 5, "Net raw / coverage / missing votes", text_color = color.silver)
+    table.cell(t_state, 1, 5, str.tostring(net_score) + "  /  " + str.tostring(vote_coverage) + "  /  " + str.tostring(missing_votes_r), text_color = color.white)
+    table.cell(t_state, 0, 6, "R-01 breadth / leaders", text_color = color.silver)
+    table.cell(t_state, 1, 6, str.tostring(r01_advancing) + "/16  |  " + str.tostring(r01_leading) + "  (" + i_smci + " ineligible)", text_color = color.white)
+    table.cell(t_state, 0, 7, "Candidate direction (C-01)", text_color = color.silver)
+    table.cell(t_state, 1, 7, f_dir_str(candidate_direction), text_color = color.white)
+    table.cell(t_state, 0, 8, "Gate 1 REGIME", text_color = color.silver)
+    table.cell(t_state, 1, 8, f_gate_str(g1_pass, g1_state), text_color = color.white)
+    table.cell(t_state, 0, 9, "Gate 2 CONFIDENCE", text_color = color.silver)
+    table.cell(t_state, 1, 9, f_gate_str(g2_pass, g2_state), text_color = color.white)
+    table.cell(t_state, 0, 10, "Gate 3 DIRECTION", text_color = color.silver)
+    table.cell(t_state, 1, 10, f_gate_str(g3_pass, g3_state), text_color = color.white)
+    table.cell(t_state, 0, 11, "Gate 4 STRUCTURE", text_color = color.silver)
+    table.cell(t_state, 1, 11, f_gate_str(g4_pass, g4_state), text_color = color.white)
+    table.cell(t_state, 0, 12, "Gate 5 STOP_DEFINED", text_color = color.silver)
+    table.cell(t_state, 1, 12, f_gate_str(g5_pass, g5_state), text_color = color.white)
+    table.cell(t_state, 0, 13, "Gate 6 STOP_DISTANCE", text_color = color.silver)
+    table.cell(t_state, 1, 13, f_gate_str(g6_pass, g6_state), text_color = color.white)
+    table.cell(t_state, 0, 14, "Gate 7 RR_RATIO", text_color = color.silver)
+    table.cell(t_state, 1, 14, f_gate_str(g7_pass, g7_state), text_color = color.white)
+    table.cell(t_state, 0, 15, "Gate 8 MAX_RISK", text_color = color.silver)
+    table.cell(t_state, 1, 15, f_gate_str(g8_pass, g8_state), text_color = color.white)
+    table.cell(t_state, 0, 16, "Gate 9 EARNINGS", text_color = color.silver)
+    table.cell(t_state, 1, 16, "SKIPPED_FAIL_OPEN  (" + g9_state + ")", text_color = color.white)
+    table.cell(t_state, 0, 17, "Gate 10 EXTENSION", text_color = color.silver)
+    table.cell(t_state, 1, 17, f_gate_str(g10_pass, g10_state), text_color = color.white)
+    table.cell(t_state, 0, 18, "Gate 11 TIME", text_color = color.silver)
+    table.cell(t_state, 1, 18, "UNAVAILABLE — excluded from soft arithmetic", text_color = color.yellow)
+    table.cell(t_state, 0, 19, "Soft failures (available gates only)", text_color = color.silver)
+    table.cell(t_state, 1, 19, str.tostring(soft_fail_count) + " -> " + soft_state + "   (excluded: " + str.tostring(excluded_soft_gates) + ")", text_color = color.white)
+    table.cell(t_state, 0, 20, "Kill switch / macro pressure", text_color = color.silver)
+    table.cell(t_state, 1, 20, (kill_switch ? "HALT" : "clear") + "  |  " + f_mp_str(macro_pressure) + (macro_conflict ? "  CONFLICT" : "") + "  |  " + macro_size_note, text_color = color.white)
+    table.cell(t_state, 0, 21, "Missing symbols / bars with gaps", text_color = color.silver)
+    table.cell(t_state, 1, 21, str.tostring(missing_symbol_count) + " of 20  |  " + str.tostring(cnt_missing_bars), text_color = missing_symbol_count > 0 ? color.yellow : color.white)
+    table.cell(t_state, 0, 22, "First rejection", text_color = color.silver)
+    table.cell(t_state, 1, 22, first_rejection, text_color = first_rejection == "NONE" ? color.lime : color.orange)
+    table.cell(t_state, 0, 23, "T-01 / I-01 / E-05 (diagnostic)", text_color = color.silver)
+    table.cell(t_state, 1, 23, t01_status + " / " + i01_status + " / " + e05_status, text_color = color.white)
+    table.cell(t_state, 0, 24, "X-03 correlation (diagnostic only)", text_color = color.silver)
+    table.cell(t_state, 1, 24, x03_available ? "GLD " + (x03_gld_up ? "up" : "down") + " / DXY " + (x03_dxy_up ? "up" : "down") : "UNAVAILABLE", text_color = color.silver)
+
+var table t_rej = table.new(position.bottom_right, 2, 20, bgcolor = color.new(color.black, 15), border_width = 1, frame_width = 1)
+
+if i_show_rej and barstate.islast
+    table.cell(t_rej, 0, 0, "CUMULATIVE REJECTIONS", text_color = color.white, bgcolor = color.new(color.maroon, 40))
+    table.cell(t_rej, 1, 0, "evaluated bars " + str.tostring(cnt_eval), text_color = color.white, bgcolor = color.new(color.maroon, 40))
+    table.cell(t_rej, 0, 1, "V0 no regime direction", text_color = color.silver)
+    table.cell(t_rej, 1, 1, str.tostring(rej_v0), text_color = color.white)
+    table.cell(t_rej, 0, 2, "Gate 1 REGIME", text_color = color.silver)
+    table.cell(t_rej, 1, 2, str.tostring(rej_g1), text_color = color.white)
+    table.cell(t_rej, 0, 3, "Posture rejections (R-05, separate)", text_color = color.silver)
+    table.cell(t_rej, 1, 3, str.tostring(rej_posture), text_color = color.white)
+    table.cell(t_rej, 0, 4, "Gate 2 CONFIDENCE (inert)", text_color = color.silver)
+    table.cell(t_rej, 1, 4, str.tostring(rej_g2), text_color = color.white)
+    table.cell(t_rej, 0, 5, "Gate 3 DIRECTION (inert)", text_color = color.silver)
+    table.cell(t_rej, 1, 5, str.tostring(rej_g3), text_color = color.white)
+    table.cell(t_rej, 0, 6, "Gate 4 STRUCTURE", text_color = color.silver)
+    table.cell(t_rej, 1, 6, str.tostring(rej_g4), text_color = color.white)
+    table.cell(t_rej, 0, 7, "Gate 5 STOP_DEFINED (inert)", text_color = color.silver)
+    table.cell(t_rej, 1, 7, str.tostring(rej_g5), text_color = color.white)
+    table.cell(t_rej, 0, 8, "Gate 6 STOP_DISTANCE", text_color = color.silver)
+    table.cell(t_rej, 1, 8, str.tostring(rej_g6), text_color = color.white)
+    table.cell(t_rej, 0, 9, "Gate 7 RR_RATIO (inert)", text_color = color.silver)
+    table.cell(t_rej, 1, 9, str.tostring(rej_g7), text_color = color.white)
+    table.cell(t_rej, 0, 10, "Gate 8 MAX_RISK (inert)", text_color = color.silver)
+    table.cell(t_rej, 1, 10, str.tostring(rej_g8), text_color = color.white)
+    table.cell(t_rej, 0, 11, "Gate 10 EXTENSION", text_color = color.silver)
+    table.cell(t_rej, 1, 11, str.tostring(rej_g10), text_color = color.white)
+    table.cell(t_rej, 0, 12, "Gate 11 TIME", text_color = color.silver)
+    table.cell(t_rej, 1, 12, "UNAVAILABLE x " + str.tostring(cnt_g11_unavailable), text_color = color.yellow)
+    table.cell(t_rej, 0, 13, "Q-12 soft aggregation", text_color = color.silver)
+    table.cell(t_rej, 1, 13, str.tostring(rej_q12), text_color = color.white)
+    table.cell(t_rej, 0, 14, "K-01 kill switch", text_color = color.silver)
+    table.cell(t_rej, 1, 14, str.tostring(rej_kill), text_color = color.white)
+    table.cell(t_rej, 0, 15, "E-04 macro conflict", text_color = color.silver)
+    table.cell(t_rej, 1, 15, str.tostring(rej_macro), text_color = color.white)
+    table.cell(t_rej, 0, 16, "T-01 / I-01 / E-05 (diagnostic)", text_color = color.silver)
+    table.cell(t_rej, 1, 16, str.tostring(rej_t01) + " / " + str.tostring(rej_i01) + " / " + str.tostring(rej_e05), text_color = color.white)
+    table.cell(t_rej, 0, 17, "Signals passed", text_color = color.silver)
+    table.cell(t_rej, 1, 17, str.tostring(cnt_signal), text_color = color.white)
+    table.cell(t_rej, 0, 18, "AMBIGUOUS_INTRABAR trades", text_color = color.silver)
+    table.cell(t_rej, 1, 18, str.tostring(amb_trade_count) + " of " + str.tostring(closed_trade_count) + "  (stop-first headline)", text_color = color.white)
+    table.cell(t_rej, 0, 19, "Pinned source", text_color = color.silver)
+    table.cell(t_rej, 1, 19, "cuttingboard@59f8279d — read-only, NOT resolved in TV-1 session", text_color = color.silver)

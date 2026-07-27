@@ -68,6 +68,12 @@ CuttingBoard run. It does not make an alpha or future-performance claim.
 - `spec/BACKTEST_PROTOCOL.md`
 - `charges/TV-1-PINE-IMPLEMENTATION.md`
 
+## TV-1 script
+
+- [`pine/cuttingboard_direct_proxy_v0.1.pine`](pine/cuttingboard_direct_proxy_v0.1.pine) —
+  status: written, **not yet validated**. Compile, chart load, non-daily refusal, variant
+  selection, and parity observation are all still outstanding. No parity is claimed.
+
 ## Non-negotiable safeguards
 
 - Historical simulation only.
