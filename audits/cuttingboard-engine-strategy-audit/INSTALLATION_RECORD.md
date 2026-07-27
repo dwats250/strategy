@@ -366,3 +366,89 @@ against these literals remains TV-2's task under the frozen contract.
 `2026-07-26T01:35:59Z`. Mutation permission: **NONE**. CuttingBoard was read only at the
 pin, through immutable commit-addressed reads, and was not modified in any way. Nothing in
 this amendment authorizes any CuttingBoard change or back-feed.
+
+---
+
+# Post-TV-1 README hash re-issue
+
+Added: 2026-07-27. Status: `ACTIVE — HASH RE-ISSUE ONLY`
+
+Everything above this line — the original installation record, the post-TV-0R
+effective-authority section, and the post-TV-1 literal-recovery section — is **unchanged**.
+Every hash recorded above, including
+`README.md` = `95b8fc4baa63d6b2319a7427617b79d21ddf2ef28a21fe6dbb0eb994ecb3aad3`, is
+preserved byte-identically and is **not** superseded, re-issued, or replaced by anything in
+this section. This section adds one row of information and nothing else.
+
+## What this section does, and only this
+
+`audits/cuttingboard-engine-strategy-audit/README.md` no longer hashes to the value recorded
+in *Installed documents and hashes* above. This section records the current effective hash so
+that a later stage consuming the document can verify it.
+
+**The README edit itself was authorized.** `charges/TV-1-PINE-IMPLEMENTATION.md`
+§ *Allowed files* permits:
+
+> `README.md` only for a link to the new script and its status
+
+The edit is exactly that: a six-line *TV-1 script* block linking
+`pine/cuttingboard_direct_proxy_v0.1.pine` and recording its status as written and **not yet
+validated**. No other line of the README changed.
+
+**The omitted action was only re-issuing the effective recorded hash.** Nothing about the edit
+was unauthorized, and nothing about it is being corrected here. What was missing was this
+record's own bookkeeping, and that is what this section supplies.
+
+## Effective hash
+
+| Path | Role | SHA-256 | Applies to |
+|---|---|---|---|
+| `README.md` | TV-0 authority, as amended under TV-1 § *Allowed files* | `22d058e0e88f623ecdf7443beb5d93226db08ba966903ab2f844bd2baef93850` | stages after TV-1 |
+
+Recomputed mechanically at the time of writing:
+
+```sh
+sha256sum audits/cuttingboard-engine-strategy-audit/README.md
+# 22d058e0e88f623ecdf7443beb5d93226db08ba966903ab2f844bd2baef93850
+```
+
+Both values now stand on the record: `95b8fc4b…` is the hash the TV-0R reviewer examined, and
+`22d058e0…` is the hash a stage after TV-1 consumes. A stage that verifies against the wrong
+one has verified against the wrong document. Under `docs/conventions.md` §h a hash mismatch
+between what a reviewer examined and what a later stage consumes stops the later stage; this
+section exists so that the comparison can be made against a recorded value rather than
+failing for want of one.
+
+## Scope limit — binding
+
+This is a **hash re-issue only**. It changes:
+
+- no gate, formula, threshold, cutoff, literal, or classification;
+- no variant, window, export requirement, or acceptance criterion;
+- no safeguard, review rule, or landing rule;
+- no script identity, script hash, or custody binding;
+- no TV-1 or TV-1R status.
+
+It **claims to repair nothing beyond the missing README hash re-issue.** It does not correct,
+endorse, or invalidate the TV-1 implementation checkpoint; does not assert that
+`pine/cuttingboard_direct_proxy_v0.1.pine` compiles, loads, or is validated; does not lift any
+review requirement; and does not authorize compilation, a chart run, TV-1R, or TV-2. TV-1
+remains written and unvalidated, and TV-1R remains unstarted.
+
+Like the rest of this record, this section is **not an audit authority.** It cannot alter a
+gate formula, threshold, classification, variant, safeguard, or review rule, and where it and
+a TV-0 document disagree about anything other than a recorded hash, the TV-0 document governs.
+
+## Authorization
+
+Dustin authorized this documentation-only hash re-issue directly, bounded to exactly the scope
+above. As with the post-TV-1 literal-recovery section, there is no separate adjudication
+record; this section is the record of the authorization and its scope. Claude acted as scribe
+for the transcription only, and is not a reviewer or adjudicator of it.
+
+## Source pin — unchanged
+
+`dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518`, committed
+`2026-07-26T01:35:59Z`. Mutation permission: **NONE**. CuttingBoard was neither read nor
+modified in the course of this re-issue. Nothing here authorizes any CuttingBoard change or
+back-feed.
