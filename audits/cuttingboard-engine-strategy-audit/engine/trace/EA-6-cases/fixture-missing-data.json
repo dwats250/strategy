@@ -1,0 +1,192 @@
+{
+  "AAPL": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.005,
+    "price": 210.0,
+    "source": "yfinance",
+    "symbol": "AAPL",
+    "units": "usd_price",
+    "volume": 50000000.0
+  },
+  "AMZN": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.006,
+    "price": 190.0,
+    "source": "yfinance",
+    "symbol": "AMZN",
+    "units": "usd_price",
+    "volume": 33000000.0
+  },
+  "BTC-USD": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.02,
+    "price": 82000.0,
+    "source": "yfinance",
+    "symbol": "BTC-USD",
+    "units": "usd_price",
+    "volume": 0.0
+  },
+  "COIN": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.015,
+    "price": 240.0,
+    "source": "yfinance",
+    "symbol": "COIN",
+    "units": "usd_price",
+    "volume": 12000000.0
+  },
+  "DX-Y.NYB": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": -0.003,
+    "price": 102.0,
+    "source": "yfinance",
+    "symbol": "DX-Y.NYB",
+    "units": "index_level",
+    "volume": 0.0
+  },
+  "GDX": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.006,
+    "price": 34.0,
+    "source": "yfinance",
+    "symbol": "GDX",
+    "units": "usd_price",
+    "volume": 26000000.0
+  },
+  "GLD": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.004,
+    "price": 220.0,
+    "source": "yfinance",
+    "symbol": "GLD",
+    "units": "usd_price",
+    "volume": 12000000.0
+  },
+  "IWM": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.005,
+    "price": 215.0,
+    "source": "yfinance",
+    "symbol": "IWM",
+    "units": "usd_price",
+    "volume": 28000000.0
+  },
+  "META": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.009,
+    "price": 540.0,
+    "source": "yfinance",
+    "symbol": "META",
+    "units": "usd_price",
+    "volume": 14000000.0
+  },
+  "MSTR": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.018,
+    "price": 1550.0,
+    "source": "yfinance",
+    "symbol": "MSTR",
+    "units": "usd_price",
+    "volume": 6000000.0
+  },
+  "NVDA": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.012,
+    "price": 970.0,
+    "source": "yfinance",
+    "symbol": "NVDA",
+    "units": "usd_price",
+    "volume": 42000000.0
+  },
+  "QQQ": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.007,
+    "price": 470.0,
+    "source": "yfinance",
+    "symbol": "QQQ",
+    "units": "usd_price",
+    "volume": 54000000.0
+  },
+  "SLV": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.003,
+    "price": 25.0,
+    "source": "yfinance",
+    "symbol": "SLV",
+    "units": "usd_price",
+    "volume": 18000000.0
+  },
+  "SPY": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.006,
+    "price": 540.0,
+    "source": "yfinance",
+    "symbol": "SPY",
+    "units": "usd_price",
+    "volume": 85000000.0
+  },
+  "TSLA": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.01,
+    "price": 240.0,
+    "source": "yfinance",
+    "symbol": "TSLA",
+    "units": "usd_price",
+    "volume": 70000000.0
+  },
+  "USO": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": -0.002,
+    "price": 80.0,
+    "source": "yfinance",
+    "symbol": "USO",
+    "units": "usd_price",
+    "volume": 11000000.0
+  },
+  "XLE": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.004,
+    "price": 95.0,
+    "source": "yfinance",
+    "symbol": "XLE",
+    "units": "usd_price",
+    "volume": 15000000.0
+  },
+  "^TNX": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": 0.002,
+    "price": 4.2,
+    "source": "yfinance",
+    "symbol": "^TNX",
+    "units": "yield_pct",
+    "volume": 0.0
+  },
+  "^VIX": {
+    "age_seconds": 0.0,
+    "fetched_at_utc": "2026-04-12T13:00:00Z",
+    "pct_change_decimal": -0.04,
+    "price": 16.0,
+    "source": "yfinance",
+    "symbol": "^VIX",
+    "units": "index_level",
+    "volume": 0.0
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "canonical_decision_payload": {
+    "case_id": "halted-validation",
+    "identities": {
+      "config_sha256": "329c2ea58ee2373eb8722b738b9cc6453c4d4b359c57657b32da2db4524318cb",
+      "environment_lock_sha256": "3fd88335fb95aee68a18c06e0ced50f1d35ba47f7107690a54e2df3f4c5300d0",
+      "fixture_sha256": "619d16e869f50b18c3e840bb32b0c5a6ff5bff8734a91b89fb055bf58a8a9628",
+      "schema_version": "EA-6-trace/v1",
+      "snapshot_sha": "59f8279d796335149afdec4aa507b6f927233518",
+      "wrapper_version": "EA-6-capture/1.0.0"
+    },
+    "inputs": [
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.005,
+        "price": 210.0,
+        "source": "yfinance",
+        "symbol": "AAPL",
+        "units": "usd_price",
+        "volume": 50000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.006,
+        "price": 190.0,
+        "source": "yfinance",
+        "symbol": "AMZN",
+        "units": "usd_price",
+        "volume": 33000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.02,
+        "price": 82000.0,
+        "source": "yfinance",
+        "symbol": "BTC-USD",
+        "units": "usd_price",
+        "volume": 0.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.015,
+        "price": 240.0,
+        "source": "yfinance",
+        "symbol": "COIN",
+        "units": "usd_price",
+        "volume": 12000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": -0.003,
+        "price": 102.0,
+        "source": "yfinance",
+        "symbol": "DX-Y.NYB",
+        "units": "index_level",
+        "volume": 0.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.006,
+        "price": 34.0,
+        "source": "yfinance",
+        "symbol": "GDX",
+        "units": "usd_price",
+        "volume": 26000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.004,
+        "price": 220.0,
+        "source": "yfinance",
+        "symbol": "GLD",
+        "units": "usd_price",
+        "volume": 12000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.005,
+        "price": 215.0,
+        "source": "yfinance",
+        "symbol": "IWM",
+        "units": "usd_price",
+        "volume": 28000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.009,
+        "price": 540.0,
+        "source": "yfinance",
+        "symbol": "META",
+        "units": "usd_price",
+        "volume": 14000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.018,
+        "price": 1550.0,
+        "source": "yfinance",
+        "symbol": "MSTR",
+        "units": "usd_price",
+        "volume": 6000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.012,
+        "price": 970.0,
+        "source": "yfinance",
+        "symbol": "NVDA",
+        "units": "usd_price",
+        "volume": 42000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.008,
+        "price": 22.0,
+        "source": "yfinance",
+        "symbol": "PAAS",
+        "units": "usd_price",
+        "volume": 9000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.007,
+        "price": 470.0,
+        "source": "yfinance",
+        "symbol": "QQQ",
+        "units": "usd_price",
+        "volume": 54000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.003,
+        "price": 25.0,
+        "source": "yfinance",
+        "symbol": "SLV",
+        "units": "usd_price",
+        "volume": 18000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.01,
+        "price": 240.0,
+        "source": "yfinance",
+        "symbol": "TSLA",
+        "units": "usd_price",
+        "volume": 70000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": -0.002,
+        "price": 80.0,
+        "source": "yfinance",
+        "symbol": "USO",
+        "units": "usd_price",
+        "volume": 11000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.004,
+        "price": 95.0,
+        "source": "yfinance",
+        "symbol": "XLE",
+        "units": "usd_price",
+        "volume": 15000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.002,
+        "price": 4.2,
+        "source": "yfinance",
+        "symbol": "^TNX",
+        "units": "yield_pct",
+        "volume": 0.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": -0.04,
+        "price": 16.0,
+        "source": "yfinance",
+        "symbol": "^VIX",
+        "units": "index_level",
+        "volume": 0.0
+      }
+    ],
+    "intermediate_state": {
+      "confidence": 0.0,
+      "energy_score": 0.0,
+      "index_score": 0.0,
+      "kill_switch": false,
+      "posture": "STAY_FLAT",
+      "regime": "NEUTRAL",
+      "regime_vote_detail": "NOT_OBSERVABLE",
+      "router_mode": "MIXED",
+      "structure_labels": "NOT_OBSERVABLE",
+      "system_halted": true
+    },
+    "missing_data_mask": {
+      "data_status": "ok",
+      "excluded_symbols": {},
+      "fixture_symbols": [
+        "AAPL",
+        "AMZN",
+        "BTC-USD",
+        "COIN",
+        "DX-Y.NYB",
+        "GDX",
+        "GLD",
+        "IWM",
+        "META",
+        "MSTR",
+        "NVDA",
+        "PAAS",
+        "QQQ",
+        "SLV",
+        "TSLA",
+        "USO",
+        "XLE",
+        "^TNX",
+        "^VIX"
+      ]
+    },
+    "opportunities": [],
+    "ordering_and_precedence": {
+      "continuation_rejection_counters": null,
+      "gate_order_events": "NOT_OBSERVABLE",
+      "gate_order_events_note": "engine records no per-gate ordering/override event stream",
+      "regime_failure_reason": null,
+      "regime_short_circuited": null
+    },
+    "realized_outcomes": "NOT_OBSERVABLE",
+    "temporal": {
+      "as_of_boundary": "NOT_OBSERVABLE",
+      "as_of_boundary_note": "engine exposes no distinct as-of field; run_at_utc is fixture-derived",
+      "generation_id": "fixture-fixture-halted-validation",
+      "run_at_utc": "2026-04-12T13:00:00Z",
+      "session_date": "2026-07-28"
+    },
+    "terminal": {
+      "contract_status": "STAY_FLAT",
+      "halt_reason": "Failed: SPY (symbol not fetched)",
+      "machine_reason_codes": "NOT_OBSERVABLE",
+      "machine_reason_codes_note": "engine emits prose reason strings; no stable code enum exists",
+      "outcome": "HALT",
+      "process_exit_code": 1,
+      "summary_status": "FAIL",
+      "system_state": {
+        "confidence": null,
+        "intraday_state": null,
+        "market_regime": null,
+        "outcome": "HALT",
+        "permission": "No trades permitted. System halted.",
+        "reason": "Failed: SPY (symbol not fetched)",
+        "router_mode": "MIXED",
+        "stay_flat_reason": "Failed: SPY (symbol not fetched)",
+        "time_gate_open": true,
+        "tradable": false
+      }
+    }
+  },
+  "envelope_excluded_from_equality": [
+    "artifacts_present",
+    "pipeline_record_count",
+    "run_dir_basename"
+  ],
+  "run_metadata_envelope": {
+    "artifacts_present": [
+      "logs/audit.jsonl",
+      "logs/latest_contract.json",
+      "logs/latest_payload.json",
+      "logs/latest_run.json",
+      "logs/macro_drivers_snapshot.json",
+      "logs/market_map.json",
+      "logs/run_2026-04-12_130000.json",
+      "reports/2026-07-28.md",
+      "reports/output/report.html",
+      "stderr.txt",
+      "stdout.txt"
+    ],
+    "pipeline_record_count": 1,
+    "run_dir_basename": "halted-validation"
+  }
+}

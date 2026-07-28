@@ -1,0 +1,631 @@
+{
+  "canonical_decision_payload": {
+    "case_id": "rejected",
+    "identities": {
+      "config_sha256": "329c2ea58ee2373eb8722b738b9cc6453c4d4b359c57657b32da2db4524318cb",
+      "environment_lock_sha256": "3fd88335fb95aee68a18c06e0ced50f1d35ba47f7107690a54e2df3f4c5300d0",
+      "fixture_sha256": "dc0a6283cf1d50c626b52d76906a7ff74e8a7abebb4136a946d8e1007377b040",
+      "schema_version": "EA-6-trace/v1",
+      "snapshot_sha": "59f8279d796335149afdec4aa507b6f927233518",
+      "wrapper_version": "EA-6-capture/1.0.0"
+    },
+    "inputs": [
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.005,
+        "price": 210.0,
+        "source": "yfinance",
+        "symbol": "AAPL",
+        "units": "usd_price",
+        "volume": 50000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.006,
+        "price": 190.0,
+        "source": "yfinance",
+        "symbol": "AMZN",
+        "units": "usd_price",
+        "volume": 33000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.02,
+        "price": 82000.0,
+        "source": "yfinance",
+        "symbol": "BTC-USD",
+        "units": "usd_price",
+        "volume": 0.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.015,
+        "price": 240.0,
+        "source": "yfinance",
+        "symbol": "COIN",
+        "units": "usd_price",
+        "volume": 12000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": -0.003,
+        "price": 102.0,
+        "source": "yfinance",
+        "symbol": "DX-Y.NYB",
+        "units": "index_level",
+        "volume": 0.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.006,
+        "price": 34.0,
+        "source": "yfinance",
+        "symbol": "GDX",
+        "units": "usd_price",
+        "volume": 26000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.004,
+        "price": 220.0,
+        "source": "yfinance",
+        "symbol": "GLD",
+        "units": "usd_price",
+        "volume": 12000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.005,
+        "price": 215.0,
+        "source": "yfinance",
+        "symbol": "IWM",
+        "units": "usd_price",
+        "volume": 28000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.009,
+        "price": 540.0,
+        "source": "yfinance",
+        "symbol": "META",
+        "units": "usd_price",
+        "volume": 14000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.018,
+        "price": 1550.0,
+        "source": "yfinance",
+        "symbol": "MSTR",
+        "units": "usd_price",
+        "volume": 6000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.012,
+        "price": 970.0,
+        "source": "yfinance",
+        "symbol": "NVDA",
+        "units": "usd_price",
+        "volume": 42000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.008,
+        "price": 22.0,
+        "source": "yfinance",
+        "symbol": "PAAS",
+        "units": "usd_price",
+        "volume": 9000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.007,
+        "price": 470.0,
+        "source": "yfinance",
+        "symbol": "QQQ",
+        "units": "usd_price",
+        "volume": 54000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.003,
+        "price": 25.0,
+        "source": "yfinance",
+        "symbol": "SLV",
+        "units": "usd_price",
+        "volume": 18000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.006,
+        "price": 540.0,
+        "source": "yfinance",
+        "symbol": "SPY",
+        "units": "usd_price",
+        "volume": 85000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.01,
+        "price": 240.0,
+        "source": "yfinance",
+        "symbol": "TSLA",
+        "units": "usd_price",
+        "volume": 70000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": -0.002,
+        "price": 80.0,
+        "source": "yfinance",
+        "symbol": "USO",
+        "units": "usd_price",
+        "volume": 11000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.004,
+        "price": 95.0,
+        "source": "yfinance",
+        "symbol": "XLE",
+        "units": "usd_price",
+        "volume": 15000000.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": 0.002,
+        "price": 4.2,
+        "source": "yfinance",
+        "symbol": "^TNX",
+        "units": "yield_pct",
+        "volume": 0.0
+      },
+      {
+        "age_seconds": 0.0,
+        "fetched_at_utc": "2026-04-12T13:00:00Z",
+        "pct_change_decimal": -0.04,
+        "price": 16.0,
+        "source": "yfinance",
+        "symbol": "^VIX",
+        "units": "index_level",
+        "volume": 0.0
+      }
+    ],
+    "intermediate_state": {
+      "confidence": 1.0,
+      "energy_score": 0.0,
+      "index_score": 0.0,
+      "kill_switch": false,
+      "posture": "EXPANSION_LONG",
+      "regime": "EXPANSION",
+      "regime_vote_detail": "NOT_OBSERVABLE",
+      "router_mode": "MIXED",
+      "structure_labels": "NOT_OBSERVABLE",
+      "system_halted": false
+    },
+    "missing_data_mask": {
+      "data_status": "ok",
+      "excluded_symbols": {},
+      "fixture_symbols": [
+        "AAPL",
+        "AMZN",
+        "BTC-USD",
+        "COIN",
+        "DX-Y.NYB",
+        "GDX",
+        "GLD",
+        "IWM",
+        "META",
+        "MSTR",
+        "NVDA",
+        "PAAS",
+        "QQQ",
+        "SLV",
+        "SPY",
+        "TSLA",
+        "USO",
+        "XLE",
+        "^TNX",
+        "^VIX"
+      ]
+    },
+    "opportunities": [
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "DX-Y.NYB"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "GDX"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "GLD"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 300.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "IWM"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "NVDA"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "PAAS"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "^TNX"
+      },
+      {
+        "block_reason": "fixture mode skips live chain validation",
+        "decision_status": "BLOCK_TRADE",
+        "decision_trace": {
+          "reason": "fixture mode skips live chain validation",
+          "source": "execution_policy",
+          "stage": "EXECUTION_POLICY"
+        },
+        "disposition": "EVALUATED_CANDIDATE",
+        "entry_mode": "DIRECT",
+        "explanation": {},
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "gates_passed/gates_failed computed in QualificationResult; not persisted (EA5-002)",
+        "geometry": {
+          "dollar_risk": 375.0,
+          "entry": "NOT_OBSERVABLE",
+          "size": "NOT_OBSERVABLE",
+          "stop": "NOT_OBSERVABLE",
+          "target": "NOT_OBSERVABLE"
+        },
+        "symbol": "^VIX"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "R:R 2.00 below 2.0 minimum",
+        "stage": "WATCHLIST",
+        "symbol": "AAPL"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "R:R 2.00 below 2.0 minimum",
+        "stage": "WATCHLIST",
+        "symbol": "AMZN"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "R:R 2.00 below 2.0 minimum",
+        "stage": "WATCHLIST",
+        "symbol": "BTC-USD"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "stop distance 2.84 below 1× ATR14 (2.84)",
+        "stage": "WATCHLIST",
+        "symbol": "COIN"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "stop distance 6.39 below 1× ATR14 (6.39)",
+        "stage": "WATCHLIST",
+        "symbol": "META"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "R:R 2.00 below 2.0 minimum",
+        "stage": "WATCHLIST",
+        "symbol": "MSTR"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "stop distance 5.57 below 1× ATR14 (5.57)",
+        "stage": "WATCHLIST",
+        "symbol": "QQQ"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "R:R 2.00 below 2.0 minimum",
+        "stage": "WATCHLIST",
+        "symbol": "SLV"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "stop distance 6.39 below 1× ATR14 (6.39)",
+        "stage": "WATCHLIST",
+        "symbol": "SPY"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "stop distance 2.84 below 1× ATR14 (2.84)",
+        "stage": "WATCHLIST",
+        "symbol": "TSLA"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "stop distance 0.95 below 1× ATR14 (0.95)",
+        "stage": "WATCHLIST",
+        "symbol": "USO"
+      },
+      {
+        "detail": null,
+        "disposition": "REJECTED",
+        "gate_results": "NOT_OBSERVABLE",
+        "gate_results_note": "single reason string only; per-gate vector not persisted (EA5-002)",
+        "reason": "R:R 2.00 below 2.0 minimum",
+        "stage": "WATCHLIST",
+        "symbol": "XLE"
+      }
+    ],
+    "ordering_and_precedence": {
+      "continuation_rejection_counters": {
+        "DATA_INCOMPLETE": 0,
+        "EXTENDED_FROM_MEAN": 0,
+        "INSUFFICIENT_MOMENTUM": 0,
+        "NO_BREAKOUT": 0,
+        "NO_HOLD_CONFIRMATION": 0,
+        "RR_BELOW_THRESHOLD": 0,
+        "STOP_TOO_TIGHT": 0,
+        "TIME_BLOCKED": 0,
+        "VIX_BLOCKED": 0,
+        "accepted": 0,
+        "total_candidates": 0
+      },
+      "gate_order_events": "NOT_OBSERVABLE",
+      "gate_order_events_note": "engine records no per-gate ordering/override event stream",
+      "regime_failure_reason": null,
+      "regime_short_circuited": false
+    },
+    "realized_outcomes": "NOT_OBSERVABLE",
+    "temporal": {
+      "as_of_boundary": "NOT_OBSERVABLE",
+      "as_of_boundary_note": "engine exposes no distinct as-of field; run_at_utc is fixture-derived",
+      "generation_id": "fixture-fixture-rejected",
+      "run_at_utc": "2026-04-12T13:00:00Z",
+      "session_date": "2026-07-28"
+    },
+    "terminal": {
+      "contract_status": "OK",
+      "halt_reason": null,
+      "machine_reason_codes": "NOT_OBSERVABLE",
+      "machine_reason_codes_note": "engine emits prose reason strings; no stable code enum exists",
+      "outcome": "NO_TRADE",
+      "process_exit_code": 0,
+      "summary_status": "SUCCESS",
+      "system_state": {
+        "confidence": 1.0,
+        "intraday_state": null,
+        "market_regime": "EXPANSION",
+        "outcome": "NO_TRADE",
+        "permission": "EXPANSION — momentum allowed. Continuation entries. R:R >= 1.5.",
+        "reason": null,
+        "router_mode": "MIXED",
+        "stay_flat_reason": null,
+        "time_gate_open": true,
+        "tradable": true
+      }
+    }
+  },
+  "envelope_excluded_from_equality": [
+    "artifacts_present",
+    "pipeline_record_count",
+    "run_dir_basename"
+  ],
+  "run_metadata_envelope": {
+    "artifacts_present": [
+      ".cache/py-yfinance/cookies.db",
+      ".cache/py-yfinance/tkr-tz.db",
+      "data/cache/AAPL_ohlcv.parquet",
+      "data/cache/AMZN_ohlcv.parquet",
+      "data/cache/BTC_USD_ohlcv.parquet",
+      "data/cache/COIN_ohlcv.parquet",
+      "data/cache/DX_Y_NYB_ohlcv.parquet",
+      "data/cache/GDX_ohlcv.parquet",
+      "data/cache/GLD_ohlcv.parquet",
+      "data/cache/IWM_ohlcv.parquet",
+      "data/cache/META_ohlcv.parquet",
+      "data/cache/MSTR_ohlcv.parquet",
+      "data/cache/NVDA_ohlcv.parquet",
+      "data/cache/PAAS_ohlcv.parquet",
+      "data/cache/QQQ_ohlcv.parquet",
+      "data/cache/SLV_ohlcv.parquet",
+      "data/cache/SPY_ohlcv.parquet",
+      "data/cache/TNX_ohlcv.parquet",
+      "data/cache/TSLA_ohlcv.parquet",
+      "data/cache/USO_ohlcv.parquet",
+      "data/cache/VIX_ohlcv.parquet",
+      "data/cache/XLE_ohlcv.parquet",
+      "logs/audit.jsonl",
+      "logs/latest_contract.json",
+      "logs/latest_payload.json",
+      "logs/latest_run.json",
+      "logs/macro_drivers_snapshot.json",
+      "logs/market_map.json",
+      "logs/run_2026-04-12_130000.json",
+      "reports/2026-07-28.md",
+      "reports/output/report.html",
+      "stderr.txt",
+      "stdout.txt"
+    ],
+    "pipeline_record_count": 1,
+    "run_dir_basename": "rejected"
+  }
+}
