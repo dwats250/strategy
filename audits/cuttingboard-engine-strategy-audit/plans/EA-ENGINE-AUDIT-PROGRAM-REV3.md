@@ -992,3 +992,67 @@ write-set); comparison of observed against EA-1's predicted write-set; two-run c
 the **canonical decision payload** (determinism); `git -C ~/Projects/cuttingboard rev-parse
 HEAD && git status --porcelain` byte-identical before and after. Every claim in every
 deliverable carries the command that reproduces it.
+
+---
+
+# Amendment — 2026-07-28: the accepted-path constraint (EA-6-006)
+
+Status: `ACTIVE — NARROW CROSS-PHASE LIMITATION. AUTHORIZES NOTHING NEW.`
+
+A dated amendment appended under `docs/conventions.md` §b, read across to audit artifacts by
+§h. Everything above this line is **unchanged**.
+
+**Occasioned by:** [`../engine/findings/EA-6-observability-findings.md`](../engine/findings/EA-6-observability-findings.md)
+§ EA-6-006, evidenced by [`../engine/trace/EA-6-cases/`](../engine/trace/EA-6-cases/).
+
+## 1. The constraint
+
+`_fixture_chain_results` (`runtime/__init__.py:1710–1725`, selected at `:1028` in fixture mode)
+returns `classification=MANUAL_CHECK` for **every** option setup unconditionally. EA-6 captured
+the pipeline reaching the decision layer in full — eight qualified symbols, eight option setups
+— with every candidate carrying `decision_status="BLOCK_TRADE"` and `block_reason="fixture mode
+skips live chain validation"`, and `outcome=NO_TRADE`.
+
+**The accepted path (`outcome = TRADE`) is therefore structurally unobservable under the
+authorized fixture method at this pin.**
+
+## 2. What this amendment permits
+
+**EA-7 and EA-10 may proceed using observable evidence only** — the selection surface from
+qualification through the decision chain, plus the rejected and halted populations, which EA-6
+demonstrated are captured with per-symbol fidelity.
+
+## 3. What this amendment forbids
+
+- **No accepted-path conclusion may be inferred, reconstructed, or synthesized.** Absence of an
+  observable `TRADE` outcome is not evidence about accepted-trade quality, frequency, or value.
+  Any metric, verdict, or comparison that would require an accepted population must be reported
+  as unavailable, not estimated.
+- **This authorizes no live data, no source modification, no instrumentation, and no expansion
+  of the fixture method.** EA-1's isolation requirements R-1 through R-19 remain in force
+  unchanged.
+- Every downstream result touching this boundary must carry the limitation explicitly.
+
+## 4. Closing the gap later
+
+Closing the accepted-path gap requires **separate explicit authorization and evidence** — a
+Dustin-authorized charge naming the mechanism (for example a Strategy-owned chain-data
+substitution seam, or a CuttingBoard change under its own charge). No such mechanism is
+authorized by this amendment, and none may be assumed by a later phase.
+
+## 5. Scope limits — binding
+
+- **This does not alter EA-6's frozen record.** `EA-6-observability-findings.md`,
+  `SCHEMA_v1.md`, the emitted traces, and their manifest are unchanged and remain the evidence
+  of record.
+- **This does not classify the constraint as an engine defect.** EA-6 classed it a *data
+  limitation of the harness*, and that classification stands. Fixture mode skipping live chain
+  validation is deliberate engine behaviour.
+- It changes no phase scope beyond the cross-phase limitation stated in §2 and §3, creates no
+  new authority document, and alters no recorded hash.
+- It reads, references, and mutates nothing in `dwats250/cuttingboard`.
+
+## 6. Amendment rule
+
+A correction to this amendment is a further dated amendment or a new versioned plan, with the
+version in the filename (`docs/conventions.md` §b).
