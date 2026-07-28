@@ -46,8 +46,13 @@ pre-registered studies, and the raw exports/analysis behind them.
   The successor EA engine-audit line is framed by
   [`engine/charters/EA-0-COMMISSION.md`](audits/cuttingboard-engine-strategy-audit/engine/charters/EA-0-COMMISSION.md),
   which authorizes no EA phase; its full program is
-  [`plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md`](audits/cuttingboard-engine-strategy-audit/plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md),
-  a proposal awaiting approval. **EA-1 and every later phase are unexecuted.**
+  [`plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md`](audits/cuttingboard-engine-strategy-audit/plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md).
+  Phases EA-1 through EA-8 were each separately authorized and executed, and the
+  program **closed at EA-8** — see
+  [`EA-AUDIT-CLOSEOUT.md`](audits/cuttingboard-engine-strategy-audit/EA-AUDIT-CLOSEOUT.md).
+  **EA-9 and every later phase are blocked and unexecuted.** The audit established
+  no strategy-quality, profitability, or real-market claim and no basis for fitting
+  or optimization.
 
   Status lines inside frozen TV-0 documents record what was true when those
   documents were frozen; current lifecycle state lives in `closure/`.
