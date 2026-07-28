@@ -1,0 +1,11 @@
+suite=EA-8-lookahead/1.0.0 datasets=5
+  asof-2025-06-30        PASS
+  asof-2025-09-30        PASS
+  asof-2025-12-31        PASS
+  asof-2026-02-27        PASS
+  asof-2026-04-10        PASS
+SELF-TEST negative control: injected bar 2025-07-30 into AAPL_ohlcv.parquet -> suite CAUGHT it (expected)
+    asof-2025-06-30/AAPL: A1 LOOK-AHEAD — max bar 2025-07-30 > as-of 2025-06-30
+    asof-2025-06-30/AAPL: A2 manifest max_bar 2025-06-30 != disk 2025-07-30
+    asof-2025-06-30/AAPL: A3 content digest mismatch
+RESULT: ALL DATASETS PASS
