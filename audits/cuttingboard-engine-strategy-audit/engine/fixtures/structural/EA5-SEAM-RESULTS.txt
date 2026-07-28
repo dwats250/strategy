@@ -1,0 +1,8 @@
+EA5-F01a-vix-level-at-35           exit=0  outcome=NO_TRADE status=SUCCESS halted=False kill=False halt_reason=None
+EA5-F01b-vix-level-above-35        exit=1  outcome=HALT status=FAIL halted=True kill=True halt_reason=Market-stress kill switch tripped; new positions
+EA5-F02a-spy-pct-at-0.03           exit=0  outcome=NO_TRADE status=SUCCESS halted=False kill=False halt_reason=None
+EA5-F02b-spy-pct-above-0.03        exit=1  outcome=HALT status=FAIL halted=True kill=True halt_reason=Market-stress kill switch tripped; new positions
+EA5-F03a-vix-pct-at-0.15           exit=0  outcome=NO_TRADE status=SUCCESS halted=False kill=False halt_reason=None
+EA5-F03b-vix-pct-above-0.15        exit=1  outcome=HALT status=FAIL halted=True kill=True halt_reason=Market-stress kill switch tripped; new positions
+EA5-F04-missing-halt-symbol-spy    exit=1  outcome=HALT status=FAIL halted=True kill=False halt_reason=Failed: SPY (symbol not fetched)
+EA5-F05-negative-price-spy         exit=1  outcome=HALT status=FAIL halted=True kill=False halt_reason=Failed: SPY (price -540.0000 is not positive)
