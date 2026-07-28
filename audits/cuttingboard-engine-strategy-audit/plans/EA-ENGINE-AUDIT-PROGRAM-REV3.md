@@ -370,8 +370,9 @@ Phases that do not name each other in entry criteria may run in parallel.
   TV-3, TV-4 and `UV02-E1` finds hits **only inside frozen historical documents enumerated by
   path as superseded in the closure record**, with zero hits outside that enumerated set
   (frozen commission text **plus** recorded withdrawal equals no live authorization); all
-  eight previously recorded hashes still verify byte-exact and the four new hashes are
-  registered in `A/closure/HASHES-2026-07-27.md`; `git diff` shows no frozen document and no
+  eight historical hashes re-verified byte-exact, three new document hashes registered in
+  `A/closure/HASHES-2026-07-27.md`, and the hash register itself attested by the Dustin-merged
+  commit SHA; `git diff` shows no frozen document and no
   UV02 artifact changed; exactly one pre-existing file (repository-root `README.md`) modified
   and four files added.
 - **Stop conditions:** any proposed in-place edit to a frozen document; any deletion or
@@ -773,8 +774,9 @@ lives in `A/closure/TV-LINE-CLOSURE-2026-07-27.md`, and the root index points th
   matches existing repository precedent — `INSTALLATION_RECORD.md` records the hashes of other
   documents, never its own.
 
-Phase 0 completion is verified by re-running `sha256sum` over all eight previously recorded
-values (confirming byte-exact matches) **plus** the four newly registered values.
+Phase 0 completion is verified as: **eight historical hashes re-verified** byte-exact via
+`sha256sum`, **three new document hashes registered**, and **the hash register itself attested
+by the Dustin-merged commit SHA.**
 
 ### 7.4 MFE/MAE as a non-deployable diagnostic upper bound
 
@@ -940,13 +942,15 @@ neither gates Phase 0.
   withdrawing TV-1's commission **and stating its authority basis, supersession enumeration,
   and precedence rule**; create `A/closure/UV02-CLOSURE-2026-07-27.md` recording `UV02-E1` as
   never authorized and not to be opened; create `A/closure/HASHES-2026-07-27.md` registering
-  the four new documents' hashes externally; update the repository-root `README.md` audit
+  the three other new documents' hashes externally — the register itself is attested by the
+  Dustin-merged commit SHA; update the repository-root `README.md` audit
   status line; branch; draft PR; **hold for Dustin's merge.**
 - **Expected evidence and deliverable:** a repository in which exactly one lifecycle status is
   documented, that status has a stated authority basis, and no superseded packet retains
   effective authority.
-- **Completion criteria:** PR held for Dustin; all eight previously recorded hashes re-verified
-  byte-exact and four new hashes registered; the **effective-authority test** passes; `git diff`
+- **Completion criteria:** PR held for Dustin; eight historical hashes re-verified byte-exact,
+  three new document hashes registered, and the hash register itself attested by the
+  Dustin-merged commit SHA; the **effective-authority test** passes; `git diff`
   shows exactly one pre-existing file modified (repository-root `README.md`) and four files
   added; no frozen document and no UV02 artifact changed.
 - **Stop conditions:** any proposed in-place edit to a frozen document; any change to a
@@ -960,8 +964,9 @@ neither gates Phase 0.
 
 ## Verification
 
-**Phase 0** verifies by: `sha256sum` re-check of all eight previously recorded hashes plus
-registration of the four new ones in `A/closure/HASHES-2026-07-27.md`; the **effective-authority
+**Phase 0** verifies by: eight historical hashes re-verified byte-exact via `sha256sum`, three
+new document hashes registered in `A/closure/HASHES-2026-07-27.md`, and the hash register
+itself attested by the Dustin-merged commit SHA; the **effective-authority
 test** — a grep for TV-1/TV-1R/TV-2/TV-3/TV-4/`UV02-E1` commissioning terms returning hits only
 inside frozen documents enumerated as superseded in the closure record, and zero hits outside
 that set; `git diff --stat` confirming exactly one pre-existing file modified and four added.
