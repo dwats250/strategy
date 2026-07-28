@@ -28,11 +28,24 @@ pre-registered studies, and the raw exports/analysis behind them.
 ## Audits
 
 - [`cuttingboard-engine-strategy-audit`](audits/cuttingboard-engine-strategy-audit/README.md)
-  — historical audit of which reproducible `dwats250/cuttingboard` gate
-  families change the distribution of directional SPY proxy setups, pinned to
-  commit `59f8279d`. **TV-0 contract installed and frozen**; awaiting the
-  independent TV-0R semantic review. CuttingBoard is read-only evidence and is
-  never modified or fed parameters. Makes no alpha or future-performance claim.
+  — audit of the `dwats250/cuttingboard` decision engine, pinned to commit
+  `59f8279d`. CuttingBoard is read-only evidence and is never modified or fed
+  parameters. Makes no alpha or future-performance claim.
+
+  **Current lifecycle.** The TV-0 → TV-4 Pine-proxy line is closed: TV-0 and
+  TV-0R are complete, TV-1's commission is withdrawn, and TV-1R/TV-2/TV-3/TV-4
+  were never commissioned — see
+  [`closure/TV-LINE-CLOSURE-2026-07-27.md`](audits/cuttingboard-engine-strategy-audit/closure/TV-LINE-CLOSURE-2026-07-27.md)
+  and
+  [`closure/UV02-CLOSURE-2026-07-27.md`](audits/cuttingboard-engine-strategy-audit/closure/UV02-CLOSURE-2026-07-27.md).
+  The successor EA engine-audit line is framed by
+  [`engine/charters/EA-0-COMMISSION.md`](audits/cuttingboard-engine-strategy-audit/engine/charters/EA-0-COMMISSION.md),
+  which authorizes no EA phase; its full program is
+  [`plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md`](audits/cuttingboard-engine-strategy-audit/plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md),
+  a proposal awaiting approval. **EA-1 and every later phase are unexecuted.**
+
+  Status lines inside frozen TV-0 documents record what was true when those
+  documents were frozen; current lifecycle state lives in `closure/`.
 
 See `docs/conventions.md` before adding a new study or amending an existing
 manifest.
