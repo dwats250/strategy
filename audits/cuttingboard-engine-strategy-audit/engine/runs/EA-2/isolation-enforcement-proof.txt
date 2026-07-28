@@ -1,0 +1,75 @@
+EA-2 ISOLATION ENFORCEMENT PROOF
+Captured: 2026-07-27 UTC
+Source pin: dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518
+
+Sandbox construction (identical for every step below and for both runs):
+
+  bwrap --unshare-net \
+        --ro-bind / / \
+        --dev /dev --proc /proc --tmpfs /tmp \
+        --bind $RUNDIR $RUNDIR \
+        --chdir $RUNDIR \
+        env -i PATH=/usr/bin:/bin HOME=$RUNDIR LANG=C.UTF-8 \
+            PYTHONPATH=$SRC:/home/dustin/.local/lib/python3.13/site-packages \
+            PYTHONDONTWRITEBYTECODE=1 FIXTURE_MODE=1 \
+        <command>
+
+  Entire filesystem read-only; exactly one writable bind ($RUNDIR).
+  Network namespace unshared with no route configured.
+
+--------------------------------------------------------------------------
+CONTROL A — sandbox constructs and executes
+--------------------------------------------------------------------------
+  $ ... python3 -V
+  Python 3.13.5
+  RESULT: sandbox operative.
+
+--------------------------------------------------------------------------
+CONTROL B1 — outbound DNS/name resolution (MUST FAIL)
+--------------------------------------------------------------------------
+  target: api.telegram.org:443   (the engine's only deliberate egress, output.py:655)
+  CONTROL CALL BLOCKED (expected): gaierror: [Errno -3] Temporary failure in name resolution
+  exit=0
+  RESULT: blocked.
+
+--------------------------------------------------------------------------
+CONTROL B2 — direct-IP egress (MUST FAIL)
+--------------------------------------------------------------------------
+  Run to prove absence of a route, not merely absence of DNS.
+  1.1.1.1:443 BLOCKED (expected): OSError: [Errno 101] Network is unreachable
+  8.8.8.8:53  BLOCKED (expected): OSError: [Errno 101] Network is unreachable
+  exit=0
+  RESULT: no route. Network denial is enforced at namespace level, not inferred
+          from --mode fixture and not dependent on DNS.
+
+--------------------------------------------------------------------------
+CONTROL C — write confinement (in-boundary MUST SUCCEED, out-of-boundary MUST FAIL)
+--------------------------------------------------------------------------
+  C1 inside-boundary write: SUCCEEDED (expected)
+  blocked /home/dustin/Projects/strategy/EA2_ESCAPE_TEST.txt: OSError
+  blocked /home/dustin/Projects/cuttingboard/EA2_ESCAPE_TEST.txt: OSError
+  blocked /etc/EA2_ESCAPE_TEST.txt: OSError
+  exit=0
+  RESULT: writes fail outside the boundary rather than merely not occurring.
+          Both repositories are provably unwritable from inside the sandbox.
+
+--------------------------------------------------------------------------
+DEFENCE IN DEPTH (not accepted as proof — EA-1 R-3)
+--------------------------------------------------------------------------
+  TELEGRAM_BOT_TOKEN     unset (env -i)
+  TELEGRAM_CHAT_ID       unset (env -i)
+  PYTEST_CURRENT_TEST    unset (env -i)
+  CUTTINGBOARD_FORCE_SLOT unset (env -i)
+  FIXTURE_MODE           set deliberately to "1" and recorded (EA-1 R-12, R-13)
+  .env                   none discoverable from run dir or extracted tree (EA-1 R-9)
+
+--------------------------------------------------------------------------
+CUTTINGBOARD INTEGRITY (EA-1 R-16)
+--------------------------------------------------------------------------
+  BEFORE  rev-parse HEAD : 9e6b7728b7e9f1c3b63c0fc23f02e3ec031c2f94
+  AFTER   rev-parse HEAD : 9e6b7728b7e9f1c3b63c0fc23f02e3ec031c2f94
+  diff HEAD before/after            : byte-identical
+  diff status --porcelain before/after: byte-identical
+
+  Source obtained by `git archive <pin> | tar -x` to a scratch location outside
+  both repositories. No `git worktree add`, no checkout, no fetch, no ref change.

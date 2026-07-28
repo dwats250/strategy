@@ -1,0 +1,9 @@
+1d3438ee0ff9ae0ceb05c4540af15ad873ae91753c790de2f132f9bda664ebe7  ./logs/audit.jsonl
+1fcad823053da7b581db4c243f24cf2b7e845dbd4b11fdd9c143c68903cf8fd5  ./logs/latest_contract.json
+121305f1c93a6cc52bc25854d04d64a3f101d77a796884f449590e5f2f6f27df  ./logs/latest_payload.json
+77235c976e8d64567b8d11af44ebe222dc262fdf0418bc1f97831d4ac5e9e20e  ./logs/latest_run.json
+f5ec5ac227a35013e5c05e23df4f83009a7cfc53743d4f4674ea95faac4a6a9d  ./logs/macro_drivers_snapshot.json
+3095cbb1104830991101b46db891fca20102e640981eeeaad66f9884ec0f9bf9  ./logs/market_map.json
+77235c976e8d64567b8d11af44ebe222dc262fdf0418bc1f97831d4ac5e9e20e  ./logs/run_2026-04-12_130000.json
+6c5631daa6b24286addf59c259f89edf3a550335ce14ee11f84d23267b96e911  ./reports/2026-04-12.md
+8ac9b7a52881f6cb20a2f0d0bb568cf301b386ff18d27248e0381f2d7d6f6e58  ./reports/output/report.html
