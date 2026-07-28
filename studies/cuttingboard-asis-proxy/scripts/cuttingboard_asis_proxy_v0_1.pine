@@ -1,0 +1,237 @@
+//@version=6
+// =============================================================================
+// CuttingBoard AS-IS Proxy — v0.1  (DIRECT path only)
+//
+// Source pin: dwats250/cuttingboard@59f8279d796335149afdec4aa507b6f927233518
+// Mapping:    ../manifests/RULE_MAPPING_v0.1.md   (frozen before any run)
+//
+// THIS IS A PROXY. It is not a CuttingBoard replay, not a parity artifact, and
+// not an empirical verdict on strategy profitability. It reproduces only the
+// gate semantics a daily chart can faithfully express; everything it cannot
+// represent is declared in the mapping §3 and surfaced here as an explicit
+// NOT_REPRESENTABLE series rather than silently passed.
+//
+// NO TUNING. Every literal is transcribed from the pinned source. No threshold
+// is loosened, no gate removed, no filter added, no variant created, and no
+// parameter is searched or optimised. There are no inputs by design — an input
+// is a tuning surface.
+//
+// It is an indicator, not a strategy: the study reports opportunity frequency
+// and a gate funnel, and makes no trade-P&L claim.
+// =============================================================================
+indicator("CuttingBoard AS-IS Proxy v0.1", "CB-ASIS-v0.1", overlay = false)
+
+// ---------------------------------------------------------------------------
+// Literals — transcribed from cuttingboard/config.py at the pin
+// ---------------------------------------------------------------------------
+EMA_FAST                 = 9
+EMA_SLOW                 = 21
+EMA_TREND                = 50
+ATR_PERIOD               = 14
+OHLCV_MIN_BARS           = 21
+MIN_REGIME_CONFIDENCE    = 0.50
+MIN_RR_RATIO             = 2.0
+NEUTRAL_RR_RATIO         = 3.0
+MIN_STOP_PCT             = 0.01
+STOP_ATR_FLOOR_K         = 1.0
+EXTENSION_ATR_MULTIPLIER = 1.5
+VIX_CHAOTIC_SPIKE        = 0.15
+// runtime/__init__.py:2185-2187 — deliberately NOT in config.py (EA5-003)
+KILL_SWITCH_VIX_LEVEL      = 35.0
+KILL_SWITCH_VIX_PCT_CHANGE = 0.15
+KILL_SWITCH_SPY_PCT_CHANGE = 0.03
+// structure.py:39-43
+BREAKOUT_MOMENTUM_MIN = 0.02
+BREAKOUT_VOLUME_MIN   = 1.3
+REVERSAL_SPREAD_MAX   = 0.002
+REVERSAL_MOMENTUM_MIN = 0.003
+
+// ---------------------------------------------------------------------------
+// Macro inputs for the 8-vote regime model. lookahead_off — no future data.
+// ---------------------------------------------------------------------------
+f_pct(sym) =>
+    c = request.security(sym, "D", close, lookahead = barmerge.lookahead_off)
+    p = request.security(sym, "D", close[1], lookahead = barmerge.lookahead_off)
+    na(c) or na(p) or p == 0 ? na : (c - p) / p
+
+f_lvl(sym) => request.security(sym, "D", close, lookahead = barmerge.lookahead_off)
+
+spy_pct = f_pct("AMEX:SPY")
+qqq_pct = f_pct("NASDAQ:QQQ")
+iwm_pct = f_pct("AMEX:IWM")
+vix_lvl = f_lvl("CBOE:VIX")
+vix_pct = f_pct("CBOE:VIX")
+dxy_pct = f_pct("TVC:DXY")
+tnx_pct = f_pct("TVC:TNX")
+btc_pct = f_pct("BITSTAMP:BTCUSD")
+
+// vote encoding: 1 = RISK_ON, -1 = RISK_OFF, 0 = NEUTRAL, na = not cast
+v_up(v, on_gt, off_lt)  => na(v) ? na : v > on_gt ? 1 : v < off_lt ? -1 : 0
+v_low(v, on_lt, off_gt) => na(v) ? na : v < on_lt ? 1 : v > off_gt ? -1 : 0
+
+vote_spy = v_up(spy_pct,  0.003,  -0.003)
+vote_qqq = v_up(qqq_pct,  0.003,  -0.003)
+vote_iwm = v_up(iwm_pct,  0.004,  -0.004)
+vote_vxl = v_low(vix_lvl, 18.0,   25.0)
+vote_vxp = v_low(vix_pct, -0.03,  0.05)
+vote_dxy = v_low(dxy_pct, -0.002, 0.003)
+vote_tnx = v_low(tnx_pct, -0.005, 0.008)
+vote_btc = v_up(btc_pct,  0.015,  -0.020)
+
+cast(v) => na(v) ? 0 : 1
+val(v)  => na(v) ? 0 : v
+
+votes_cast = cast(vote_spy) + cast(vote_qqq) + cast(vote_iwm) + cast(vote_vxl) + cast(vote_vxp) + cast(vote_dxy) + cast(vote_tnx) + cast(vote_btc)
+net_score  = val(vote_spy) + val(vote_qqq) + val(vote_iwm) + val(vote_vxl) + val(vote_vxp) + val(vote_dxy) + val(vote_tnx) + val(vote_btc)
+
+// PRD-263 worst-case bounding (regime.py:199-205)
+missing     = 8 - votes_cast
+bounded_net = net_score > 0 ? math.max(0, net_score - missing) : math.min(0, net_score + missing)
+confidence  = math.abs(bounded_net) / 8.0
+
+// _classify_regime — EXPANSION is NOT representable here (mapping §3.1)
+// regime code: 1 RISK_ON | 2 RISK_OFF | 3 NEUTRAL | 4 CHAOTIC
+regime_code = not na(vix_pct) and vix_pct > VIX_CHAOTIC_SPIKE ? 4 : bounded_net >= 4 and confidence >= 0.60 ? 1 : bounded_net >= 2 ? 1 : bounded_net <= -4 and confidence >= 0.60 ? 2 : bounded_net <= -2 ? 2 : 3
+
+// _determine_posture — global floor only; the finer posture tiers do not change
+// any gate the proxy evaluates. posture code: 0 STAY_FLAT | 1 tradeable
+stay_flat    = regime_code == 4 or confidence < MIN_REGIME_CONFIDENCE
+posture_code = stay_flat ? 0 : 1
+
+// direction_for_regime: 1 LONG | -1 SHORT | 0 none
+dir_code = regime_code == 1 ? 1 : regime_code == 2 ? -1 : regime_code == 3 ? (net_score > 0 ? 1 : net_score < 0 ? -1 : 0) : 0
+
+// ---------------------------------------------------------------------------
+// Kill switch — runtime/__init__.py:2194-2204, strict > on all three legs
+// ---------------------------------------------------------------------------
+kill_switch = (not na(vix_lvl) and vix_lvl > KILL_SWITCH_VIX_LEVEL) or (not na(vix_pct) and vix_pct > KILL_SWITCH_VIX_PCT_CHANGE) or (not na(spy_pct) and math.abs(spy_pct) > KILL_SWITCH_SPY_PCT_CHANGE)
+
+// ---------------------------------------------------------------------------
+// Per-symbol derived metrics — chart symbol (config.py:109-112)
+// ---------------------------------------------------------------------------
+ema9  = ta.ema(close, EMA_FAST)
+ema21 = ta.ema(close, EMA_SLOW)
+ema50 = ta.ema(close, EMA_TREND)
+atr14 = ta.rma(ta.tr(true), ATR_PERIOD)          // Wilder RMA, per source
+momentum_5d    = close[5] == 0 or na(close[5]) ? na : (close - close[5]) / close[5]
+volume_ratio   = ta.sma(volume, 20) == 0 ? na : volume / ta.sma(volume, 20)   // approximation — mapping §3.2
+ema_spread_pct = close == 0 ? na : (ema9 - ema21) / close                     // approximation — mapping §3.2
+
+sufficient_history = bar_index >= OHLCV_MIN_BARS and not na(ema50) and not na(atr14)
+aligned_bull = ema9 > ema21 and ema21 > ema50
+aligned_bear = ema9 < ema21 and ema21 < ema50
+
+// _determine_structure — structure.py:146-212, priority order preserved
+// 0 CHOP | 1 TREND | 2 PULLBACK | 3 BREAKOUT | 4 REVERSAL
+mom = na(momentum_5d) ? 0.0 : momentum_5d
+vr  = na(volume_ratio) ? 0.0 : volume_ratio
+spr = na(ema_spread_pct) ? 0.0 : math.abs(ema_spread_pct)
+
+structure_code = not sufficient_history ? 0 : (mom > BREAKOUT_MOMENTUM_MIN and vr > BREAKOUT_VOLUME_MIN and close > ema9) ? 3 : (mom < -BREAKOUT_MOMENTUM_MIN and vr > BREAKOUT_VOLUME_MIN and close < ema9) ? 3 : (spr < REVERSAL_SPREAD_MAX and math.abs(mom) > REVERSAL_MOMENTUM_MIN) ? 4 : aligned_bull ? (close >= ema9 ? 1 : close >= ema21 ? 2 : 0) : aligned_bear ? (close <= ema9 ? 1 : close <= ema21 ? 2 : 0) : 0
+
+// ---------------------------------------------------------------------------
+// Candidate geometry — options.py:_build_candidate. Deterministic: R:R == 2.0
+// ---------------------------------------------------------------------------
+risk_distance = not na(atr14) and atr14 > 0 ? atr14 : close * 0.02
+entry_px  = close
+stop_px   = dir_code == 1 ? entry_px - risk_distance : entry_px + risk_distance
+target_px = dir_code == 1 ? entry_px + 2.0 * risk_distance : entry_px - 2.0 * risk_distance
+risk_amt   = math.abs(entry_px - stop_px)
+reward_amt = math.abs(target_px - entry_px)
+rr = risk_amt > 0 ? reward_amt / risk_amt : na
+
+// ---------------------------------------------------------------------------
+// Gates — qualification.py:368-540. 1-4 hard, 5-11 soft.
+// 1 = PASS, 0 = FAIL, -1 = NOT_REPRESENTABLE
+// ---------------------------------------------------------------------------
+g1_regime     = posture_code == 0 ? 0 : 1
+g2_confidence = confidence < MIN_REGIME_CONFIDENCE ? 0 : 1
+g3_direction  = dir_code == 0 ? 0 : 1
+g4_structure  = structure_code == 0 ? 0 : 1
+hard_pass = g1_regime == 1 and g2_confidence == 1 and g3_direction == 1 and g4_structure == 1
+
+g5_stop_defined = (stop_px > 0 and risk_amt > 0) ? 1 : 0
+stop_pct  = entry_px > 0 ? risk_amt / entry_px : na
+atr_floor = not na(atr14) ? atr14 * STOP_ATR_FLOOR_K : na
+g6_stop_distance = not (risk_amt > 0 and entry_px > 0) ? 0 : (stop_pct < MIN_STOP_PCT ? 0 : (not na(atr_floor) and risk_amt < atr_floor ? 0 : 1))
+min_rr = regime_code == 3 ? NEUTRAL_RR_RATIO : MIN_RR_RATIO
+g7_rr  = na(rr) ? 0 : (rr < min_rr ? 0 : 1)
+g8_max_risk = -1                                  // NOT_REPRESENTABLE — mapping §3.1
+g9_earnings = 1                                   // fail-open in the engine too
+extension = not na(ema21) and not na(atr14) and atr14 > 0 ? math.abs(entry_px - ema21) / atr14 : na
+g10_extension = na(extension) ? 1 : (extension > EXTENSION_ATR_MULTIPLIER ? 0 : 1)
+g11_time = -1                                     // NOT_REPRESENTABLE on daily bars
+
+// Soft-gate arithmetic over REPRESENTABLE soft gates only (5,6,7,9,10).
+// Gates 8 and 11 are excluded from the count and reported separately — an
+// unavailable gate is never counted as passing (conventions §h).
+soft_fail_count = (g5_stop_defined == 0 ? 1 : 0) + (g6_stop_distance == 0 ? 1 : 0) + (g7_rr == 0 ? 1 : 0) + (g9_earnings == 0 ? 1 : 0) + (g10_extension == 0 ? 1 : 0)
+
+qualified = hard_pass and not kill_switch and soft_fail_count == 0
+watchlist = hard_pass and not kill_switch and soft_fail_count == 1
+rejected  = not qualified and not watchlist
+
+// First rejection, in engine precedence order. 0 none | 1 kill | 2..5 hard | 6..10 soft
+first_rejection = kill_switch ? 1 : g1_regime == 0 ? 2 : g2_confidence == 0 ? 3 : g3_direction == 0 ? 4 : g4_structure == 0 ? 5 : g5_stop_defined == 0 ? 6 : g6_stop_distance == 0 ? 7 : g7_rr == 0 ? 8 : g9_earnings == 0 ? 9 : g10_extension == 0 ? 10 : 0
+
+// ---------------------------------------------------------------------------
+// Per-bar emission — every evaluation opportunity, not only qualified ones
+// ---------------------------------------------------------------------------
+plot(regime_code,     "regime_code",     display = display.data_window)
+plot(posture_code,    "posture_code",    display = display.data_window)
+plot(confidence,      "confidence",      display = display.data_window)
+plot(net_score,       "net_score",       display = display.data_window)
+plot(bounded_net,     "bounded_net",     display = display.data_window)
+plot(votes_cast,      "votes_cast",      display = display.data_window)
+plot(dir_code,        "direction_code",  display = display.data_window)
+plot(kill_switch ? 1 : 0, "kill_switch", display = display.data_window)
+plot(structure_code,  "structure_code",  display = display.data_window)
+plot(atr14,           "atr14",           display = display.data_window)
+plot(stop_pct,        "stop_pct",        display = display.data_window)
+plot(rr,              "rr",              display = display.data_window)
+plot(extension,       "extension_atr",   display = display.data_window)
+plot(g1_regime,       "g1_regime",       display = display.data_window)
+plot(g2_confidence,   "g2_confidence",   display = display.data_window)
+plot(g3_direction,    "g3_direction",    display = display.data_window)
+plot(g4_structure,    "g4_structure",    display = display.data_window)
+plot(g5_stop_defined, "g5_stop_defined", display = display.data_window)
+plot(g6_stop_distance,"g6_stop_distance",display = display.data_window)
+plot(g7_rr,           "g7_rr",           display = display.data_window)
+plot(g8_max_risk,     "g8_NOT_REPRESENTABLE", display = display.data_window)
+plot(g9_earnings,     "g9_earnings_failopen", display = display.data_window)
+plot(g10_extension,   "g10_extension",   display = display.data_window)
+plot(g11_time,        "g11_NOT_REPRESENTABLE", display = display.data_window)
+plot(soft_fail_count, "soft_fail_count", display = display.data_window)
+plot(first_rejection, "first_rejection", display = display.data_window)
+plot(qualified ? 1 : 0, "qualified",     display = display.data_window)
+plot(watchlist ? 1 : 0, "watchlist",     display = display.data_window)
+plot(rejected  ? 1 : 0, "rejected",      display = display.data_window)
+
+// Cumulative funnel counters
+var int n_bars       = 0
+var int n_evaluated  = 0
+var int n_hard_pass  = 0
+var int n_qualified  = 0
+var int n_watchlist  = 0
+var int n_kill       = 0
+n_bars      += 1
+n_evaluated += sufficient_history ? 1 : 0
+n_hard_pass += hard_pass ? 1 : 0
+n_qualified += qualified ? 1 : 0
+n_watchlist += watchlist ? 1 : 0
+n_kill      += kill_switch ? 1 : 0
+
+plotchar(qualified, "qualified_marker", "▲", location.bottom, color.new(color.teal, 0), size = size.tiny)
+
+if barstate.islast
+    var table t = table.new(position.top_right, 2, 9, border_width = 1)
+    table.cell(t, 0, 0, "CB AS-IS Proxy v0.1", text_size = size.small)
+    table.cell(t, 1, 0, "DIRECT path only",    text_size = size.small)
+    table.cell(t, 0, 1, "bars"),            table.cell(t, 1, 1, str.tostring(n_bars))
+    table.cell(t, 0, 2, "evaluated"),       table.cell(t, 1, 2, str.tostring(n_evaluated))
+    table.cell(t, 0, 3, "hard-gate pass"),  table.cell(t, 1, 3, str.tostring(n_hard_pass))
+    table.cell(t, 0, 4, "qualified"),       table.cell(t, 1, 4, str.tostring(n_qualified))
+    table.cell(t, 0, 5, "watchlist"),       table.cell(t, 1, 5, str.tostring(n_watchlist))
+    table.cell(t, 0, 6, "kill-switch bars"),table.cell(t, 1, 6, str.tostring(n_kill))
+    table.cell(t, 0, 7, "g8 / g11"),        table.cell(t, 1, 7, "NOT REPRESENTABLE")
+    table.cell(t, 0, 8, "EXPANSION"),       table.cell(t, 1, 8, "NOT REPRESENTABLE")

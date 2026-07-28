@@ -24,6 +24,11 @@ pre-registered studies, and the raw exports/analysis behind them.
 - [`faber-taa-2006`](studies/faber-taa-2006/MANIFEST_v0.1_DRAFT.md) —
   replication of Faber's Tactical Asset Allocation (2006/2007). **Not
   started**; manifest is an unfilled draft pending pre-registration.
+- [`cuttingboard-asis-proxy`](studies/cuttingboard-asis-proxy/README.md) —
+  frozen, no-tuning proxy for what the present `dwats250/cuttingboard` gate
+  semantics surface on declared TradingView chart history, pinned to
+  `59f8279d`. **Package complete, no run executed.** Not a CuttingBoard replay,
+  not a parity artifact, and makes no profitability claim.
 
 ## Audits
 
