@@ -351,3 +351,35 @@ appears:
 - **Unknown MCP or tool ownership** — a configured connector, hook, or automation whose owner,
   purpose, or current consumer cannot be established. Do not invoke it to find out.
 - **Wrong-side mutation** — any target that is not exactly `dwats250/strategy`, per §i.
+
+### Assigned decisions — amendment 2026-07-30 (owner instruction)
+
+Lane 2 defines a *review obligation*, not a ceiling on what the reviewing model may be asked to
+do. Where governance text, a classification, or a supersession call needs an independent pass,
+that pass is lane 2's, and in that capacity it reports and does not mutate.
+
+A **Dustin-authorized charge** may instead assign the lane-2 model a decision outright —
+synthesis, a provenance judgment, a classification, or a stop/go call on the work. Where a charge
+does so, the charge governs **that assignment**. This reaches Fable 5, the lane-2 model in the
+binding table above; Codex remains review-only, per `AGENTS.md`.
+
+Such an assignment is **not a model-role conflict** and does not trip the stop condition of that
+name. That condition catches a lane assigned differently *without* the owner's instruction. This
+amendment is the owner's instruction, and a charge issued under it is compliant, not conflicting.
+
+Lane 1 enumerates "the synthesis" among the things it owns. Where a charge assigns a decision,
+**lane 1's ownership of that decision yields for that packet. Its ownership of every mutation does
+not** — the orchestrator still performs, and is answerable for, every write.
+
+Two limits hold whoever decides:
+
+- **An assigned stop/go reaches the work, never the stop conditions.** The §i and §j stop
+  conditions remain report-and-wait-for-Dustin. No charge pre-delegates their resolution.
+- **A session that decided a question does not supply the independent pass on that same
+  decision** — the no-self-review rule of
+  `audits/cuttingboard-engine-strategy-audit/reviews/README.md`, which an assigned decision does
+  not suspend. Where a packet needs both, the pass comes from a different session, and preferably
+  a different model.
+
+A delegating session declares an assigned decision in its preflight alongside its lanes, naming
+where the independent pass will come from if the packet needs one.
