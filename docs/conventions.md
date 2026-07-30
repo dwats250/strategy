@@ -227,3 +227,127 @@ until a charge rooted in the fork says otherwise.
 **Interface companion — 2026-07-30.** Cross-repository interface conduct (what may cross, the
 required labels, and the probe/observation/observability paths) is specified in
 `docs/INTERFACE_CHARTER_v0.1.md`. On any conflict, this section controls.
+
+## j. Agent lanes and delegation
+
+**Added 2026-07-30.** This section is binding on every agent and every session, in the same way
+as §i. `CLAUDE.md` and `AGENTS.md` at the repository root carry it in brief and point here for
+the complete text.
+
+§i governs *where* an agent may write. This section governs *which* agent does the writing, who
+checks it, and what must be declared before any of it starts. The two are read together: a lane
+never enlarges the §i boundary, and no lane assignment authorizes a mutation that §i forbids.
+
+### The lanes
+
+Work in this repository is split across three roles. The split exists to keep expensive judgment
+centralized and auditable while mechanical work runs in parallel — not to save tokens.
+
+**Lane 1 — orchestrator.** Owns the session: the §i preflight, the reading of authority, the
+synthesis, the final report, and **every mutation to `dwats250/strategy`** — file edits, git
+operations, and any connector call that writes. It is the single place where a write is decided,
+which is what makes the §i stop conditions enforceable at one point rather than many. No
+subagent output becomes a repository fact until the orchestrator has verified it.
+
+**Lane 2 — high-level review.** One independent pass over frozen-record classifications,
+supersession and staleness calls, authority conflicts, and any proposed governance text, followed
+by **one bounded correction cycle**. No recursive loops, and no reviewer reviews its own review.
+This cardinality is not new: it is the rule
+`audits/cuttingboard-engine-strategy-audit/reviews/README.md` already states under *Rules*,
+applied beyond the audit that first wrote it down. The reviewer reports; it does not mutate, and
+it does not self-adjudicate.
+
+**Lane 3 — mechanical.** Bounded, non-overlapping reads: inventories, hashing, schema and
+row-count checks, grep sweeps, parallel discovery. A mechanical agent **may write scratch and
+intermediate files outside the repository** — that is what the lane is for — and **never writes a
+repository file**. Its load-bearing claims are verified by the orchestrator before use. Mechanical
+agents transcribe imperfectly; an unverified mechanical claim that reaches a committed artifact is
+a defect of the orchestrator, not of the mechanical agent.
+
+Two lane-3 agents must not be given overlapping write targets, even in scratch. Overlapping
+parallel writes are a stop condition.
+
+### Role-to-model binding — 2026-07-30
+
+| Lane | Model |
+|---|---|
+| 1 — orchestrator | Claude Opus 5 |
+| 2 — high-level review | Claude Fable 5 |
+| 3 — mechanical | Claude Haiku 4.5 |
+
+The lanes above are defined by role; this table binds them to models on a date. A model release
+changes this table by dated amendment — one line — and changes nothing else in this section.
+
+### Codex
+
+`AGENTS.md` previously described Codex as "primarily an orchestrator and reviewer here." As of
+this section, **Codex operates in lane 2 only**: it reviews, and it does not orchestrate and does
+not mutate. Orchestration and mutation authority sit in lane 1.
+
+This resolves a real conflict rather than papering over one. The prior wording predates the lane
+split and would otherwise assign the same role to two harnesses, leaving no answer to the question
+of which one owns a write.
+
+### Retired reviewer designations
+
+Reviews performed by fresh-context Sol / GPT-5.6 belong to the closed TV workstream. That
+designation is **retired for new work**: the surviving references are historical evidence of
+reviews that were commissioned and, in TV-0R's case, actually performed and adjudicated. They are
+not live delegation, and their supersession is enumerated in
+`audits/cuttingboard-engine-strategy-audit/closure/TV-LINE-CLOSURE-AMENDMENT-2026-07-30.md`.
+
+Retirement is prospective. It governs what may be delegated next and says nothing about the past;
+no historical review record is reworded, re-run, or re-adjudicated because of it.
+
+### Preflight — lane declaration
+
+Before delegating anything, a session states, in its report:
+
+1. Which lanes it will use, and for what.
+2. For each lane-3 dispatch: its exact scope and the fact that scopes do not overlap.
+3. Whether a lane-2 review is required for this packet, and if not, why not.
+
+This sits alongside the §i preflight items, not in place of them. A session that delegates
+nothing declares nothing — the requirement attaches to delegation, not to existence.
+
+### Containment assertions are commit-addressed
+
+When a phase must assert that CuttingBoard is unchanged, it does so by **commit-addressed
+comparison** — `rev-parse HEAD` and the relevant refs, captured before and after — and not by
+working-tree cleanliness.
+
+The reason is concrete. A CuttingBoard checkout on this machine is written to on a schedule by
+owner-operated production runs, so `git status --porcelain` reports modified paths that no agent
+touched. Reading that as a containment failure is a false positive; reading it as normal is a
+habit that would mask a real one. Commit identity answers the actual question — *did anything we
+did change the repository* — and is the same evidence style §i already requires for reads.
+
+If a working-tree state is reported at all, the paths attributable to owner production are named
+explicitly rather than waved past.
+
+### Instruction sources outside this repository
+
+Sessions here run inside harnesses that inject their own instructions — plugin session-start
+directives, user-level configuration, and per-project agent memory among them. These are
+**operational aids and never authority**. Where any of them conflicts with §i, this section, or a
+frozen record, the governing document controls and the conflict is reported rather than resolved
+silently.
+
+An out-of-repo source that states a rule this repository relies on has not documented that rule.
+It has documented it somewhere no reviewer, no other harness, and no future session is obliged to
+look. Standing rules live here.
+
+### Stop conditions
+
+Stop, report, and wait for Dustin — do not resolve by guessing — when any of the following
+appears:
+
+- **Ambiguous authority** — no active charge, two documents that both claim to govern, or a
+  pointer to a plan that authorizes nothing.
+- **Model-role conflict** — a charge, plan, or configuration that assigns a lane differently from
+  the table above, including one that names a retired reviewer designation.
+- **Overlapping parallel writes** — two agents whose write targets intersect, in the repository or
+  in scratch.
+- **Unknown MCP or tool ownership** — a configured connector, hook, or automation whose owner,
+  purpose, or current consumer cannot be established. Do not invoke it to find out.
+- **Wrong-side mutation** — any target that is not exactly `dwats250/strategy`, per §i.

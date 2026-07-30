@@ -8,10 +8,14 @@ reconnaissance, the writing, and the committing.
 - **`docs/conventions.md`** — the standing lab rules: study layout, pre-registered manifests,
   script versioning, immutable exports, the ledger, what counts as a holdout, and how audits
   differ from studies. Read it before adding a study or audit, or amending a manifest.
-- **The current committed plan** — for the CuttingBoard engine audit that is
-  [`audits/cuttingboard-engine-strategy-audit/plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md`](audits/cuttingboard-engine-strategy-audit/plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md).
-  The committed plan is authoritative for a phase's scope, paths, outputs, completion criteria,
-  and stop conditions. Chat history and git history are not authority.
+- **The CuttingBoard engine audit** — current state is
+  [`audits/cuttingboard-engine-strategy-audit/EA-AUDIT-CLOSEOUT.md`](audits/cuttingboard-engine-strategy-audit/EA-AUDIT-CLOSEOUT.md):
+  the program **closed at EA-8**; EA-9 and later are blocked and unexecuted. Its scope record is
+  [`plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md`](audits/cuttingboard-engine-strategy-audit/plans/EA-ENGINE-AUDIT-PROGRAM-REV3.md),
+  which is a preserved planning artifact and **authorizes nothing on its own**.
+  Where a phase *is* explicitly authorized, its committed plan is authoritative for that phase's
+  scope, paths, outputs, completion criteria, and stop conditions. **If no phase is explicitly
+  authorized, none is active.** Chat history and git history are not authority.
 
 Neither this file nor `AGENTS.md` is a workflow authority. They point; they do not govern.
 
@@ -39,6 +43,20 @@ condition; a CuttingBoard target is a STOP condition outright.
 **The complete rule is `docs/conventions.md` §i** — capability-is-not-authorization, the
 pinned-SHA evidence rules, and the session preflight. Read it before acting.
 
+## Agent lanes — binding in brief
+
+Three lanes. **Opus 5 orchestrates** and owns every mutation to `dwats250/strategy` — file edits,
+git operations, connector writes. **Fable 5 reviews** — one independent pass plus one bounded
+correction cycle, no loops, no reviewer reviewing its own review. **Haiku 4.5 does mechanical
+work** — bounded, non-overlapping reads and inventories; it may write scratch outside the
+repository and **never writes a repository file**, and its load-bearing claims are verified before
+use. Codex reviews; it does not orchestrate and does not mutate.
+
+Declare your lanes at preflight before delegating anything. Sol / GPT-5.6 is retired for new work.
+
+**The complete rule is `docs/conventions.md` §j** — the role-to-model binding, the containment
+method, out-of-repo instruction sources, and the delegation stop conditions.
+
 ## Checks to run — the phase-relevant ones, not all of them
 
 Run what the active phase actually needs, and report it:
@@ -47,7 +65,9 @@ Run what the active phase actually needs, and report it:
 - **Provenance** — for pinned-source work, the SHA and how it was read; for run artifacts, the
   identities the plan requires.
 - **Containment** — when a phase executes anything, establish and *prove* the isolation the plan
-  requires before the run, and assert afterward that CuttingBoard is unchanged.
+  requires before the run, and assert afterward that CuttingBoard is unchanged. Assert it
+  **commit-addressed** (`rev-parse HEAD` and refs, before and after), not by working-tree
+  cleanliness — owner cron dirties that tree on a schedule. See `docs/conventions.md` §j.
 
 Skip checks a phase doesn't need. A preflight that reports facts irrelevant to the packet is
 noise, not rigour.
