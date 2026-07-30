@@ -30,8 +30,10 @@ pre-registered studies, and the raw exports/analysis behind them.
 - [`cuttingboard-asis-proxy`](studies/cuttingboard-asis-proxy/README.md) —
   frozen, no-tuning proxy for what the present `dwats250/cuttingboard` gate
   semantics surface on declared TradingView chart history, pinned to
-  `59f8279d`. **Package complete, no run executed.** Not a CuttingBoard replay,
-  not a parity artifact, and makes no profitability claim.
+  `59f8279d`. **Baseline executed and registered** (`RUN_SPY_1D_2015-01-01`,
+  2026-07-30 UTC): 2,909 bars, 170 QUALIFIED / 239 WATCHLIST, findings
+  published with a zero-disagreement row-level v0.5 comparison. Not a
+  CuttingBoard replay, not a parity artifact, and makes no profitability claim.
 
 ## Audits
 
