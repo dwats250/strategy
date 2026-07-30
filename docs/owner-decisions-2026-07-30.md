@@ -32,6 +32,13 @@ specific strategy families and questions are brought as a charter within that wi
 capture gets a probe pre-registration under the new template. Nothing is captured ahead of a
 stated question. Declining to capture is an accepted outcome.
 
+## 4. Interface charter — **ADOPTED v0.1** (added later on 2026-07-30)
+
+The Strategy–CuttingBoard interface charter, drafted externally and reconciled against §i's
+Development-boundary amendment, the probe template, and the §b trial-budget rule, is adopted as
+`docs/INTERFACE_CHARTER_v0.1.md` by owner instruction. §i remains controlling on conflict; the
+charter's CuttingBoard-side provisions bind only via an ADOPTED LOCALLY record on that side.
+
 ## Explicitly still open (not decided here)
 
 The `GATE_TRANSLATION_MATRIX.md` Q-03 correction implied by the Gate 2 analysis (its own dated

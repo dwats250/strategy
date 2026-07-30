@@ -223,3 +223,7 @@ forward, Dustin adopts the **hybrid** boundary
 For sessions rooted in this repository nothing changes: `dwats250/strategy` remains the only
 authorized mutation target, and the fork joins `dwats250/cuttingboard` on the forbidden list
 until a charge rooted in the fork says otherwise.
+
+**Interface companion — 2026-07-30.** Cross-repository interface conduct (what may cross, the
+required labels, and the probe/observation/observability paths) is specified in
+`docs/INTERFACE_CHARTER_v0.1.md`. On any conflict, this section controls.
