@@ -12,6 +12,9 @@ pre-registered studies, and the raw exports/analysis behind them.
 - `audits/<audit-name>/` — external audits of another repository's behavior,
   where a backtest is the instrument and somebody's code is the object.
   Different lifecycle, different skeleton; see `docs/conventions.md` §h.
+- `exploratory/<packet-name>/` — clearly-labelled exploratory lineage packets:
+  ungoverned diagnostic work retained for reference. Not studies, not audit
+  evidence; each packet's README states its own evidence boundary.
 - `docs/conventions.md` — the standing rules for how studies here are
   pre-registered, versioned, and reported.
 - `CHECKSUMS_PRE_REORG.txt` — sha256 snapshot of every `.csv`/`.pine` file

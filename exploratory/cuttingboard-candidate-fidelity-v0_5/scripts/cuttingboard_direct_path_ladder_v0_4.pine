@@ -1,0 +1,223 @@
+//@version=6
+// CuttingBoard Direct Path — Gate Ladder
+// VERSION: v0.4.0
+// FILE: cuttingboard_direct_path_ladder_v0_4.pine
+//
+// PURPOSE
+// This is one actual TradingView strategy, not an indicator.  It uses the
+// documented CuttingBoard direct-path rules, but lets you select the fixed
+// incremental gate stage below.  It does NOT tune any threshold.
+//
+// WHY THE LADDER EXISTS
+// v0.3 collapsed regime, posture, structure, direct-risk, and kill-switch
+// requirements into one order condition.  A sparse result could not say which
+// family caused it.  The CuttingBoard study protocol already declares these
+// stages; this script exposes them in one Strategy Tester-ready file:
+//   V0 = regime direction only
+//   V1 = V0 + posture/confidence
+//   V2 = V1 + non-CHOP structure
+//   V3 = V2 + 1%-of-entry stop floor + extension gate
+//   V4 = V3 + kill-switch exclusion
+//
+// Use standard SPY daily candles.  Signals use a confirmed daily close and
+// market entries are filled at the next daily open.  Stops/targets are based
+// on the signal bar's ATR: 1 ATR risk / 2 ATR target.
+
+strategy(
+     "CuttingBoard Direct Path — Gate Ladder v0.4",
+     shorttitle = "CB Ladder v0.4",
+     overlay = true,
+     pyramiding = 0,
+     initial_capital = 100000,
+     default_qty_type = strategy.percent_of_equity,
+     default_qty_value = 100,
+     commission_type = strategy.commission.percent,
+     commission_value = 0.01,
+     slippage = 1,
+     process_orders_on_close = false,
+     calc_on_every_tick = false,
+     fill_orders_on_standard_ohlc = true)
+
+if barstate.isfirst and not (timeframe.isdaily and timeframe.multiplier == 1)
+    runtime.error("CB Ladder requires a 1D chart.")
+if barstate.isfirst and (chart.is_heikinashi or chart.is_renko or chart.is_kagi or chart.is_linebreak or chart.is_pnf or chart.is_range)
+    runtime.error("CB Ladder requires standard OHLC candles.")
+
+groupStage = "Fixed CuttingBoard gate stage"
+variant = input.string("V0 — Regime direction", "Stage", options = ["V0 — Regime direction", "V1 — + posture", "V2 — + structure", "V3 — + direct risk", "V4 — + kill switch"], group = groupStage)
+
+groupSymbols = "CuttingBoard market-state symbols"
+spySymbol = input.symbol("AMEX:SPY", "SPY", group = groupSymbols)
+qqqSymbol = input.symbol("NASDAQ:QQQ", "QQQ", group = groupSymbols)
+iwmSymbol = input.symbol("AMEX:IWM", "IWM", group = groupSymbols)
+vixSymbol = input.symbol("CBOE:VIX", "VIX", group = groupSymbols)
+dxySymbol = input.symbol("TVC:DXY", "DXY", group = groupSymbols)
+tnxSymbol = input.symbol("TVC:TNX", "US 10Y yield", group = groupSymbols)
+btcSymbol = input.symbol("BITSTAMP:BTCUSD", "BTC/USD", group = groupSymbols)
+
+groupWindow = "Test window"
+startDate = input.time(timestamp("01 Jan 2015 00:00 +0000"), "Start", group = groupWindow)
+endDate = input.time(timestamp("31 Dec 2099 23:59 +0000"), "End", group = groupWindow)
+
+f_dailyReturn(string symbol) =>
+    request.security(symbol, "D", close[1] != 0 ? close / close[1] - 1 : na, gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true)
+
+f_dailyReturnAndLevel(string symbol) =>
+    request.security(symbol, "D", [close[1] != 0 ? close / close[1] - 1 : na, close], gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true)
+
+f_voteUp(float change, float upThreshold, float downThreshold) =>
+    na(change) ? 0 : change > upThreshold ? 1 : change < downThreshold ? -1 : 0
+
+f_voteLow(float value, float lowThreshold, float highThreshold) =>
+    na(value) ? 0 : value < lowThreshold ? 1 : value > highThreshold ? -1 : 0
+
+f_available(float value) =>
+    na(value) ? 0 : 1
+
+// Eight-vote CuttingBoard regime: literal thresholds, daily confirmed data,
+// missing votes bounded toward zero rather than treated as neutral.
+spyReturn = f_dailyReturn(spySymbol)
+qqqReturn = f_dailyReturn(qqqSymbol)
+iwmReturn = f_dailyReturn(iwmSymbol)
+[vixReturn, vixLevel] = f_dailyReturnAndLevel(vixSymbol)
+dxyReturn = f_dailyReturn(dxySymbol)
+tnxReturn = f_dailyReturn(tnxSymbol)
+btcReturn = f_dailyReturn(btcSymbol)
+
+voteSpy = f_voteUp(spyReturn, 0.003, -0.003)
+voteQqq = f_voteUp(qqqReturn, 0.003, -0.003)
+voteIwm = f_voteUp(iwmReturn, 0.004, -0.004)
+voteVixLevel = f_voteLow(vixLevel, 18.0, 25.0)
+voteVixChange = f_voteLow(vixReturn, -0.03, 0.05)
+voteDxy = f_voteLow(dxyReturn, -0.002, 0.003)
+voteTnx = f_voteLow(tnxReturn, -0.005, 0.008)
+voteBtc = f_voteUp(btcReturn, 0.015, -0.020)
+
+rawNet = voteSpy + voteQqq + voteIwm + voteVixLevel + voteVixChange + voteDxy + voteTnx + voteBtc
+availableVotes = f_available(spyReturn) + f_available(qqqReturn) + f_available(iwmReturn) + f_available(vixLevel) + f_available(vixReturn) + f_available(dxyReturn) + f_available(tnxReturn) + f_available(btcReturn)
+missingVotes = 8 - availableVotes
+boundedNet = rawNet > 0 ? math.max(0, rawNet - missingVotes) : math.min(0, rawNet + missingVotes)
+confidence = math.abs(boundedNet) / 8.0
+
+chaotic = vixReturn > 0.15
+riskOn = not chaotic and boundedNet >= 2
+riskOff = not chaotic and boundedNet <= -2
+posturePass = confidence >= 0.50
+
+// The documented direct structure gate rejects CHOP.  It does not require a
+// RISK_ON candidate to have an independently bullish EMA stack, nor a
+// RISK_OFF candidate to have an independently bearish one.  v0.3 imposed that
+// extra directional match and therefore was not a faithful direct-path test.
+ema9 = ta.ema(close, 9)
+ema21 = ta.ema(close, 21)
+ema50 = ta.ema(close, 50)
+atr14 = ta.atr(14)
+momentum5 = close[5] != 0 ? close / close[5] - 1 : na
+volumeRatio = ta.sma(volume[1], 20) != 0 ? volume / ta.sma(volume[1], 20) : na
+emaSpreadPct = close != 0 ? math.abs(ema9 - ema21) / close : na
+
+breakoutUp = momentum5 > 0.02 and volumeRatio > 1.3 and close > ema9
+breakoutDown = momentum5 < -0.02 and volumeRatio > 1.3 and close < ema9
+reversal = emaSpreadPct < 0.002 and math.abs(momentum5) > 0.003
+trendOrPullback = (ema9 > ema21 and ema21 > ema50) or (ema9 < ema21 and ema21 < ema50)
+structurePass = not na(atr14) and not na(momentum5) and not na(volumeRatio) and (breakoutUp or breakoutDown or reversal or trendOrPullback)
+
+// Direct geometry checks.  The 1% floor is preserved here, where the written
+// protocol places it; it is not silently removed or tuned.
+atrPct = close != 0 ? atr14 / close : na
+stopDistancePass = atrPct >= 0.01
+notExtended = math.abs(close - ema21) <= 1.5 * atr14
+directRiskPass = stopDistancePass and notExtended
+
+killSwitch = vixLevel > 35 or vixReturn > 0.15 or math.abs(spyReturn) > 0.03
+
+inWindow = time >= startDate and time <= endDate
+v0Pass = inWindow and (riskOn or riskOff)
+v1Pass = v0Pass and posturePass
+v2Pass = v1Pass and structurePass
+v3Pass = v2Pass and directRiskPass
+v4Pass = v3Pass and not killSwitch
+
+selectedPass = variant == "V0 — Regime direction" ? v0Pass : variant == "V1 — + posture" ? v1Pass : variant == "V2 — + structure" ? v2Pass : variant == "V3 — + direct risk" ? v3Pass : v4Pass
+selectedLong = selectedPass and riskOn
+selectedShort = selectedPass and riskOff
+flatNow = strategy.position_size == 0
+canEnter = barstate.isconfirmed and flatNow
+
+// The ATR is fixed at signal close.  `loss`/`profit` are tick distances, so
+// TradingView anchors the bracket to the actual next-open fill.
+stopTicks = math.max(1, math.round(atr14 / syminfo.mintick))
+targetTicks = stopTicks * 2
+if canEnter and selectedLong
+    strategy.entry("Long", strategy.long, comment = "CB " + str.substring(variant, 0, 2))
+    strategy.exit("Long exit", from_entry = "Long", loss = stopTicks, profit = targetTicks, comment_loss = "1 ATR stop", comment_profit = "2R target")
+if canEnter and selectedShort
+    strategy.entry("Short", strategy.short, comment = "CB " + str.substring(variant, 0, 2))
+    strategy.exit("Short exit", from_entry = "Short", loss = stopTicks, profit = targetTicks, comment_loss = "1 ATR stop", comment_profit = "2R target")
+
+// Cumulative funnel.  These counters all use the same historical loading
+// window, so their differences isolate the first gate family that thins the
+// candidate set.  They are diagnostics, not additional order conditions.
+var int windowBars = 0
+var int v0Bars = 0
+var int v1Bars = 0
+var int v2Bars = 0
+var int v3Bars = 0
+var int v4Bars = 0
+var int ordersSubmitted = 0
+if barstate.isconfirmed and inWindow
+    windowBars += 1
+    if v0Pass
+        v0Bars += 1
+    if v1Pass
+        v1Bars += 1
+    if v2Pass
+        v2Bars += 1
+    if v3Pass
+        v3Bars += 1
+    if v4Pass
+        v4Bars += 1
+    if canEnter and (selectedLong or selectedShort)
+        ordersSubmitted += 1
+
+var table diagnostics = table.new(position.top_right, 2, 12, border_width = 1)
+if barstate.islast
+    table.cell(diagnostics, 0, 0, "CB Direct Path", text_color = color.white, bgcolor = color.rgb(30, 78, 121))
+    table.cell(diagnostics, 1, 0, "v0.4.0", text_color = color.white, bgcolor = color.rgb(30, 78, 121))
+    table.cell(diagnostics, 0, 1, "Selected stage")
+    table.cell(diagnostics, 1, 1, str.substring(variant, 0, 2))
+    table.cell(diagnostics, 0, 2, "Current regime")
+    table.cell(diagnostics, 1, 2, riskOn ? "RISK ON" : riskOff ? "RISK OFF" : chaotic ? "CHAOTIC" : "NEUTRAL")
+    table.cell(diagnostics, 0, 3, "Bounded net / conf.")
+    table.cell(diagnostics, 1, 3, str.tostring(boundedNet) + " / " + str.tostring(confidence, "#.00"))
+    table.cell(diagnostics, 0, 4, "Window bars")
+    table.cell(diagnostics, 1, 4, str.tostring(windowBars))
+    table.cell(diagnostics, 0, 5, "V0 regime bars")
+    table.cell(diagnostics, 1, 5, str.tostring(v0Bars))
+    table.cell(diagnostics, 0, 6, "V1 posture bars")
+    table.cell(diagnostics, 1, 6, str.tostring(v1Bars))
+    table.cell(diagnostics, 0, 7, "V2 structure bars")
+    table.cell(diagnostics, 1, 7, str.tostring(v2Bars))
+    table.cell(diagnostics, 0, 8, "V3 direct-risk bars")
+    table.cell(diagnostics, 1, 8, str.tostring(v3Bars))
+    table.cell(diagnostics, 0, 9, "V4 kill-safe bars")
+    table.cell(diagnostics, 1, 9, str.tostring(v4Bars))
+    table.cell(diagnostics, 0, 10, "Orders submitted")
+    table.cell(diagnostics, 1, 10, str.tostring(ordersSubmitted))
+    table.cell(diagnostics, 0, 11, "ATR % / structure")
+    table.cell(diagnostics, 1, 11, str.tostring(atrPct * 100, "#.##") + "% / " + (structurePass ? "NON-CHOP" : "CHOP"))
+
+plot(ema9, "EMA 9", color = color.aqua)
+plot(ema21, "EMA 21", color = color.orange, linewidth = 2)
+plot(ema50, "EMA 50", color = color.purple)
+bgcolor(killSwitch ? color.new(color.red, 84) : riskOn ? color.new(color.green, 92) : riskOff ? color.new(color.maroon, 92) : na, title = "CuttingBoard regime")
+plotshape(canEnter and selectedLong, title = "Selected long", style = shape.triangleup, location = location.belowbar, color = color.lime, size = size.tiny, text = "CB L")
+plotshape(canEnter and selectedShort, title = "Selected short", style = shape.triangledown, location = location.abovebar, color = color.red, size = size.tiny, text = "CB S")
+
+plot(boundedNet, "CB bounded net", display = display.data_window)
+plot(confidence, "CB confidence", display = display.data_window)
+plot(availableVotes, "CB available votes", display = display.data_window)
+plot(atrPct * 100, "CB ATR %", display = display.data_window)
+plot(structurePass ? 1 : 0, "CB structure pass", display = display.data_window)
+plot(directRiskPass ? 1 : 0, "CB direct-risk pass", display = display.data_window)
+plot(killSwitch ? 1 : 0, "CB kill switch", display = display.data_window)

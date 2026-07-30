@@ -1,0 +1,217 @@
+//@version=6
+// CuttingBoard Core — SPY Daily Direct-Path Test
+// VERSION: v0.3.0
+// FILE: cuttingboard_core_spy_strategy_v0_3.pine
+//
+// v0.3.0 change:
+// - The old `ATR / close >= 1%` floor is no longer an entry gate.  A 1-ATR
+//   stop already scales the dollar risk to volatility; treating calm SPY
+//   conditions as invalid was an artificial blocker, not a useful risk rule.
+// - The ATR percentage remains visible in the Data Window and diagnostics.
+// - The on-chart table exposes the actual gate funnel for the loaded window.
+//
+// A deliberately small, tradeable research strategy built from CuttingBoard's
+// decision spine:
+//   market state -> directional structure -> risk/extension gates -> execution.
+//
+// It is not a full CuttingBoard replica. It excludes options-chain checks,
+// flow, time-of-day, expansion breadth, sizing modifiers, and live operations.
+
+strategy(
+     "CuttingBoard Core — SPY Daily Direct-Path Test v0.3",
+     shorttitle = "CB Core v0.3",
+     overlay = true,
+     pyramiding = 0,
+     initial_capital = 100000,
+     default_qty_type = strategy.percent_of_equity,
+     default_qty_value = 100,
+     commission_type = strategy.commission.percent,
+     commission_value = 0.01,
+     slippage = 1,
+     process_orders_on_close = false,
+     calc_on_every_tick = false,
+     fill_orders_on_standard_ohlc = true)
+
+// This is a daily, standard-candle study. Signals are confirmed at the close
+// and TradingView fills the submitted market order at the next bar's open.
+if barstate.isfirst and not (timeframe.isdaily and timeframe.multiplier == 1)
+    runtime.error("CB Core is a daily strategy. Switch the chart to 1D.")
+
+if barstate.isfirst and (chart.is_heikinashi or chart.is_renko or chart.is_kagi or chart.is_linebreak or chart.is_pnf or chart.is_range)
+    runtime.error("CB Core requires standard OHLC candles.")
+
+// Cross-market inputs mirror CuttingBoard's eight-vote regime model.
+groupSymbols = "CuttingBoard market-state symbols"
+spySymbol = input.symbol("AMEX:SPY", "SPY", group = groupSymbols)
+qqqSymbol = input.symbol("NASDAQ:QQQ", "QQQ", group = groupSymbols)
+iwmSymbol = input.symbol("AMEX:IWM", "IWM", group = groupSymbols)
+vixSymbol = input.symbol("CBOE:VIX", "VIX", group = groupSymbols)
+dxySymbol = input.symbol("TVC:DXY", "DXY", group = groupSymbols)
+tnxSymbol = input.symbol("TVC:TNX", "US 10Y yield", group = groupSymbols)
+btcSymbol = input.symbol("BITSTAMP:BTCUSD", "BTC/USD", group = groupSymbols)
+
+groupWindow = "Test window"
+startDate = input.time(timestamp("01 Jan 2015 00:00 +0000"), "Start", group = groupWindow)
+endDate = input.time(timestamp("31 Dec 2099 23:59 +0000"), "End", group = groupWindow)
+
+f_dailyReturn(string symbol) =>
+    request.security(symbol, "D", close[1] != 0 ? close / close[1] - 1 : na, gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true)
+
+f_dailyReturnAndLevel(string symbol) =>
+    request.security(symbol, "D", [close[1] != 0 ? close / close[1] - 1 : na, close], gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true)
+
+f_voteUp(float change, float onThreshold, float offThreshold) =>
+    na(change) ? 0 : change > onThreshold ? 1 : change < offThreshold ? -1 : 0
+
+f_voteLow(float value, float onThreshold, float offThreshold) =>
+    na(value) ? 0 : value < onThreshold ? 1 : value > offThreshold ? -1 : 0
+
+f_available(float value) =>
+    na(value) ? 0 : 1
+
+spyReturn = f_dailyReturn(spySymbol)
+qqqReturn = f_dailyReturn(qqqSymbol)
+iwmReturn = f_dailyReturn(iwmSymbol)
+[vixReturn, vixLevel] = f_dailyReturnAndLevel(vixSymbol)
+dxyReturn = f_dailyReturn(dxySymbol)
+tnxReturn = f_dailyReturn(tnxSymbol)
+btcReturn = f_dailyReturn(btcSymbol)
+
+// Exact v0.1 CuttingBoard vote thresholds; unavailable data is bounded rather
+// than silently treated as neutral.
+voteSpy = f_voteUp(spyReturn, 0.003, -0.003)
+voteQqq = f_voteUp(qqqReturn, 0.003, -0.003)
+voteIwm = f_voteUp(iwmReturn, 0.004, -0.004)
+voteVixLevel = f_voteLow(vixLevel, 18.0, 25.0)
+voteVixChange = f_voteLow(vixReturn, -0.03, 0.05)
+voteDxy = f_voteLow(dxyReturn, -0.002, 0.003)
+voteTnx = f_voteLow(tnxReturn, -0.005, 0.008)
+voteBtc = f_voteUp(btcReturn, 0.015, -0.020)
+
+voteNet = voteSpy + voteQqq + voteIwm + voteVixLevel + voteVixChange + voteDxy + voteTnx + voteBtc
+availableVotes = f_available(spyReturn) + f_available(qqqReturn) + f_available(iwmReturn) + f_available(vixLevel) + f_available(vixReturn) + f_available(dxyReturn) + f_available(tnxReturn) + f_available(btcReturn)
+missingVotes = 8 - availableVotes
+boundedNet = voteNet > 0 ? math.max(0, voteNet - missingVotes) : math.min(0, voteNet + missingVotes)
+confidence = math.abs(boundedNet) / 8.0
+
+chaotic = vixReturn > 0.15
+// Gate 2's documented threshold is inclusive 0.50.  The prior baseline used
+// 0.55, which quietly changed this into an effective five-vote requirement.
+riskOn = not chaotic and boundedNet >= 2 and confidence >= 0.50
+riskOff = not chaotic and boundedNet <= -2 and confidence >= 0.50
+
+// CuttingBoard kill switch: no new trade during a shock bar.
+killSwitch = vixLevel > 35 or vixReturn > 0.15 or math.abs(spyReturn) > 0.03
+
+// Directional structure and direct-path risk gates.
+ema9 = ta.ema(close, 9)
+ema21 = ta.ema(close, 21)
+ema50 = ta.ema(close, 50)
+atr14 = ta.atr(14)
+momentum5 = close[5] != 0 ? close / close[5] - 1 : na
+volumeRatio = ta.sma(volume[1], 20) != 0 ? volume / ta.sma(volume[1], 20) : na
+
+trendUp = ema9 > ema21 and ema21 > ema50
+trendDown = ema9 < ema21 and ema21 < ema50
+breakoutUp = momentum5 > 0.02 and volumeRatio > 1.3 and close > ema9
+breakoutDown = momentum5 < -0.02 and volumeRatio > 1.3 and close < ema9
+
+// `atrPct` is retained as a diagnostic, not an entry filter.  The prior
+// version's >= 1% floor was the main artificial SPY blocker: it excluded
+// ordinary low-volatility trends even though the 1-ATR stop already reduces
+// risk proportionally in those conditions.
+atrPct = atr14 / close
+// Gate 10 from CuttingBoard's direct path. BREAKOUT remains visible below,
+// but is not made a mandatory extra gate: the source Gate 4 rejects CHOP
+// rather than requiring every direct candidate to be a breakout.
+notExtended = math.abs(close - ema21) <= 1.5 * atr14
+
+inWindow = time >= startDate and time <= endDate
+longSetup = inWindow and riskOn and trendUp and notExtended and not killSwitch
+shortSetup = inWindow and riskOff and trendDown and notExtended and not killSwitch
+
+// The engine evaluates each eligible opportunity.  A new state edge is not an
+// entry gate, so a stopped/targeted position may re-enter on a later confirmed
+// daily bar if the declared setup is still valid.
+newLongSetup = longSetup and not longSetup[1]
+newShortSetup = shortSetup and not shortSetup[1]
+flatNow = strategy.position_size == 0
+canEnter = flatNow and barstate.isconfirmed
+
+// Stops/targets are fixed from the signal bar's ATR but are executed from the
+// actual next-open fill through TradingView's tick-based exit orders.
+stopTicks = math.max(1, math.round(atr14 / syminfo.mintick))
+targetTicks = stopTicks * 2
+
+if canEnter and longSetup
+    strategy.entry("Long", strategy.long, comment = "Risk-on direct path")
+    strategy.exit("Long exit", from_entry = "Long", loss = stopTicks, profit = targetTicks, comment_loss = "1 ATR stop", comment_profit = "2R target")
+
+if canEnter and shortSetup
+    strategy.entry("Short", strategy.short, comment = "Risk-off direct path")
+    strategy.exit("Short exit", from_entry = "Short", loss = stopTicks, profit = targetTicks, comment_loss = "1 ATR stop", comment_profit = "2R target")
+
+// Loaded-window diagnostics. These are not entry rules; they make a flat or
+// sparse result auditable directly on the chart instead of forcing guesswork.
+var int windowBars = 0
+var int statePassBars = 0
+var int trendPassBars = 0
+var int extensionPassBars = 0
+var int killSwitchBars = 0
+var int eligibleSetupBars = 0
+var int ordersSubmitted = 0
+
+if barstate.isconfirmed and inWindow
+    windowBars += 1
+    if riskOn or riskOff
+        statePassBars += 1
+    if trendUp or trendDown
+        trendPassBars += 1
+    if notExtended
+        extensionPassBars += 1
+    if killSwitch
+        killSwitchBars += 1
+    if longSetup or shortSetup
+        eligibleSetupBars += 1
+    if canEnter and (longSetup or shortSetup)
+        ordersSubmitted += 1
+
+var table diagnostics = table.new(position.top_right, 2, 10, border_width = 1)
+if barstate.islast
+    table.cell(diagnostics, 0, 0, "CB Core", text_color = color.white, bgcolor = color.rgb(30, 78, 121))
+    table.cell(diagnostics, 1, 0, "v0.3.0", text_color = color.white, bgcolor = color.rgb(30, 78, 121))
+    table.cell(diagnostics, 0, 1, "Current state")
+    table.cell(diagnostics, 1, 1, riskOn ? "RISK ON" : riskOff ? "RISK OFF" : "NEUTRAL", text_color = riskOn ? color.lime : riskOff ? color.red : color.silver)
+    table.cell(diagnostics, 0, 2, "ATR % (diagnostic)")
+    table.cell(diagnostics, 1, 2, str.tostring(atrPct * 100, "#.##") + "%")
+    table.cell(diagnostics, 0, 3, "Window bars")
+    table.cell(diagnostics, 1, 3, str.tostring(windowBars))
+    table.cell(diagnostics, 0, 4, "State-pass bars")
+    table.cell(diagnostics, 1, 4, str.tostring(statePassBars))
+    table.cell(diagnostics, 0, 5, "Trend-pass bars")
+    table.cell(diagnostics, 1, 5, str.tostring(trendPassBars))
+    table.cell(diagnostics, 0, 6, "Extension-pass bars")
+    table.cell(diagnostics, 1, 6, str.tostring(extensionPassBars))
+    table.cell(diagnostics, 0, 7, "Kill-switch bars")
+    table.cell(diagnostics, 1, 7, str.tostring(killSwitchBars))
+    table.cell(diagnostics, 0, 8, "Eligible setup bars")
+    table.cell(diagnostics, 1, 8, str.tostring(eligibleSetupBars))
+    table.cell(diagnostics, 0, 9, "Orders submitted")
+    table.cell(diagnostics, 1, 9, str.tostring(ordersSubmitted))
+
+plot(ema9, "EMA 9", color = color.aqua)
+plot(ema21, "EMA 21", color = color.orange, linewidth = 2)
+plot(ema50, "EMA 50", color = color.purple)
+bgcolor(killSwitch ? color.new(color.red, 84) : riskOn ? color.new(color.green, 92) : riskOff ? color.new(color.maroon, 92) : na, title = "CuttingBoard state")
+
+plotshape(newLongSetup, title = "Qualified long", style = shape.triangleup, location = location.belowbar, color = color.lime, size = size.tiny, text = "CB L")
+plotshape(newShortSetup, title = "Qualified short", style = shape.triangledown, location = location.abovebar, color = color.red, size = size.tiny, text = "CB S")
+
+// Exportable state for a quick sanity check in TradingView's Data Window.
+plot(boundedNet, "CB bounded net", display = display.data_window)
+plot(confidence, "CB confidence", display = display.data_window)
+plot(availableVotes, "CB available votes", display = display.data_window)
+plot(atrPct * 100, "ATR % (diagnostic)", display = display.data_window)
+plot(killSwitch ? 1 : 0, "CB kill switch", display = display.data_window)
+plot(longSetup ? 1 : 0, "CB long setup", display = display.data_window)
+plot(shortSetup ? 1 : 0, "CB short setup", display = display.data_window)
