@@ -34,6 +34,13 @@ it is never edited in place. Corrections are either:
 All prior versions stay in `manifests/` — they are the audit trail for how
 and why the design changed, not clutter to be cleaned up.
 
+**Amendment 2026-07-30 — trial budget (adopted from gap register G-03).** Every future run
+manifest, campaign manifest, and probe pre-registration records `trials_planned` — the number of
+independent configurations committed before the first run, the one quantity that cannot be
+reconstructed afterward — and `dsr_threshold_implied`, the observed performance needed at that N
+and sample length. Frozen templates and existing ledgers are not retrofitted; new templates and
+new ledger columns carry both fields.
+
 ## c. Scripts are versioned; retired versions are kept
 
 Any script change that can change results (not just comments/formatting)
@@ -80,6 +87,12 @@ A historical window held back and inspected only once, under a rule that no
 threshold may change afterward, is *better* than an unguarded in-sample fit —
 but it is still not a §g holdout. Call it a deferred-inspection window and
 state what it can support. Do not call it out of sample.
+
+**Amendment 2026-07-30 — embargo (adopted from gap register G-04).** A deferred-inspection
+window is separated from the fitted window by an embargo of at least the longest indicator
+lookback the strategy uses (for EMA50/ATR14 on daily bars, on the order of 50 trading days). A
+zero-gap boundary leaks fitted indicator state into the inspection window, and the leak is
+indistinguishable from look-ahead in results.
 
 ## h. Audits are not studies
 
@@ -187,3 +200,26 @@ acting:
 **If the working repository or remote is not exactly `dwats250/strategy`,
 STOP.** Do not switch repositories or branches to make the preflight pass —
 report the mismatch and wait for Dustin.
+
+### Development boundary — amendment 2026-07-30
+
+The audit that motivated this section closed at EA-8. For CuttingBoard development going
+forward, Dustin adopts the **hybrid** boundary
+(`docs/owner-decisions-2026-07-30.md`; options analyzed in
+`docs/engine-program-draft-2026-07-29.md` §C):
+
+1. Development happens on a Dustin-owned **fork** of CuttingBoard. That fork is the sole
+   authorized mutation target of development charges rooted in it — in separate sessions, never
+   from this repository. `dwats250/cuttingboard` itself, its refs and PRs, and the audited pin
+   `59f8279d…` remain read-only, commit-addressed evidence exactly as above.
+2. Anything touching the audited pin's evidentiary record stays under the per-change charge
+   rule (Option 1) — one explicit Dustin-authorized charge per change.
+3. **No back-feeding is unchanged and now explicit for the lab:** any change derived from audit
+   evidence — including this repository's studies and analyses — requires its own explicit
+   Dustin commission naming that derivation, regardless of where the change lands.
+4. Merge-back from the fork into production CuttingBoard is itself a governance event requiring
+   its own explicit authorization; it is never implied by work having been done on the fork.
+
+For sessions rooted in this repository nothing changes: `dwats250/strategy` remains the only
+authorized mutation target, and the fork joins `dwats250/cuttingboard` on the forbidden list
+until a charge rooted in the fork says otherwise.
