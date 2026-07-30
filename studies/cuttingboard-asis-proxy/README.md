@@ -1,6 +1,6 @@
 # cuttingboard-asis-proxy
 
-Status: `PACKAGE COMPLETE — NO RUN EXECUTED. AWAITING DUSTIN'S TRADINGVIEW RUN.`
+Status: `BASELINE EXECUTED — RUN_SPY_1D_2015-01-01 REGISTERED 2026-07-30 UTC. SINGLE DECLARED BASELINE; NO FURTHER RUNS OR VARIANTS.`
 
 Created: 2026-07-28 UTC
 
@@ -39,8 +39,10 @@ script deliberately exposes **no inputs**, because an input is a tuning surface.
 | [`manifests/RUN_MANIFEST_TEMPLATE_v0.1.md`](manifests/RUN_MANIFEST_TEMPLATE_v0.1.md) | Provenance/run manifest — fill **before** capture |
 | [`manifests/FINDINGS_TEMPLATE_v0.1.md`](manifests/FINDINGS_TEMPLATE_v0.1.md) | Findings template that separates proxy behaviour from live-engine evidence |
 | [`scripts/cuttingboard_asis_proxy_v0_1.pine`](scripts/cuttingboard_asis_proxy_v0_1.pine) | The proxy — Pine v6 indicator, SHA-256 `048f5c66eefa3fdb8df9cec882006b1d8cf5fc9772d8694614559ba0a1bce3b5` |
-| `LEDGER.csv` | Authoritative run record (§f). Header only — no runs |
-| `exports/`, `analysis/` | Empty pending the first run |
+| [`manifests/RUN_SPY_1D_2015-01-01.md`](manifests/RUN_SPY_1D_2015-01-01.md) | The executed baseline's run manifest — FROZEN at capture 2026-07-30 UTC |
+| `LEDGER.csv` | Authoritative run record (§f). One row: `RUN_SPY_1D_2015-01-01` |
+| [`exports/CBASIS_v0_1_AMEX_SPY_1D_RTH_20150101-20260729_048f5c66.csv`](exports/CBASIS_v0_1_AMEX_SPY_1D_RTH_20150101-20260729_048f5c66.csv) | Registered immutable export (3,619 rows, SHA-256 `d1b53750…`), with capture screenshot alongside |
+| [`analysis/FINDINGS_RUN_SPY_1D_2015-01-01.md`](analysis/FINDINGS_RUN_SPY_1D_2015-01-01.md) | Published findings, including the row-level v0.5 comparison |
 
 ## Why an indicator, not a strategy
 
@@ -72,10 +74,14 @@ NEUTRAL, so it sits exactly on the boundary; in NEUTRAL the minimum is 3.0, so *
 fails in NEUTRAL**. Gate 6's ATR floor is likewise an equality comparison. Boundary behaviour
 must be *reported as observed*, not assumed — see mapping §3.2.
 
-## What remains for Dustin to run
+## The declared baseline — executed
 
-**TradingView execution was not available to the agent that built this package**, so no run was
-performed and no result is claimed. To produce the declared baseline:
+**TradingView execution was not available to the agent that built this package.** The single
+declared baseline has since been run by the operator (dwats250) and registered:
+[`manifests/RUN_SPY_1D_2015-01-01.md`](manifests/RUN_SPY_1D_2015-01-01.md) (frozen),
+`LEDGER.csv` row 1, and
+[`analysis/FINDINGS_RUN_SPY_1D_2015-01-01.md`](analysis/FINDINGS_RUN_SPY_1D_2015-01-01.md).
+The procedure, kept as the record of how it was produced:
 
 1. Open a chart at the symbol/timeframe you want to declare as the baseline.
 2. Add `scripts/cuttingboard_asis_proxy_v0_1.pine` **unmodified** — verify the SHA-256 above
@@ -93,9 +99,9 @@ performed and no result is claimed. To produce the declared baseline:
 configuration — those would be a different study.
 
 > Whether TradingView's *Export chart data* emits `display.data_window` series was never
-> established in prior work and remains untested. If it does not, the last-bar summary table
-> still yields the funnel counts, and that limitation is recorded in the run manifest rather
-> than worked around.
+> established in prior work and was untested when this package was built. **Resolved at capture
+> (RUN_SPY_1D_2015-01-01): the export does include all `display.data_window` series.** The
+> fallback (last-bar summary table) was not needed and is recorded in the run manifest.
 
 ## Conventions
 
