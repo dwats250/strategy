@@ -1,0 +1,1 @@
+run_id,run_date,family,budget_class,symbol,timeframe,session,timezone,chart_data_convention,extended_hours,date_window_start,date_window_end,embargo_desc,source_status,script_file,script_sha256,trials_planned,dsr_threshold_implied,tv_account,tv_capture_method,export_file,export_sha256,bars_evaluated,n_trades,vwap_state,acceptance_result,notes
