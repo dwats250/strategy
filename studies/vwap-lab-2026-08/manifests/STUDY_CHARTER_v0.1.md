@@ -437,3 +437,42 @@ VDC_SOURCE_STATUS = INGESTED@scripts/VWAP_Continuation_FastAlpha_v0.pine
   remains non-authoritative context.
 
 *(end Amendment A2)*
+
+---
+
+### Amendment A3 — 2026-08-25 — historical firewall frozen (HELM window ruling)
+
+**Authority.** Owner charge of 2026-08-25 (bounded lane-1 window-freeze and R0-readiness
+charge; Fable 5 as lane 1 by the owner's standing in-session per-charge disposition; §j
+table unchanged). This resolves the §12 UNRESOLVED firewall date fields. Frozen under
+`docs/conventions.md` §g and Amendment A1.6 vocabulary; boundaries below move only by a
+further dated amendment.
+
+| Tier | Dates (inclusive) | Role |
+|---|---|---|
+| **DEVELOPMENT** | 2024-09-03 → 2025-12-31 | Freely reusable historical development data. Inside the verified local SPY corpus; precedes the 2026 visual hypothesis-source period. |
+| **EMBARGO** | 2026-01-02 and 2026-01-05 | Two full trading sessions. No development fitting, validation interpretation, or outcome-based decision may use them. |
+| **VALIDATION / DEFERRED-INSPECTION** | 2026-01-06 → 2026-04-30 | Pre-registered historical validation. Captured when authorized, sealed until the planned validation look, inspected **once**, never called holdout. |
+| **UNUSED HISTORICAL BUFFER** | 2026-05-01 → start of the late-May 2026 hypothesis-source sessions | **No research role this sprint.** Not a second validation, not rescue validation, not threshold repair, not failed-hypothesis salvage. |
+| **HYPOTHESIS-SOURCE** | the visually reviewed late-May → Aug 2026 sessions (A1.6) | Descriptive use only; cannot validate PVAE. |
+| **HOLDOUT** | frozen-forward only (§g) | No historical slice is called holdout. |
+
+**Embargo rationale (recorded, not a statistical claim).** Two full trading sessions
+exceed the longest currently relevant indicator memory for this sprint — including the
+possible observational EMA55 covariate — on 5-minute RTH bars. No statistical-independence
+claim is made; the embargo is the pre-registered study firewall required by existing
+conventions.
+
+**R2 (validation/deferred-inspection capture) — recorded, not run.** Window 2026-01-06 →
+2026-04-30. When later captured: manifest frozen first; export and hash immediately;
+marked `SEALED-UNINTERPRETED` (A1.7); performance not inspected until the registered
+validation stage. R1 is not authorized yet; R1 instrumentation follows only after R0 is
+successfully captured and admissible.
+
+**Status transition.** The blocking state `WINDOW FREEZE REQUIRED BEFORE R0` is lifted;
+the study state becomes `READY FOR TRADINGVIEW R0 OWNER CONTEXT CAPTURE`. Gate statuses
+are unchanged (Gate 1 PENDING; Gate 2 LOCALLY VERIFIED / TV CONFIRMATION PENDING; Gate 3
+PENDING R0). Source-default and owner-observed TradingView values remain distinct
+evidence classes; nothing here observes the UI.
+
+*(end Amendment A3)*

@@ -1,5 +1,7 @@
 # RUN MANIFEST PREP — R0 (VDC naked development reference) · v0.1 · 2026-08-25
 
+*Updated 2026-08-25: development window frozen per charter Amendment A3.*
+
 **Status: PREP — NOT FROZEN. This is not a run authorization.** Prepared from
 `RUN_MANIFEST_TEMPLATE_v0.1.md` so the R0 manifest can be frozen quickly at the laptop.
 Fields marked `MECHANICAL(source)` are established by the ingested Pine
@@ -10,7 +12,7 @@ Freeze (rename per template convention, fill remaining fields, commit) **before*
 
 ## Identity & authorization
 
-- Run id: `VWAP_VDC_SPY_5m_RTH_dev_<daterange>_v0` — daterange pending window freeze
+- Run id: `VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0`
 - Family: `VDC` · Budget class: `development`
 - Charter governing: `STUDY_CHARTER_v0.1.md` + Amendments A1, A2
 - Source status at run time: `INGESTED@scripts/VWAP_Continuation_FastAlpha_v0.pine
@@ -43,23 +45,26 @@ Freeze (rename per template convention, fill remaining fields, commit) **before*
 | Chart timezone | __ | OWNER-OBSERVE |
 | Data adjustment setting (splits/dividends) | __ | OWNER-OBSERVE |
 | Deep Backtesting available history | __ | OWNER-OBSERVE |
-| Exact selected date window | __ (pending window freeze) | OWNER-OBSERVE |
+| Exact selected date window | frozen intent: 2024-09-03 → 2025-12-31 (A3); UI showing it: __ | OWNER-OBSERVE |
 | Recalculation settings as surfaced | __ | OWNER-OBSERVE |
 | Bar Magnifier setting if surfaced | __ | OWNER-OBSERVE |
 | Any other property that can alter emulator fills | __ | OWNER-OBSERVE |
 | Strategy Properties screenshot | __ | OWNER-OBSERVE (required capture) |
 | Loaded-bar range at capture | start __ / end __ | OWNER-OBSERVE |
 
-## Windows & firewall (§g, A1.6)
+## Windows & firewall (§g, A1.6 — FROZEN by charter Amendment A3)
 
-- Development window: **UNRESOLVED — WINDOW FREEZE REQUIRED BEFORE R0** (see charter
-  §12 and Amendment A2). Constraints already frozen: hypothesis-source contamination
-  late May–Aug 2026; local corpus begins 2024-09-03; validation/deferred-inspection
-  protected; holdout is frozen-forward only.
-- Embargo: length __ (≥ longest indicator lookback; A1-reviewed recommendation:
-  ≥ 2 full sessions) ; boundary __
-- Deferred-inspection window: __ (never "out of sample")
-- Holdout: not applicable to R0.
+- Development window: **2024-09-03 → 2025-12-31 inclusive** (freely reusable development
+  data; inside the verified local corpus; precedes the 2026 hypothesis-source period).
+- Embargo: **2026-01-02 and 2026-01-05** — two full trading sessions, exceeding the
+  longest currently relevant indicator memory this sprint (including the possible
+  observational EMA55 covariate); no statistical-independence claim.
+- Validation / deferred-inspection window: **2026-01-06 → 2026-04-30 inclusive** —
+  pre-registered, sealed until the single planned validation look, never "out of sample",
+  never holdout. Not captured or run by R0.
+- Unused historical buffer (2026-05-01 → start of late-May hypothesis-source sessions):
+  **no research role this sprint** (A3).
+- Holdout: frozen-forward only (§g); not applicable to R0.
 
 ## Strategy specification (from ingested source — never from lineage)
 
