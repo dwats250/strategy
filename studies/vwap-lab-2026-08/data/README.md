@@ -1,6 +1,15 @@
 # data/ — offline SPY market-data seam
 
-Status (2026-08-25): **DATA CREDENTIAL / ENTITLEMENT UNAVAILABLE.** No Massive/Polygon (or
+Status (2026-08-25, corpus captured and verified): **DATA CORPUS PASS — OFFLINE SPY CORPUS
+READY FOR PARITY WORK.** A SPY 1m corpus (2024-09-03 → 2026-08-21, 422,657 rows) was
+captured owner-side and mechanically verified; its durable, commit-addressed provenance and
+health record is
+[`CORPUS_SPY_1m_2024-09-01_2026-08-22.md`](CORPUS_SPY_1m_2024-09-01_2026-08-22.md). The
+dataset itself remains local and gitignored under `cache/` and is never committed. All
+TradingView parity questions remain open (see that record and the parity list below).
+
+Historical status (2026-08-25, earlier, accurate for its moment — retained, not rewritten):
+**DATA CREDENTIAL / ENTITLEMENT UNAVAILABLE.** No Massive/Polygon (or
 other market-data) credential exists in this environment; no account was created, no data
 was purchased, and **no live API call has been made**. The seam below is committed so the
 first laptop session with a credential can prove entitlement in minutes; its normalization
