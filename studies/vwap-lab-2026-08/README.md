@@ -1,6 +1,6 @@
 # VWAP Strategy Lab — 2026-08
 
-Status: `PVAE ADJUDICATED (TEST WITH CORRECTIONS) — SOURCE_REQUIRED. NO RUNS. NO HOLDOUT ACCESS. AWAITING DAY-1 CONTEXT FREEZE.`
+Status: `VDC SOURCE INGESTED / PARITY PENDING — WINDOW FREEZE REQUIRED BEFORE R0. NO RUNS. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
 
 Created: 2026-08-24 · Sprint: Aug 24–28 2026
 
@@ -37,6 +37,10 @@ source or commissions a brand-new VDC-0 specification.
 | [`manifests/RUN_MANIFEST_TEMPLATE_v0.1.md`](manifests/RUN_MANIFEST_TEMPLATE_v0.1.md) | Per-run pre-registration template — fill and **freeze before capture** |
 | [`manifests/PVAE_ANALYSIS_PREREG_v0.1.md`](manifests/PVAE_ANALYSIS_PREREG_v0.1.md) | Frozen PVAE offline-analysis pre-registration (primary comparison, park conditions) |
 | [`data/README.md`](data/README.md) | Offline SPY market-data seam — infrastructure, not strategy evidence; corpus captured and verified (`DATA CORPUS PASS`), evidence record in `data/CORPUS_SPY_1m_2024-09-01_2026-08-22.md` |
+| [`manifests/RUN_VDC_SPY_5m_dev_R0_PREP_v0.1.md`](manifests/RUN_VDC_SPY_5m_dev_R0_PREP_v0.1.md) | R0 manifest PREP (not frozen, not a run authorization) — owner-observed TV fields outstanding |
+| [`scripts/VWAP_Continuation_FastAlpha_v0.pine`](scripts/VWAP_Continuation_FastAlpha_v0.pine) | Exact ingested VDC v0 Pine source (immutable; sha256 in provenance record) |
+| [`scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`](scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md) | Source provenance + mechanical characterization |
+| [`PARITY_GATES.md`](PARITY_GATES.md) | DATA / SEMANTIC / EXECUTION parity status record |
 | [`LEDGER.csv`](LEDGER.csv) | One row per interpreted run (header only until source ingest). Authoritative per §f |
 | [`exports/README.md`](exports/README.md) | Immutable export naming + TradingView capture requirements |
 | [`scripts/README.md`](scripts/README.md) | Strategy scripts — currently `SOURCE_REQUIRED`; none present |

@@ -2,6 +2,11 @@
 
 Empty until there are runs to analyze. No headline number exists yet to reproduce.
 
+The VDC local parity foundation lives here: `parity_foundation.py` (RTH-only 5m bar
+reconstruction + Fast Alpha v0 feature calculator per the ingested source; no simulation,
+no P/L) with deterministic tests in `test_parity_foundation.py`. Derived outputs stay
+under the gitignored `../data/cache/derived/`. Parity status: `../PARITY_GATES.md`.
+
 The PVAE offline analysis is pre-registered in
 [`../manifests/PVAE_ANALYSIS_PREREG_v0.1.md`](../manifests/PVAE_ANALYSIS_PREREG_v0.1.md);
 code implementing it lands here only after R1 passes the R0 identity gate.
