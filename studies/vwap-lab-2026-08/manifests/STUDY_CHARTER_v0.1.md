@@ -405,3 +405,35 @@ The PVAE offline-analysis pre-registration skeleton is
 [`PVAE_ANALYSIS_PREREG_v0.1.md`](PVAE_ANALYSIS_PREREG_v0.1.md).
 
 *(end Amendment A1)*
+
+---
+
+### Amendment A2 — 2026-08-25 — VDC source ingested; parity pending
+
+**Authority.** Owner charge of 2026-08-25 (bounded lane-1 source-ingest and
+parity-foundation charge; Fable 5 as lane 1 by the owner's standing in-session per-charge
+disposition; §j table unchanged).
+
+The §0/§8 status `VDC_SOURCE_STATUS = SOURCE_REQUIRED` is superseded:
+
+```
+VDC_SOURCE_STATUS = INGESTED@scripts/VWAP_Continuation_FastAlpha_v0.pine
+                    sha256 c476429225c2ba4abb7c91d370f3abde893d9e4afe83a41ac8a0069e342c6c9e
+                    / PARITY PENDING
+```
+
+- The exact owner-supplied TradingView Pine source (`VWAP Continuation - Fast Alpha v0`,
+  Pine v6) is preserved verbatim as an immutable tracked artifact; provenance and full
+  mechanical characterization: `../scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`.
+- Parity is tracked in `../PARITY_GATES.md`: DATA/BAR parity **PENDING**; SEMANTIC/FEATURE
+  parity **LOCALLY VERIFIED / TV CONFIRMATION PENDING**; EXECUTION parity **PENDING R0**.
+- Local data status: SPY corpus **READY** (`../data/CORPUS_SPY_1m_2024-09-01_2026-08-22.md`);
+  bar+feature foundation built (`../analysis/parity_foundation.py`, tests passing).
+- R0 preparation: `RUN_VDC_SPY_5m_dev_R0_PREP_v0.1.md` (PREP, not frozen, not a run
+  authorization). **Development/validation windows remain UNRESOLVED (§12): WINDOW FREEZE
+  REQUIRED BEFORE R0.**
+- Nothing in this amendment interprets performance, computes expectancy, or touches PVAE
+  outcomes; §8's prohibition on reconstruction is now moot for VDC v0 but its lineage
+  remains non-authoritative context.
+
+*(end Amendment A2)*

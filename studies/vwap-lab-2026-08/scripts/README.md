@@ -1,4 +1,14 @@
-# scripts/ — SOURCE_REQUIRED
+# scripts/ — VDC v0 source INGESTED / PARITY PENDING
+
+Status (2026-08-25): the exact owner-supplied TradingView Pine source is ingested
+verbatim as [`VWAP_Continuation_FastAlpha_v0.pine`](VWAP_Continuation_FastAlpha_v0.pine)
+(sha256 `c476429225c2ba4abb7c91d370f3abde893d9e4afe83a41ac8a0069e342c6c9e`) — immutable
+source evidence, never cleaned or reformatted; provenance and mechanical
+characterization in
+[`VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`](VWAP_Continuation_FastAlpha_v0_PROVENANCE.md).
+See charter Amendment A2 and `../PARITY_GATES.md`.
+
+Historical status (accurate until 2026-08-25 ingest — retained, not rewritten):
 
 **No strategy script is present, and none may be written by reconstruction.**
 
