@@ -4,3 +4,8 @@
 # Deliberately narrow. This lab tracks study CSV exports under studies/*/exports/ —
 # do not broaden this into a blanket *.csv rule.
 audits/cuttingboard-engine-strategy-audit/data/raw/
+
+# VWAP Strategy Lab offline market-data cache: raw provider pages and canonical
+# bar files are reproducible via studies/vwap-lab-2026-08/data/fetch_spy_aggs.py;
+# only the small metadata/checksum manifests get committed, never the datasets.
+studies/vwap-lab-2026-08/data/cache/
