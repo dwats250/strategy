@@ -1,8 +1,15 @@
 # VWAP Strategy Lab — 2026-08
 
-Status: `BOOTSTRAP SCAFFOLD — SOURCE_REQUIRED. NO RUNS. NO HOLDOUT ACCESS. AWAITING DAY-1 CONTEXT FREEZE.`
+Status: `PVAE ADJUDICATED (TEST WITH CORRECTIONS) — SOURCE_REQUIRED. NO RUNS. NO HOLDOUT ACCESS. AWAITING DAY-1 CONTEXT FREEZE.`
 
 Created: 2026-08-24 · Sprint: Aug 24–28 2026
+
+PVAE (Persistent VWAP-Aligned Expansion) was adversarially reviewed (lane 2, Fable 5) and
+owner-adjudicated **TEST WITH CORRECTIONS** as a stratification hypothesis — see
+`STUDY_CHARTER_v0.1.md` **Amendment A1** (acceptance rule frozen, excursion notation
+corrected, tercile rule, shock metric, sealed-capture ruling, planned R0/R1/R2) and the
+frozen [`PVAE_ANALYSIS_PREREG_v0.1.md`](manifests/PVAE_ANALYSIS_PREREG_v0.1.md). No run has
+occurred; no PVAE outcome has been interpreted.
 
 This is the setup workspace for the VWAP Strategy Lab. Everything here is **exploratory and
 pre-run**. No result has been produced, ranked, or validated. The designated holdout is frozen
@@ -28,6 +35,8 @@ source or commissions a brand-new VDC-0 specification.
 |---|---|
 | [`manifests/STUDY_CHARTER_v0.1.md`](manifests/STUDY_CHARTER_v0.1.md) | Frozen charter: families, acceptance vocabulary, excursion metric, test budget, boundaries, source status |
 | [`manifests/RUN_MANIFEST_TEMPLATE_v0.1.md`](manifests/RUN_MANIFEST_TEMPLATE_v0.1.md) | Per-run pre-registration template — fill and **freeze before capture** |
+| [`manifests/PVAE_ANALYSIS_PREREG_v0.1.md`](manifests/PVAE_ANALYSIS_PREREG_v0.1.md) | Frozen PVAE offline-analysis pre-registration (primary comparison, park conditions) |
+| [`data/README.md`](data/README.md) | Offline SPY market-data seam — infrastructure, not strategy evidence; credential currently unavailable |
 | [`LEDGER.csv`](LEDGER.csv) | One row per interpreted run (header only until source ingest). Authoritative per §f |
 | [`exports/README.md`](exports/README.md) | Immutable export naming + TradingView capture requirements |
 | [`scripts/README.md`](scripts/README.md) | Strategy scripts — currently `SOURCE_REQUIRED`; none present |

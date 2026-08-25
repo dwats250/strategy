@@ -264,4 +264,144 @@ Until these are frozen, no run is a fitted run and no window is a holdout.
 
 ## Amendments
 
-*(none yet — append dated amendments here; never edit the text above in place)*
+*(append dated amendments here; never edit the text above in place)*
+
+---
+
+### Amendment A1 — 2026-08-25 — PVAE adjudication, acceptance rule, notation correction, sealed-capture ruling
+
+**Authority.** Owner charge of 2026-08-24 (Dustin / HELM), adjudicating the lane-2 PVAE
+adversarial review delivered by Fable 5 against the bootstrap pin
+`77a9484f652990829ce33339139114b66fc6a452`. Owner disposition: **TEST WITH CORRECTIONS**.
+Lane record for this amendment: by explicit owner per-charge authorization, Fable 5 acted as
+lane 1 for this charge only; the `docs/conventions.md` §j role-to-model table is unchanged.
+
+Nothing in this amendment changes `VDC_SOURCE_STATUS = SOURCE_REQUIRED`, authorizes a run,
+weakens §g, or touches CuttingBoard.
+
+#### A1.1 PVAE — adjudicated hypothesis
+
+PVAE (Persistent VWAP-Aligned Expansion) is adopted as a **stratification hypothesis first**.
+Primary question: among trades taken by the exact naked VDC strategy, does persistent
+VWAP-aligned EMA expansion identify a subset with better per-trade expectancy?
+
+- TradingView runs change the trade set only when necessary. Questions about dispersion,
+  persistence, shock state, EMA-family agreement, and VWAP-state interaction are answered
+  offline from an instrumented baseline trade set whenever possible.
+- Long and short effects are reported separately; the symmetric PVAE hypothesis requires the
+  contrast direction to agree across sides.
+- PVAE is not claimed to be novel; it may simply be a trend-quality stratifier. If the exact
+  VDC trigger already captures equivalent state and PVAE adds no contrast, that is a valid
+  negative result.
+
+#### A1.2 VWAP acceptance rule — frozen (resolves the §4 UNRESOLVED thresholds)
+
+At each signal-evaluation bar close, use the four most recently **completed** bars from the
+**current RTH session**, including the just-completed signal bar.
+
+- **ESTABLISHED LONG** — at least 3 of those 4 closes are strictly `>` that bar's session
+  VWAP, **and** the most recently completed close is strictly `>` session VWAP.
+- **ESTABLISHED SHORT** — mirror, using strictly `<` session VWAP.
+- **MIXED** — anything else.
+
+Edge rules, all frozen: `close == VWAP` counts toward neither side; classification is
+**unavailable** until four current-session bars have completed; acceptance band = **zero**;
+the state is independently recalculated after every completed bar; no ESTABLISHED label is
+carried forward merely because the previous bar was ESTABLISHED; completed bars only; no
+lookahead. The first eligible classification is defined by **bar sequence**, not by an
+assumed timestamp label. Price reference for this rule: bar close.
+
+#### A1.3 Excursion notation correction (§5)
+
+The §5 metric's denominator is the **ATR value**, not the integer lookback length. Corrected
+form (intent unchanged; ATR length provisionally 14):
+
+```
+vwap_excursion_atr(t) = ( price_ref(t) - session_vwap(t) ) / ATR_value(t)
+```
+
+The `atr_len(t)` denominator notation in the frozen §5 text is superseded by this amendment.
+
+#### A1.4 PVAE state variables — frozen definitions
+
+- **Executed state family:** EMA 9 / 20 / 50. Dispersion
+  `S_t = abs(EMA9_t - EMA50_t) / ATR14_t`. Ordering is a separate directional gate:
+  LONG requires `EMA9 > EMA20 > EMA50`; SHORT requires `EMA9 < EMA20 < EMA50`.
+- **Expansion:** `expanding_t = S_t > S_(t-2)`. No ΔS magnitude thresholds this sprint.
+- **Persistence:** primary condition is the aligned-expansion state true for **≥ 2
+  consecutive completed bars**; the consecutive count is captured as a covariate. Offline
+  sensitivity at 1 and 3 is permitted later; no separate TradingView runs for 1 / 2 / 3.
+- **Dispersion buckets:** the invented absolute grid (0.10 / 0.20 / 0.30 ATR) is rejected.
+  Primary development stratification uses **terciles of `S_t` measured at naked-VDC entry
+  observations in the development dataset**. The tercile *rule* is pre-registered before any
+  trade outcome is inspected; the numeric boundaries are computed once from the development
+  covariate distribution, then frozen, and reused unchanged for historical validation.
+  Boundaries are never moved on P/L.
+- **Shock (capture / stratify only, never an entry rule or exclusion filter):**
+  `ShockRatio_i = TrueRange_i / ATR14_(i-1)` — the denominator uses the **prior** completed
+  bar's ATR value so the shock bar does not partially normalize itself away. At a VDC entry,
+  `RecentShock = max(ShockRatio)` over the current and previous 3 completed bars.
+  `RecentShock >= 2.0` is a descriptive label only, not an optimized threshold.
+- **Other families:** no independent TradingView run for 10/22/55. If computationally
+  trivial and identity-safe in the future instrumented strategy, `S_10_22_55` and
+  `ordered_10_22_55` are permitted as **observational covariates only**, for later offline
+  label-agreement / robustness analysis. 12/26/60 is not tested this sprint.
+
+#### A1.5 Cut list — this sprint
+
+Not added, not measured, not tested: VWAP flip count; fast/medium sign-flip count; any
+"chop score"; gap metadata (reconstructable later from OHLC, not deadline-bound); EMA
+12/26/60; separate fast–medium / medium–slow spread thresholds; RSI; volume filters; ADX;
+time-of-day optimization.
+
+#### A1.6 Hypothesis-source labeling and firewall vocabulary
+
+The visual screenshot discovery pool (approximately late May through August 2026)
+contributed to hypothesis formation and is labeled **HYPOTHESIS-SOURCE / VISUALLY
+INSPECTED**. It cannot serve as independent historical validation of PVAE, and its sessions
+are never treated as unseen. Primary development is placed outside the visual source period
+whenever available TradingView history permits.
+
+Vocabulary for this study, under existing `docs/conventions.md` §g (which is not weakened):
+**DEVELOPMENT** (historical fitted/reused data) · **HYPOTHESIS-SOURCE** (historical data
+visually inspected during hypothesis generation) · **EMBARGO** (≥ longest relevant lookback
+between fitted and deferred-inspection data) · **VALIDATION / DEFERRED-INSPECTION**
+(pre-registered historical data inspected once) · **FROZEN-FORWARD HOLDOUT** (future data
+arriving only after specification freeze). No untouched historical block is called a
+holdout.
+
+#### A1.7 Sealed-capture budget ruling
+
+Owner ruling for this study: a **pre-registered** TradingView capture that (i) has a frozen
+run manifest before capture, (ii) is exported, (iii) is hashed, (iv) is sealed, and (v) is
+not examined for research/performance decisions **does not consume an interpreted-run budget
+slot (§9) until it is first unsealed/interpreted**. The capture still requires full
+provenance under `../exports/README.md`. A sealed capture is recorded at capture time — its
+frozen run manifest plus a ledger row whose `notes` field marks it `SEALED-UNINTERPRETED` —
+and the §9 budget draw is recorded at first unsealing by a dated note. Prior frozen records
+are not retroactively rewritten.
+
+#### A1.8 Planned TradingView run sequence — PLAN ONLY
+
+Blocked until source ingest (`VDC_SOURCE_STATUS = SOURCE_REQUIRED`); nothing here executes:
+
+- **R0** — exact naked VDC development reference.
+- **R1** — instrumented VDC development. Instrumentation must not alter strategy behavior.
+  Before R1 evidence is admissible, parity against R0 on the common window is established
+  mechanically — preferring exact comparison of trade count, side, entry/exit timestamps,
+  entry/exit prices, and P/L, allowing only explicitly documented export precision
+  differences. If instrumentation changes the trade set: STOP; PVAE is not analyzed.
+- **R2** — instrumented historical validation / deferred-inspection capture, **SEALED**.
+- **Optional archive** — instrumented VDC over the widest Deep Backtesting range available,
+  exported, hash-recorded, SEALED, and marked `ARCHIVE / NON-INFERENTIAL / NOT DEVELOPMENT /
+  NOT VALIDATION / NOT HOLDOUT`. Lower priority than R0/R1/R2 source and provenance capture.
+
+Planned instrumented entry stamp: `direction`, `vwap_acceptance_state`, `S_9_20_50`,
+`ordered_9_20_50`, `expanding_yes_no`, `aligned_expansion_consecutive_count`,
+`recent_shock_ratio`; plus `S_10_22_55` / `ordered_10_22_55` only if trivial and
+identity-safe. No filtered PVAE strategy is authorized.
+
+The PVAE offline-analysis pre-registration skeleton is
+[`PVAE_ANALYSIS_PREREG_v0.1.md`](PVAE_ANALYSIS_PREREG_v0.1.md).
+
+*(end Amendment A1)*

@@ -2,6 +2,10 @@
 
 Empty until there are runs to analyze. No headline number exists yet to reproduce.
 
+The PVAE offline analysis is pre-registered in
+[`../manifests/PVAE_ANALYSIS_PREREG_v0.1.md`](../manifests/PVAE_ANALYSIS_PREREG_v0.1.md);
+code implementing it lands here only after R1 passes the R0 identity gate.
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:
