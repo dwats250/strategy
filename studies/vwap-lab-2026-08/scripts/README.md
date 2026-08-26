@@ -8,6 +8,15 @@ characterization in
 [`VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`](VWAP_Continuation_FastAlpha_v0_PROVENANCE.md).
 See charter Amendment A2 and `../PARITY_GATES.md`.
 
+**2026-08-25 — R1 instrumented variant added:**
+[`VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine`](VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine)
+(sha256 `32aaaa4d2148186774921c8529c5ab3600bfe4110ffff2fd0213a6631ff72bc4`) — v0 trading
+sections byte-identical (v0 lines 19–349 == R1 lines 41–371); observational-only A1/PVAE
+instrumentation appended as section 13, exported via `display.data_window` plots. Static
+and local containment proofs recorded in `../manifests/RUN_VDC_SPY_5m_dev_R1_PREP_v0.1.md`;
+local mirror `../analysis/instrumentation_r1.py`. Not a run authorization; v0 remains the
+R0 source of record (§c: both versions retained).
+
 Historical status (accurate until 2026-08-25 ingest — retained, not rewritten):
 
 **No strategy script is present, and none may be written by reconstruction.**
