@@ -167,3 +167,57 @@ all R0 Properties; set the strategy-tester / Deep Backtesting range to **2024-09
 inclusive** and confirm it yields **1,331 trades** before exporting; keep Volume on the chart;
 export the List of Trades CSV and the chart-data CSV and confirm the ten instrumentation columns
 are present. The identity gate is re-run on the re-capture; nothing else proceeds until it PASSES.
+
+### Amendment 2 — 2026-08-26 · Corrected re-capture supplied · IDENTITY GATE PASS — R1 ADMISSIBLE (SEALED-UNINTERPRETED)
+
+Owner supplied the corrected R1 capture on 2026-08-26 (the re-capture required by Amendment 1).
+Both files preserved byte-identical under `../exports/`:
+
+- Trade list: `../exports/VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0R1.csv`
+  sha256 `8d2db8dc78bec56594dd26d8a3020eb3c73c2a9dc976cdd421191f8827751241`
+  (source filename `VWAPFAv0R1_AMEX_SPY_2026-08-26.csv`)
+- Chart data: `../exports/TV_CHARTDATA_BATS_SPY_5m_RTH_2026-08-21_2026-08-26_FastAlphaV0R1_instrumented_sample.csv`
+  sha256 `e0e3d432203cceb5673eb726fe56f0ee14412d5d09ebda018817ffea65870df4`
+  (source filename `BATS_SPY, 5 (3).csv`)
+
+**Mechanical identity gate (the only authorized analysis) result: PASS — R1 ADMISSIBLE (A1.8).**
+Selftest PASS. Gate on the supplied trade list vs the preserved R0 reference:
+
+```
+R0 reference exports/VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0.csv  sha256 8d2db8dc…
+R1 candidate exports/VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0R1.csv sha256 8d2db8dc…
+IDENTITY GATE PASS: 1331 trades; side, timestamps, prices, and P/L identical
+  under the pre-registered normalization.
+R1 ADMISSIBLE (SEALED-UNINTERPRETED); exit 0
+```
+
+The R1 trade list is **byte-identical to the preserved R0 export** (same sha256; `cmp` clean) —
+the strongest possible form of the identity requirement: the R1 instrumentation did not alter
+trading behavior down to the byte. Trade #1 is dated 2024-09-03 and trade #1331 is dated
+2025-12-31 — exactly the frozen development window; no embargo/validation/holdout rows are present
+in the trade list.
+
+**Chart-data header check: PASS.** Header carries Volume and **all ten** instrumentation columns
+(`ACCEPT_STATE_DIR`, `EMA50`, `S_9_20_50`, `ORDERED_9_20_50`, `EXPANDING_9_20_50`,
+`ALIGNED_EXP_COUNT_9_20_50`, `SHOCK_RATIO`, `RECENT_SHOCK`, `S_10_22_55`, `ORDERED_10_22_55`).
+This corrects the Amendment-1 symptom (base-v0 column set) — the R1 instrumented source was run.
+The chart-data export is a 300-bar visible-window sample spanning 2026-08-21 10:30 → 2026-08-26
+15:55 America/New_York; it was read **header-only** (column names), no value column inspected. It
+is preserved as feed/presentation infrastructure exactly as the R0-era BATS chart-data already in
+`../exports/` is, and per the A3 rule above any post-development rows are never value-read.
+
+**Disposition (unchanged from authorization): `SEALED-UNINTERPRETED`.** No performance summary was
+inspected, no outcome relationship examined, no PVAE terciles computed, validation and holdout
+untouched. Ledger row appended with `SEALED-UNINTERPRETED` notes; **no §9 budget slot is drawn**
+(A1.7 — the identity gate is pre-registered as not an unsealing). Draw is recorded by dated note at
+first unsealing, which requires separate owner/HELM authorization.
+
+**STOP.** R1 is admissible and sealed. Nothing further proceeds — no development analysis, no
+tercile computation, no unsealing — until owner/HELM issues explicit unseal authorization.
+
+**Out-of-packet finding (flagged, not repaired):** the pre-existing committed R0 ledger row is
+malformed — it has 26 fields instead of the header's 27 (the `script_file` value is missing, so
+every field from `script_sha256` onward is shifted by one on parse). This defect predates this
+charge (present at HEAD `f7e45fe`) and is outside the R1 capture packet; it is a frozen committed
+record, so it is left untouched here and referred to the owner for a separate dated correction. The
+newly appended R1 ledger row is well-formed at 27 fields.
