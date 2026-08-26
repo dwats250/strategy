@@ -1,6 +1,6 @@
 # VWAP Strategy Lab — 2026-08
 
-Status: `R0 CAPTURED + PRESERVED (2026-08-25) — manifest frozen (RUN_VDC_SPY_5m_dev_R0_v1.0.md), ledger row 1/18 VDC-dev, benchmark REFERENCE-ONLY. R1 CAPTURE AUTHORIZED (owner charge 2026-08-25, SEALED-UNINTERPRETED) — manifest frozen (RUN_VDC_SPY_5m_dev_R1_v1.0.md), identity gate ready, AWAITING OWNER TV ARTIFACTS. PARITY: Gate 1 PARTIAL (feed-characterized), Gate 2 CORROBORATED, Gate 3 PROBED — see PARITY_GATES.md dated entries. NO VARIANTS. NO VALIDATION-WINDOW INSPECTION. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
+Status: `R0 CAPTURED + PRESERVED (2026-08-25) — manifest frozen (RUN_VDC_SPY_5m_dev_R0_v1.0.md), ledger row 1/18 VDC-dev, benchmark REFERENCE-ONLY. R1 CAPTURE AUTHORIZED (owner charge 2026-08-25, SEALED-UNINTERPRETED) — manifest frozen (RUN_VDC_SPY_5m_dev_R1_v1.0.md). First capture (2026-08-26) FAILED the mechanical identity gate — STOP: wrong loaded range (660 trades over 2025-12-31→2026-08-25, spanning sealed validation) instead of the 1,331-trade development window, and evidence the base v0 script was run rather than the R1 instrumented source; files withheld from exports/ (validation firewall), no budget draw. See RUN_VDC_SPY_5m_dev_R1_v1.0.md Amendment 1. AWAITING CORRECTED R1 RE-CAPTURE. PARITY: Gate 1 PARTIAL (feed-characterized), Gate 2 CORROBORATED, Gate 3 PROBED — see PARITY_GATES.md dated entries. NO VARIANTS. NO VALIDATION-WINDOW INSPECTION. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
 
 Created: 2026-08-24 · Sprint: Aug 24–28 2026
 

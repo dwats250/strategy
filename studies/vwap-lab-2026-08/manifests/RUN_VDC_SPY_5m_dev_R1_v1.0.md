@@ -108,3 +108,62 @@ FAIL, not skipped. Row order and trade numbering must agree as exported.
 ## Amendments
 
 *(append dated amendments here; never edit the text above in place)*
+
+### Amendment 1 — 2026-08-26 · Capture supplied · IDENTITY GATE FAIL — STOP (wrong window)
+
+Owner supplied two files on 2026-08-26 for the R1 capture:
+
+- Trade list: `VWAP_FastAlpha_v0_AMEX_SPY_20260826.csv`
+  sha256 `dd7433f1b833ce6d40093d083cf1ade007fc9b77d9bc5fdfeb558c26f81f827d`
+- Chart data: `BATS_SPY_5.csv`
+  sha256 `f5d3c5b44a29923c4d69b92401e604a3c949e7277a6ed9f15315dfacd3cbead4`
+
+**Mechanical identity gate (the only authorized analysis) result: FAIL — STOP (A1.8).**
+Selftest PASS. Gate on the supplied trade list vs the preserved R0 reference:
+
+```
+R0 rows=2662 trades=1331   (dev window 2024-09-03 → 2025-12-31)
+R1 rows=1320 trades=660    (supplied capture)
+→ ROW/TRADE COUNT divergence; exit 2
+```
+
+The gate returned early on the count divergence; no per-trade P/L cell was read or
+printed. No validation-window outcome was inspected or interpreted.
+
+**First divergence, classified: execution-context / loaded-range mismatch (not an
+instrumentation-induced behavior change, not an export-format difference).** The supplied
+trade list does not cover the development window. Its first trade is dated **2025-12-31**
+and its trades run forward to **2026-08-25** (660 trades) — i.e. the capture's strategy-tester
+range began at the development window's final day and ran forward through the **embargo
+(2026-01-02 / 2026-01-05)**, the **sealed validation window (2026-01-06 → 2026-04-30)**, and
+beyond. The development window 2024-09-03 → 2025-12-31 (1,331 trades) is absent; the two
+ranges overlap only on the single day 2025-12-31.
+
+**Corroborating evidence that the wrong artifact was captured (inferential, not the gate
+verdict):** (1) the trade-list export filename carries `v0`, the R0 short-title, not `v0R1`;
+(2) the chart-data header is
+`time,open,high,low,close,Volume,Session VWAP,EMA 9,EMA 20,Long Fast-Alpha Signal,Short
+Fast-Alpha Signal` — it carries Volume but **none of the ten instrumentation columns**
+(`ACCEPT_STATE_DIR` … `ORDERED_10_22_55`). That column set is the base v0 plot set, consistent
+with the base `VWAP_Continuation_FastAlpha_v0.pine` rather than the R1 instrumented source. So
+this looks like the base v0 script captured over a recent (validation-forward) range, not the
+R1 instrumented source over the development range.
+
+**Firewall action (A3):** because the supplied files physically contain sealed
+validation-window rows (trade outcomes in the trade list; OHLCV/indicator bars in the chart
+data), they were **withheld from `../exports/` and not committed** — recording a validation
+capture into the development repo would breach the A3 firewall. The files are referenced here
+by name and sha256 only. No ledger row is written: no run was admitted, none was interpreted,
+and **no §9 budget slot is drawn** (SEALED-UNINTERPRETED; A1.7). The contingency in this
+manifest (display-only `display =` change for missing instrumentation columns) is **not**
+triggered — the missing columns are a symptom of the wrong artifact/window, not a display-export
+gap to patch; nothing in this repo is changed in response.
+
+**Re-capture required — exact requirements (unchanged from this manifest):** load the R1
+instrumented source `../scripts/VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine`
+(sha256 `32aaaa4d2148186774921c8529c5ab3600bfe4110ffff2fd0213a6631ff72bc4`) — confirm the strategy
+short-title reads **`VWAP FastAlpha v0R1`** — on AMEX:SPY, 5m, RTH, exchange timezone, ADJ on,
+all R0 Properties; set the strategy-tester / Deep Backtesting range to **2024-09-03 → 2025-12-31
+inclusive** and confirm it yields **1,331 trades** before exporting; keep Volume on the chart;
+export the List of Trades CSV and the chart-data CSV and confirm the ten instrumentation columns
+are present. The identity gate is re-run on the re-capture; nothing else proceeds until it PASSES.
