@@ -1,6 +1,6 @@
 # VWAP Strategy Lab — 2026-08
 
-Status: `R0 CAPTURED + PRESERVED (2026-08-25) — manifest frozen (RUN_VDC_SPY_5m_dev_R0_v1.0.md), ledger row 1/18 VDC-dev, benchmark REFERENCE-ONLY. R1 INSTRUMENTED SOURCE BUILT + CONTAINMENT-VERIFIED (2026-08-25) — PREP manifest only; R1 CAPTURE NOT AUTHORIZED. PARITY: Gate 1 PARTIAL (feed-characterized), Gate 2 CORROBORATED, Gate 3 PROBED — see PARITY_GATES.md dated entries. NO VARIANTS. NO VALIDATION-WINDOW INSPECTION. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
+Status: `R0 CAPTURED + PRESERVED (2026-08-25) — manifest frozen (RUN_VDC_SPY_5m_dev_R0_v1.0.md), ledger row 1/18 VDC-dev, benchmark REFERENCE-ONLY. R1 CAPTURE AUTHORIZED (owner charge 2026-08-25, SEALED-UNINTERPRETED) — manifest frozen (RUN_VDC_SPY_5m_dev_R1_v1.0.md), identity gate ready, AWAITING OWNER TV ARTIFACTS. PARITY: Gate 1 PARTIAL (feed-characterized), Gate 2 CORROBORATED, Gate 3 PROBED — see PARITY_GATES.md dated entries. NO VARIANTS. NO VALIDATION-WINDOW INSPECTION. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
 
 Created: 2026-08-24 · Sprint: Aug 24–28 2026
 
@@ -41,7 +41,7 @@ only strategy authority.
 | [`manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md`](manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md) | **Frozen R0 run manifest** — owner-attested TV context, preserved artifacts + hashes, reference metrics (supersedes the retained PREP v0.1) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0.pine`](scripts/VWAP_Continuation_FastAlpha_v0.pine) | Exact ingested VDC v0 Pine source (immutable; sha256 in provenance record) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine`](scripts/VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine) | R1 instrumented variant — v0 trading byte-identical, observational A1/PVAE covariate exports only |
-| [`manifests/RUN_VDC_SPY_5m_dev_R1_PREP_v0.1.md`](manifests/RUN_VDC_SPY_5m_dev_R1_PREP_v0.1.md) | R1 manifest PREP (not frozen, not a run authorization) — containment proofs, field list, identity gate, owner capture procedure |
+| [`manifests/RUN_VDC_SPY_5m_dev_R1_v1.0.md`](manifests/RUN_VDC_SPY_5m_dev_R1_v1.0.md) | **Frozen R1 run manifest** — owner capture authorization (SEALED-UNINTERPRETED), source pin, identity-gate mechanics (supersedes the retained PREP v0.1) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`](scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md) | Source provenance + mechanical characterization |
 | [`PARITY_GATES.md`](PARITY_GATES.md) | DATA / SEMANTIC / EXECUTION parity status record |
 | [`LEDGER.csv`](LEDGER.csv) | One row per interpreted run (header only until source ingest). Authoritative per §f |
