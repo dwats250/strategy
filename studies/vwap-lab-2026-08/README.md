@@ -1,6 +1,6 @@
 # VWAP Strategy Lab — 2026-08
 
-Status: `VDC SOURCE INGESTED / PARITY PENDING — WINDOWS FROZEN (A3). READY FOR TRADINGVIEW R0 OWNER CONTEXT CAPTURE. NO RUNS. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
+Status: `R0 CAPTURED + PRESERVED (2026-08-25) — manifest frozen (RUN_VDC_SPY_5m_dev_R0_v1.0.md), ledger row 1/18 VDC-dev, benchmark REFERENCE-ONLY. PARITY: Gate 1 PARTIAL (feed-characterized), Gate 2 CORROBORATED, Gate 3 PROBED — see PARITY_GATES.md dated entries. NO VARIANTS. NO VALIDATION-WINDOW INSPECTION. NO HOLDOUT ACCESS. PVAE: NO OUTCOME INTERPRETATION.`
 
 Created: 2026-08-24 · Sprint: Aug 24–28 2026
 
@@ -20,14 +20,15 @@ that role.
 > and makes **no options claim** (frozen boundary, charter §7). It measures SPY underlying price
 > relative to session VWAP, nothing more.
 
-## The blocker, stated plainly
+## The blocker, stated plainly — RESOLVED
 
-`VDC_SOURCE_STATUS = SOURCE_REQUIRED`. There is no exact current FastAlpha / VWAP Drift v0 Pine
-source in `dwats250/strategy` or its history. The primary family's trigger/entry/stop/exit is
-**not** reconstructed from chat memory, `session_compass_v2.3.pine`, older VWAP indicators, or
-conceptual descriptions — those are context only. See charter §8 for the accepted source gap and
-the non-authoritative lineage. Runs are blocked until Dustin supplies the actual TradingView Pine
-source or commissions a brand-new VDC-0 specification.
+*(Historical: superseded by charter Amendment A2 on 2026-08-25; retained for context.)*
+`VDC_SOURCE_STATUS` was `SOURCE_REQUIRED` at scaffold time; the exact owner-supplied Pine source
+is now ingested at `scripts/VWAP_Continuation_FastAlpha_v0.pine`
+(sha256 `c476429225…e342c6c9e`, charter A2), windows are frozen (A3), and R0 is captured and
+preserved (frozen manifest `manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md`). The §8 prohibition on
+reconstructing logic from chat memory or older indicators stands — the ingested source is the
+only strategy authority.
 
 ## Contents
 
@@ -37,7 +38,7 @@ source or commissions a brand-new VDC-0 specification.
 | [`manifests/RUN_MANIFEST_TEMPLATE_v0.1.md`](manifests/RUN_MANIFEST_TEMPLATE_v0.1.md) | Per-run pre-registration template — fill and **freeze before capture** |
 | [`manifests/PVAE_ANALYSIS_PREREG_v0.1.md`](manifests/PVAE_ANALYSIS_PREREG_v0.1.md) | Frozen PVAE offline-analysis pre-registration (primary comparison, park conditions) |
 | [`data/README.md`](data/README.md) | Offline SPY market-data seam — infrastructure, not strategy evidence; corpus captured and verified (`DATA CORPUS PASS`), evidence record in `data/CORPUS_SPY_1m_2024-09-01_2026-08-22.md` |
-| [`manifests/RUN_VDC_SPY_5m_dev_R0_PREP_v0.1.md`](manifests/RUN_VDC_SPY_5m_dev_R0_PREP_v0.1.md) | R0 manifest PREP (not frozen, not a run authorization) — owner-observed TV fields outstanding |
+| [`manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md`](manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md) | **Frozen R0 run manifest** — owner-attested TV context, preserved artifacts + hashes, reference metrics (supersedes the retained PREP v0.1) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0.pine`](scripts/VWAP_Continuation_FastAlpha_v0.pine) | Exact ingested VDC v0 Pine source (immutable; sha256 in provenance record) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`](scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md) | Source provenance + mechanical characterization |
 | [`PARITY_GATES.md`](PARITY_GATES.md) | DATA / SEMANTIC / EXECUTION parity status record |
