@@ -145,6 +145,26 @@ VDC validation window may not be FPC validation); first dev run pre-registered b
 **not executed** in
 [`../manifests/RUN_FPC0_DEV_PREP_v0.1.md`](../manifests/RUN_FPC0_DEV_PREP_v0.1.md).
 
+**2026-08-27 — FPC-0 first development run** (owner/HELM charge; FPC config 1/12).
+`fpc0_dev.py` runs FPC-0 symmetric (`signal_mode="fpc"`) against the VDC symmetric
+benchmark on the same engine/corpus over the development window, screened primary +
+raw, with the classification frozen and pushed pre-outcome (commit be03f0c; results
+by dated manifest amendment). HELM adjudications carried in: flat-state
+interpretation (a) (engine already conforms) and the H3 provenance attestation
+(`../manifests/FPC_CHARTER_v0.1.md` Amendment 1). **Result: FPC DEVELOPMENT WORSE** —
+mean expectancy R VDC +0.00900 vs FPC −0.02319 screened (delta_R −0.03219 < −0.03),
+raw −0.00910 vs −0.03961 (delta_R −0.03051 < 0, agrees); FPC absolute expR −0.02319
+(negative). The first-pullback restriction lowers expectancy R on both sides
+(long +0.047→+0.014, short −0.032→−0.065); the $ improvement (−86.64→−43.65) is the
+fixed-share sizing artifact, not the metric. Entry geometry: VDC 1354→FPC 1069
+(72.4% retained, 27.6% suppressed by one-per-regime, 89 path-created); 908 bull
+regimes (565 signalled), 807 bear (504); bars-from-fresh median 2. Mechanical
+invariants asserted from the trade set (≤1 signal/regime; none on a fresh bar);
+`test_fpc_signals.py` covers the rest. Per the frozen no-rescue rule: report and
+stop, no FPC-1. Evidence `FPC0_DEV_2026-08-27.json`; FPC-dev budget 1/12 (independent
+of VDC 15/18). Manifest
+[`../manifests/RUN_FPC0_DEV_v1.0.md`](../manifests/RUN_FPC0_DEV_v1.0.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

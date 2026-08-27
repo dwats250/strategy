@@ -120,5 +120,78 @@ python3 test_fpc_signals.py    # FPC signal invariants
 
 ## Amendments
 
-*(append the dated result amendment in the run phase; never edit the pre-registration
-above in place)*
+### Amendment 1 — result (2026-08-27) — **FPC DEVELOPMENT WORSE**
+
+Run under the frozen pre-registration above; driver `fpc0_dev.py` unchanged since the
+freeze commit `be03f0c`. Evidence `analysis/FPC0_DEV_2026-08-27.json` sha256
+`eaa00e6d639ffcb8b2479f502fdfc9b875d30ef2956317e35631dcb72d409eb9`. Determinism:
+report JSON byte-identical across reruns. FPC invariants asserted from the real trade
+set (run exits 0): ≤ 1 FPC signal per continuous regime; no FPC signal on a
+fresh-regime bar.
+
+**Primary (mean expectancy R):**
+
+| view | VDC expR | FPC expR | **delta_R (FPC−VDC)** |
+|---|---:|---:|---:|
+| screened (primary) | +0.00900 | −0.02319 | **−0.03219** |
+| raw (sensitivity) | −0.00910 | −0.03961 | **−0.03051** |
+
+Screened `delta_R = −0.03219` is below **−MATERIAL_R (−0.03)** and raw `delta_R =
+−0.03051 < 0` agrees on sign → **FPC DEVELOPMENT WORSE.** FPC's **absolute** screened
+expectancy R is **−0.02319** (negative), so this is not "negative→positive": the
+first-pullback restriction makes risk-normalized expectancy *worse*, not better.
+
+**Full tear sheet (screened primary):**
+
+| metric | VDC | FPC-0 |
+|---|---:|---:|
+| trades | 1354 | 1069 |
+| cumulative R | +12.19 | −24.79 |
+| net $ | −86.64 | −43.65 |
+| profit factor | 0.885 | 0.921 |
+| win rate % | 21.71 | 21.05 |
+| max drawdown R | 75.72 | 74.57 |
+| avg / median hold (bars) | 12.6 / 5 | 12.6 / 4 |
+| profitable months | 5 / 16 | 6 / 16 |
+| best-10 % of gross | 21.95 | 25.76 |
+| net_excl_best_10 (R-space via $) | −233.70 | −174.24 |
+| long-only bootstrap block CI (R) | [−0.093, +0.118] | [−0.134, +0.099] |
+
+**Direction (from the symmetric result):**
+
+| side | VDC expR / PF | FPC expR / PF |
+|---|---:|---:|
+| long (screened) | +0.04723 / 1.075 (n=701) | +0.01436 / 1.022 (n=565) |
+| short (screened) | −0.03204 / 0.950 (n=653) | −0.06529 / 0.900 (n=504) |
+| long (raw) | +0.02666 (n=708) | −0.00095 (n=567) |
+| short (raw) | −0.04776 (n=655) | −0.08310 (n=504) |
+
+The first-pullback restriction lowers expectancy R on **both** sides (long
++0.047→+0.014, short −0.032→−0.065 screened) — VDC's later same-regime pullbacks were
+not, on average, worse than the first, so removing them (and adding path-created
+entries) hurts R. The $ improvement (−86.64→−43.65) is the familiar fixed-share
+sizing artifact (fewer trades), **not** the primary metric.
+
+**Entry geometry & diff (screened; raw materially identical):**
+
+- VDC 1354 entries → FPC 1069: **retained 980 (72.4%)**, **dropped by the one-per-
+  regime rule 374 (27.6% suppressed)**, **89 entries unique to FPC** (path-created:
+  FPC's different flat-occupancy opens entries VDC never took — FPC is a
+  path-dependent restriction, not a strict subset).
+- Continuous **bullish** regimes **908**, **565 produced a long signal (62.2%)**;
+  **bearish** regimes **807**, **504 signalled (62.5%)**.
+- Bars from fresh-regime start to signal: **median 2** (both sides), mode 1, tail to
+  21 (long) / 9 (short) — pullbacks arrive quickly; ~38% of regimes never produce an
+  orderly first pullback while flat and in-window.
+
+**raw/screened agreement: YES** (both views WORSE; `ab_dual` direction agreement
+true). Every arm's bootstrap mean-expectancy CI straddles zero and `net_excl_best_10`
+stays deeply negative — the whole comparison remains statistically weak in absolute
+terms; the *relative* verdict (FPC worse than VDC in R) is the material, view-
+consistent finding.
+
+**Disposition (frozen no-rescue rule).** FPC-0 is **WORSE** than the VDC benchmark in
+risk-normalized expectancy, consistently across screened and raw. **Report and
+stop.** No FPC-1 is designed; no additional structure (charter §6); no second FPC
+configuration is spent. FPC-dev budget **0 → 1/12** (config 1 consumed). Ledger row
+`FPC0_DEV_2024-09-03_2025-12-31`.
