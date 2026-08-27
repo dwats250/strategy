@@ -1,0 +1,513 @@
+{
+  "role": "PARTS B+C \u2014 frozen ATR-stop response surface (screened primary, raw sensitivity); single-factor ATR_STOP_MULT only",
+  "python": "3.13.5",
+  "frozen_mults": [
+    0.75,
+    1.0,
+    1.25,
+    1.5,
+    1.75
+  ],
+  "control": 1.0,
+  "development_window": [
+    "2024-09-03",
+    "2025-12-31"
+  ],
+  "budget_accounting": {
+    "control_1p00": "existing V0 \u2014 no new draw",
+    "new_interpreted_configs": [
+      0.75,
+      1.25,
+      1.5,
+      1.75
+    ],
+    "vdc_dev_before": 3,
+    "vdc_dev_after": 7,
+    "ceiling": 18,
+    "multiple_testing": "all four new configs recorded as explored candidates; NOT 'one test'. No post-hoc interpolation of intermediate multiples."
+  },
+  "screened": {
+    "0.75": {
+      "n": 1560,
+      "stop_outs": 989,
+      "stop_out_pct": 63.397,
+      "thesis_exits": 356,
+      "eod_exits": 215,
+      "net_usd": -67.985,
+      "expectancy_usd": -0.04358,
+      "expectancy_r": 0.019777,
+      "median_r": -1.013333,
+      "profit_factor": 0.908255,
+      "win_rate_pct": 19.2308,
+      "avg_winner_r": 3.93129,
+      "avg_loser_r": -0.912984,
+      "max_dd_usd": 119.8504,
+      "max_dd_r": 89.7427,
+      "avg_bars_held": 10.6538,
+      "median_bars_held": 3.0,
+      "long": {
+        "n": 809,
+        "expectancy_r": 0.053241,
+        "profit_factor": 1.072182
+      },
+      "short": {
+        "n": 751,
+        "expectancy_r": -0.01627,
+        "profit_factor": 0.977857
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.04358,
+        "iid_ci95": [
+          -0.133434,
+          0.053891
+        ],
+        "block_ci95": [
+          -0.161207,
+          0.069541
+        ],
+        "block_len": 12
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 21.6811,
+        "net_excl_best_10": -213.9068
+      }
+    },
+    "1.0": {
+      "n": 1354,
+      "stop_outs": 649,
+      "stop_out_pct": 47.932,
+      "thesis_exits": 483,
+      "eod_exits": 222,
+      "net_usd": -86.6386,
+      "expectancy_usd": -0.063987,
+      "expectancy_r": 0.009,
+      "median_r": -0.841052,
+      "profit_factor": 0.88548,
+      "win_rate_pct": 21.7134,
+      "avg_winner_r": 2.986633,
+      "avg_loser_r": -0.818415,
+      "max_dd_usd": 131.9844,
+      "max_dd_r": 75.717825,
+      "avg_bars_held": 12.6152,
+      "median_bars_held": 5.0,
+      "long": {
+        "n": 701,
+        "expectancy_r": 0.04723,
+        "profit_factor": 1.074528
+      },
+      "short": {
+        "n": 653,
+        "expectancy_r": -0.032039,
+        "profit_factor": 0.950381
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.063987,
+        "iid_ci95": [
+          -0.176498,
+          0.056218
+        ],
+        "block_ci95": [
+          -0.210546,
+          0.071518
+        ],
+        "block_len": 11
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 21.9528,
+        "net_excl_best_10": -233.7004
+      }
+    },
+    "1.25": {
+      "n": 1231,
+      "stop_outs": 408,
+      "stop_out_pct": 33.144,
+      "thesis_exits": 594,
+      "eod_exits": 229,
+      "net_usd": -25.5185,
+      "expectancy_usd": -0.02073,
+      "expectancy_r": 0.018912,
+      "median_r": -0.55,
+      "profit_factor": 0.963031,
+      "win_rate_pct": 23.7206,
+      "avg_winner_r": 2.375492,
+      "avg_loser_r": -0.715435,
+      "max_dd_usd": 75.2934,
+      "max_dd_r": 49.870247,
+      "avg_bars_held": 14.1657,
+      "median_bars_held": 6,
+      "long": {
+        "n": 638,
+        "expectancy_r": 0.053026,
+        "profit_factor": 1.0989
+      },
+      "short": {
+        "n": 593,
+        "expectancy_r": -0.017791,
+        "profit_factor": 0.967864
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.02073,
+        "iid_ci95": [
+          -0.134225,
+          0.109841
+        ],
+        "block_ci95": [
+          -0.140295,
+          0.101442
+        ],
+        "block_len": 11
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 21.8867,
+        "net_excl_best_10": -171.0103
+      }
+    },
+    "1.5": {
+      "n": 1168,
+      "stop_outs": 268,
+      "stop_out_pct": 22.945,
+      "thesis_exits": 670,
+      "eod_exits": 230,
+      "net_usd": -5.4891,
+      "expectancy_usd": -0.0047,
+      "expectancy_r": 0.018565,
+      "median_r": -0.445299,
+      "profit_factor": 0.991778,
+      "win_rate_pct": 24.8288,
+      "avg_winner_r": 1.987362,
+      "avg_loser_r": -0.633163,
+      "max_dd_usd": 66.2131,
+      "max_dd_r": 43.700082,
+      "avg_bars_held": 15.113,
+      "median_bars_held": 7.0,
+      "long": {
+        "n": 615,
+        "expectancy_r": 0.044844,
+        "profit_factor": 1.095829
+      },
+      "short": {
+        "n": 553,
+        "expectancy_r": -0.01066,
+        "profit_factor": 0.97791
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.0047,
+        "iid_ci95": [
+          -0.124151,
+          0.130256
+        ],
+        "block_ci95": [
+          -0.111531,
+          0.116315
+        ],
+        "block_len": 11
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 21.9728,
+        "net_excl_best_10": -150.9809
+      }
+    },
+    "1.75": {
+      "n": 1128,
+      "stop_outs": 182,
+      "stop_out_pct": 16.135,
+      "thesis_exits": 713,
+      "eod_exits": 233,
+      "net_usd": 2.1979,
+      "expectancy_usd": 0.001948,
+      "expectancy_r": 0.021745,
+      "median_r": -0.365766,
+      "profit_factor": 1.003341,
+      "win_rate_pct": 25.5319,
+      "avg_winner_r": 1.70872,
+      "avg_loser_r": -0.557975,
+      "max_dd_usd": 63.0456,
+      "max_dd_r": 36.049065,
+      "avg_bars_held": 15.7562,
+      "median_bars_held": 8.0,
+      "long": {
+        "n": 591,
+        "expectancy_r": 0.051822,
+        "profit_factor": 1.127491
+      },
+      "short": {
+        "n": 537,
+        "expectancy_r": -0.011357,
+        "profit_factor": 0.973175
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": 0.001948,
+        "iid_ci95": [
+          -0.120194,
+          0.13554
+        ],
+        "block_ci95": [
+          -0.113954,
+          0.130488
+        ],
+        "block_len": 10
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.2494,
+        "net_excl_best_10": -144.6571
+      }
+    }
+  },
+  "raw": {
+    "0.75": {
+      "n": 1571,
+      "stop_outs": 1002,
+      "stop_out_pct": 63.781,
+      "thesis_exits": 355,
+      "eod_exits": 214,
+      "net_usd": -91.03,
+      "expectancy_usd": -0.057944,
+      "expectancy_r": -0.000157,
+      "median_r": -1.013333,
+      "profit_factor": 0.879111,
+      "win_rate_pct": 18.9052,
+      "avg_winner_r": 3.912109,
+      "avg_loser_r": -0.913635,
+      "max_dd_usd": 128.6996,
+      "max_dd_r": 105.876435,
+      "avg_bars_held": 10.5493,
+      "median_bars_held": 3,
+      "long": {
+        "n": 818,
+        "expectancy_r": 0.030313,
+        "profit_factor": 1.040862
+      },
+      "short": {
+        "n": 753,
+        "expectancy_r": -0.033257,
+        "profit_factor": 0.954904
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.057944,
+        "iid_ci95": [
+          -0.143739,
+          0.045697
+        ],
+        "block_ci95": [
+          -0.166417,
+          0.050498
+        ],
+        "block_len": 12
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.0435,
+        "net_excl_best_10": -236.9518
+      }
+    },
+    "1.0": {
+      "n": 1363,
+      "stop_outs": 660,
+      "stop_out_pct": 48.423,
+      "thesis_exits": 482,
+      "eod_exits": 221,
+      "net_usd": -111.6136,
+      "expectancy_usd": -0.081888,
+      "expectancy_r": -0.0091,
+      "median_r": -0.863636,
+      "profit_factor": 0.855134,
+      "win_rate_pct": 21.35,
+      "avg_winner_r": 2.97207,
+      "avg_loser_r": -0.819883,
+      "max_dd_usd": 143.9365,
+      "max_dd_r": 89.003386,
+      "avg_bars_held": 12.5018,
+      "median_bars_held": 5,
+      "long": {
+        "n": 708,
+        "expectancy_r": 0.026664,
+        "profit_factor": 1.041743
+      },
+      "short": {
+        "n": 655,
+        "expectancy_r": -0.047757,
+        "profit_factor": 0.926403
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.081888,
+        "iid_ci95": [
+          -0.189816,
+          0.032025
+        ],
+        "block_ci95": [
+          -0.230928,
+          0.048333
+        ],
+        "block_len": 11
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.3212,
+        "net_excl_best_10": -258.6754
+      }
+    },
+    "1.25": {
+      "n": 1238,
+      "stop_outs": 417,
+      "stop_out_pct": 33.683,
+      "thesis_exits": 593,
+      "eod_exits": 228,
+      "net_usd": -51.6935,
+      "expectancy_usd": -0.041756,
+      "expectancy_r": 0.00284,
+      "median_r": -0.559964,
+      "profit_factor": 0.926716,
+      "win_rate_pct": 23.3441,
+      "avg_winner_r": 2.363488,
+      "avg_loser_r": -0.717563,
+      "max_dd_usd": 86.1946,
+      "max_dd_r": 61.407205,
+      "avg_bars_held": 14.0477,
+      "median_bars_held": 6.0,
+      "long": {
+        "n": 643,
+        "expectancy_r": 0.035734,
+        "profit_factor": 1.066036
+      },
+      "short": {
+        "n": 595,
+        "expectancy_r": -0.032708,
+        "profit_factor": 0.941309
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.041756,
+        "iid_ci95": [
+          -0.151918,
+          0.08419
+        ],
+        "block_ci95": [
+          -0.161356,
+          0.08176
+        ],
+        "block_len": 11
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.2569,
+        "net_excl_best_10": -197.1853
+      }
+    },
+    "1.5": {
+      "n": 1176,
+      "stop_outs": 277,
+      "stop_out_pct": 23.554,
+      "thesis_exits": 670,
+      "eod_exits": 229,
+      "net_usd": -33.8241,
+      "expectancy_usd": -0.028762,
+      "expectancy_r": 0.002956,
+      "median_r": -0.450122,
+      "profit_factor": 0.950616,
+      "win_rate_pct": 24.4048,
+      "avg_winner_r": 1.977209,
+      "avg_loser_r": -0.635832,
+      "max_dd_usd": 78.4876,
+      "max_dd_r": 48.253367,
+      "avg_bars_held": 14.9745,
+      "median_bars_held": 7.0,
+      "long": {
+        "n": 621,
+        "expectancy_r": 0.027828,
+        "profit_factor": 1.058804
+      },
+      "short": {
+        "n": 555,
+        "expectancy_r": -0.024874,
+        "profit_factor": 0.948889
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.028762,
+        "iid_ci95": [
+          -0.150739,
+          0.108598
+        ],
+        "block_ci95": [
+          -0.135361,
+          0.089961
+        ],
+        "block_len": 11
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.3459,
+        "net_excl_best_10": -179.3159
+      }
+    },
+    "1.75": {
+      "n": 1136,
+      "stop_outs": 192,
+      "stop_out_pct": 16.901,
+      "thesis_exits": 712,
+      "eod_exits": 232,
+      "net_usd": -33.3821,
+      "expectancy_usd": -0.029386,
+      "expectancy_r": 0.004519,
+      "median_r": -0.368645,
+      "profit_factor": 0.95086,
+      "win_rate_pct": 25.088,
+      "avg_winner_r": 1.693904,
+      "avg_loser_r": -0.562579,
+      "max_dd_usd": 81.7648,
+      "max_dd_r": 43.000521,
+      "avg_bars_held": 15.625,
+      "median_bars_held": 8.0,
+      "long": {
+        "n": 597,
+        "expectancy_r": 0.030895,
+        "profit_factor": 1.074656
+      },
+      "short": {
+        "n": 539,
+        "expectancy_r": -0.024695,
+        "profit_factor": 0.942272
+      },
+      "bootstrap_mean_expectancy_usd": {
+        "mean": -0.029386,
+        "iid_ci95": [
+          -0.157462,
+          0.107243
+        ],
+        "block_ci95": [
+          -0.145217,
+          0.10203
+        ],
+        "block_len": 10
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.735,
+        "net_excl_best_10": -180.2371
+      }
+    }
+  },
+  "classification": {
+    "primary_metric": "expectancy_r (screened) \u2014 risk-normalized",
+    "screened_expectancy_r_by_mult": {
+      "0.75": 0.019777,
+      "1.0": 0.009,
+      "1.25": 0.018912,
+      "1.5": 0.018565,
+      "1.75": 0.021745
+    },
+    "screened_net_usd_by_mult": {
+      "0.75": -67.985,
+      "1.0": -86.6386,
+      "1.25": -25.5185,
+      "1.5": -5.4891,
+      "1.75": 2.1979
+    },
+    "spread_r": 0.0127,
+    "material_r_threshold": 0.03,
+    "raw_screened_arms_disagreeing_on_direction": 0,
+    "long_short_conflict_at_best_arm": true,
+    "best_arm_by_expectancy_r": 1.75,
+    "response_shape": "4. FLAT / NO MATERIAL SENSITIVITY",
+    "shape_rationale": "screened expectancy_r spread 0.0127 < MATERIAL_R 0.03",
+    "usd_space_shape": "net improves monotonically as the stop widens (fixed-share $)",
+    "r_vs_usd_divergence": true,
+    "divergence_note": "R-space is FLAT while fixed-share $ improves with a wider stop \u2014 a POSITION-SIZING artifact (wider stop = fewer high-$ stop-outs on high-ATR trades), NOT a risk-adjusted edge. See PART A.",
+    "control_1p00_assessment_risk_adjusted": "reasonable (within a flat band)",
+    "control_1p00_assessment_fixed_share_usd": "too tight",
+    "note": "classification is descriptive; NO production value is selected, no intermediate multiple is interpolated or tested. The primary reading is risk-adjusted (R); the $ reading is a sizing artifact."
+  }
+}

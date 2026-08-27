@@ -55,6 +55,20 @@ distance now recorded per trade by the engine (`risk_points`/`pnl_r`). CAGR/Calm
 determinism, numpy reference cross-check). Manifest
 [`../manifests/EXPERIMENT_TEARSHEET_v0.1.md`](../manifests/EXPERIMENT_TEARSHEET_v0.1.md).
 
+**2026-08-26 — fixed-risk diagnostic + ATR-stop response surface** (owner charge; single-factor
+`ATR_STOP_MULT` only). Part A `v0_fixed_risk_diagnostic.py` re-expresses V0 under equal risk
+(no new trial): V0 is **+12.19R** yet **−$86.64** at fixed 1 share (signs disagree) — the dollar
+loss is a position-sizing effect (losses on higher-ATR trades), longs +0.047R vs shorts −0.032R.
+Parts B/C `atr_stop_surface.py` freeze `ATR_STOP_MULT ∈ {0.75, 1.00[control], 1.25, 1.50, 1.75}`
+before outcomes and run the family screened(primary)+raw: **response shape FLAT in risk-adjusted R**
+(expectancy_R spread 0.013R < 0.03) while fixed-share $/PF/win% improve monotonically with width —
+a **sizing artifact**, not an edge; raw/screened agree on direction; control 1.00 reasonable
+risk-adjusted, "too tight" only in $. **No production value selected.** Engine gained additive
+`atr_stop_mult` (default 1.0 = V0); tearsheet gained additive `r_equity`. Evidence
+`V0_FIXED_RISK_DIAGNOSTIC_2026-08-26.json`, `ATR_STOP_SURFACE_2026-08-26.json`/`.csv`. Interpreted
+VDC-dev budget **7/18** (4 new ATR-stop configs; 1.00 = existing V0). Manifest
+[`../manifests/RUN_ATR_STOP_SURFACE_v1.0.md`](../manifests/RUN_ATR_STOP_SURFACE_v1.0.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

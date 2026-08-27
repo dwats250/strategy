@@ -112,11 +112,16 @@ def _hhmm(et_start_iso):
     return f"{d} {t[:5]}"
 
 
-def simulate(rows, dev_start=DEV_START, dev_end=DEV_END):
+def simulate(rows, dev_start=DEV_START, dev_end=DEV_END, atr_stop_mult=1.0):
     """Run the FastAlpha execution model over development-window feature rows.
 
     Returns a list of closed-trade dicts, in entry order. Deterministic: pure
     float arithmetic over a fixed bar sequence, no RNG, no wall-clock.
+
+    `atr_stop_mult` scales ONLY the initial ATR stop distance (the source's
+    ATR_STOP_MULT; v0 = 1.0). Everything else — entries, EMA/VWAP/session logic,
+    the opposing-candle trigger, thesis exit, EOD, sizing — is unchanged. The
+    default 1.0 reproduces V0 exactly.
     """
     bars = [r for r in rows if dev_start <= r["session_date"] <= dev_end]
 
@@ -197,7 +202,7 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END):
             pending = ("close_short", "VWAP Failure", signal_bar)
             continue
         if pos == 0 and atr14 is not None:
-            atr_ticks = max(1, round(atr14 / MINTICK))
+            atr_ticks = max(1, round(atr14 * atr_stop_mult / MINTICK))
             if b["long_candidate"]:
                 pending = ("entry_long", atr_ticks, et)
             elif b["short_candidate"]:

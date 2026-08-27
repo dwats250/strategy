@@ -198,3 +198,12 @@ mechanics, and every existing metric are unchanged. New engine sha256
 A/B and V0 calibration result JSONs were re-verified **byte-identical**; no result
 in this run record changes. No version bump required (§c). See
 `EXPERIMENT_TEARSHEET_v0.1.md`.
+
+### Amendment 3 — 2026-08-26 — additive stop-multiple parameter (ATR-stop-surface packet)
+
+`analysis/fastalpha_engine.py` gained `simulate(..., atr_stop_mult=1.0)`, scaling
+only the initial ATR stop distance; default 1.0 reproduces V0 exactly. New engine
+sha256 `975f747d8c4aef9d2ff209c904410aa31adb6ce4c3c11348d52e57b8a736221c` (was
+`42db304e9467426d666f2141486267cb362a24710d143b21949291a71f531efd`). The V0/V1 A/B
+and calibration result JSONs are unchanged (no drift on `git status`). No version
+bump required (§c). See `RUN_ATR_STOP_SURFACE_v1.0.md`.

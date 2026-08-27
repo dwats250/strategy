@@ -150,6 +150,21 @@ def test_eod_only_on_1550_bar():
     assert t["exit_bar"] == f"{DAY} 15:50" and t["exit_reason"] == "EOD", t
 
 
+def test_atr_stop_mult_scales_stop_and_risk():
+    # low 99.3 hits the 1.0x stop (99.51) but not the 2.0x stop (99.01)
+    rows = [
+        frow(1000, 100, 100.2, 99.9, 100.0, 90.0, 0.50, long_c=True),
+        frow(1005, 100.0, 100.5, 99.8, 100.4, 90.0, 0.50),
+        frow(1010, 100.0, 100.1, 99.30, 99.9, 90.0, 0.50),
+        frow(1550, 100.0, 100.1, 99.9, 100.0, 90.0, 0.50),
+    ]
+    t1 = one(rows)                                  # default mult 1.0
+    assert t1["exit_reason"] == "Long ATR Stop" and approx(t1["risk_points"], 0.50)
+    t2 = fe.simulate(rows, atr_stop_mult=2.0)
+    assert len(t2) == 1 and t2[0]["exit_reason"] == "EOD"   # wider stop not hit
+    assert approx(t2[0]["risk_points"], 1.00)       # 1R scales with the multiple
+
+
 def test_determinism_synthetic():
     rows = [
         frow(1000, 100, 100.2, 99.9, 100.0, 90.0, 0.50, long_c=True),

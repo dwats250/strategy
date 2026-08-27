@@ -78,6 +78,17 @@ def test_streaks_and_monthly():
     assert approx(d["pct_profitable_months"], 50.0)
 
 
+def test_r_equity_cumulative_and_drawdown():
+    tr = [trade(1.0, risk=1.0), trade(-0.5, risk=0.5), trade(2.0, risk=1.0),
+          trade(-1.5, risk=1.0)]
+    # pnl_r = 1, -1, 2, -1.5 -> cum 1, 0, 2, 0.5 ; peak 2 -> dd to 0.5 = 1.5
+    re = ts.r_equity(tr)
+    assert approx(re["cumulative_r"], 0.5)
+    assert re["r_equity_curve"] == [1.0, 0.0, 2.0, 0.5]
+    assert approx(re["max_drawdown_r"], 1.5)
+    assert re["longest_drawdown_r_trades"] == 1
+
+
 def test_ab_overlap():
     ctrl = [trade(1.0, entry="2025-01-02 10:00"), trade(2.0, entry="2025-01-02 11:00")]
     var = [trade(1.0, entry="2025-01-02 10:00"),   # shared, same exit

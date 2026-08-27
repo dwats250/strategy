@@ -121,3 +121,13 @@ no validation/holdout.
 ## Amendments
 
 *(append dated amendments here; never edit the text above in place)*
+
+### Amendment 1 — 2026-08-26 — additive r_equity helper (ATR-stop-surface packet)
+
+`analysis/tearsheet.py` gained the additive `r_equity(trades)` helper (R-space
+equity / drawdown / cumulative long-short R), used by the fixed-risk diagnostic and
+the ATR-stop surface. It is not part of `full_report`, so `V0_TEARSHEET_2026-08-26.json`
+is unchanged (verified no drift). New tearsheet sha256
+`c950bc6f55cfe1c7493db8ceaf38d529309e67ccd84c435b7fe60b588d0a8fb6` (was
+`76535ed2ec281c3642eef4437d826052a58d4bac51a324e2feda28a50340251d`). The engine also
+gained `atr_stop_mult` (see `RUN_ATR_STOP_SURFACE_v1.0.md`). No version bump (§c).

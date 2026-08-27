@@ -198,6 +198,45 @@ def equity_series(trades):
     }
 
 
+def r_equity(trades):
+    """Fixed-risk (R) equity + drawdown: each trade contributes pnl_r (equal
+    initial risk per trade). Returns the cumulative-R curve, max drawdown in R,
+    longest R-drawdown (trades), and long/short cumulative R. Additive helper —
+    not part of full_report(), so existing reports are unchanged."""
+    rs = [t.get("pnl_r") for t in trades]
+    if not rs or any(x is None for x in rs):
+        return {"n": 0, "note": "missing pnl_r on some trades"}
+    cum, curve, peak, uw, max_dd, dd_len, longest = 0.0, [], 0.0, [], 0.0, 0, 0
+    for x in rs:
+        cum += x
+        curve.append(round(cum, 6))
+        peak = max(peak, cum)
+        d = peak - cum
+        uw.append(round(-d, 6))
+        max_dd = max(max_dd, d)
+        dd_len = 0 if d <= 1e-12 else dd_len + 1
+        longest = max(longest, dd_len)
+    cl = cs = 0.0
+    cum_long, cum_short = [], []
+    for t in trades:
+        if t["side"] == "long":
+            cl += t["pnl_r"]
+        else:
+            cs += t["pnl_r"]
+        cum_long.append(round(cl, 6))
+        cum_short.append(round(cs, 6))
+    return {
+        "n": len(rs),
+        "cumulative_r": round(cum, 6),
+        "r_equity_curve": curve,
+        "r_underwater_curve": uw,
+        "max_drawdown_r": round(max_dd, 6),
+        "longest_drawdown_r_trades": longest,
+        "cum_long_r": cum_long,
+        "cum_short_r": cum_short,
+    }
+
+
 def distribution(trades):
     p = [t["pnl"] for t in trades]
     if not p:
