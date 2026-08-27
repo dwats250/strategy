@@ -74,15 +74,16 @@ Legend — status: ACTIVE · TERMINAL (no edge) · PARKED · BLOCKED · DESIGN �
 
 - **Mechanism:** the return from previous RTH close through the first 30 min predicts the final-30-min return (Gao, Han, Li & Zhou).
 - **Provenance:** literature (Gao et al., *Market Intraday Momentum*); independent Codex reconnaissance ranked #1.
-- **Status:** **BLOCKED — DATA/SEMANTIC (status C).**
+- **Status:** **TERMINAL — FAMILY DEAD** (was BLOCKED-C; unblocked by the State Street seam, then run).
 - **Primary hypothesis:** `late_return = α + β·early_return`, β > 0.
 - **Primary metric:** regression β (HC1 robust SE) + sign-strategy gross bps, cost-stressed.
-- **Data:** dev 2024-09-03→2025-12-31; screened/raw.
-- **Configs spent / ceiling:** 0 / 4 (default new-family allowance).
-- **Development result:** **NOT RUN** — outcome access blocked.
-- **Robustness / Validation:** n/a.
-- **Terminal disposition:** none — pre-registered, implemented, tested; blocked before outcome.
-- **Reason (blocked):** `early_return` crosses the previous RTH close; the corpus is dividend-**unadjusted** (Polygon `adjusted=true` = splits only). SPY ex-dividend drops (~30–40 bps) are **indistinguishable from ordinary overnight moves** (median overnight |gap| 27.6 bps) — no clean OHLCV separation. Needs an external SPY ex-dividend calendar or a dividend-adjusted previous-close series. `MIM_CHARTER_v0.1.md`, `RUN_MIM0_DEV_PREP_v0.1.md`, `analysis/MIM_OVERNIGHT_DIAGNOSTIC_2026-08-27.json`.
+- **Data:** dev 2024-09-03→2025-12-31; screened/raw (N=328); dividend-neutral early_return (State Street sidecar).
+- **Configs spent / ceiling:** **1 / 4** (remaining ≤3 not earned by a failed baseline).
+- **Development result:** **β = −0.01674** (HC1 t −0.53, CI [−0.079, +0.045], R² 0.002) → β>0 FAILS; sign-strategy gross **−0.59 bps**, fails the 5 bps cost stress; robust to raw and ex-dividend-excluded views.
+- **Robustness:** raw == screened; ex-dividend-excluded β −0.0157 (also dead); bootstrap CI straddles zero.
+- **Validation/OOS:** none (killed at development).
+- **Terminal disposition:** **FAMILY DEAD** — no intraday-momentum edge on SPY here; no rescue.
+- **Reason:** previous-close→10:00 return does not positively predict the final-30-min return. `MIM_CHARTER_v0.1.md`, `RUN_MIM0_DEV_v1.0.md` Amdt 1, `analysis/MIM0_DEV_2026-08-27.json`. (Earlier blocker + State Street resolution: `data/SPY_EX_DIVIDENDS_v1.0.json`, `MIM_OVERNIGHT_DIAGNOSTIC_2026-08-27.json`.)
 
 ## Overnight / opening-dislocation reversal
 

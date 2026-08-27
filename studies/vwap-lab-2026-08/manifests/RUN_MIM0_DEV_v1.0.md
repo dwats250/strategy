@@ -79,5 +79,45 @@ python3 test_mim.py          # 7/7 synthetic
 
 ## Amendments
 
-*(append the dated result amendment in the run phase; never edit the pre-registration
-above in place)*
+### Amendment 1 — result (2026-08-27) — **MIM FAMILY DEAD**
+
+Run under the frozen pre-registration; `mim.py` unchanged since the freeze commit
+`8eabc76`. Evidence `analysis/MIM0_DEV_2026-08-27.json` sha256
+`1bc6434789b8f2374a8f56d67e4315721f1183e53e470f01ef8ecb5b9fbbdb3c`; byte-identical
+across reruns. All six dev-window SPY ex-dividend sessions received the dividend-neutral
+adjustment. **N = 328** observations.
+
+**Primary — dividend-neutral, screened (regression `late = α + β·early`):**
+
+| quantity | value |
+|---|---:|
+| **β** | **−0.01674** |
+| HC1 SE (primary) | 0.03169 |
+| t (HC1) | −0.528 |
+| 95% CI (HC1) | [−0.07884, +0.04536] |
+| R² | 0.00248 |
+| N | 328 |
+
+**Primary condition β > 0: FAIL** (β = −0.0167 ≤ 0; the estimate is if anything weakly
+*contrarian* and statistically indistinguishable from zero — t −0.53, CI straddles).
+
+**Sign strategy (dividend-neutral, screened):** mean **−0.59 bps**/trade, cumulative
+−193.4 bps, PF 0.928, win 50.5%, max-DD 554 bps; long −0.60 bps (n=187), short −0.58 bps
+(n=140); bootstrap mean CI95 [−3.20, +1.98] bps (straddles zero); 8/16 profitable months.
+**Gross expectancy ≤ 0.** Costs: zero −0.59, lab-slippage −0.92, 5 bps-stress −5.59 bps
+(**does not survive**).
+
+**Robustness (all three views agree):** raw sensitivity is identical to screened
+(β −0.01674; the 9 masked bad-tick bars are not MIM clock bars, so screened == raw,
+N=328 both). The **ex-dividend-EXCLUDED** sensitivity (diagnostic only): β −0.01569,
+gross −0.573 bps → still **FAMILY DEAD**. The dividend handling did not change the
+conclusion; the momentum simply is not present.
+
+**Verdict — FAMILY DEAD** by the frozen gate (β ≤ 0; independently, gross ≤ 0 and fails
+the cost stress). The previous-close→10:00 return does **not** positively predict the
+final-30-minute return for SPY in the development window. Per the frozen no-rescue rule:
+**report and stop** — no alternative early/late windows, no high-vol/high-volume subset,
+no macro days, no long-only, no rest-of-day predictor. STOP at **A — MIM FAMILY DEAD**.
+
+MIM interpreted-development **0 → 1/4** (config 1; the remaining ≤3 are **not** earned by
+a failed baseline). Ledger row `MIM0_DEV_2024-09-03_2025-12-31`.

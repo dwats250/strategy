@@ -41,14 +41,14 @@ flowchart TB
     FPC[FPC-0<br/>DEVELOPMENT WORSE<br/>1/12 closed]
   end
   VMR[VMR — VWAP Mean Reversion<br/>DESIGN / parked · 0/8<br/>K=4.09 ATR frozen]
-  MIM[MIM — Market Intraday Momentum<br/>BLOCKED — dividend/previous-close<br/>0/4 · implemented+tested]
+  MIM[MIM — Market Intraday Momentum<br/>TERMINAL — FAMILY DEAD<br/>beta −0.017 · 1/4]
   ODR[Overnight/opening reversal<br/>WATCHLIST]
   CAR[Closing-auction/rebalance<br/>WATCHLIST]
 
   VDC --- PVAE --- FPC
   CONT ==> VMR
   CONT ==> MIM
-  MIM -. same overnight blocker .-> ODR
+  MIM -. shared dividend/overnight seam .-> ODR
 ```
 
 Legend: **TERMINAL** = concluded no edge; **DESIGN** = chartered, not run; **BLOCKED**
@@ -59,8 +59,10 @@ Legend: **TERMINAL** = concluded no edge; **DESIGN** = chartered, not run; **BLO
 - The **continuation lane is closed** (VDC/PVAE/FPC) — NO EDGE FOUND; VDC kept as a
   benchmark only.
 - **VMR** is designed and parked (owner request) with a trade-blind frozen threshold.
-- **MIM** is the active family, but its exact previous-close-crossing return hits a
-  **dividend/corporate-action data blocker** on the split-only corpus → STOP (C),
-  pending an ex-dividend calendar or a dividend-adjusted close series.
-- Two watchlist families remain unopened; the overnight-reversal one inherits MIM's
-  blocker, and the closing-auction one needs auction/imbalance data OHLCV cannot supply.
+- **MIM** was unblocked by an authorized narrow State Street ex-dividend seam
+  (dividend-neutral early return), run once, and is **TERMINAL — FAMILY DEAD**
+  (β = −0.017, gross −0.59 bps, fails the cost stress; robust across views): SPY shows
+  no previous-close→10:00 intraday-momentum edge here.
+- Two watchlist families remain unopened; the overnight-reversal one would reuse the
+  same ex-dividend seam, and the closing-auction one needs auction/imbalance data OHLCV
+  cannot supply.

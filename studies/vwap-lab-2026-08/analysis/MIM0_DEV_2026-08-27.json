@@ -1,0 +1,206 @@
+{
+  "role": "MIM-0 exact replication (development); dividend-neutral early_return PRIMARY (screened), raw sensitivity, ex-dividend-excluded sensitivity",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "development_window": [
+    "2024-09-03",
+    "2025-12-31"
+  ],
+  "dividend_convention": "PRIMARY dividend-neutral: ex-date early_return = (P_10_00 + cash - previous_close)/previous_close; ordinary otherwise. Sidecar data/SPY_EX_DIVIDENDS_v1.0.json (State Street provenance).",
+  "ex_dividend_sessions_in_obs": [
+    "2024-09-20",
+    "2024-12-20",
+    "2025-03-21",
+    "2025-06-20",
+    "2025-09-19",
+    "2025-12-19"
+  ],
+  "n_obs_screened": 328,
+  "n_obs_raw": 328,
+  "screened_primary": {
+    "regression": {
+      "n": 328,
+      "beta": -0.016739438447226127,
+      "intercept": 1.7085458371460488e-07,
+      "se_hc1_primary": 0.03168591049052173,
+      "t_hc1": -0.5282928023240306,
+      "ci95_hc1": [
+        -0.07884268182600859,
+        0.04536380493155635
+      ],
+      "se_classical": 0.018578377782880386,
+      "t_classical": -0.9010172278147554,
+      "r_squared": 0.0024840962450455306,
+      "se_convention": "HC1 (White heteroskedasticity-consistent, small-sample corrected) PRIMARY; classical OLS secondary; 95% CI via normal 1.96. Frozen before outcomes; no estimator shopping."
+    },
+    "sign_strategy": {
+      "n": 327,
+      "mean_bps": -0.5916,
+      "median_bps": 0.4403,
+      "cumulative_bps": -193.4379,
+      "profit_factor": 0.928384,
+      "win_rate_pct": 50.4587,
+      "max_drawdown_bps": 554.3331,
+      "long": {
+        "n": 187,
+        "mean_bps": -0.6025,
+        "profit_factor": 0.916234
+      },
+      "short": {
+        "n": 140,
+        "mean_bps": -0.577,
+        "profit_factor": 0.940434
+      },
+      "bootstrap_mean_ci95_bps": [
+        -3.1981,
+        1.9788
+      ],
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 8
+      },
+      "outliers": {
+        "net_bps_excl_top10_abs": -34.5853,
+        "net_bps": -193.4379
+      }
+    },
+    "costs": {
+      "spy_price_ref": 610.2299,
+      "zero_cost_mean_bps": -0.5916,
+      "lab_slippage_mean_bps": -0.9193,
+      "lab_slippage_rt_bps": 0.3277,
+      "stress_mean_bps": -5.5916,
+      "stress_rt_bps": 5.0,
+      "note": "gross association is reported separately from executable economics; the 15:59 close is a CONTINUOUS-session proxy, NOT an auction fill \u2014 no auction-executable alpha is claimed from OHLCV. Costs frozen, not optimized."
+    },
+    "classification": {
+      "verdict": "FAMILY DEAD",
+      "reason": "beta -0.0167394 <= 0"
+    }
+  },
+  "raw_sensitivity": {
+    "regression": {
+      "n": 328,
+      "beta": -0.016739438447226127,
+      "intercept": 1.7085458371460488e-07,
+      "se_hc1_primary": 0.03168591049052173,
+      "t_hc1": -0.5282928023240306,
+      "ci95_hc1": [
+        -0.07884268182600859,
+        0.04536380493155635
+      ],
+      "se_classical": 0.018578377782880386,
+      "t_classical": -0.9010172278147554,
+      "r_squared": 0.0024840962450455306,
+      "se_convention": "HC1 (White heteroskedasticity-consistent, small-sample corrected) PRIMARY; classical OLS secondary; 95% CI via normal 1.96. Frozen before outcomes; no estimator shopping."
+    },
+    "sign_strategy": {
+      "n": 327,
+      "mean_bps": -0.5916,
+      "median_bps": 0.4403,
+      "cumulative_bps": -193.4379,
+      "profit_factor": 0.928384,
+      "win_rate_pct": 50.4587,
+      "max_drawdown_bps": 554.3331,
+      "long": {
+        "n": 187,
+        "mean_bps": -0.6025,
+        "profit_factor": 0.916234
+      },
+      "short": {
+        "n": 140,
+        "mean_bps": -0.577,
+        "profit_factor": 0.940434
+      },
+      "bootstrap_mean_ci95_bps": [
+        -3.1981,
+        1.9788
+      ],
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 8
+      },
+      "outliers": {
+        "net_bps_excl_top10_abs": -34.5853,
+        "net_bps": -193.4379
+      }
+    },
+    "costs": {
+      "spy_price_ref": 610.2299,
+      "zero_cost_mean_bps": -0.5916,
+      "lab_slippage_mean_bps": -0.9193,
+      "lab_slippage_rt_bps": 0.3277,
+      "stress_mean_bps": -5.5916,
+      "stress_rt_bps": 5.0,
+      "note": "gross association is reported separately from executable economics; the 15:59 close is a CONTINUOUS-session proxy, NOT an auction fill \u2014 no auction-executable alpha is claimed from OHLCV. Costs frozen, not optimized."
+    },
+    "classification": {
+      "verdict": "FAMILY DEAD",
+      "reason": "beta -0.0167394 <= 0"
+    }
+  },
+  "ex_dividend_excluded_sensitivity": {
+    "note": "corporate-action SENSITIVITY only \u2014 NOT a second configuration, NOT a gate, NOT a rescue; the dividend-neutral screened result is primary.",
+    "n_obs": 322,
+    "regression": {
+      "n": 322,
+      "beta": -0.015690976524893353,
+      "intercept": -1.077584007764225e-05,
+      "se_hc1_primary": 0.031929127866603436,
+      "t_hc1": -0.491431416180505,
+      "ci95_hc1": [
+        -0.0782709172012103,
+        0.046888964151423594
+      ],
+      "se_classical": 0.018744104222434433,
+      "t_classical": -0.837115305094876,
+      "r_squared": 0.002185096254775254,
+      "se_convention": "HC1 (White heteroskedasticity-consistent, small-sample corrected) PRIMARY; classical OLS secondary; 95% CI via normal 1.96. Frozen before outcomes; no estimator shopping."
+    },
+    "sign_strategy": {
+      "n": 321,
+      "mean_bps": -0.5733,
+      "median_bps": 0.1592,
+      "cumulative_bps": -184.0404,
+      "profit_factor": 0.930793,
+      "win_rate_pct": 50.1558,
+      "max_drawdown_bps": 531.9946,
+      "long": {
+        "n": 184,
+        "mean_bps": -0.6785,
+        "profit_factor": 0.907018
+      },
+      "short": {
+        "n": 137,
+        "mean_bps": -0.4321,
+        "profit_factor": 0.955039
+      },
+      "bootstrap_mean_ci95_bps": [
+        -3.1491,
+        2.0369
+      ],
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 8
+      },
+      "outliers": {
+        "net_bps_excl_top10_abs": -25.1878,
+        "net_bps": -184.0404
+      }
+    },
+    "costs": {
+      "spy_price_ref": 610.235,
+      "zero_cost_mean_bps": -0.5733,
+      "lab_slippage_mean_bps": -0.901,
+      "lab_slippage_rt_bps": 0.3277,
+      "stress_mean_bps": -5.5733,
+      "stress_rt_bps": 5.0,
+      "note": "gross association is reported separately from executable economics; the 15:59 close is a CONTINUOUS-session proxy, NOT an auction fill \u2014 no auction-executable alpha is claimed from OHLCV. Costs frozen, not optimized."
+    },
+    "classification": {
+      "verdict": "FAMILY DEAD",
+      "reason": "beta -0.015691 <= 0"
+    }
+  },
+  "verdict": "FAMILY DEAD"
+}

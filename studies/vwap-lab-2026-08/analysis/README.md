@@ -203,6 +203,23 @@ dividend-adjusted previous-close series. Evidence
 [`../manifests/MIM_CHARTER_v0.1.md`](../manifests/MIM_CHARTER_v0.1.md),
 [`../manifests/RUN_MIM0_DEV_PREP_v0.1.md`](../manifests/RUN_MIM0_DEV_PREP_v0.1.md).
 
+**2026-08-27 — MIM-0 unblocked (State Street ex-dividend seam) + run → FAMILY DEAD**
+(owner/HELM charge; MIM config 1/4). The blocker was cleared by an authorized narrow
+State Street/SPDR SPY distributions seam (corporate-action normalization only): the six
+dev-window ex-dividend distributions were independently verified before freezing
+(`../data/SPY_EX_DIVIDENDS_v1.0.json`). `mim.py` gained the frozen **dividend-neutral**
+`early_return` (ex-date adds the cash distribution to the 10:00 price; all other MIM-0
+semantics unchanged) and a development `main()`; the convention was pushed pre-outcome
+(commit 8eabc76), then run once. **Result (N=328, dividend-neutral screened primary):
+β = −0.01674** (HC1 SE 0.0317, t −0.53, CI95 [−0.079, +0.045], R² 0.002) → the primary
+β>0 condition **FAILS**; sign-strategy gross **−0.59 bps**, fails the 5 bps cost stress,
+bootstrap CI straddles zero. Robust: raw == screened (mask bars are not MIM clock bars)
+and the ex-dividend-excluded sensitivity (β −0.0157) agrees. **VERDICT: MIM FAMILY DEAD**
+(β≤0; gross≤0; fails cost stress) — SPY shows no previous-close→10:00 intraday-momentum
+edge here; no rescue (STOP at A). Tests `test_mim.py` (7/7). Evidence
+`MIM0_DEV_2026-08-27.json`; MIM-dev 1/4 (remaining ≤3 not earned). Manifest
+[`../manifests/RUN_MIM0_DEV_v1.0.md`](../manifests/RUN_MIM0_DEV_v1.0.md) Amendment 1.
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:
