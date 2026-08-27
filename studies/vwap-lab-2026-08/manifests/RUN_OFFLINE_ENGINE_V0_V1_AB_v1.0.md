@@ -207,3 +207,12 @@ sha256 `975f747d8c4aef9d2ff209c904410aa31adb6ce4c3c11348d52e57b8a736221c` (was
 `42db304e9467426d666f2141486267cb362a24710d143b21949291a71f531efd`). The V0/V1 A/B
 and calibration result JSONs are unchanged (no drift on `git status`). No version
 bump required (§c). See `RUN_ATR_STOP_SURFACE_v1.0.md`.
+
+### Amendment 4 — 2026-08-26 — additive side-permission parameters (long-only packet)
+
+`analysis/fastalpha_engine.py` gained `simulate(..., enable_longs=True,
+enable_shorts=True)`, gating entry permission by side; defaults reproduce V0
+exactly. New engine sha256
+`11af1c55db3dd0d1cbca5a489f1dbe7194344311e4ffcdc1142b9da1bcde86f5` (was
+`975f747d8c4aef9d2ff209c904410aa31adb6ce4c3c11348d52e57b8a736221c`). Prior result
+JSONs unchanged (no drift). No version bump (§c). See `RUN_LONG_ONLY_AB_v1.0.md`.

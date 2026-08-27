@@ -69,6 +69,21 @@ risk-adjusted, "too tight" only in $. **No production value selected.** Engine g
 VDC-dev budget **7/18** (4 new ATR-stop configs; 1.00 = existing V0). Manifest
 [`../manifests/RUN_ATR_STOP_SURFACE_v1.0.md`](../manifests/RUN_ATR_STOP_SURFACE_v1.0.md).
 
+**2026-08-26 — long-only VDC path-dependent A/B** (owner charge; single change = short entries
+disabled). `long_only_ab.py` reruns the long-only strategy through the engine (not a filter) and
+compares vs symmetric V0, screened primary + raw. **Verified by rerun: ZERO path divergence** —
+0 path-created / 0 lost / 0 changed-exit long trades, long-entry Jaccard 1.000 in both views (V0
+longs/shorts occupy mutually-exclusive VWAP regimes; shorts thesis-exit at the boundary), so the
+long-only-vs-symmetric gap **is** the removed net-negative short book. Long-only is directionally
+favorable and raw/screened-consistent (screened net −$86.64→+$31.05, cumR +12.2→+33.1, PF
+0.885→1.093, max-DD-R 75.7→29.8) **but not robust** — bootstrap mean-expectancy CI straddles zero
+in $ and R, and net fails best-10 removal (+31→−74). Disposition **MODEST / UNCERTAIN** (not
+confirmation — development-generated); a pre-registered single-look validation appears plausibly
+warranted (small expected effect), not inspected. Engine gained additive `enable_longs`/`enable_shorts`;
+a synthetic test proves it models short→long path creation. Evidence `LONG_ONLY_AB_2026-08-26.json`;
+budget **8/18**; manifest
+[`../manifests/RUN_LONG_ONLY_AB_v1.0.md`](../manifests/RUN_LONG_ONLY_AB_v1.0.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

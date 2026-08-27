@@ -165,6 +165,28 @@ def test_atr_stop_mult_scales_stop_and_risk():
     assert approx(t2[0]["risk_points"], 1.00)       # 1R scales with the multiple
 
 
+def test_enable_shorts_false_creates_path_dependent_long():
+    # Symmetric takes a short at 10:05 that is still open at 10:10 when a long
+    # candidate fires (blocked by the flat gate). With shorts disabled, the
+    # engine is flat at 10:10 and takes that long — a PATH-CREATED trade, proving
+    # long-only is not merely 'symmetric minus shorts'.
+    rows = [
+        frow(1000, 99.2, 99.3, 98.8, 99.0, 100.0, 2.0, short_c=True),   # short signal
+        frow(1005, 99.0, 99.4, 98.6, 99.0, 100.0, 2.0),                 # short fills @open, stop 100.99
+        frow(1010, 99.5, 100.6, 99.4, 100.5, 100.0, 2.0, long_c=True),  # c>vwap: short thesis; long cand
+        frow(1015, 100.5, 101.2, 100.3, 101.0, 100.0, 2.0),            # short thesis-exits; long fills (long-only)
+        frow(1020, 101.0, 101.3, 100.8, 101.0, 100.0, 2.0),
+        frow(1550, 101.0, 101.1, 100.9, 101.0, 100.0, 2.0),            # EOD
+    ]
+    sym = fe.simulate(rows)
+    assert len(sym) == 1 and sym[0]["side"] == "short", sym       # no long in symmetric
+    lo = fe.simulate(rows, enable_shorts=False)
+    assert len(lo) == 1 and lo[0]["side"] == "long", lo
+    assert lo[0]["entry_bar"] == f"{DAY} 10:15"
+    sym_long_entries = {t["entry_bar"] for t in sym if t["side"] == "long"}
+    assert lo[0]["entry_bar"] not in sym_long_entries             # path-created
+
+
 def test_determinism_synthetic():
     rows = [
         frow(1000, 100, 100.2, 99.9, 100.0, 90.0, 0.50, long_c=True),
