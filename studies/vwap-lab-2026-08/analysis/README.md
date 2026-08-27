@@ -125,6 +125,26 @@ inputs). Evidence `LONG_ONLY_VALIDATION_2026-08-26.json`; validation-class look 
 interpreted VDC-development remains 15/18. Manifest
 [`../manifests/RUN_LONG_ONLY_VALIDATION_v1.0.md`](../manifests/RUN_LONG_ONLY_VALIDATION_v1.0.md).
 
+**2026-08-26 — VDC terminal disposition + FPC family opened** (owner/HELM charge;
+PREP/infrastructure, **no FPC outcome inspected**). Naked VDC is retired as a
+strategy candidate (retained as benchmark/control; final interpreted-development
+15/18, 3 slots intentionally unused) — `../manifests/VDC_TERMINAL_DISPOSITION_v1.0.md`.
+A new independent family **FPC — First Pullback Continuation** is opened: entry is
+restricted to the FIRST opposing-color pullback after a FRESH VWAP/EMA regime (vs
+VDC's every-opposing-candle rule), symmetric. The engine gained an additive
+`simulate(..., signal_mode="vdc"|"fpc")`; **`"vdc"` is the default and reproduces
+every prior result byte-identical** (re-verified: `V0_V1_AB_RESULTS` and
+`EMA_SURFACE` JSONs unchanged), while `"fpc"` adds a per-side arm-state (arm on fresh
+regime, first red/green bar while flat, one entry per continuous regime) that reads
+only precomputed parity_foundation fields and re-implements no indicator. New engine
+sha `26e1fb07…`. Tests `test_fpc_signals.py` (8 cases incl. a VDC(2)-vs-FPC(1)
+contrast proving the first-pullback restriction). Charter
+[`../manifests/FPC_CHARTER_v0.1.md`](../manifests/FPC_CHARTER_v0.1.md) (provenance
+trace + H3 evidentiary flag; proposed budget ≤12; confirmation policy — the consumed
+VDC validation window may not be FPC validation); first dev run pre-registered but
+**not executed** in
+[`../manifests/RUN_FPC0_DEV_PREP_v0.1.md`](../manifests/RUN_FPC0_DEV_PREP_v0.1.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

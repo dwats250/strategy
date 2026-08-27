@@ -113,7 +113,7 @@ def _hhmm(et_start_iso):
 
 
 def simulate(rows, dev_start=DEV_START, dev_end=DEV_END, atr_stop_mult=1.0,
-             enable_longs=True, enable_shorts=True):
+             enable_longs=True, enable_shorts=True, signal_mode="vdc"):
     """Run the FastAlpha execution model over development-window feature rows.
 
     Returns a list of closed-trade dicts, in entry order. Deterministic: pure
@@ -125,6 +125,25 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END, atr_stop_mult=1.0,
     occupancy and therefore the whole path — it is NOT the same as filtering that
     side out of the symmetric output. Long/short thresholds and every other
     semantic are unchanged. Defaults reproduce V0 exactly.
+
+    `signal_mode` selects the ENTRY SIGNAL rule only; execution (fills, ATR stop,
+    thesis/EOD exits, the flat gate, P/L) is identical in every mode.
+      * "vdc"  (default) — the frozen V0 rule: enter on the flat-agnostic
+        `long_candidate`/`short_candidate` precomputed by parity_foundation
+        (`inEntryWindow and bullishState and redBar`, mirrored). Byte-identical to
+        every prior result.
+      * "fpc"  — FIRST PULLBACK CONTINUATION (family FPC, hypothesis FPC-0): on a
+        FRESH bullish regime (`bullish_state` true on this bar, false on the prior
+        bar) arm ONE long opportunity; do NOT enter on the fresh bar itself; while
+        that regime stays continuously true, the FIRST subsequent red bar
+        (`red_bar`) inside the entry window taken while flat is the only permitted
+        long entry, after which the side disarms (one entry per continuous regime).
+        A regime turning false disarms; a later false->true transition re-arms.
+        Short is the exact mirror (fresh bearish regime, first green bar). This
+        state is execution-dependent ("while flat"), so it lives here, not in the
+        flat-agnostic feature seam. FPC reads only precomputed parity_foundation
+        fields (`bullish_state`, `bearish_state`, `red_bar`, `green_bar`,
+        `in_entry_window`); it re-implements no indicator.
     """
     bars = [r for r in rows if dev_start <= r["session_date"] <= dev_end]
 
@@ -137,6 +156,12 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END, atr_stop_mult=1.0,
     entry_idx = None
     pending = None              # (kind, atr_ticks|reason, signal_bar)
     trades = []
+
+    # FPC (signal_mode="fpc") arm-state — inert in "vdc" mode
+    prev_bullish = False
+    prev_bearish = False
+    armed_long = False
+    armed_short = False
 
     def close_trade(exit_bar, exit_price, reason, exit_idx):
         nonlocal pos, entry_price, stop_price, risk_points
@@ -164,6 +189,23 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END, atr_stop_mult=1.0,
         o, h, l, c = b["o"], b["h"], b["l"], b["c"]
         vwap, atr14 = b["session_vwap"], b["atr14"]
         et = _hhmm(b["et_start"])
+
+        # ---- 0. FPC regime arm-state (advanced every bar, before any continue) --
+        bull = bear = fresh_bull = fresh_bear = False
+        if signal_mode == "fpc":
+            bull = bool(b.get("bullish_state"))
+            bear = bool(b.get("bearish_state"))
+            fresh_bull = bull and not prev_bullish
+            fresh_bear = bear and not prev_bearish
+            prev_bullish, prev_bearish = bull, bear      # advance for the next bar
+            if not bull:
+                armed_long = False                       # regime ended -> disarm
+            elif fresh_bull:
+                armed_long = True                        # fresh regime -> arm one
+            if not bear:
+                armed_short = False
+            elif fresh_bear:
+                armed_short = True
 
         # ---- 1. fill the pending market order at THIS bar's open ----
         if pending is not None:
@@ -204,12 +246,24 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END, atr_stop_mult=1.0,
         if pos < 0 and vwap is not None and c > vwap:
             pending = ("close_short", "VWAP Failure", signal_bar)
             continue
-        if pos == 0 and atr14 is not None:
+        if pos == 0 and atr14 is not None:              # pos==0 IS the 'flat' gate
             atr_ticks = max(1, round(atr14 * atr_stop_mult / MINTICK))
-            if enable_longs and b["long_candidate"]:
+            if signal_mode == "fpc":
+                long_c = (armed_long and bull and not fresh_bull
+                          and b.get("red_bar") and b.get("in_entry_window"))
+                short_c = (armed_short and bear and not fresh_bear
+                           and b.get("green_bar") and b.get("in_entry_window"))
+            else:
+                long_c = b["long_candidate"]
+                short_c = b["short_candidate"]
+            if enable_longs and long_c:
                 pending = ("entry_long", atr_ticks, et)
-            elif enable_shorts and b["short_candidate"]:
+                if signal_mode == "fpc":
+                    armed_long = False                   # one entry per continuous regime
+            elif enable_shorts and short_c:
                 pending = ("entry_short", atr_ticks, et)
+                if signal_mode == "fpc":
+                    armed_short = False
 
     return trades
 

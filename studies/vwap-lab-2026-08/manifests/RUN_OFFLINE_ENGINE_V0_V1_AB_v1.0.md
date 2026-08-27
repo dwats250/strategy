@@ -216,3 +216,19 @@ exactly. New engine sha256
 `11af1c55db3dd0d1cbca5a489f1dbe7194344311e4ffcdc1142b9da1bcde86f5` (was
 `975f747d8c4aef9d2ff209c904410aa31adb6ce4c3c11348d52e57b8a736221c`). Prior result
 JSONs unchanged (no drift). No version bump (§c). See `RUN_LONG_ONLY_AB_v1.0.md`.
+
+### Amendment 5 — 2026-08-26 — additive signal-mode parameter (FPC family PREP packet)
+
+`analysis/fastalpha_engine.py` gained `simulate(..., signal_mode="vdc")`. The
+default `"vdc"` selects the frozen V0 entry rule (the flat-agnostic
+`long_candidate`/`short_candidate`) and reproduces every prior result
+**byte-identical** (verified by re-running `v0_v1_ab.py` and `ema_surface.py`:
+committed JSONs unchanged). `signal_mode="fpc"` adds the FIRST PULLBACK
+CONTINUATION entry rule (family FPC / hypothesis FPC-0): a per-side arm-state that
+enters only on the first red (bullish) / green (bearish) bar after a FRESH regime,
+one entry per continuous regime. It reads only precomputed parity_foundation fields
+and re-implements no indicator; execution is the shared V0 machinery. New engine
+sha256 `26e1fb07641b35deb8461cf7d3af45d25eefcf45462e66448a4c390cba5f5b0e` (was
+`11af1c55db3dd0d1cbca5a489f1dbe7194344311e4ffcdc1142b9da1bcde86f5`). No version bump
+(§c). FPC is a **distinct research family** — see `FPC_CHARTER_v0.1.md` and
+`RUN_FPC0_DEV_PREP_v0.1.md`; **no FPC outcome is interpreted in that packet.**
