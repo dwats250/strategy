@@ -168,6 +168,103 @@ inclusive** and confirm it yields **1,331 trades** before exporting; keep Volume
 export the List of Trades CSV and the chart-data CSV and confirm the ten instrumentation columns
 are present. The identity gate is re-run on the re-capture; nothing else proceeds until it PASSES.
 
+### Amendment 3 — 2026-08-26 · FIRST UNSEALING · PVAE development analysis · SYMMETRIC PVAE PARKED (rule C)
+
+**Authority.** Owner/HELM development-unseal charge of 2026-08-26 — authorizes unsealing the R1
+DEVELOPMENT capture only, as one interpreted VDC-development draw under the frozen §9 budget, to
+run exactly the frozen PVAE primary comparison. Firewall reaffirmed: development only
+(2024-09-03 → 2025-12-31); embargo, validation, unused buffer, hypothesis-source, and holdout
+untouched; no new TradingView run; no frozen definition or threshold changed.
+
+**§9 budget draw (A1.7 dated note).** This is the first unsealing of this SEALED-UNINTERPRETED
+capture, so the interpreted-run budget slot is now drawn. **VDC development interpreted runs: 2 of
+≤ 18** (R0 = 1; this R1 unsealing = 2). Per A1.7 the prior SEALED-UNINTERPRETED ledger row and
+Amendment 2 are **not** rewritten; the draw is recorded here and by an appended interpreted-run
+ledger row (`…_v0R1_UNSEAL_PVAE`).
+
+**Method (frozen prereg executed, not amended).** Covariates were read from the frozen R1
+instrumentation mirror (`../analysis/instrumentation_r1.py`) over the hash-guarded local SPY
+corpus (foundation columns byte-identical to R0; containment re-verified: 24 columns identical
+across 38,357 rows). The supplied R1 chart-data export is only a 300-bar recent visible-window
+sample, so the local mirror is the R1 observational state for development bars. Each trade was
+joined to its **signal bar = entry-fill time − 5m** (the frozen R0-parity Gate-3 timing). All
+1,331 trades joined; **group P/L reconciles exactly to the R0 headline** (long +43.68, short
+−17.99, net +25.69) — a complete, conservative join. Analysis tool:
+`../analysis/pvae_dev_analysis_r1_v1.0.py`; evidence `../analysis/PVAE_DEV_RESULTS_2026-08-26.json`.
+
+**Frozen S_9_20_50 development-entry tercile boundaries (computed once, from the S_t distribution
+only — no P/L, side, or outcome used; recorded before inspecting conditional outcomes):**
+
+```
+method : count-based split of pooled defined naked-VDC entry S_9_20_50;
+         b_lo = sorted[floor(N/3)], b_hi = sorted[floor(2N/3)] (0-indexed);
+         upper development-entry tercile = S_t >= b_hi
+N (defined entry S_t) : 1330   (1 entry undefined at warm-up; excluded from ranking)
+b_lo (lower boundary) : 0.5320216540492776
+b_hi (UPPER boundary) : 1.3297578122368192
+tercile counts        : lower 443 · middle 443 · upper 444
+```
+
+These boundaries are frozen and are the ones reused unchanged for the single sealed validation
+look if and when it is ever earned (A1.4).
+
+**PVAE classification (all five frozen conditions; A1.2 acceptance + A1.4 ordering / upper tercile
+/ expansion / persistence ≥ 2). Condition funnel over 1,331 trades:**
+
+```
+accept (ESTABLISHED, correct dir)            1121
+  + ordered EMA 9>20>50 (dir)                 730
+    + S_t in upper tercile                     352
+      + expanding (S_t > S_{t-2})              273
+        + persistence >= 2  = PVAE            263
+```
+
+Qualified **PVAE N = 263**, non-PVAE N = 1068 (54 entries carried ≥1 undefined covariate at
+warm-up and cannot qualify).
+
+**Primary comparison — per-trade expectancy (Net PnL USD), PVAE vs other:**
+
+| Split | PVAE n | PVAE exp | PVAE win | other n | other exp | other win | contrast (PVAE−other) | ex-top-trade |
+|---|---|---|---|---|---|---|---|---|
+| pooled | 263 | +0.0234 | 23.95% | 1068 | +0.0183 | 21.72% | **+0.0051** | +0.0050 |
+| long | 162 | −0.0006 | 25.31% | 535 | +0.0818 | 22.62% | **−0.0824** | −0.0224 |
+| short | 101 | +0.0619 | 21.78% | 533 | −0.0455 | 20.83% | **+0.1074** | +0.0388 |
+
+**Park-rule evaluation (frozen; no rescue):**
+
+- **A** (qualified N < 30): **NO** — N = 263.
+- **B** (pooled contrast ≤ 0): **NO** — pooled contrast = +0.0051.
+- **C** (long and short contrast signs disagree): **YES** — long −0.0824, short +0.1074.
+  **This governs.**
+- **D** (positive only after changing the tercile rule / persistence ≥ 2 / acceptance rule): **n/a**
+  — nothing was changed or threshold-shopped; the primary was computed once under frozen
+  definitions.
+- **E** (validation): **not evaluated** — validation remains sealed.
+
+**DEVELOPMENT DISPOSITION: SYMMETRIC PVAE PARKED (rule C).** The symmetric-PVAE hypothesis requires
+the contrast to agree in sign across sides; here the long-side contrast is negative while the
+short-side contrast is positive, so the symmetric hypothesis is parked without rescue. Although the
+pooled contrast is marginally positive (+0.0051), it is carried entirely by the short side and does
+not satisfy the frozen symmetry requirement. Per PVAE-prereg §5.C an asymmetric (short-only)
+variant is **not** created now; it may only be separately pre-registered as future research. No
+rule, threshold, persistence value, or acceptance definition is moved on this result.
+
+**ONE PLANNED VALIDATION LOOK: NOT EARNED.** No validation capture is unsealed; the R2 validation
+window (2026-01-06 → 2026-04-30) remains sealed and untouched.
+
+**Secondary observational covariates (descriptive only — no thresholds, no optimization, not a
+hypothesis):** PVAE vs all-entries means — `RecentShock` 1.78 vs 1.72; `S_10_22_55` 2.64 vs 1.27;
+`ordered_10_22_55` agrees with trade side 100% (PVAE) vs 62.3% (all). Reported as context; nothing
+is promoted or filtered on them.
+
+**Feed-seam caveat (recorded, not repaired).** Covariates come from the split-only local corpus,
+whereas TradingView R0/R1 is dividend-adjusted (ADJ); near a threshold a covariate may differ from
+the exact TV stamp. Exposure is bounded and descriptive: 43 entries sit within ±5% of the upper
+tercile boundary, and the R0 parity probe recorded 53/1331 near-threshold VDC-candidate flips. This
+seam does not change the disposition — the governing fact is the long/short sign disagreement, and
+the sides differ by far more than seam-scale perturbation — but it is a standing limitation on the
+exactness of the covariate stamps and is noted for any future validation decision.
+
 ### Amendment 2 — 2026-08-26 · Corrected re-capture supplied · IDENTITY GATE PASS — R1 ADMISSIBLE (SEALED-UNINTERPRETED)
 
 Owner supplied the corrected R1 capture on 2026-08-26 (the re-capture required by Amendment 1).

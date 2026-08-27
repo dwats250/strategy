@@ -93,3 +93,23 @@ Symmetric PVAE is **PARKED without rescue** if any of:
 ## Amendments
 
 *(append dated amendments here; never edit the text above in place)*
+
+### Amendment P1 — 2026-08-26 · Primary comparison executed (R1 development, first unsealing)
+
+The §2 primary comparison was run once, under the frozen definitions, on the admissible R1
+development trade set (identity gate PASS; R1 == R0). Authority: owner/HELM development-unseal
+charge 2026-08-26. Full record, frozen tercile boundaries, condition funnel, per-split table, and
+park-rule evaluation are in `RUN_VDC_SPY_5m_dev_R1_v1.0.md` Amendment 3; tool
+`../analysis/pvae_dev_analysis_r1_v1.0.py`; evidence `../analysis/PVAE_DEV_RESULTS_2026-08-26.json`.
+
+- Frozen upper-tercile boundary `b_hi = 1.3297578122368192` (b_lo = 0.5320216540492776; N=1330
+  defined entry S_t). Computed once from S_t only; reused unchanged for any future validation look.
+- PVAE N = 263, non-PVAE N = 1068. Per-trade expectancy contrast (PVAE − other): pooled +0.0051,
+  long −0.0824, short +0.1074.
+- **Park condition C fires** (long and short contrast signs disagree). Disposition:
+  **SYMMETRIC PVAE PARKED — no rescue.** The marginally positive pooled contrast does not satisfy
+  the frozen symmetry requirement (§5.C). No §5.C short-only variant is created; it may only be
+  separately pre-registered as future research. The single validation look is **not earned**;
+  validation stays sealed (§5.E). No definition, threshold, tercile rule, persistence value, or
+  acceptance rule was moved.
+- `trials_planned` for this pre-registration was 1 (§1); that one trial is now spent.

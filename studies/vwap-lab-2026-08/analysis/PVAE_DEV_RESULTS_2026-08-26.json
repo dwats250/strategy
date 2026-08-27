@@ -1,0 +1,131 @@
+{
+  "role": "PVAE development analysis (R1 first unsealing) \u2014 frozen prereg",
+  "authority": "owner/HELM development-unseal charge 2026-08-26; STUDY_CHARTER Amendment A1; PVAE_ANALYSIS_PREREG_v0.1; RUN_VDC_SPY_5m_dev_R1_v1.0",
+  "trade_list_sha256": "8d2db8dc78bec56594dd26d8a3020eb3c73c2a9dc976cdd421191f8827751241",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "n_trades": 1331,
+  "signal_fill_timing": "signal bar = entry fill time - 5m (frozen)",
+  "covariate_source": "frozen local R1 instrumentation mirror; foundation byte-identical to R0",
+  "trades_missing_local_signal_bar": 0,
+  "entries_with_undefined_covariate": 54,
+  "frozen_terciles": {
+    "method": "count-based split of pooled defined naked-VDC entry S_9_20_50; b_lo=sorted[floor(N/3)], b_hi=sorted[floor(2N/3)] (0-indexed); upper tercile = S_t >= b_hi",
+    "n_defined_entry_S": 1330,
+    "b_lo": 0.5320216540492776,
+    "b_hi_upper_boundary": 1.3297578122368192,
+    "tercile_counts": {
+      "lower": 443,
+      "middle": 443,
+      "upper": 444
+    }
+  },
+  "pvae_condition_funnel": {
+    "accept": 1121,
+    "accept+ordered": 730,
+    "accept+ordered+upper": 352,
+    "accept+ordered+upper+expanding": 273,
+    "all5_pvae": 263
+  },
+  "pvae_N": 263,
+  "non_pvae_N": 1068,
+  "contrasts": {
+    "pooled": {
+      "pvae": {
+        "n": 263,
+        "expectancy": 0.023384030418250948,
+        "total_pnl": 6.1499999999999995,
+        "win_rate": 0.23954372623574144,
+        "wins": 63,
+        "best": 10.9,
+        "expectancy_ex_top": -0.018129770992366415
+      },
+      "other": {
+        "n": 1068,
+        "expectancy": 0.01829588014981273,
+        "total_pnl": 19.539999999999996,
+        "win_rate": 0.21722846441947566,
+        "wins": 232,
+        "best": 44.22,
+        "expectancy_ex_top": -0.023130271790065608
+      },
+      "expectancy_contrast_pvae_minus_other": 0.005088150268438219,
+      "expectancy_contrast_ex_top_trade": 0.005000500797699193
+    },
+    "long": {
+      "pvae": {
+        "n": 162,
+        "expectancy": -0.0006172839506172849,
+        "total_pnl": -0.10000000000000016,
+        "win_rate": 0.25308641975308643,
+        "wins": 41,
+        "best": 3.64,
+        "expectancy_ex_top": -0.023229813664596276
+      },
+      "other": {
+        "n": 535,
+        "expectancy": 0.08183177570093458,
+        "total_pnl": 43.78,
+        "win_rate": 0.2261682242990654,
+        "wins": 121,
+        "best": 44.22,
+        "expectancy_ex_top": -0.0008239700374531851
+      },
+      "expectancy_contrast_pvae_minus_other": -0.08244905965155187,
+      "expectancy_contrast_ex_top_trade": -0.02240584362714309
+    },
+    "short": {
+      "pvae": {
+        "n": 101,
+        "expectancy": 0.06188118811881188,
+        "total_pnl": 6.25,
+        "win_rate": 0.21782178217821782,
+        "wins": 22,
+        "best": 10.9,
+        "expectancy_ex_top": -0.04650000000000001
+      },
+      "other": {
+        "n": 533,
+        "expectancy": -0.045478424015009386,
+        "total_pnl": -24.240000000000002,
+        "win_rate": 0.20825515947467166,
+        "wins": 111,
+        "best": 21.13,
+        "expectancy_ex_top": -0.08528195488721806
+      },
+      "expectancy_contrast_pvae_minus_other": 0.10735961213382127,
+      "expectancy_contrast_ex_top_trade": 0.03878195488721805
+    }
+  },
+  "secondary_descriptive": {
+    "recent_shock": {
+      "pvae_available": 263,
+      "pvae_mean": 1.778813871670222,
+      "all_available": 1331,
+      "all_mean": 1.718286144649666
+    },
+    "s_10_22_55": {
+      "pvae_available": 263,
+      "pvae_mean": 2.63569627321686,
+      "all_available": 1330,
+      "all_mean": 1.2707780441119985
+    },
+    "ordered_10_22_55_agrees_side": {
+      "pvae_share_agree": 1.0,
+      "all_share_agree": 0.622839969947408
+    }
+  },
+  "feed_seam": {
+    "note": "local split-only feed vs TV ADJ; covariates near a threshold may differ from the exact TV stamp. Descriptive exposure only.",
+    "entries_within_5pct_of_upper_boundary": 43,
+    "r0_parity_candidate_flips_53_of_1331": true
+  },
+  "park_rules": {
+    "A_pvae_N_lt_30": false,
+    "B_pooled_contrast_le_0": false,
+    "C_long_short_signs_disagree": true,
+    "D_requires_rule_change": "n/a \u2014 no rule/threshold/persistence/acceptance change was made or explored; primary computed once under the frozen definitions",
+    "E_validation": "not evaluated \u2014 validation remains sealed"
+  },
+  "development_disposition": "SYMMETRIC PVAE PARKED (C: long/short contrast signs disagree)",
+  "one_validation_look_earned": false
+}
