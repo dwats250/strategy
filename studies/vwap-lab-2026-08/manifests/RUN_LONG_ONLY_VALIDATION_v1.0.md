@@ -154,5 +154,60 @@ is added in Phase B.
 
 ## Amendments
 
-*(append dated result amendment here in Phase B; never edit the pre-registration
-above in place)*
+### Amendment 1 — Phase B result (2026-08-26) — **FAILS VALIDATION**
+
+Run under the frozen pre-registration above. Evidence
+`analysis/LONG_ONLY_VALIDATION_2026-08-26.json` sha256
+`a8cd0d6ce841a3afd1df5a415353e85b0db75ae05622364097b9749f712fbd72`; produced by the
+frozen `long_only_validation.py` (sha `50d57ed7…`) unchanged since the freeze commit.
+Determinism: report JSON byte-identical across reruns. Firewall assertion: the 1m
+stream was truncated at 2026-04-30 before aggregation; no bar after the validation
+window entered the indicator or trade path; no embargo/holdout/hypothesis-source
+outcome was computed or inspected. As pre-disclosed, the frozen mask flags 0 bars
+in-window, so **screened == raw in-window** (verified: `screened_equals_raw_in_window`
+= true); raw sign-agreement therefore holds by construction.
+
+**Primary (screened, mean expectancy R):**
+
+| quantity | value |
+|---|---:|
+| symmetric expectancy R | −0.05233 |
+| long-only expectancy R | **−0.01872** |
+| Δ expectancy R (LO − sym) | +0.03361 |
+| symmetric SHORT expectancy R | −0.08977 |
+| long-only block-bootstrap 95% CI (R) | **[−0.28318, +0.32338]** |
+| long-only IID 95% CI (R) | [−0.26674, +0.25042] |
+
+**Replication criteria:**
+
+- **A. long-only mean expectancy R > 0 — FAIL** (−0.01872 < 0).
+- **B. long-only > symmetric expectancy R — PASS** (−0.01872 > −0.05233).
+- **C. symmetric short expectancy R < 0 — PASS** (−0.08977 < 0).
+- Screened A/B/C pass: **FALSE** (A fails). Raw sign agreement: TRUE (screened==raw).
+
+**FINAL CLASSIFICATION: `FAILS VALIDATION`.** Any screened primary condition failing
+is a fail by the frozen rule; A fails.
+
+**What replicated and what did not.** The *directional structure* did replicate
+out-of-sample — removing shorts improved risk-normalized performance (B) and the
+short side was strongly negative (C, −0.090 R, the worst component). But the
+operative claim — that a long-only V0 has a *positive* risk-adjusted edge (A) — did
+**not** hold: over the 80-session window the long book alone is **−0.019 R** per
+trade, its block CI straddles zero widely [−0.28, +0.32], and only **1 of 4 months**
+(April) was positive. This is consistent with the development read (edge small,
+CI-straddling-zero, outlier-dependent): the asymmetry is real but the long side's
+standalone expectancy is not reliably positive.
+
+**Secondary diagnostics (non-gating).** Long-only: n=176 (symmetric 334), cumulative
+R −3.29, net −$11.82, PF 0.882, win 23.3%, max-DD 43.1 R. Path-difference: **0
+path-created, 0 lost, 0 changed-exit; long-entry Jaccard 1.000** — the same verified
+zero-path-divergence property seen in development (V0 longs/shorts occupy
+mutually-exclusive VWAP regimes), so long-only is exactly the symmetric long book.
+Outlier rule (descriptive only): long-only best-10 = +53.33 (60.4% of gross profit),
+net_excl_best-10 = −65.15 — noted, **not** used to fail or rescue.
+
+**Disposition (per the frozen no-rescue rule).** The long-only hypothesis is
+**PARKED.** No parameter change, no alternate EMA/stop/filter, no alternate or
+resized validation slice, no threshold shopping. No holdout or portability work is
+opened. Validation budget: one interpreted validation look consumed;
+interpreted VDC-development remains 15/18.

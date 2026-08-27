@@ -1,0 +1,275 @@
+{
+  "role": "Long-only SINGLE-LOOK validation (2026-01-06..2026-04-30); control symmetric V0 vs variant long-only, both rerun through the frozen engine; screened primary, raw sensitivity",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "validation_window": [
+    "2026-01-06",
+    "2026-04-30"
+  ],
+  "firewall_end_cap": "2026-04-30",
+  "engine": {
+    "mintick": 0.01,
+    "slippage_ticks": 1,
+    "atr_stop_mult": 1.0,
+    "ema": [
+      9,
+      20
+    ]
+  },
+  "determinism": "PASS (each arm byte-identical across re-simulation)",
+  "screened_equals_raw_in_window": true,
+  "screened_equals_raw_note": "the frozen dev-derived CORPUS_MASK_v1.0 flags 0 bars inside the validation window, so screened and raw coincide in-window; raw sign-agreement therefore holds by construction and the block-bootstrap CI is the operative discriminator. Disclosed pre-outcome in the manifest.",
+  "primary": {
+    "symmetric_expectancy_r": -0.052327,
+    "long_only_expectancy_r": -0.018718,
+    "delta_expectancy_r": 0.033609,
+    "symmetric_short_expectancy_r": -0.08976533544303797,
+    "long_only_block_ci95_r": [
+      -0.283183,
+      0.323377
+    ],
+    "long_only_iid_ci95_r": [
+      -0.266735,
+      0.25042
+    ],
+    "classification": {
+      "A_long_only_expectancy_r_gt_0": false,
+      "B_long_only_gt_symmetric_expectancy_r": true,
+      "C_symmetric_short_expectancy_r_lt_0": true,
+      "screened_ABC_pass": false,
+      "raw_sign_agreement_ABC": true,
+      "long_only_block_ci95_lower": -0.283183,
+      "verdict": "FAILS VALIDATION"
+    }
+  },
+  "screened": {
+    "symmetric": {
+      "n": 334,
+      "expectancy_r": -0.052327,
+      "cumulative_r": -17.47722,
+      "net_usd": -27.9922,
+      "profit_factor": 0.855268,
+      "win_rate_pct": 20.3593,
+      "max_dd_r": 44.736629,
+      "short_expectancy_r": -0.08976533544303797,
+      "long_expectancy_r": -0.01871759659090909,
+      "exit_reason_counts": {
+        "Long ATR Stop": 76,
+        "Short ATR Stop": 70,
+        "VWAP Failure": 135,
+        "EOD": 53
+      },
+      "monthly_pnl_usd": {
+        "2026-01": -9.4799,
+        "2026-02": -6.3511,
+        "2026-03": -12.887,
+        "2026-04": 0.7258
+      },
+      "profitable_months": 1,
+      "n_months": 4,
+      "outliers": {
+        "best_1": {
+          "n": 1,
+          "pnl": 11.305,
+          "pct_of_gross_profit": 6.8344
+        },
+        "best_5": {
+          "n": 5,
+          "pnl": 42.0,
+          "pct_of_gross_profit": 25.3908
+        },
+        "best_10": {
+          "n": 10,
+          "pnl": 69.615,
+          "pct_of_gross_profit": 42.0852
+        },
+        "net_excl_best_1": -39.2972,
+        "net_excl_best_5": -69.9922,
+        "net_excl_best_10": -97.6072
+      }
+    },
+    "long_only": {
+      "n": 176,
+      "expectancy_r": -0.018718,
+      "cumulative_r": -3.294297,
+      "net_usd": -11.8173,
+      "profit_factor": 0.88199,
+      "win_rate_pct": 23.2955,
+      "max_dd_r": 43.132322,
+      "short_expectancy_r": null,
+      "long_expectancy_r": -0.01871759659090909,
+      "exit_reason_counts": {
+        "Long ATR Stop": 76,
+        "Short ATR Stop": 0,
+        "VWAP Failure": 69,
+        "EOD": 31
+      },
+      "monthly_pnl_usd": {
+        "2026-01": -10.6999,
+        "2026-02": -9.5687,
+        "2026-03": -10.715,
+        "2026-04": 19.1663
+      },
+      "profitable_months": 1,
+      "n_months": 4,
+      "outliers": {
+        "best_1": {
+          "n": 1,
+          "pnl": 8.61,
+          "pct_of_gross_profit": 9.7485
+        },
+        "best_5": {
+          "n": 5,
+          "pnl": 33.88,
+          "pct_of_gross_profit": 38.36
+        },
+        "best_10": {
+          "n": 10,
+          "pnl": 53.33,
+          "pct_of_gross_profit": 60.3819
+        },
+        "net_excl_best_1": -20.4273,
+        "net_excl_best_5": -45.6973,
+        "net_excl_best_10": -65.1473
+      }
+    },
+    "long_only_bootstrap_r": {
+      "block_ci95": [
+        -0.283183,
+        0.323377
+      ],
+      "iid_ci95": [
+        -0.266735,
+        0.25042
+      ],
+      "block_len": 6,
+      "mean": -0.018718,
+      "n": 176
+    },
+    "path_difference": {
+      "symmetric_long_entries": 176,
+      "long_only_entries": 176,
+      "retained_identical_exit": 176,
+      "changed_exit_same_entry": 0,
+      "path_created_long_entries": 0,
+      "lost_symmetric_longs": 0,
+      "long_entry_jaccard": 1.0
+    }
+  },
+  "raw": {
+    "symmetric": {
+      "n": 334,
+      "expectancy_r": -0.052327,
+      "cumulative_r": -17.47722,
+      "net_usd": -27.9922,
+      "profit_factor": 0.855268,
+      "win_rate_pct": 20.3593,
+      "max_dd_r": 44.736629,
+      "short_expectancy_r": -0.08976533544303797,
+      "long_expectancy_r": -0.01871759659090909,
+      "exit_reason_counts": {
+        "Long ATR Stop": 76,
+        "Short ATR Stop": 70,
+        "VWAP Failure": 135,
+        "EOD": 53
+      },
+      "monthly_pnl_usd": {
+        "2026-01": -9.4799,
+        "2026-02": -6.3511,
+        "2026-03": -12.887,
+        "2026-04": 0.7258
+      },
+      "profitable_months": 1,
+      "n_months": 4,
+      "outliers": {
+        "best_1": {
+          "n": 1,
+          "pnl": 11.305,
+          "pct_of_gross_profit": 6.8344
+        },
+        "best_5": {
+          "n": 5,
+          "pnl": 42.0,
+          "pct_of_gross_profit": 25.3908
+        },
+        "best_10": {
+          "n": 10,
+          "pnl": 69.615,
+          "pct_of_gross_profit": 42.0852
+        },
+        "net_excl_best_1": -39.2972,
+        "net_excl_best_5": -69.9922,
+        "net_excl_best_10": -97.6072
+      }
+    },
+    "long_only": {
+      "n": 176,
+      "expectancy_r": -0.018718,
+      "cumulative_r": -3.294297,
+      "net_usd": -11.8173,
+      "profit_factor": 0.88199,
+      "win_rate_pct": 23.2955,
+      "max_dd_r": 43.132322,
+      "short_expectancy_r": null,
+      "long_expectancy_r": -0.01871759659090909,
+      "exit_reason_counts": {
+        "Long ATR Stop": 76,
+        "Short ATR Stop": 0,
+        "VWAP Failure": 69,
+        "EOD": 31
+      },
+      "monthly_pnl_usd": {
+        "2026-01": -10.6999,
+        "2026-02": -9.5687,
+        "2026-03": -10.715,
+        "2026-04": 19.1663
+      },
+      "profitable_months": 1,
+      "n_months": 4,
+      "outliers": {
+        "best_1": {
+          "n": 1,
+          "pnl": 8.61,
+          "pct_of_gross_profit": 9.7485
+        },
+        "best_5": {
+          "n": 5,
+          "pnl": 33.88,
+          "pct_of_gross_profit": 38.36
+        },
+        "best_10": {
+          "n": 10,
+          "pnl": 53.33,
+          "pct_of_gross_profit": 60.3819
+        },
+        "net_excl_best_1": -20.4273,
+        "net_excl_best_5": -45.6973,
+        "net_excl_best_10": -65.1473
+      }
+    },
+    "long_only_bootstrap_r": {
+      "block_ci95": [
+        -0.283183,
+        0.323377
+      ],
+      "iid_ci95": [
+        -0.266735,
+        0.25042
+      ],
+      "block_len": 6,
+      "mean": -0.018718,
+      "n": 176
+    },
+    "path_difference": {
+      "symmetric_long_entries": 176,
+      "long_only_entries": 176,
+      "retained_identical_exit": 176,
+      "changed_exit_same_entry": 0,
+      "path_created_long_entries": 0,
+      "lost_symmetric_longs": 0,
+      "long_entry_jaccard": 1.0
+    }
+  },
+  "outlier_rule": "best-1/5/10 removal is DESCRIPTIVE robustness only, NOT a validation gate (frozen in the manifest).",
+  "no_rescue": "single look; no parameter/EMA/stop/filter/slice change after this run regardless of outcome."
+}

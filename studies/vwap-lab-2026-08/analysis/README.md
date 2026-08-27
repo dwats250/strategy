@@ -103,6 +103,28 @@ surfaces). Evidence `EMA_SURFACE_2026-08-26.json`/`.csv`; interpreted VDC-dev bu
 **15/18** (7 new cells; 9/20 + 10/22 pre-existing). Manifest
 [`../manifests/RUN_EMA_SURFACE_v1.0.md`](../manifests/RUN_EMA_SURFACE_v1.0.md).
 
+**2026-08-26 — long-only SINGLE-LOOK validation** (owner/HELM charge; the one
+authorized validation look). `long_only_validation.py` reruns symmetric V0 (control)
+and long-only (variant) through the frozen engine over the **validation** window
+2026-01-06→2026-04-30 (80 sessions). Firewall/holdout hygiene: the corpus extends to
+2026-08-21, so — because EMA/ATR/VWAP are causal — the 1m stream is truncated at
+2026-04-30 before 5m aggregation (no engine change), guaranteeing no post-window bar
+enters the indicator or trade path; the pre-registration was frozen and pushed
+**before** any outcome (commit 401c1bb), with results recorded only by dated
+manifest amendment. The frozen dev-mask flags 0 bars in-window, so screened == raw
+in-window (pre-disclosed); the block-bootstrap CI is the STRONG-vs-DIRECTIONAL
+discriminator. **Result: FAILS VALIDATION** — screened primary criteria: A (long-only
+expectancy R > 0) **FAILS** at −0.01872, while B (long-only −0.01872 > symmetric
+−0.05233) and C (symmetric short −0.08977 < 0) **hold**. The directional structure
+replicated (removing shorts helps; shorts are the R-drag) but the standalone
+long-only edge did not (negative, block CI R [−0.283,+0.323] straddles zero, 1/4
+months positive); zero path divergence (Jaccard 1.000). Per the frozen **no-rescue**
+rule the long-only hypothesis is **PARKED**; no holdout or portability work opened.
+Tests `test_long_only_validation.py` (A/B/C + strength classifier on synthetic
+inputs). Evidence `LONG_ONLY_VALIDATION_2026-08-26.json`; validation-class look —
+interpreted VDC-development remains 15/18. Manifest
+[`../manifests/RUN_LONG_ONLY_VALIDATION_v1.0.md`](../manifests/RUN_LONG_ONLY_VALIDATION_v1.0.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:
