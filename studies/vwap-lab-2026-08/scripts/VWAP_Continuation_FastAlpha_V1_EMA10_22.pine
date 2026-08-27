@@ -1,0 +1,348 @@
+//@version=6
+strategy(
+     "VWAP Continuation - Fast Alpha v1 (EMA 10/22)",
+     shorttitle = "VWAP FastAlpha v1",
+     overlay = true,
+     initial_capital = 50000,
+     currency = currency.USD,
+     default_qty_type = strategy.fixed,
+     default_qty_value = 1,
+     pyramiding = 0,
+     commission_type = strategy.commission.percent,
+     commission_value = 0.0,
+     slippage = 1,
+     calc_on_order_fills = false,
+     calc_on_every_tick = false,
+     process_orders_on_close = false
+)
+
+// ============================================================
+// VWAP CONTINUATION - FAST ALPHA v0
+//
+// BENCHMARK:
+//   SPY
+//   5-minute
+//   Standard candles
+//   Regular Trading Hours only
+//
+// HYPOTHESIS:
+//   When an intraday directional state already exists,
+//   an opposing 5-minute candle can provide better entry
+//   timing for continuation.
+//
+// LONG STATE:
+//   Close > session VWAP
+//   EMA9 > EMA20
+//
+// LONG TRIGGER:
+//   Red 5-minute candle
+//
+// SHORT STATE:
+//   Close < session VWAP
+//   EMA9 < EMA20
+//
+// SHORT TRIGGER:
+//   Green 5-minute candle
+//
+// ENTRY:
+//   Market order on next bar open.
+//
+// RISK:
+//   Initial hard stop = 1 x ATR(14), fixed at entry.
+//
+// THESIS EXIT:
+//   Long closes after a close below session VWAP.
+//   Short closes after a close above session VWAP.
+//
+// EOD:
+//   Flat at 15:55 ET.
+//
+// INTENTIONALLY ABSENT:
+//   VWAP slope
+//   EMA slope
+//   HTF confirmation
+//   drift threshold
+//   volume filter
+//   profit target
+//   trailing stop
+//   daily trade limit
+//   daily loss limit
+// ============================================================
+
+
+// ------------------------------------------------------------
+// 1. FIXED v0 PARAMETERS
+// ------------------------------------------------------------
+
+string TZ = "America/New_York"
+
+int EMA_FAST_LEN = 10
+int EMA_SLOW_LEN = 22
+int ATR_LEN      = 14
+
+float ATR_STOP_MULT = 1.0
+
+int ENTRY_START_HM  = 935
+int ENTRY_CUTOFF_HM = 1530
+int EOD_BAR_HM      = 1550
+
+
+// ------------------------------------------------------------
+// 2. TEST ENVIRONMENT GUARDS
+// ------------------------------------------------------------
+
+// v0 is specifically defined on 5-minute bars.
+if barstate.isfirst and
+   (not timeframe.isminutes or timeframe.multiplier != 5)
+    runtime.error(
+         "VWAP Fast Alpha v0 must be tested on a 5-minute chart."
+    )
+
+// Extended-hours bars would contaminate the EMA and ATR series.
+// Run the chart with Regular Trading Hours selected.
+if session.ispremarket or session.ispostmarket
+    runtime.error(
+         "Use Regular Trading Hours only. Extended-hours data is not part of v0."
+    )
+
+
+// ------------------------------------------------------------
+// 3. SESSION STATE
+// ------------------------------------------------------------
+
+bool inRTH  = session.ismarket
+bool newRTH = session.isfirstbar_regular
+
+int currentHM =
+     hour(time, TZ) * 100 +
+     minute(time, TZ)
+
+bool inEntryWindow =
+     inRTH and
+     currentHM >= ENTRY_START_HM and
+     currentHM < ENTRY_CUTOFF_HM
+
+
+// ------------------------------------------------------------
+// 4. RTH SESSION VWAP
+// ------------------------------------------------------------
+
+var float cumulativePV = na
+var float cumulativeV  = na
+
+if newRTH
+    cumulativePV := hlc3 * volume
+    cumulativeV  := volume
+
+else if inRTH
+    cumulativePV += hlc3 * volume
+    cumulativeV  += volume
+
+else
+    cumulativePV := na
+    cumulativeV  := na
+
+float sessionVWAP =
+     inRTH and not na(cumulativeV) and cumulativeV > 0
+     ? cumulativePV / cumulativeV
+     : na
+
+
+// ------------------------------------------------------------
+// 5. EMA + ATR
+// ------------------------------------------------------------
+
+float ema9  = ta.ema(close, EMA_FAST_LEN)
+float ema20 = ta.ema(close, EMA_SLOW_LEN)
+float atr14 = ta.atr(ATR_LEN)
+
+
+// ------------------------------------------------------------
+// 6. DIRECTIONAL STATE
+//
+// VWAP position and EMA alignment are correlated price-derived
+// information. Together they define ONE directional state.
+// They are not treated as independent "confluence."
+// ------------------------------------------------------------
+
+bool bullishState =
+     close > sessionVWAP and
+     ema9 > ema20
+
+bool bearishState =
+     close < sessionVWAP and
+     ema9 < ema20
+
+
+// ------------------------------------------------------------
+// 7. FAST-ALPHA TRIGGER
+//
+// The opposing candle is NOT a separate directional signal.
+// It is an execution-timing event inside the existing trend.
+// ------------------------------------------------------------
+
+bool redBar   = close < open
+bool greenBar = close > open
+
+bool flat =
+     strategy.position_size == 0
+
+bool longSignal =
+     inEntryWindow and
+     flat and
+     bullishState and
+     redBar
+
+bool shortSignal =
+     inEntryWindow and
+     flat and
+     bearishState and
+     greenBar
+
+
+// ------------------------------------------------------------
+// 8. ATR-NORMALIZED INITIAL STOP
+//
+// strategy.exit(loss=) expects ticks.
+// Freeze the ATR distance on the signal bar and convert
+// directly from price distance to instrument ticks.
+// ------------------------------------------------------------
+
+int atrStopTicks =
+     math.max(
+         1,
+         int(
+             math.round(
+                 (atr14 * ATR_STOP_MULT) /
+                 syminfo.mintick
+             )
+         )
+     )
+
+
+// ------------------------------------------------------------
+// 9. ENTRIES
+//
+// process_orders_on_close=false means these market orders
+// fill on the next available tick -- historically, normally
+// the next 5-minute bar's open.
+// ------------------------------------------------------------
+
+if longSignal and not na(atr14)
+    strategy.entry(
+         "Long",
+         strategy.long
+    )
+
+    strategy.exit(
+         "Long ATR Stop",
+         from_entry = "Long",
+         loss = atrStopTicks
+    )
+
+
+if shortSignal and not na(atr14)
+    strategy.entry(
+         "Short",
+         strategy.short
+    )
+
+    strategy.exit(
+         "Short ATR Stop",
+         from_entry = "Short",
+         loss = atrStopTicks
+    )
+
+
+// ------------------------------------------------------------
+// 10. THESIS FAILURE
+//
+// VWAP is the structural anchor.
+// EMA alignment determines whether a trade may BEGIN;
+// we do not add a second EMA-based exit in v0.
+// ------------------------------------------------------------
+
+bool longVWAPFailure =
+     strategy.position_size > 0 and
+     close < sessionVWAP
+
+bool shortVWAPFailure =
+     strategy.position_size < 0 and
+     close > sessionVWAP
+
+if longVWAPFailure
+    strategy.close(
+         "Long",
+         comment = "VWAP Failure"
+    )
+
+if shortVWAPFailure
+    strategy.close(
+         "Short",
+         comment = "VWAP Failure"
+    )
+
+
+// ------------------------------------------------------------
+// 11. END-OF-DAY FLATTEN
+//
+// On a 5-minute chart, the 15:50 bar closes at 15:55.
+// immediately=true closes on that bar's closing tick rather
+// than carrying a market close order into the next session.
+// ------------------------------------------------------------
+
+bool eodFlatten =
+     inRTH and
+     currentHM == EOD_BAR_HM
+
+if eodFlatten and strategy.position_size != 0
+    strategy.close_all(
+         comment = "EOD",
+         immediately = true
+    )
+
+
+// ------------------------------------------------------------
+// 12. VISUALS
+// ------------------------------------------------------------
+
+plot(
+     sessionVWAP,
+     title = "Session VWAP",
+     color = color.orange,
+     linewidth = 2
+)
+
+plot(
+     ema9,
+     title = "EMA 9",
+     color = color.aqua,
+     linewidth = 1
+)
+
+plot(
+     ema20,
+     title = "EMA 20",
+     color = color.blue,
+     linewidth = 1
+)
+
+plotshape(
+     longSignal,
+     title = "Long Fast-Alpha Signal",
+     style = shape.triangleup,
+     location = location.belowbar,
+     color = color.green,
+     size = size.tiny,
+     text = "L"
+)
+
+plotshape(
+     shortSignal,
+     title = "Short Fast-Alpha Signal",
+     style = shape.triangledown,
+     location = location.abovebar,
+     color = color.red,
+     size = size.tiny,
+     text = "S"
+)

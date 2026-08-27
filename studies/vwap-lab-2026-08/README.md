@@ -41,6 +41,7 @@ only strategy authority.
 | [`manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md`](manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md) | **Frozen R0 run manifest** — owner-attested TV context, preserved artifacts + hashes, reference metrics (supersedes the retained PREP v0.1) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0.pine`](scripts/VWAP_Continuation_FastAlpha_v0.pine) | Exact ingested VDC v0 Pine source (immutable; sha256 in provenance record) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine`](scripts/VWAP_Continuation_FastAlpha_v0_R1_instrumented_v1.0.pine) | R1 instrumented variant — v0 trading byte-identical, observational A1/PVAE covariate exports only |
+| [`scripts/VWAP_Continuation_FastAlpha_V1_EMA10_22.pine`](scripts/VWAP_Continuation_FastAlpha_V1_EMA10_22.pine) | V1 controlled perturbation — v0 byte-identical except EMA pair 9/20→10/22 (sole semantic change) + identity; PREP `manifests/RUN_VDC_SPY_5m_dev_V1_EMA10_22_PREP_v0.1.md`, proof `analysis/v1_ema1022_diff_proof.py` |
 | [`manifests/RUN_VDC_SPY_5m_dev_R1_v1.0.md`](manifests/RUN_VDC_SPY_5m_dev_R1_v1.0.md) | **Frozen R1 run manifest** — owner capture authorization (SEALED-UNINTERPRETED), source pin, identity-gate mechanics (supersedes the retained PREP v0.1) |
 | [`scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md`](scripts/VWAP_Continuation_FastAlpha_v0_PROVENANCE.md) | Source provenance + mechanical characterization |
 | [`PARITY_GATES.md`](PARITY_GATES.md) | DATA / SEMANTIC / EXECUTION parity status record |

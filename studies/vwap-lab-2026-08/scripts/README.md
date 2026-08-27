@@ -17,6 +17,15 @@ and local containment proofs recorded in `../manifests/RUN_VDC_SPY_5m_dev_R1_PRE
 local mirror `../analysis/instrumentation_r1.py`. Not a run authorization; v0 remains the
 R0 source of record (§c: both versions retained).
 
+**2026-08-26 — V1 EMA 10/22 controlled perturbation added:**
+[`VWAP_Continuation_FastAlpha_V1_EMA10_22.pine`](VWAP_Continuation_FastAlpha_V1_EMA10_22.pine)
+(sha256 `bca7f7eaf8fd7c93e3400dd72a8661f3d8f9d99219509a2f0fedf3cc03b32519`) — byte-identical to
+v0 except four lines: the FastAlpha trading EMA pair `EMA_FAST_LEN 9→10` / `EMA_SLOW_LEN 20→22`
+(lines 79–80, the sole strategy-semantic change) and the strategy title/short-title (lines 3–4,
+identity). Static diff proof + flat-agnostic candidate sanity: `../analysis/v1_ema1022_diff_proof.py`;
+PREP manifest `../manifests/RUN_VDC_SPY_5m_dev_V1_EMA10_22_PREP_v0.1.md`. No identity gate (V1 is a
+deliberate perturbation). Not a run authorization; v0 remains the R0 source of record.
+
 Historical status (accurate until 2026-08-25 ingest — retained, not rewritten):
 
 **No strategy script is present, and none may be written by reconstruction.**
