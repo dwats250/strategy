@@ -1,0 +1,457 @@
+{
+  "role": "Phase 4 diagnostic: raw vs integrity-screened V0 (frozen mask; data-quality treatment only, not a strategy trial)",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "mask_count": 9,
+  "mask_keys": [
+    "2024-10-01T11:32",
+    "2024-12-20T11:10",
+    "2025-03-14T13:44",
+    "2025-04-16T14:31",
+    "2025-05-19T12:05",
+    "2025-05-19T12:18",
+    "2025-05-19T12:20",
+    "2025-05-27T13:13",
+    "2025-12-22T15:12"
+  ],
+  "raw": {
+    "n": 1363,
+    "net_pnl": -111.6136,
+    "expectancy": -0.081888,
+    "profit_factor": 0.8551,
+    "win_rate_pct": 21.35,
+    "wins": 291,
+    "losses": 1070,
+    "gross_profit": 658.845,
+    "gross_loss": 770.4586,
+    "max_drawdown": 143.9365,
+    "avg_bars_held": 12.5018,
+    "exit_reason_counts": {
+      "Long ATR Stop": 347,
+      "Short ATR Stop": 313,
+      "VWAP Failure": 482,
+      "EOD": 221
+    },
+    "long": {
+      "n": 708,
+      "pnl": 17.1765,
+      "expectancy": 0.024261
+    },
+    "short": {
+      "n": 655,
+      "pnl": -128.7901,
+      "expectancy": -0.196626
+    }
+  },
+  "screened": {
+    "n": 1354,
+    "net_pnl": -86.6386,
+    "expectancy": -0.063987,
+    "profit_factor": 0.8855,
+    "win_rate_pct": 21.7134,
+    "wins": 294,
+    "losses": 1058,
+    "gross_profit": 669.9,
+    "gross_loss": 756.5386,
+    "max_drawdown": 131.9844,
+    "avg_bars_held": 12.6152,
+    "exit_reason_counts": {
+      "Long ATR Stop": 339,
+      "Short ATR Stop": 310,
+      "VWAP Failure": 483,
+      "EOD": 222
+    },
+    "long": {
+      "n": 701,
+      "pnl": 31.0515,
+      "expectancy": 0.044296
+    },
+    "short": {
+      "n": 653,
+      "pnl": -117.6901,
+      "expectancy": -0.18023
+    }
+  },
+  "delta_screened_minus_raw": {
+    "d_n_trades": -9,
+    "d_stop_outs": -11,
+    "d_net_pnl": 24.975,
+    "d_expectancy": 0.017901,
+    "d_profit_factor": 0.0304,
+    "d_win_rate_pct": 0.3634,
+    "d_max_drawdown": -11.9521
+  },
+  "affected_trades": {
+    "raw_only": [
+      {
+        "entry_bar": "2024-10-01 11:35",
+        "side": "short",
+        "signal_bar": "2024-10-01 11:30",
+        "entry_price": 568.35,
+        "exit_bar": "2024-10-01 11:40",
+        "exit_price": 568.86,
+        "exit_reason": "VWAP Failure",
+        "pnl": -0.51,
+        "bars_held": 1
+      },
+      {
+        "entry_bar": "2024-12-20 11:50",
+        "side": "long",
+        "signal_bar": "2024-12-20 11:45",
+        "entry_price": 594.17,
+        "exit_bar": "2024-12-20 13:20",
+        "exit_price": 592.64,
+        "exit_reason": "Long ATR Stop",
+        "pnl": -1.53,
+        "bars_held": 18
+      },
+      {
+        "entry_bar": "2024-12-20 13:25",
+        "side": "long",
+        "signal_bar": "2024-12-20 13:20",
+        "entry_price": 592.75,
+        "exit_bar": "2024-12-20 14:05",
+        "exit_price": 591.79,
+        "exit_reason": "Long ATR Stop",
+        "pnl": -0.96,
+        "bars_held": 8
+      },
+      {
+        "entry_bar": "2024-12-20 14:40",
+        "side": "long",
+        "signal_bar": "2024-12-20 14:35",
+        "entry_price": 593.41,
+        "exit_bar": "2024-12-20 14:50",
+        "exit_price": 592.61,
+        "exit_reason": "Long ATR Stop",
+        "pnl": -0.8,
+        "bars_held": 2
+      },
+      {
+        "entry_bar": "2025-03-14 13:45",
+        "side": "long",
+        "signal_bar": "2025-03-14 13:40",
+        "entry_price": 560.77,
+        "exit_bar": "2025-03-14 15:50",
+        "exit_price": 563.41,
+        "exit_reason": "EOD",
+        "pnl": 2.64,
+        "bars_held": 25
+      },
+      {
+        "entry_bar": "2025-04-16 15:15",
+        "side": "short",
+        "signal_bar": "2025-04-16 15:10",
+        "entry_price": 521.985,
+        "exit_bar": "2025-04-16 15:50",
+        "exit_price": 523.675,
+        "exit_reason": "Short ATR Stop",
+        "pnl": -1.69,
+        "bars_held": 7
+      },
+      {
+        "entry_bar": "2025-05-19 12:10",
+        "side": "long",
+        "signal_bar": "2025-05-19 12:05",
+        "entry_price": 593.17,
+        "exit_bar": "2025-05-19 12:15",
+        "exit_price": 591.99,
+        "exit_reason": "Long ATR Stop",
+        "pnl": -1.18,
+        "bars_held": 1
+      },
+      {
+        "entry_bar": "2025-05-19 12:35",
+        "side": "long",
+        "signal_bar": "2025-05-19 12:30",
+        "entry_price": 593.74,
+        "exit_bar": "2025-05-19 15:50",
+        "exit_price": 594.51,
+        "exit_reason": "EOD",
+        "pnl": 0.77,
+        "bars_held": 39
+      },
+      {
+        "entry_bar": "2025-12-22 15:25",
+        "side": "long",
+        "signal_bar": "2025-12-22 15:20",
+        "entry_price": 684.925,
+        "exit_bar": "2025-12-22 15:50",
+        "exit_price": 684.99,
+        "exit_reason": "EOD",
+        "pnl": 0.065,
+        "bars_held": 5
+      }
+    ],
+    "screened_only": [],
+    "changed_exit": [
+      {
+        "entry_bar": "2024-10-01 10:00",
+        "side": "short",
+        "raw": {
+          "exit_bar": "2024-10-01 11:30",
+          "reason": "Short ATR Stop",
+          "pnl": -0.95
+        },
+        "screened": {
+          "exit_bar": "2024-10-01 11:40",
+          "reason": "VWAP Failure",
+          "pnl": 0.63
+        }
+      },
+      {
+        "entry_bar": "2024-10-01 12:15",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2024-10-01 12:30",
+          "reason": "Long ATR Stop",
+          "pnl": -1.09
+        },
+        "screened": {
+          "exit_bar": "2024-10-01 12:30",
+          "reason": "Long ATR Stop",
+          "pnl": -0.87
+        }
+      },
+      {
+        "entry_bar": "2024-10-01 14:25",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2024-10-01 15:30",
+          "reason": "Long ATR Stop",
+          "pnl": -0.84
+        },
+        "screened": {
+          "exit_bar": "2024-10-01 15:30",
+          "reason": "Long ATR Stop",
+          "pnl": -0.81
+        }
+      },
+      {
+        "entry_bar": "2024-10-02 13:05",
+        "side": "short",
+        "raw": {
+          "exit_bar": "2024-10-02 13:25",
+          "reason": "Short ATR Stop",
+          "pnl": -0.57
+        },
+        "screened": {
+          "exit_bar": "2024-10-02 13:25",
+          "reason": "Short ATR Stop",
+          "pnl": -0.56
+        }
+      },
+      {
+        "entry_bar": "2024-12-20 10:50",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2024-12-20 11:10",
+          "reason": "Long ATR Stop",
+          "pnl": -1.33
+        },
+        "screened": {
+          "exit_bar": "2024-12-20 15:35",
+          "reason": "VWAP Failure",
+          "pnl": 1.88
+        }
+      },
+      {
+        "entry_bar": "2025-03-14 11:10",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-03-14 13:40",
+          "reason": "Long ATR Stop",
+          "pnl": -1.18
+        },
+        "screened": {
+          "exit_bar": "2025-03-14 15:50",
+          "reason": "EOD",
+          "pnl": 3.29
+        }
+      },
+      {
+        "entry_bar": "2025-03-17 10:00",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-03-17 10:00",
+          "reason": "Long ATR Stop",
+          "pnl": -1.07
+        },
+        "screened": {
+          "exit_bar": "2025-03-17 10:00",
+          "reason": "Long ATR Stop",
+          "pnl": -1.01
+        }
+      },
+      {
+        "entry_bar": "2025-03-17 10:20",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-03-17 10:25",
+          "reason": "Long ATR Stop",
+          "pnl": -1.09
+        },
+        "screened": {
+          "exit_bar": "2025-03-17 10:25",
+          "reason": "Long ATR Stop",
+          "pnl": -1.05
+        }
+      },
+      {
+        "entry_bar": "2025-03-17 11:40",
+        "side": "short",
+        "raw": {
+          "exit_bar": "2025-03-17 11:50",
+          "reason": "Short ATR Stop",
+          "pnl": -1.01
+        },
+        "screened": {
+          "exit_bar": "2025-03-17 11:50",
+          "reason": "Short ATR Stop",
+          "pnl": -1.0
+        }
+      },
+      {
+        "entry_bar": "2025-03-17 11:55",
+        "side": "short",
+        "raw": {
+          "exit_bar": "2025-03-17 12:05",
+          "reason": "Short ATR Stop",
+          "pnl": -0.94
+        },
+        "screened": {
+          "exit_bar": "2025-03-17 12:05",
+          "reason": "Short ATR Stop",
+          "pnl": -0.93
+        }
+      },
+      {
+        "entry_bar": "2025-04-16 12:05",
+        "side": "short",
+        "raw": {
+          "exit_bar": "2025-04-16 14:30",
+          "reason": "Short ATR Stop",
+          "pnl": -1.0
+        },
+        "screened": {
+          "exit_bar": "2025-04-16 15:50",
+          "reason": "EOD",
+          "pnl": 6.24
+        }
+      },
+      {
+        "entry_bar": "2025-04-17 10:00",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-04-17 10:05",
+          "reason": "Long ATR Stop",
+          "pnl": -1.62
+        },
+        "screened": {
+          "exit_bar": "2025-04-17 10:05",
+          "reason": "Long ATR Stop",
+          "pnl": -1.46
+        }
+      },
+      {
+        "entry_bar": "2025-04-17 11:05",
+        "side": "short",
+        "raw": {
+          "exit_bar": "2025-04-17 11:05",
+          "reason": "Short ATR Stop",
+          "pnl": -1.35
+        },
+        "screened": {
+          "exit_bar": "2025-04-17 11:05",
+          "reason": "Short ATR Stop",
+          "pnl": -1.3
+        }
+      },
+      {
+        "entry_bar": "2025-05-19 12:20",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-05-19 12:20",
+          "reason": "Long ATR Stop",
+          "pnl": -1.36
+        },
+        "screened": {
+          "exit_bar": "2025-05-19 15:50",
+          "reason": "EOD",
+          "pnl": 1.15
+        }
+      },
+      {
+        "entry_bar": "2025-05-20 10:50",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-05-20 10:55",
+          "reason": "Long ATR Stop",
+          "pnl": -0.68
+        },
+        "screened": {
+          "exit_bar": "2025-05-20 10:55",
+          "reason": "Long ATR Stop",
+          "pnl": -0.67
+        }
+      },
+      {
+        "entry_bar": "2025-05-28 09:45",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-05-28 09:45",
+          "reason": "Long ATR Stop",
+          "pnl": -0.54
+        },
+        "screened": {
+          "exit_bar": "2025-05-28 09:45",
+          "reason": "Long ATR Stop",
+          "pnl": -0.5
+        }
+      },
+      {
+        "entry_bar": "2025-12-22 11:00",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-12-22 15:10",
+          "reason": "Long ATR Stop",
+          "pnl": -0.59
+        },
+        "screened": {
+          "exit_bar": "2025-12-22 15:50",
+          "reason": "EOD",
+          "pnl": 1.34
+        }
+      },
+      {
+        "entry_bar": "2025-12-23 09:55",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-12-23 09:55",
+          "reason": "Long ATR Stop",
+          "pnl": -0.52
+        },
+        "screened": {
+          "exit_bar": "2025-12-23 09:55",
+          "reason": "Long ATR Stop",
+          "pnl": -0.42
+        }
+      },
+      {
+        "entry_bar": "2025-12-23 10:00",
+        "side": "long",
+        "raw": {
+          "exit_bar": "2025-12-23 10:00",
+          "reason": "Long ATR Stop",
+          "pnl": -0.53
+        },
+        "screened": {
+          "exit_bar": "2025-12-23 10:00",
+          "reason": "Long ATR Stop",
+          "pnl": -0.43
+        }
+      }
+    ]
+  },
+  "r0_reference_net_pnl": 25.69
+}

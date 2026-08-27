@@ -1,0 +1,33 @@
+{
+  "role": "Frozen reversible mask of HIGH-CONFIDENCE data anomalies. Apply by DROPPING these 1m bars before 5m aggregation; the raw corpus is unchanged and recovered by not applying the mask.",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "frozen_thresholds": {
+    "K_ISO": 15.0,
+    "PCT_FLOOR": 0.003,
+    "REV_FRAC": 0.5,
+    "VOL_OUTLIER_MULT": 40.0
+  },
+  "mask_t_ms": [
+    1727796720000,
+    1734711000000,
+    1741974240000,
+    1744828260000,
+    1747670700000,
+    1747671480000,
+    1747671600000,
+    1748365980000,
+    1766434320000
+  ],
+  "mask_keys": [
+    "2024-10-01T11:32",
+    "2024-12-20T11:10",
+    "2025-03-14T13:44",
+    "2025-04-16T14:31",
+    "2025-05-19T12:05",
+    "2025-05-19T12:18",
+    "2025-05-19T12:20",
+    "2025-05-27T13:13",
+    "2025-12-22T15:12"
+  ],
+  "count": 9
+}

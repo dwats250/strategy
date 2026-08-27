@@ -173,3 +173,16 @@ python3 v0_v1_ab.py                  # determinism-checked A/B; writes V0_V1_AB_
 ## Amendments
 
 *(append dated amendments here; never edit the text above in place)*
+
+### Amendment 1 — 2026-08-26 — additive engine extension (corpus-integrity packet)
+
+`analysis/fastalpha_engine.py` gained an **additive, backward-compatible**
+parameter `compute_feature_rows(..., drop_t_ms=None)` that drops named 1-minute
+bars before 5m aggregation, so the corpus-integrity research-clean view can be
+applied as a pure reversible filter. New engine sha256
+`b8825ed553889cb3b8ce73ea0d39e93ffab096194a30b7e2d9c36151fd06d0f9` (was
+`f3862da80f797be2e203660afb4784d9ed7f915ebbbaee44b79b4c370f71942b`). The default
+path (`drop_t_ms=None`) is unchanged, and the V0/V1 A/B and V0 calibration result
+JSONs were re-verified **byte-identical** under the extended engine — no result in
+this run record changes. No version bump required (§c: the change cannot alter
+existing results). See `CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md`.

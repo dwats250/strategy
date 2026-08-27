@@ -25,6 +25,22 @@ and spike-robust: **V1 DEVELOPMENT NEUTRAL** (evidence `V0_V1_AB_RESULTS_2026-08
 record: [`../manifests/RUN_OFFLINE_ENGINE_V0_V1_AB_v1.0.md`](../manifests/RUN_OFFLINE_ENGINE_V0_V1_AB_v1.0.md).
 Recommended next offline step: pre-registered corpus bad-tick screening (not implemented).
 
+**2026-08-26 — SPY corpus integrity screen** (owner charge; trade-blind data-quality task).
+`corpus_integrity_screen.py` flags 1m bars on market-data properties ALONE (imports no engine or
+trade code): impossible OHLC (Rule A), and isolated reverting excursions beyond both same-session
+neighbours (Rule B), with thresholds frozen from the data distribution before any strategy effect
+(pre-registration [`../manifests/CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md`](../manifests/CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md)).
+Result: corpus structurally sound (0 impossible OHLC, monotonic timestamps); **9 HIGH-CONFIDENCE**
+RTH bad-ticks (all 4 previously-known rediscovered blind) + 157 PLAUSIBLE EXT thin-market prints
+(evidence `CORPUS_INTEGRITY_SCREEN_2026-08-26.json`). The raw corpus is never mutated; a frozen
+reversible mask (`CORPUS_MASK_v1.0.json`, HIGH-CONFIDENCE only) is applied via
+`fastalpha_engine.compute_feature_rows(..., drop_t_ms=)`. Phase 4 diagnostic
+`v0_raw_vs_screened_diagnostic.py`: dropping the 9 bars removes 11 phantom stops, +24.98 net,
+−11.95 max-DD, but does NOT reconcile to R0 — the residual gap is the feed seam, not removable data
+(this corrects the prior loose 141-bar 5m heuristic, which over-removed). Tests
+`test_corpus_integrity_screen.py` (detection, no-mutation, reversible mask, determinism). No
+strategy trial, no budget draw.
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

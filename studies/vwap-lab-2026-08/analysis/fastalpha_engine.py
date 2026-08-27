@@ -82,16 +82,25 @@ DEV_END = "2025-12-31"
 EOD_BAR_HM = pf.EOD_BAR_HM   # 1550
 
 
-def compute_feature_rows(ema_fast, ema_slow):
+def compute_feature_rows(ema_fast, ema_slow, drop_t_ms=None):
     """Feature rows for a given EMA pair, via parity_foundation (indicator
     seam). Temporarily rebinds the module's EMA-length globals — the exact,
     already-used pattern from v1_ema1022_diff_proof.py — and restores them, so
     indicator semantics stay owned by one module. Returns the full-corpus rows;
-    `simulate` applies the development window."""
+    `simulate` applies the development window.
+
+    `drop_t_ms` (optional): a set of 1-minute bar `t_ms` timestamps to REMOVE
+    from the RTH stream before 5m aggregation. This is how the corpus-integrity
+    research-clean view is applied — a pure, reversible filter that never mutates
+    the corpus. Default None = raw corpus."""
     save_fast, save_slow = pf.EMA_FAST_LEN, pf.EMA_SLOW_LEN
     try:
         pf.EMA_FAST_LEN, pf.EMA_SLOW_LEN = ema_fast, ema_slow
-        rows = pf.compute_features(pf.build_5m_bars(pf.load_corpus_rth()))
+        rth = pf.load_corpus_rth()
+        if drop_t_ms:
+            drop = {str(x) for x in drop_t_ms}
+            rth = [r for r in rth if r["t_ms"] not in drop]
+        rows = pf.compute_features(pf.build_5m_bars(rth))
     finally:
         pf.EMA_FAST_LEN, pf.EMA_SLOW_LEN = save_fast, save_slow
     return rows
