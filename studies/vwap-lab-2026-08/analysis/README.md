@@ -84,6 +84,25 @@ a synthetic test proves it models short→long path creation. Evidence `LONG_ONL
 budget **8/18**; manifest
 [`../manifests/RUN_LONG_ONLY_AB_v1.0.md`](../manifests/RUN_LONG_ONLY_AB_v1.0.md).
 
+**2026-08-26 — compact EMA fast/slow response surface** (owner charge; single factor
+= EMA fast/slow lengths). `ema_surface.py` maps a frozen 3×3 grid — fast {8,9,10} ×
+slow {18,20,22} — around the V0 control with naked **symmetric** VDC (no engine or
+tearsheet change; it composes the existing `compute_feature_rows(fast, slow, …)` seam
+and tear-sheet metrics, so all prior results stay byte-identical), screened primary +
+raw sensitivity, determinism-checked. **Response shape FLAT / PARAMETER-INSENSITIVE**:
+all nine cells' pooled expectancy_R sit inside one 0.0096R band (< MATERIAL_R 0.03),
+max adjacent-cell jump 0.008R, both marginals sub-material, raw/screened agree on
+direction (0/8 cells disagree). Control 9/20 is the top R-cell of the flat band
+(well-placed); 10/22's prior NEUTRAL is corroborated (Δ −0.0096R). The one coherent
+feature is a **PERSISTENT** long-positive / short-negative asymmetry (long expectancy_R
+> 0 and short < 0 in all 9 cells, both views) — descriptive support, not confirmation,
+for the standing long-only candidate; every cell's bootstrap CI straddles zero and
+`net_excl_best_10` is deeply negative (outlier-dependent family-wide). **No production
+EMA pair selected.** Tests `test_ema_surface.py` (classifier branches on synthetic
+surfaces). Evidence `EMA_SURFACE_2026-08-26.json`/`.csv`; interpreted VDC-dev budget
+**15/18** (7 new cells; 9/20 + 10/22 pre-existing). Manifest
+[`../manifests/RUN_EMA_SURFACE_v1.0.md`](../manifests/RUN_EMA_SURFACE_v1.0.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:
