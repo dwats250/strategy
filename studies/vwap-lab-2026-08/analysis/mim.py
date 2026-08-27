@@ -46,10 +46,26 @@ SLIP_TICKS = 1               # existing lab adverse-slippage convention, per fil
 COST_STRESS_RT_BPS = 5.0     # one clearly-labelled conservative round-trip stress
 
 
-def build_observations(rth_rows, dev_start=DEV_START, dev_end=DEV_END):
+def load_ex_dividends(path=None):
+    """{ex_date: cash_per_share} from the frozen SPY corporate-action sidecar
+    (data/SPY_EX_DIVIDENDS_v1.0.json; State Street provenance)."""
+    if path is None:
+        path = os.path.join(HERE, "..", "data", "SPY_EX_DIVIDENDS_v1.0.json")
+    import json
+    d = json.load(open(path))
+    return {r["ex_date"]: float(r["cash_per_share"]) for r in d["distributions"]}
+
+
+def build_observations(rth_rows, dev_start=DEV_START, dev_end=DEV_END,
+                       ex_dividends=None):
     """Session observations with the frozen clock semantics. rth_rows: RTH 1m rows
-    with et_iso and o/h/l/c. Returns list of dicts (date, early_return, late_return,
-    price fields). Requires 09:59/15:30/15:59 bars; else the session is skipped."""
+    with et_iso and o/h/l/c. Requires 09:59/15:30/15:59 bars; else the session is
+    skipped. DIVIDEND-NEUTRAL early_return (frozen convention, owner/HELM 2026-08-27):
+    ordinary session `(P_10_00 - previous_close)/previous_close`; SPY ex-dividend
+    session `(P_10_00 + cash_distribution - previous_close)/previous_close` — removes
+    the mechanical ex-dividend price drop while preserving the session. late_return is
+    intraday and unchanged."""
+    ex_dividends = ex_dividends or {}
     by = {}
     for r in rth_rows:
         by.setdefault(r["et_iso"][:10], []).append(r)
@@ -70,11 +86,13 @@ def build_observations(rth_rows, dev_start=DEV_START, dev_end=DEV_END):
         late_close = float(hm["15:59"]["c"])
         if prev_close <= 0 or late_open <= 0:
             continue
+        div = ex_dividends.get(d, 0.0)                 # 0 ordinary; cash on ex-date
         obs.append({
-            "date": d,
+            "date": d, "is_ex_dividend": d in ex_dividends,
+            "ex_dividend_cash": div,
             "previous_close": prev_close, "price_10_00": p_1000,
             "late_open": late_open, "late_close": late_close,
-            "early_return": p_1000 / prev_close - 1.0,
+            "early_return": (p_1000 + div - prev_close) / prev_close,
             "late_return": late_close / late_open - 1.0,
         })
     return obs
@@ -243,8 +261,82 @@ def classify(reg, ss, costs):
                       "validation is NOT run autonomously."}
 
 
-# NOTE: no __main__ development run in the design packet — outcome access is blocked
-# on the ex-dividend corporate-action issue (MIM charter §Blocker). The run packet
-# invokes build_observations()/ols_hc1()/sign_strategy()/cost_diagnostics()/classify()
-# on the corpus only after that blocker is resolved with an external ex-dividend
-# calendar or a dividend-adjusted previous-close series.
+def _arm(obs):
+    x = [o["early_return"] for o in obs]
+    y = [o["late_return"] for o in obs]
+    reg = ols_hc1(x, y)
+    ss = sign_strategy(obs)
+    costs = cost_diagnostics(obs)
+    return {"regression": reg, "sign_strategy": ss, "costs": costs,
+            "classification": classify(reg, ss, costs)}
+
+
+def main():
+    """Development replication over 2024-09-03..2025-12-31. Dividend-neutral
+    early_return is PRIMARY (frozen convention + State Street sidecar); an ex-dividend-
+    EXCLUDED view is a corporate-action SENSITIVITY diagnostic only (not a gate).
+    Screened (frozen CORPUS_MASK_v1.0) primary; raw sensitivity."""
+    import json
+    import platform
+    import parity_foundation as pf
+    print("python", platform.python_version(), "| MIM-0 development replication")
+    print(f"input local corpus sha256 {pf.CANONICAL_SHA256} (guarded)")
+    exdiv = load_ex_dividends()
+    mask = set(json.load(open(os.path.join(HERE, "CORPUS_MASK_v1.0.json")))["mask_t_ms"])
+    rth = pf.load_corpus_rth()
+    rth_scr = [r for r in rth if r["t_ms"] not in {str(x) for x in mask}]
+
+    obs_scr = build_observations(rth_scr, ex_dividends=exdiv)
+    obs_raw = build_observations(rth, ex_dividends=exdiv)
+    # ex-dividend-excluded SENSITIVITY (diagnostic only)
+    obs_scr_exdiv_excl = [o for o in obs_scr if not o["is_ex_dividend"]]
+
+    primary = _arm(obs_scr)
+    raw = _arm(obs_raw)
+    sens = _arm(obs_scr_exdiv_excl)
+
+    report = {
+        "role": "MIM-0 exact replication (development); dividend-neutral early_return "
+                "PRIMARY (screened), raw sensitivity, ex-dividend-excluded sensitivity",
+        "python": platform.python_version(),
+        "corpus_sha256": pf.CANONICAL_SHA256,
+        "development_window": [DEV_START, DEV_END],
+        "dividend_convention": "PRIMARY dividend-neutral: ex-date early_return = "
+            "(P_10_00 + cash - previous_close)/previous_close; ordinary otherwise. "
+            "Sidecar data/SPY_EX_DIVIDENDS_v1.0.json (State Street provenance).",
+        "ex_dividend_sessions_in_obs": [o["date"] for o in obs_scr if o["is_ex_dividend"]],
+        "n_obs_screened": len(obs_scr), "n_obs_raw": len(obs_raw),
+        "screened_primary": primary,
+        "raw_sensitivity": raw,
+        "ex_dividend_excluded_sensitivity": {
+            "note": "corporate-action SENSITIVITY only — NOT a second configuration, "
+                    "NOT a gate, NOT a rescue; the dividend-neutral screened result is "
+                    "primary.",
+            "n_obs": len(obs_scr_exdiv_excl), **sens},
+        "verdict": primary["classification"]["verdict"],
+    }
+    out = os.path.join(HERE, "MIM0_DEV_2026-08-27.json")
+    with open(out, "w") as fh:
+        json.dump(report, fh, indent=2)
+
+    r, s, c = primary["regression"], primary["sign_strategy"], primary["costs"]
+    print("\n" + "=" * 72)
+    print("MIM-0 DEVELOPMENT — dividend-neutral (screened primary)")
+    print("=" * 72)
+    print(f"  N={r['n']} beta={r['beta']:+.5f} (HC1 SE {r['se_hc1_primary']:.5f}, "
+          f"t {r['t_hc1']:+.3f}, CI95 [{r['ci95_hc1'][0]:+.5f},{r['ci95_hc1'][1]:+.5f}]) "
+          f"R2={r['r_squared']:.5f}")
+    print(f"  sign strategy: mean {s['mean_bps']} bps, cum {s['cumulative_bps']} bps, "
+          f"PF {s['profit_factor']}, win {s['win_rate_pct']}%, maxDD {s['max_drawdown_bps']} bps")
+    print(f"  long {s['long']}  short {s['short']}")
+    print(f"  costs: zero {c['zero_cost_mean_bps']} | lab-slip {c['lab_slippage_mean_bps']} "
+          f"| 5bps-stress {c['stress_mean_bps']} bps")
+    print(f"  bootstrap mean CI95 {s['bootstrap_mean_ci95_bps']} bps | months "
+          f"{s['monthly']['profitable_months']}/{s['monthly']['n_months']}")
+    print(f"\n  VERDICT: {report['verdict']}")
+    print(f"  ({primary['classification']['reason']})")
+    print(f"\nwritten: {os.path.relpath(out, os.path.normpath(os.path.join(HERE, '..')))}")
+
+
+if __name__ == "__main__":
+    main()

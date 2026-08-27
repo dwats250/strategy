@@ -38,6 +38,25 @@ def test_clock_semantics_and_skip_early_close():
     assert approx(o["late_return"], 103.0 / 102.0 - 1)
 
 
+def test_dividend_neutral_early_return():
+    # ordinary session: no adjustment; ex-dividend session: +cash added to P_10_00.
+    rows = []
+    rows += [bar("2024-12-19", "09:59", 99, 99.5), bar("2024-12-19", "15:30", 99.8, 100.2),
+             bar("2024-12-19", "15:59", 100.1, 100.0)]        # prev close 100.0
+    rows += [bar("2024-12-20", "09:59", 98.3, 98.0), bar("2024-12-20", "15:30", 98.1, 98.4),
+             bar("2024-12-20", "15:59", 98.3, 98.5)]          # EX-DIV date, price dropped
+    exd = {"2024-12-20": 1.965548}
+    ordinary = mim.build_observations(rows)                    # no ex_dividends
+    adjusted = mim.build_observations(rows, ex_dividends=exd)
+    o0 = ordinary[0]; a0 = adjusted[0]
+    assert o0["date"] == a0["date"] == "2024-12-20"
+    assert not o0["is_ex_dividend"] and a0["is_ex_dividend"]
+    assert approx(o0["early_return"], (98.0 - 100.0) / 100.0)               # raw drop
+    assert approx(a0["early_return"], (98.0 + 1.965548 - 100.0) / 100.0)    # dividend-neutral
+    assert a0["early_return"] > o0["early_return"]             # adjustment lifts the ex-date
+    assert approx(a0["late_return"], o0["late_return"])        # late unchanged
+
+
 def test_ols_exact_line():
     x = [1.0, 2.0, 3.0, 4.0, 5.0]
     y = [1.0 + 2.0 * xi for xi in x]                # exact y = 1 + 2x
