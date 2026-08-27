@@ -1,0 +1,100 @@
+{
+  "role": "Controlled offline A/B: V0 EMA 9/20 vs V1 EMA 10/22, same local bars and engine",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "engine": {
+    "mintick": 0.01,
+    "slippage_ticks": 1,
+    "dev_window": [
+      "2024-09-03",
+      "2025-12-31"
+    ],
+    "spike_wick_pts": 2.0
+  },
+  "determinism": "PASS (each arm byte-identical across re-simulation)",
+  "V0_ema_9_20": {
+    "n": 1363,
+    "net_pnl": -111.6136,
+    "expectancy": -0.081888,
+    "profit_factor": 0.8551,
+    "win_rate_pct": 21.35,
+    "wins": 291,
+    "losses": 1070,
+    "gross_profit": 658.845,
+    "gross_loss": 770.4586,
+    "max_drawdown": 143.9365,
+    "avg_bars_held": 12.5018,
+    "exit_reason_counts": {
+      "Long ATR Stop": 347,
+      "Short ATR Stop": 313,
+      "VWAP Failure": 482,
+      "EOD": 221
+    },
+    "long": {
+      "n": 708,
+      "pnl": 17.1765,
+      "expectancy": 0.024261
+    },
+    "short": {
+      "n": 655,
+      "pnl": -128.7901,
+      "expectancy": -0.196626
+    }
+  },
+  "V1_ema_10_22": {
+    "n": 1366,
+    "net_pnl": -114.6332,
+    "expectancy": -0.083919,
+    "profit_factor": 0.8505,
+    "win_rate_pct": 21.3031,
+    "wins": 291,
+    "losses": 1074,
+    "gross_profit": 652.3122,
+    "gross_loss": 766.9454,
+    "max_drawdown": 144.3513,
+    "avg_bars_held": 12.3609,
+    "exit_reason_counts": {
+      "Long ATR Stop": 352,
+      "Short ATR Stop": 310,
+      "VWAP Failure": 482,
+      "EOD": 222
+    },
+    "long": {
+      "n": 715,
+      "pnl": 15.4814,
+      "expectancy": 0.021652
+    },
+    "short": {
+      "n": 651,
+      "pnl": -130.1146,
+      "expectancy": -0.199869
+    }
+  },
+  "entry_set_overlap": {
+    "shared": 1277,
+    "v0_total": 1363,
+    "v1_total": 1366,
+    "v0_only": 86,
+    "v1_only": 89,
+    "jaccard": 0.8795
+  },
+  "V1_minus_V0": {
+    "d_n_trades": 3,
+    "d_net_pnl": -3.0196,
+    "d_expectancy": -0.002031,
+    "d_profit_factor": -0.0046,
+    "d_win_rate_pct": -0.0469,
+    "d_max_drawdown": 0.4148,
+    "d_avg_bars_held": -0.1409,
+    "d_long_pnl": -1.6951,
+    "d_short_pnl": -1.3245
+  },
+  "spike_robustness": {
+    "v0_net_excl_spike_stops": 17.5764,
+    "v0_spike_stops_removed": 39,
+    "v1_net_excl_spike_stops": 16.1168,
+    "v1_spike_stops_removed": 40,
+    "d_net_pnl_excl_spike": -1.4596,
+    "interpretation": "the V1-V0 net delta with corpus spike phantom stops removed; if it and the raw delta are both small the disposition is robust to bad ticks"
+  }
+}
