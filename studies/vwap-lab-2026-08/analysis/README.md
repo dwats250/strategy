@@ -183,6 +183,26 @@ VWAP; 1×ATR further-extension stop; symmetric) are pre-registered in
 authored in the run packet). First dev run pre-registered but **not executed**:
 [`../manifests/RUN_VMR0_DEV_PREP_v0.1.md`](../manifests/RUN_VMR0_DEV_PREP_v0.1.md).
 
+**2026-08-27 — research cockpit + MIM family (BLOCKED — DATA/SEMANTIC)** (owner/HELM
+charge). A permanent research-learning layer was added at repo level under
+`docs/research/` (research ledger, metric primer, Mermaid research map, family-autonomy
+protocol). MIM — Market Intraday Momentum (Gao/Han/Li/Zhou) was opened and its exact
+MIM-0 baseline frozen: `mim.py` implements the clock semantics (previous_close, 09:59
+close, 15:30 open, 15:59 close), the sign strategy, an OLS/HC1 regression (β>0 primary),
+sign-strategy economics in bps, and three frozen cost views; tested by `test_mim.py`
+(6/6 synthetic). **Outcome access is BLOCKED (status C):** MIM-0's `early_return`
+crosses the previous RTH close, but the corpus is dividend-**unadjusted** (Polygon
+`adjusted=true` = splits only). The trade-blind `mim_overnight_diagnostic.py` shows SPY
+ex-dividend drops (~30–40 bps) sit at the **median** of the overnight `|gap|`
+distribution (27.6 bps; the twelve largest gaps are genuine macro/news, e.g. the April
+2025 tariff sequence −346/−323/−260 bps) — so no OHLCV threshold cleanly separates
+dividends from real overnight momentum. Per the charge, **STOP** before the regression/
+economics rather than guess; needs an external ex-dividend calendar or a
+dividend-adjusted previous-close series. Evidence
+`MIM_OVERNIGHT_DIAGNOSTIC_2026-08-27.json`; MIM-dev budget ≤4, 0 spent. Manifests
+[`../manifests/MIM_CHARTER_v0.1.md`](../manifests/MIM_CHARTER_v0.1.md),
+[`../manifests/RUN_MIM0_DEV_PREP_v0.1.md`](../manifests/RUN_MIM0_DEV_PREP_v0.1.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:
