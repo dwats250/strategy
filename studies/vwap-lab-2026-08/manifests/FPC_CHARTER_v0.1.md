@@ -148,4 +148,22 @@ Running FPC-dev interpreted: **0 / 12.**
 
 ## Amendments
 
-*(append dated amendments here; never edit the text above in place)*
+### Amendment 1 — 2026-08-27 — owner/HELM provenance attestation (H3 first-pullback)
+
+The §2 evidentiary flag is resolved by an owner/HELM attestation, recorded here
+verbatim as the missing provenance link (no historical git citation is invented):
+
+> During the pre-validation visual hypothesis work, before the VDC validation
+> outcome was known, the working hypothesis set explicitly included: *"first orderly
+> pullback after established alignment may be better entry geometry"*, and the later
+> working disposition: *"H3 first-pullback = DEFER."* This existed in the HELM/chat
+> research record but was not committed verbatim to the Strategy repository.
+
+Standing of this record: the committed repository antecedents remain **§3** (multi-
+family framework), **§4** (ESTABLISHED alignment vocabulary), and **§A1.6** (visual
+hypothesis-source pool), all frozen 2026-08-24 — before the VDC validation
+(`d8a20dd`, 2026-08-26). This attestation supplies the specific "first-pullback / H3
+= DEFER" articulation that lived in the HELM/chat record but was not committed as a
+repo artifact. FPC's provenance is therefore: committed antecedents (§3/§4/§A1.6) +
+this dated owner/HELM attestation. It is **not** framed as a repair of failed VDC —
+the hypothesis and its DEFER disposition predate the validation outcome.
