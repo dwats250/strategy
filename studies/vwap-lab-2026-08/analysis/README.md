@@ -41,6 +41,20 @@ reversible mask (`CORPUS_MASK_v1.0.json`, HIGH-CONFIDENCE only) is applied via
 `test_corpus_integrity_screen.py` (detection, no-mutation, reversible mask, determinism). No
 strategy trial, no budget draw.
 
+**2026-08-26 — standard experiment tear sheet** (owner charge; analysis infrastructure, no new
+variant, no budget draw). `tearsheet.py` (stdlib-only) computes trade-level + R-normalized
+metrics, equity/drawdown series, monthly/distribution/streak stats, outlier-concentration
+diagnostics, a fixed-seed IID+block bootstrap CI, and trade-based Sharpe/Sortino, with a
+raw-vs-screened `dual_report` (screened primary) and a controlled `ab_report`/`ab_dual` mode
+(deltas, entry overlap, Jaccard, screened/raw direction agreement). 1R = the frozen initial stop
+distance now recorded per trade by the engine (`risk_points`/`pnl_r`). CAGR/Calmar deferred
+(account-construction-dependent). Example driver `v0_tearsheet.py` → `V0_TEARSHEET_2026-08-26.json`
+(+ `.md`, equity `.svg`); it surfaced that V0 is ~flat in R (mean_r +0.009) yet negative in $
+(losses concentrate on higher-ATR trades) and its mean-expectancy CI straddles zero. Tests
+`test_tearsheet.py` (formulas, R, drawdown, PF edges, A/B overlap, dual reporting, bootstrap
+determinism, numpy reference cross-check). Manifest
+[`../manifests/EXPERIMENT_TEARSHEET_v0.1.md`](../manifests/EXPERIMENT_TEARSHEET_v0.1.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

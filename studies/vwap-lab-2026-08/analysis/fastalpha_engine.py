@@ -123,6 +123,7 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END):
     pos = 0                     # 0 flat, +1 long, -1 short
     entry_price = None
     stop_price = None
+    risk_points = None          # 1R: frozen initial entry-to-stop distance (pts)
     entry_bar = None            # fill-bar 'YYYY-MM-DD HH:MM'
     signal_bar = None           # signal-bar 'YYYY-MM-DD HH:MM'
     entry_idx = None
@@ -130,21 +131,26 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END):
     trades = []
 
     def close_trade(exit_bar, exit_price, reason, exit_idx):
-        nonlocal pos, entry_price, stop_price, entry_bar, signal_bar, entry_idx
+        nonlocal pos, entry_price, stop_price, risk_points
+        nonlocal entry_bar, signal_bar, entry_idx
         pnl = (exit_price - entry_price) if pos > 0 else (entry_price - exit_price)
         trades.append({
             "side": "long" if pos > 0 else "short",
             "signal_bar": signal_bar,
             "entry_bar": entry_bar,
             "entry_price": round(entry_price, 4),
+            "stop_price": round(stop_price, 4),
+            "risk_points": round(risk_points, 4),   # 1R denominator (frozen)
             "exit_bar": exit_bar,
             "exit_price": round(exit_price, 4),
             "exit_reason": reason,
             "pnl": round(pnl, 4),
+            "pnl_r": round(pnl / risk_points, 6) if risk_points else None,
             "bars_held": exit_idx - entry_idx,
         })
         pos = 0
-        entry_price = stop_price = entry_bar = signal_bar = entry_idx = None
+        entry_price = stop_price = risk_points = None
+        entry_bar = signal_bar = entry_idx = None
 
     for i, b in enumerate(bars):
         o, h, l, c = b["o"], b["h"], b["l"], b["c"]
@@ -158,12 +164,14 @@ def simulate(rows, dev_start=DEV_START, dev_end=DEV_END):
             if kind == "entry_long":
                 pos = 1
                 entry_price = o + SLIP
-                stop_price = entry_price - payload * MINTICK
+                risk_points = payload * MINTICK
+                stop_price = entry_price - risk_points
                 entry_bar, signal_bar, entry_idx = et, sig, i
             elif kind == "entry_short":
                 pos = -1
                 entry_price = o - SLIP
-                stop_price = entry_price + payload * MINTICK
+                risk_points = payload * MINTICK
+                stop_price = entry_price + risk_points
                 entry_bar, signal_bar, entry_idx = et, sig, i
             elif kind == "close_long":
                 close_trade(et, o - SLIP, payload, i)

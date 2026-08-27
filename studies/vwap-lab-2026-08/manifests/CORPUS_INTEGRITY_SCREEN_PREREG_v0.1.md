@@ -159,3 +159,15 @@ errors.
 ## Amendments
 
 *(append dated amendments here; never edit the text above in place)*
+
+### Amendment 1 — 2026-08-26 — diagnostic JSON regenerated (tear-sheet packet)
+
+The engine gained additive per-trade risk fields (`stop_price`, `risk_points`,
+`pnl_r`; see `RUN_OFFLINE_ENGINE_V0_V1_AB_v1.0.md` Amendment 2). Because
+`analysis/V0_RAW_VS_SCREENED_2026-08-26.json` embeds full per-trade records, it was
+regenerated and its sha256 is now
+`895448ba731d7df119fd1ce64b0cea2c8ad0438ca82b55fb72f17ef15f0353af` (was
+`862d7bdd5fbaca27da1a1e9d63c42df91976047e19f309da233748a137491ad7`). The Phase-4
+**delta and raw/screened summary blocks are byte-for-byte identical**; only the
+embedded trade dicts carry the new fields. The screen, the mask, and the raw
+corpus are unchanged.

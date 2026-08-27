@@ -88,10 +88,13 @@
         "side": "short",
         "signal_bar": "2024-10-01 11:30",
         "entry_price": 568.35,
+        "stop_price": 569.71,
+        "risk_points": 1.36,
         "exit_bar": "2024-10-01 11:40",
         "exit_price": 568.86,
         "exit_reason": "VWAP Failure",
         "pnl": -0.51,
+        "pnl_r": -0.375,
         "bars_held": 1
       },
       {
@@ -99,10 +102,13 @@
         "side": "long",
         "signal_bar": "2024-12-20 11:45",
         "entry_price": 594.17,
+        "stop_price": 592.65,
+        "risk_points": 1.52,
         "exit_bar": "2024-12-20 13:20",
         "exit_price": 592.64,
         "exit_reason": "Long ATR Stop",
         "pnl": -1.53,
+        "pnl_r": -1.006579,
         "bars_held": 18
       },
       {
@@ -110,10 +116,13 @@
         "side": "long",
         "signal_bar": "2024-12-20 13:20",
         "entry_price": 592.75,
+        "stop_price": 591.8,
+        "risk_points": 0.95,
         "exit_bar": "2024-12-20 14:05",
         "exit_price": 591.79,
         "exit_reason": "Long ATR Stop",
         "pnl": -0.96,
+        "pnl_r": -1.010526,
         "bars_held": 8
       },
       {
@@ -121,10 +130,13 @@
         "side": "long",
         "signal_bar": "2024-12-20 14:35",
         "entry_price": 593.41,
+        "stop_price": 592.62,
+        "risk_points": 0.79,
         "exit_bar": "2024-12-20 14:50",
         "exit_price": 592.61,
         "exit_reason": "Long ATR Stop",
         "pnl": -0.8,
+        "pnl_r": -1.012658,
         "bars_held": 2
       },
       {
@@ -132,10 +144,13 @@
         "side": "long",
         "signal_bar": "2025-03-14 13:40",
         "entry_price": 560.77,
+        "stop_price": 559.29,
+        "risk_points": 1.48,
         "exit_bar": "2025-03-14 15:50",
         "exit_price": 563.41,
         "exit_reason": "EOD",
         "pnl": 2.64,
+        "pnl_r": 1.783784,
         "bars_held": 25
       },
       {
@@ -143,10 +158,13 @@
         "side": "short",
         "signal_bar": "2025-04-16 15:10",
         "entry_price": 521.985,
+        "stop_price": 523.665,
+        "risk_points": 1.68,
         "exit_bar": "2025-04-16 15:50",
         "exit_price": 523.675,
         "exit_reason": "Short ATR Stop",
         "pnl": -1.69,
+        "pnl_r": -1.005952,
         "bars_held": 7
       },
       {
@@ -154,10 +172,13 @@
         "side": "long",
         "signal_bar": "2025-05-19 12:05",
         "entry_price": 593.17,
+        "stop_price": 592.0,
+        "risk_points": 1.17,
         "exit_bar": "2025-05-19 12:15",
         "exit_price": 591.99,
         "exit_reason": "Long ATR Stop",
         "pnl": -1.18,
+        "pnl_r": -1.008547,
         "bars_held": 1
       },
       {
@@ -165,10 +186,13 @@
         "side": "long",
         "signal_bar": "2025-05-19 12:30",
         "entry_price": 593.74,
+        "stop_price": 592.32,
+        "risk_points": 1.42,
         "exit_bar": "2025-05-19 15:50",
         "exit_price": 594.51,
         "exit_reason": "EOD",
         "pnl": 0.77,
+        "pnl_r": 0.542254,
         "bars_held": 39
       },
       {
@@ -176,10 +200,13 @@
         "side": "long",
         "signal_bar": "2025-12-22 15:20",
         "entry_price": 684.925,
+        "stop_price": 684.435,
+        "risk_points": 0.49,
         "exit_bar": "2025-12-22 15:50",
         "exit_price": 684.99,
         "exit_reason": "EOD",
         "pnl": 0.065,
+        "pnl_r": 0.132653,
         "bars_held": 5
       }
     ],

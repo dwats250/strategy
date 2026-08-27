@@ -186,3 +186,15 @@ path (`drop_t_ms=None`) is unchanged, and the V0/V1 A/B and V0 calibration resul
 JSONs were re-verified **byte-identical** under the extended engine — no result in
 this run record changes. No version bump required (§c: the change cannot alter
 existing results). See `CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md`.
+
+### Amendment 2 — 2026-08-26 — additive per-trade risk fields (tear-sheet packet)
+
+`analysis/fastalpha_engine.py` now records `stop_price`, `risk_points`
+(= `atr_stop_ticks × mintick`, the frozen 1R denominator), and `pnl_r` on each
+trade dict, to support R-normalized reporting. Additive only — the P/L, exit
+mechanics, and every existing metric are unchanged. New engine sha256
+`42db304e9467426d666f2141486267cb362a24710d143b21949291a71f531efd` (was
+`b8825ed553889cb3b8ce73ea0d39e93ffab096194a30b7e2d9c36151fd06d0f9`). The V0/V1
+A/B and V0 calibration result JSONs were re-verified **byte-identical**; no result
+in this run record changes. No version bump required (§c). See
+`EXPERIMENT_TEARSHEET_v0.1.md`.
