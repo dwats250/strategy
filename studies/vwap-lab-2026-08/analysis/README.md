@@ -165,6 +165,24 @@ stop, no FPC-1. Evidence `FPC0_DEV_2026-08-27.json`; FPC-dev budget 1/12 (indepe
 of VDC 15/18). Manifest
 [`../manifests/RUN_FPC0_DEV_v1.0.md`](../manifests/RUN_FPC0_DEV_v1.0.md).
 
+**2026-08-27 — continuation lane closed + VMR family opened (DESIGN ONLY)** (owner/HELM
+charge; no VMR outcome inspected). The whole VWAP continuation lane is concluded NO
+EDGE FOUND (`../manifests/CONTINUATION_TERMINAL_DISPOSITION_v1.0.md`; VDC 15/18 and FPC
+1/12 budgets closed intentionally unused). A new independent family **VMR — VWAP Mean
+Reversion** is designed: fade extreme VWAP extension toward VWAP, structurally opposite
+to continuation. Its only new parameter — the extension threshold **K = 4.0916 ATR** —
+is derived **trade-blind** by `vmr_excursion_profile.py` as the development-window P90
+of `|(close−session_vwap)/ATR14|` (the charter-frozen §5/§A1.3 excursion metric),
+frozen before any VMR outcome; a naive canonical 2.0-ATR was rejected (39% of bars
+exceed it — the session-anchored-VWAP distribution is wide: median 1.54, P90 4.09 ATR).
+Evidence `VMR_EXCURSION_PROFILE_2026-08-27.json` (no strategy run, no P/L). The VMR-0
+mechanics (extension + opposing-color reversal → enter toward VWAP; target = session
+VWAP; 1×ATR further-extension stop; symmetric) are pre-registered in
+[`../manifests/VMR_CHARTER_v0.1.md`](../manifests/VMR_CHARTER_v0.1.md); the
+`signal_mode="vmr"` engine support is **not** implemented in this design packet (it is
+authored in the run packet). First dev run pre-registered but **not executed**:
+[`../manifests/RUN_VMR0_DEV_PREP_v0.1.md`](../manifests/RUN_VMR0_DEV_PREP_v0.1.md).
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:
