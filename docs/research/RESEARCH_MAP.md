@@ -42,13 +42,13 @@ flowchart TB
   end
   VMR[VMR — VWAP Mean Reversion<br/>DESIGN / parked · 0/8<br/>K=4.09 ATR frozen]
   MIM[MIM — Market Intraday Momentum<br/>TERMINAL — FAMILY DEAD<br/>beta −0.017 · 1/4]
-  ODR[Overnight/opening reversal<br/>WATCHLIST]
+  ODR[ODR — Overnight/opening reversal<br/>TERMINAL — FAMILY DEAD<br/>beta −0.036 insignif · 1/4]
   CAR[Closing-auction/rebalance<br/>WATCHLIST]
 
   VDC --- PVAE --- FPC
   CONT ==> VMR
   CONT ==> MIM
-  MIM -. shared dividend/overnight seam .-> ODR
+  MIM -. shared State Street dividend seam .-> ODR
 ```
 
 Legend: **TERMINAL** = concluded no edge; **DESIGN** = chartered, not run; **BLOCKED**
@@ -63,6 +63,8 @@ Legend: **TERMINAL** = concluded no edge; **DESIGN** = chartered, not run; **BLO
   (dividend-neutral early return), run once, and is **TERMINAL — FAMILY DEAD**
   (β = −0.017, gross −0.59 bps, fails the cost stress; robust across views): SPY shows
   no previous-close→10:00 intraday-momentum edge here.
-- Two watchlist families remain unopened; the overnight-reversal one would reuse the
-  same ex-dividend seam, and the closing-auction one needs auction/imbalance data OHLCV
-  cannot supply.
+- **ODR** was opened (Liu & Tse anchor), reused the State Street dividend seam, ran once,
+  and is **TERMINAL — FAMILY DEAD** (β −0.036 directionally correct but insignificant;
+  gross causal −0.63 bps, fails the cost stress).
+- One watchlist family remains: the **closing-auction / rebalance** one needs
+  auction/imbalance data that OHLCV cannot supply.

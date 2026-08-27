@@ -220,6 +220,23 @@ edge here; no rescue (STOP at A). Tests `test_mim.py` (7/7). Evidence
 `MIM0_DEV_2026-08-27.json`; MIM-dev 1/4 (remaining ≤3 not earned). Manifest
 [`../manifests/RUN_MIM0_DEV_v1.0.md`](../manifests/RUN_MIM0_DEV_v1.0.md) Amendment 1.
 
+**2026-08-27 — ODR-0 opened + run → FAMILY DEAD** (owner/HELM charge; autonomous under
+FAMILY_AUTONOMY_PROTOCOL; ODR config 1/4). ODR — Overnight/Opening Dislocation Reversal
+(Liu & Tse 2017, verified independently). `odr.py` (reusing `mim.py`'s OLS/HC1, State
+Street dividend sidecar, and bootstrap) tests whether SPY's **dividend-neutral**
+previous-RTH-close→09:30 opening return negatively predicts the 09:30→10:00 first-half-hour
+return, and runs the causal reversal sign strategy (overnight>0 short / <0 long; signal at
+the 09:30 open, enter 09:31 open, exit 09:59 close). Frozen pushed pre-outcome (commit
+dcd0d84). **Result (N=328, screened primary): β = −0.03571** (HC1 SE 0.0403, t −0.89,
+CI95 [−0.115, +0.043], R² 0.007) — the preregistered reversal sign β<0 **holds
+directionally but is statistically insignificant**; the causal sign strategy is gross
+**−0.63 bps** and fails the 5 bps cost stress; bootstrap CI straddles zero; raw == screened.
+**VERDICT: ODR FAMILY DEAD** (gross causal expectancy ≤ 0; the β<0 gate alone passes) — the
+overnight→first-half-hour reversal is present in direction but too weak to be significant or
+executable on SPY here; no rescue (STOP at A). Tests `test_odr.py` (4/4). Evidence
+`ODR0_DEV_2026-08-27.json`; ODR-dev 1/4. Manifest
+[`../manifests/ODR_CHARTER_v0.1.md`](../manifests/ODR_CHARTER_v0.1.md) Amendment 1.
+
 Analysis code here is part of the experiment, not a scratch step: it is versioned, committed, and
 held to the same rigor as the manifest and scripts. When runs exist, a reproduction script here
 must, at minimum:

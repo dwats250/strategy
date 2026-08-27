@@ -103,5 +103,39 @@ python3 test_odr.py          # 4/4 synthetic
 
 ## Amendments
 
-*(append the dated result amendment in the run phase; never edit the pre-registration
-above in place)*
+### Amendment 1 — result (2026-08-27) — **ODR FAMILY DEAD**
+
+Run under the frozen pre-registration; `odr.py` unchanged since the freeze commit
+`dcd0d84`. Evidence `analysis/ODR0_DEV_2026-08-27.json` sha256
+`9fb70af1f5fc6004fc3bb8cfe0bd479717a47231b1b0dd6742c87ac5d2c9dd54`; byte-identical across
+reruns. **N = 328** observations (screened primary; dividend-neutral overnight).
+
+**Association (screened; `first_half_hour = α + β·overnight`):**
+
+| quantity | value |
+|---|---:|
+| **β** | **−0.03571** |
+| HC1 SE (primary) | 0.04031 |
+| t (HC1) | −0.886 |
+| 95% CI (HC1) | [−0.11472, +0.04331] |
+| R² | 0.00697 |
+| N | 328 |
+
+The preregistered sign **β < 0 holds directionally** (a reversal tendency, consistent
+with Liu & Tse), **but it is statistically insignificant** (t −0.89; CI straddles zero).
+
+**Causal sign strategy (enter 09:31 open, exit 09:59 close):** gross mean **−0.6255
+bps**/trade (cum −204.5 bps, PF 0.938, win 49.8%, max-DD 475 bps); long −0.975 bps
+(n=131), short −0.392 bps (n=196); bootstrap mean CI95 [−3.34, +2.39] bps (straddles
+zero). Costs: zero −0.63, lab-slippage −0.95, 5 bps-stress −5.63. **Robustness:** raw ==
+screened (β −0.03571, gross −0.6255; the masked bad-tick bars are not ODR clock bars).
+
+**Verdict — FAMILY DEAD** by the frozen gate: although β < 0, the **gross causal
+sign-strategy expectancy is ≤ 0** (−0.6255 bps), and it would also fail the cost stress.
+The overnight→first-half-hour reversal is directionally present but too weak to be
+statistically significant or to yield a positive executable edge on SPY in the
+development window. Per the frozen no-rescue rule: **report and stop** — no alternate
+opening/exit window, no threshold, no subset. Autonomous STOP at **A — ODR FAMILY DEAD**.
+
+ODR interpreted-development **0 → 1/4** (config 1; the remaining ≤3 are **not** earned by
+a failed baseline). Ledger row `ODR0_DEV_2024-09-03_2025-12-31`.

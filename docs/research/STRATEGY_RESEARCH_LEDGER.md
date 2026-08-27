@@ -85,13 +85,20 @@ Legend — status: ACTIVE · TERMINAL (no edge) · PARKED · BLOCKED · DESIGN �
 - **Terminal disposition:** **FAMILY DEAD** — no intraday-momentum edge on SPY here; no rescue.
 - **Reason:** previous-close→10:00 return does not positively predict the final-30-min return. `MIM_CHARTER_v0.1.md`, `RUN_MIM0_DEV_v1.0.md` Amdt 1, `analysis/MIM0_DEV_2026-08-27.json`. (Earlier blocker + State Street resolution: `data/SPY_EX_DIVIDENDS_v1.0.json`, `MIM_OVERNIGHT_DIAGNOSTIC_2026-08-27.json`.)
 
-## Overnight / opening-dislocation reversal
+## ODR — Overnight / Opening-Dislocation Reversal
 
-- **Mechanism:** an overnight/opening dislocation reverses intraday.
-- **Provenance:** Codex reconnaissance rank #2 (not yet chartered).
-- **Status:** WATCHLIST (not opened).
-- **Primary hypothesis / metric / data / budget:** TBD at charter.
-- **Note:** would face the **same** previous-close dividend blocker as MIM if it crosses the overnight — resolve the ex-dividend convention first.
+- **Mechanism:** an overnight/opening dislocation reverses during the first half hour.
+- **Provenance:** Liu & Tse (2017), *Int. Rev. Econ. & Finance* 48:440–451 (US ETF overnight-return / intraday reversal), verified independently.
+- **Status:** **TERMINAL — FAMILY DEAD.**
+- **Primary hypothesis:** `first_half_hour_return = α + β·overnight_return`, β < 0 (reversal); dividend-neutral overnight (State Street sidecar).
+- **Primary metric:** regression β (HC1) + causal sign-strategy gross bps, cost-stressed.
+- **Data:** dev 2024-09-03→2025-12-31, N=328; screened == raw.
+- **Configs spent / ceiling:** **1 / 4** (remaining ≤3 not earned by a failed baseline).
+- **Development result:** **β = −0.03571** (HC1 t −0.89, CI [−0.115, +0.043], R² 0.007) — sign holds directionally but **insignificant**; causal sign-strategy gross **−0.63 bps**, fails the 5 bps cost stress.
+- **Robustness:** raw == screened; bootstrap CI straddles zero.
+- **Validation/OOS:** none (killed at development).
+- **Terminal disposition:** **FAMILY DEAD** — reversal too weak to be significant or executable on SPY here; no rescue.
+- **Reason:** gross causal expectancy ≤ 0 (β<0 alone is not enough). `ODR_CHARTER_v0.1.md` Amdt 1, `analysis/ODR0_DEV_2026-08-27.json`.
 
 ## Closing-auction / rebalance watchlist
 
