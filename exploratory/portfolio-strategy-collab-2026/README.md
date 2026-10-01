@@ -1,7 +1,13 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–9 complete. Round 9 adopted underwritability as a role/size tool (core, satellite, tactical, speculation), recorded the NFLX thesis-revision case without outcome bias, made the implied move an observational feature rather than a gate (Setup A-M v2), set VWAP to UNMEASURED where no source exists, and stated the information-repricing edge as conditional path selection. Next: ChatGPT Round 10, the convergence checkpoint.
+**Status:** exploratory. Rounds 1–10 complete. Round 10 (convergence checkpoint) did four things:
+- turned `WATCHLIST.md` into the daily **Market Roster** (permanent gauges, the working narrative, investable and tactical rosters, dated decision points, the stale archive);
+- resolved roles as program-level;
+- froze the earnings-cohort analysis plan before UNH (Oct 13);
+- gave every watch a lifecycle.
+
+Its review chose four specialties and judged MARKET_DOCTRINE half ready (process yes, market no — target early December).
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
@@ -18,7 +24,7 @@ unless real use shows a need for more.
 | `README.md` | Purpose, assumptions, protocol, evidence rules, frozen owner brief | Brief is frozen; amend only by a dated note below it |
 | `ROUNDS.md` | Each exchange: date, model, claims, disagreements, changes | Append-only |
 | `PROPOSAL.md` | The current consolidated proposal | Replaced each round; material changes logged in `ROUNDS.md` |
-| `WATCHLIST.md` | Setups without capital: evidence, activation, invalidation | Updated each round; trigger events logged with date and evidence |
+| `WATCHLIST.md` | **Market Roster — the daily page**: narrative, permanent gauges, investable and tactical rosters, dated decision points, lifecycle, stale archive | Gauges refreshed when used; narrative changed only on meaningful change; stale items archived, not deleted |
 | `RESEARCH_MAP.md` | **Current understanding**: research programs, long-horizon theses, methodology findings, the earnings cohort, the research queue | Updated in place; one-line note in `ROUNDS.md` when it changes materially |
 | `PAPER_TRADES.md` | Prospective setups written before their triggers; decision-quality ledger (A/B/C/D); qualification ladder to micro-live | Append-only after a record activates; plans are frozen at activation |
 

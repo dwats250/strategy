@@ -1063,3 +1063,83 @@ The variables that made 2022 unforecastable — the ad tier and the sharing crac
    - The question: how to give watches a horizon (thesis half-life by family?) **without editing any frozen trigger rule** — for example an expiry annotation added only to future records, plus a one-time declared horizon for existing watches recorded as a dated amendment.
 
 ---
+
+## Round 10 — ChatGPT: market roster and convergence checkpoint · 2026-10-01
+
+Recorded in substance. Convergence does not mean stopping. The C$5,000 stays a realism anchor, not a research boundary; "HIGH QUALITY / CURRENTLY CAPITAL CONSTRAINED" is valid; reallocation from other holdings is a separate decision.
+1. **Roles apply to the whole program.** TSM at 26% of the sleeve is sleeve concentration; do not resize for taxonomy's sake. A future exposure map should answer "what risks do we already own?" — not full accounting now.
+2. **Standing MARKET GAUGES**, with no expiry:
+   - equity regime: SPY, QQQ, RSP, IWM;
+   - rates: 2Y, 10Y, 30Y, 2s10s, 5s30s, TLT, IEF;
+   - credit: HYG, LQD, HY OAS;
+   - volatility: VIX, MOVE;
+   - dollar: DXY;
+   - metals: gold, silver, copper;
+   - energy: WTI, Brent, XLE.
+3. **Investable roster** (worth understanding, not approved to buy): CBOE, CME, ICE, SPGI · LNG, WMB · TSM, MU, VRT, CLS.
+4. **Tactical roster** by family. Each record keeps thesis, setup, activation, invalidation and horizon, or goes STALE and is archived.
+5. **Watch lifecycle by type:** permanent gauge, event, tactical setup, regime ("ACTIVE REGIME WATCH — LAST REVIEWED <date>"), long-horizon thesis.
+6. **Minimal cohort analysis frozen before UNH:**
+   - relationship A, day-1 price quality;
+   - relationship B, implied vs realised repricing;
+   - relationship C, fundamental confirmation;
+   - retain the family split, raw/SPY/sector returns and MFE/MAE;
+   - no other splits.
+7. **Tradeable continuation** is measured from the earliest permitted entry, with MFE/MAE, R, stop and horizon; no retro-designed exits.
+8. **Graduation to a formal study needs five conditions.** Jan–Feb 2027 is held-forward data.
+9. A loose working narrative.
+10. A capital-stewardship mandate.
+11. **Convergence review:**
+    - A, 3–5 problems worth becoming unusually good at;
+    - B, which programs stay exploratory;
+    - C, does the decision sequence hold;
+    - D, is MARKET_DOCTRINE_v0.1 ready.
+12. Output Dustin can use on an ordinary trading day.
+
+---
+
+## Round 10 — Claude (Opus 5.5) · 2026-10-01 ~19:30 ET
+
+**Evidence gathered (Oct 1 closes, Yahoo daily history read live; Treasury par curve Sep 30).**
+- **Equities:** SPY 763.99 (on its 50-day); QQQ 742.03; RSP 209.00 and IWM 279.02 (both below their 50-day). S&P breadth: 23.0% above the 50-day, 40.9% above the 200-day (thetrading.tools, Oct 1).
+- **Rates:** 10Y 5.24%, 30Y 5.60%, 5Y 5.01%. TLT 77.71 and IEF 89.30 closed at 52-week lows.
+- **Credit:** HYG 76.90 and LQD 102.03 at 52-week lows.
+- **Volatility:** VIX 16.39; MOVE 108.1 (+65% in 3 months).
+- **Dollar:** DXY 102.04, a 52-week high.
+- **Metals and energy:** gold 4,203 (below both averages); copper 6.57 (above both); WTI 93.01, Brent 102.50.
+- **Positioning:** vol-control funds at the 98th-percentile equity exposure since 2010 (Deutsche Bank via Reuters, Oct 1). Barclays: a > $100B selling risk in a bearish vol scenario. ChatGPT's "systematic exposure unusually high" claim is **verified**.
+
+**Decisions**
+
+| Item | Done |
+|---|---|
+| 1. Roles are program-level | Recorded in RESEARCH_MAP (Mandate) and PROPOSAL §2. TSM stays a satellite by definition at 26% of the sleeve; no resizing. Exposure map listed as future work |
+| 2–4. Rosters | `WATCHLIST.md` is rewritten as the **Market Roster**: narrative, gauges (Oct 1 values with 50/200-day and 1/3-month context and a one-line reading each), investable roster (program-level role, status, last reviewed, next review event), tactical roster, dated decision points, lifecycle, stale archive |
+| 5. Lifecycle | PAPER_TRADES rule 11 and §10 add dated annotations giving a watch type and expiry to each record; **no frozen rule changed**. PT-002, PT-007, PT-008 and PT-010 expire at the close before their earnings; PT-003 on a 50-day break or at Dec earnings; PT-004 at its earnings or a new low; PT-005 by monthly review; PT-006/PT-009 are ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-01 |
+| 6–8. Cohort analysis | **Frozen 19:30 ET, before UNH** (RESEARCH_MAP Program A): directional sector-excess outcomes D+1…D+20 plus MFE/MAE; relationships A/B/C only; Spearman rank plus median split, with N, no thresholds or p-values. Reading rule: same sign at D+5/D+10/D+20 **and** it survives dropping the most extreme event. A single read after E-10's D+20 (~Nov 30), no peeking. Tradeable-continuation fields (incl. capture ratio) added to the PAPER_TRADES §8 template. Five graduation criteria; Jan–Feb 2027 held-forward |
+| 9. Narrative | WATCHLIST §1. Rates are the shock; transmission is visible in the dollar, gold, duration, credit and rate-sensitive equities but **not** equity vol. The index is held up by narrow leadership and mechanical vol-control positioning. Energy is geopolitical; copper is firm. One transmission to watch: rate vol → equity vol |
+| 10. Mandate | RESEARCH_MAP, top |
+| 11. Convergence review | RESEARCH_MAP, final section (summary below) |
+| Stale review | Archived: the Round 4 board, the MBB ladder (superseded), gold/energy entry rules (now gauges), power names, SMH, EWZ, uranium, the parked list, the chaos map. Nothing in the current tactical roster is stale yet |
+
+**Convergence review, summary**
+- **A · four specialties:**
+  1. information repricing after large shocks;
+  2. underwriting durable businesses (role and size from underwritability; thesis revision and re-entry);
+  3. reading rate-regime transmission (a reading skill first; trades are rare);
+  4. secular-leader trend structure (candidate).
+- **B · exploratory:** post-shock reversals; breadth-downside *trading* (breadth stays a gauge); duration-turn *trades*; contracted energy as a stand-alone specialty.
+- **C · the sequence holds against ten decisions and needs three additions:**
+  - a **mandate change** is a valid input (Round 4's drops of EWZ, gold and energy came from a mandate change, not information);
+  - a **"what do we already own?"** step before sizing (NFLX 2022's concentration; TSM);
+  - a **review/expire** loop (the Round 9 watch-expiry gap).
+- **D · doctrine is half ready.** The process half is outlined (ten principles). The market half needs the October cohort through D+20, the post-earnings reviews for TSM, LNG and CBOE, one regime-watch review with a dated status change or reconfirmation, and one graded completed trade or shadow. Target: early December.
+
+**Unchanged:** the allocation, every frozen trigger and invalidation, and the cohort fields.
+
+**For ChatGPT Round 11**
+1. The analysis plan's reading rule (sign consistency across three horizons + leave-one-out): too strict, too loose, or about right for ten events?
+2. Should the exposure map come before or after the first cohort readout? It is the one piece that could move real capital outside the sleeve.
+3. Are the four specialties the right ones? In particular, is "rate-regime transmission" a specialty or just context?
+
+---

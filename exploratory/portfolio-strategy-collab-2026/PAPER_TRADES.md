@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule).
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -27,6 +27,7 @@ simulated dollars.
    Existing records are not edited; PT-001 is preserved as the observation that revealed the problem (`RESEARCH_MAP.md`, methodology finding 2).
 9. **Trade layer vs event layer.** PT records are the trade layer. Earnings-cohort events are recorded in full, whether or not anything triggers, in `RESEARCH_MAP.md` (event layer).
 10. **Speculation never enters this ledger.** Positions labelled SPECULATION — LOSS ACCEPTED (`PROPOSAL.md` §6) are excluded from every family statistic.
+11. **Every watch has a lifecycle (Round 10).** Watch types: permanent gauge, event, tactical setup, regime, long-horizon thesis. See §10 and `WATCHLIST.md` §6. A tactical setup expires when its horizon passes, its price structure materially changes, or its thesis changes; old levels are never moved behind the market, and a fresh setup needs a fresh record. Regime watches carry "ACTIVE REGIME WATCH — LAST REVIEWED <date>".
 
 ## 2. Capital gates — PAPER eligibility is separate from LIVE eligibility
 
@@ -404,6 +405,7 @@ TIMING / SETUP   — good / early / late / never triggered / triggered falsely (
 VEHICLE QUALITY  — shares: did the stop structure make sense?
                    option: delta useful? theta material? IV expansion helped / compression hurt?
                            expiry appropriate? strike appropriate? bid/ask damage (mid vs ask-in/bid-out)?
+TRADEABLE CONTINUATION — return from earliest permitted entry | MFE before invalidation/time stop | MAE | R | frozen stop hit? | usable continuation within the thesis horizon? | capture ratio = R ÷ (post-entry MFE ÷ initial risk)
 Process violation: yes / no | Grade: A / B / C / D | Primary lesson (one sentence):
 ```
 
@@ -438,3 +440,24 @@ Would a looser rule have worked? (name the looser rule, state the result) | Evid
 - **UNH Oct 13 reaction:** eligible for a Strategy A record if it gaps ≥ 8% on a beat/raise; write the record **before** the print, not after.
 - **CME ≤ ~$225 (≈ 18x forward):** a Strategy F durable-hold trigger, not a paper trade (see `ROUNDS.md` Round 5).
 - **U.UN / uranium:** SPUT discount < 5% trigger (`WATCHLIST.md` §5b).
+
+---
+
+## 10. Watch lifecycle annotations (Round 10 — 2026-10-01 19:30 ET)
+
+These are dated annotations. They add a **watch type and expiry** to records that lacked one. No frozen trigger, invalidation, exit or time stop is changed.
+
+| Record | Watch type | Expires / review | Basis |
+|---|---|---|---|
+| PT-001 ACN | Event | EXPIRED — NO TRIGGER (Oct 1); SHADOW to Dec 11 | Its plan's own day-1 condition |
+| PT-002 VRT | Tactical setup | **Oct 20 close** if not triggered | Its plan's pre-earnings suspension: earnings on Oct 21 change the price structure. Any post-earnings base is a fresh record |
+| PT-003 MU | Tactical setup | First close below the 50-day without a qualifying pullback, or at MU's next earnings (Dec) | Its plan's "no close below the 50-day" condition marks the structure change |
+| PT-004 FICO | Tactical setup | FICO's next earnings (est. Nov 4) if not triggered, or a close < 586.05 | The earnings event changes the structure; a new low ends the base premise |
+| PT-005 SPY | Regime-linked tactical | Monthly review (next **Nov 2**) and after FOMC (Oct 28). Expires at a review if fewer than 3 of its 5 conditions remain possible | Its plan's own evidence stack |
+| PT-006 TLT | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-01** | Monthly, and after CPI (Oct 14), FOMC (Oct 28) and the refunding (early Nov) | Regime watch: reconfirmed, not timed out |
+| PT-007 CBOE | Tactical setup | **Oct 29 close** if not triggered | Earnings Oct 30 |
+| PT-008 HWM | Tactical setup | **Oct 28 close** if not triggered | Earnings Oct 29 |
+| PT-009 ITB | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-01** | With PT-006 | Same family and the same M1 condition |
+| PT-010 CLS | Tactical setup | **Oct 26 close** if not triggered | Its plan's re-arm-after-earnings clause; a re-arm is a fresh record |
+
+**Regime review, 2026-10-01 (PT-006 / PT-009):** M1 not met (10Y 5.24% against a rising 10-week average). M2 not met (TLT closed at a new 52-week low, 77.71). M3 is checked at the next weekly close. **Status: ACTIVE REGIME WATCH — no change.**

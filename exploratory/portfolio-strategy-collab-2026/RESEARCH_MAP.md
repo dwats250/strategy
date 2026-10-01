@@ -4,7 +4,7 @@
 is what matters now. Both Claude and ChatGPT should be able to read it cold and recover the state
 of every idea. Update it in place; record material changes in one line in `ROUNDS.md`.
 
-**Last updated:** 2026-10-01 ~18:15 ET (Round 9 — Claude, Opus 5.5)
+**Last updated:** 2026-10-01 ~19:30 ET (Round 10 — Claude, Opus 5.5) · the daily-use page is `WATCHLIST.md` (Market Roster)
 
 ---
 
@@ -20,6 +20,24 @@ Working answer after nine rounds: **how prices and businesses behave when inform
 The trading track produces evidence quickly; the business track is where capital compounds. Round 10 tests whether this split still describes how we work.
 
 ---
+
+## Mandate — capital stewardship (Round 10)
+
+**The task:** find the highest-quality decisions available within the evidence we actually possess. This does not mean maximum conservatism. It means:
+- no trade without a reason;
+- no investment without an economic thesis;
+- no concentration without understanding the concentration;
+- no leverage because leverage is available;
+- no avoiding volatility merely because it is uncomfortable;
+- no keeping stale ideas because research effort was spent on them;
+- no suppressing exploration because current capital is small.
+
+**Roles apply to the whole investment program (resolved Round 10).** CORE / SATELLITE / TACTICAL / SPECULATION describe an asset's role in Dustin's whole program — LIRA, TFSA, margin, precious metals, cash and other holdings — not its weight inside the C$5,000 sleeve.
+- TSM at 26% of the sleeve means the small experimental sleeve is concentrated. It does not mean TSM should be 26% of the program. No resizing is made to keep the taxonomy tidy.
+- The C$5,000 remains a realism anchor for current deployment, never a boundary on research.
+- Any capital reallocation from other holdings is a separate decision (`PROPOSAL.md` §7).
+
+**Future, not full accounting:** an exposure map across those holdings, answering one question — *what economic risks do we already own before deploying another dollar?*
 
 ## Research universe vs deployment universe
 
@@ -135,7 +153,52 @@ No threshold in either child is fitted to the cohort.
 - Do gap-downs mirror gap-ups?
 - Raw or relative returns?
 
-**Worth deeper study if:** after ~20 event observations, one or two day-1 or early-path variables separate CONTINUED from REVERSED with a visible margin. That triggers a pre-registered retrospective study under `docs/conventions.md`. Ten observations prove nothing; they say where to look.
+**Cohort analysis plan — frozen 2026-10-01 19:30 ET, before the first cohort event (UNH, Oct 13). Exploratory: it cannot establish an edge.**
+
+*Population:* cohort events E-01…E-10, plus any alternate that substitutes for one. E-00 (ACN) is reported separately as the pilot.
+
+*Outcomes:*
+- **Directional excess return** (sector-excess, signed so that + = in the repricing direction) at D+1, D+3, D+5, D+10 and D+20.
+- **Directional MFE and MAE** through D+20.
+- Raw and SPY-excess versions are reported alongside as secondary.
+
+*Three relationships, and no others:*
+
+| | Feature (frozen field) | Question |
+|---|---|---|
+| **A · Day-1 price quality** | Day-1 close location (0–1); close vs midpoint | Does strong closing behaviour after the information shock correspond with better subsequent continuation? |
+| **B · Implied vs realised repricing** | GAP_IMPLIED_RATIO; DAY1_IMPLIED_RATIO | Does unusually large realised repricing relative to pre-event option expectations carry information about the path? |
+| **C · Fundamental confirmation** | Post-event estimate revision label at D+3 (D+1 secondary) | Does continued estimate revision support more persistent continuation? |
+
+*Retained splits only:* family (RECOVERY / MOMENTUM / neither) and repricing direction (up / down). No other splits until this first sample has been observed.
+
+*Method (descriptive, no thresholds, no p-values):*
+- **A and B:** the Spearman rank correlation between the feature and each horizon's directional excess return, plus the median outcome above vs below the sample median of the feature.
+- **C:** median outcomes by label (UPWARD vs DOWNWARD/UNCHANGED). UNAVAILABLE events are counted and excluded.
+- Every number is reported with its N.
+
+*Reading rule (frozen):* a relationship is **"worth noting"** only if its sign is the same at D+5, D+10 and D+20 **and** it survives removing the single event with the largest absolute outcome. Otherwise it is **"no pattern"**.
+
+*No peeking:* each event is reported on its own as it completes. Cross-event analysis runs once, after the last cohort event's D+20 (E-10 CBOE: day 1 Oct 30 → D+20 ≈ Nov 30).
+
+**Tradeable continuation (for every triggered setup).** Could a participant following the pre-registered rule have captured a meaningful portion of the post-event movement with defined risk? Record:
+- return from the earliest permitted entry;
+- MFE before invalidation or the time stop, and MAE;
+- the normalised R outcome;
+- whether the frozen stop was hit;
+- whether the thesis horizon produced usable continuation;
+- the **capture ratio**: realised R ÷ (post-entry MFE ÷ initial risk), descriptive only.
+
+No exit is redesigned after the fact.
+
+**Graduation to a formal study.** A relationship earns a pre-registered study only if all five hold:
+1. it can be stated as a general hypothesis without reference to a particular ticker;
+2. its direction is not driven by one or two extreme events (the reading rule's leave-one-out);
+3. the mechanism is economically plausible;
+4. the information was genuinely available at decision time;
+5. the rule can be frozen without tuning to the next sample.
+
+If they hold, the hypothesis is pre-registered **before** the Jan–Feb 2027 reporting season, which then serves as **held-forward data**. The hypothesis is not modified because of what that season shows. Ten observations say where to look; they prove nothing.
 
 ### B · Secular-leader pullbacks and reclaims
 **Question:** can we enter genuinely powerful long-term trends during temporary weakness without catching broken momentum?
@@ -289,14 +352,14 @@ These are research theses, not positions. Each is held against its counter-thesi
 
 **Principle candidate:** uncertainty may reduce position size faster than it reduces expected upside.
 
-**Provisional roles for names already in the work** (descriptive; the open question is whether roles apply at the sleeve level or Dustin's whole-program level — see Round 10 questions):
+**Provisional roles for names already in the work** (descriptive; roles are **program-level**, resolved Round 10 — see Mandate):
 
 | Name | Role | Why |
 |---|---|---|
 | CBOE (held) | CORE candidate, with a named dependency | Durable proprietary franchise exclusive to 2051; the dependency is SPX × retail short-dated demand × regulation |
 | CME (approved, not held) | CORE candidate | Entrenched, diversified franchises; the earnings level is a range across volume regimes, not a point |
 | LNG (held) | CORE candidate (LNG-A), with an embedded growth option (LNG-B) | The existing asset is contracted ~15 years; the expansion is a lower-underwritability option inside the same share |
-| TSM (held, largest at 26%) | **SATELLITE by these definitions** | Exceptional business underwritability, but a geopolitical tail that cannot be probability-weighted. A tail of this kind is the definitional example of a satellite. Its size is a Round 10 question; nothing changes now |
+| TSM (held, 26% of the sleeve) | **SATELLITE by these definitions** | Exceptional business underwritability, but a geopolitical tail that cannot be probability-weighted. Roles are program-level, so 26% reflects the sleeve's concentration, not a total-program weight. Its program weight belongs to the future exposure map; no resizing |
 | NFLX (not held) | Undetermined | A new thesis exists (Pershing 2026), but our own underwriting has not been done; cohort event Oct 20 |
 | MU, VRT, ACN, FICO (watch) | TACTICAL candidates | Cyclical, execution-dependent or post-shock economics; any exposure goes through trade rules |
 
@@ -347,7 +410,7 @@ These are research theses, not positions. Each is held against its counter-thesi
 | **Thesis half-life** | Business: years, reconfirmed monthly. Geopolitical: can be obsoleted in a day | Years, reconfirmed monthly by volume; a regulatory shock could shorten it abruptly | Years; FMX share is the quarterly variable | Existing: years. Growth: binary events within ~12 months |
 | **Reading** | High **business** underwritability; **geopolitical** underwritability low and not probability-weightable. One does not cancel the other; the tail is handled by size (26% cap), not argued away | High, with one concentrated dependency (SPX franchise × retail short-dated demand) | High franchise underwritability; the earnings *level* is a range that depends on the volume regime | **Higher-underwritability existing asset + lower-underwritability growth option** in one company; underwrite them separately |
 
-## Candidate decision sequence (hypothesis for a future doctrine — not doctrine)
+## Candidate decision sequence (hypothesis for a future doctrine — not doctrine; revised in the Round 10 review below)
 
 ```
 NEW INFORMATION / OBSERVATION
@@ -489,7 +552,7 @@ The Layer column is provisional until that evening.
 
 ---
 
-## Convergence checkpoint
+## Convergence rule
 
 - **No fixed round cap.** A new round must:
   - discover a materially new opportunity;
@@ -498,4 +561,88 @@ The Layer column is provisional until that evening.
   - convert an observation into a repeatable strategy;
   - materially change a long-horizon thesis; or
   - produce evidence about an existing family.
-- **At Round 10:** are we still discovering, or mostly repeating? If converging, draft `MARKET_DOCTRINE_v0.1.md`. Not before.
+- Convergence does not mean stopping.
+
+## Round 10 convergence review (2026-10-01)
+
+### A. Market problems worth becoming unusually good at
+
+Chosen on six criteria: economic plausibility, observation frequency, fit with Dustin's temperament and horizon, ability to define risk, scalability, and usefulness across regimes.
+
+| # | Problem | Why it qualifies | Main weakness |
+|---|---|---|---|
+| 1 | **Information repricing after large shocks** (Program A) | Hundreds of observable events a year; objective timestamps; risk definable at the day-1 low; liquid and scalable; works in any regime; suits daily attention | Average drift is widely arbitraged; any edge must come from conditioning, and is unproven |
+| 2 | **Underwriting durable businesses** (D, H, and E within it): role and size from underwritability, thesis revision and re-entry | Fits the 25-year horizon; the most scalable; quarterly and monthly evidence; regime-robust by construction | Slow feedback; valuation discipline is easy to state and hard to keep |
+| 3 | **Reading rate-regime transmission** (rates → dollar → credit → equity vol; C as the lens, the gauges as instruments) | It conditions every other decision: sizing, which setups are favoured, when to review theses. Strong fit with Dustin's macro interest | The *trades* are rare. It is a reading skill first and a trading program second |
+| 4 | **Secular-leader trend structure** (B) — a candidate specialty | Medium frequency, risk definable, highly scalable | Works mainly in trending regimes; today's candidates are all one AI-hardware factor |
+
+### B. Programs that stay exploratory
+
+- **F, post-shock reversals:** high information cost per trade and contaminated indicators. One live record (FICO); it must earn attention.
+- **G, breadth/index downside as a trading program:** short-side path dependence, and narrow markets can persist for years. Breadth stays a permanent **gauge**.
+- **Duration-turn trades:** the reading is core (problem 3); the trades are rare and remain regime watches.
+- **E, contracted energy** as a stand-alone specialty: the evidence is one company. It stays inside business underwriting.
+- **The speculation lane** is not a program.
+
+### C. Does the decision sequence still hold? Tested against the decisions made so far
+
+| Decision | What changed → impact → underwritability → role → priced → setup → vehicle → invalidation → evidence → size | Fit |
+|---|---|---|
+| ACN, Oct 1 | Beat and bookings → partial re-rating → tactical → +17.8% gap → Setup A, confirmation failed → no trade | Fits |
+| Pershing–NFLX, 2022 exit | Subscriber loss and model change → dispersion widened → no longer a concentrated core → exit | Fits |
+| NFLX, 2026 re-entry (Pershing) | Observed scale, margins and FCF → new thesis → underwritable again → core at 21x | Fits (THESIS RE-ENTRY) |
+| HYG put (Round 1 → 3) | Credit early warnings → hedge → priced at EV ≈ 0.73× premium → dropped | Fits: rejected at "what's priced / vehicle" |
+| SPY put spread (Round 4 → 5) | — → no Level 3 → deleted | Fits: rejected at "vehicle" |
+| FICO | FHFA grid → ~29% of revenue exposed → low underwritability → tactical → −67% → Setup C → shares (options illiquid) → base low → no evidence → paper | Fits |
+| LNG A/B | Filings → contracted cash flow vs growth → split underwritability → core plus option | Fits |
+| CBOE vs CME | Volume history → different engines → both core candidates → hold one, approve the other | Fits |
+| TSM | Unchanged thesis → business high / geopolitics low → satellite → sized as a sleeve concentration | **Fits once roles are program-level** (Round 10) |
+| EWZ / gold / energy dropped in Round 4 | **No new information:** the *mandate* changed | **Gap:** the sequence had no entry for a mandate change |
+| Watches with no expiry (Round 9) | — | **Gap:** the sequence had no review/expire loop |
+| Concentration (NFLX 2022; TSM) | — | **Gap:** sizing needs "what do we already own?" before capital |
+
+**Revised candidate sequence (still a hypothesis):**
+
+```
+NEW INFORMATION · OBSERVATION · MANDATE CHANGE
+  → WHAT ACTUALLY CHANGED?
+  → DOES IT ALTER THE ECONOMIC THESIS?
+  → HOW UNDERWRITABLE IS THE NEW STATE?
+  → ROLE: CORE / SATELLITE / TACTICAL / SPECULATION / NOTHING   (program level)
+  → WHAT HAS PRICE ALREADY DISCOUNTED?
+  → IS A REPEATABLE SETUP PRESENT?
+  → WHAT VEHICLE EXPRESSES IT BEST?
+  → WHAT INVALIDATES IT?
+  → HOW MUCH EVIDENCE SUPPORTS IT?
+  → WHAT DO WE ALREADY OWN?   (exposure map)
+  → SIZE · PAPER → MICRO-LIVE → SCALE
+  → REVIEW / EXPIRE   (lifecycle by watch type; stale ideas archived)
+```
+
+### D. Ready for MARKET_DOCTRINE_v0.1?
+
+**Half ready.** The *process* principles have converged: the same few rules keep resolving new cases. The *market* principles have no completed evidence behind them:
+- zero completed paper trades;
+- zero completed cohort events;
+- zero regime-watch status changes;
+- zero post-earnings reviews of a held thesis.
+
+**Outline of the process half** (held here; not a separate file until the market half has evidence):
+1. Thesis before capital: an economic thesis for investments; setup, trigger and invalidation for trades.
+2. Investing and trading are different problems with different frameworks.
+3. Underwritability sets role and size at the program level, not ownership.
+4. Decisions are judged on the information and mandate at the time; outcomes are graded separately (A/B/C/D; outcome bias).
+5. The research universe ≠ the deployment universe; "capital constrained" is a valid outcome.
+6. Evidence ladder: paper → micro-live → scale. Non-trades and shadows are data. One observation never changes a rule.
+7. Frozen rules: fixed numbers, end-of-session statistics and dynamic rules are kept distinct. Missing evidence is preferable to invented equivalence.
+8. Options only when they improve the expression; the whole premium is the risk; the contract is chosen at the trigger.
+9. Speculation is labelled and excluded from evidence. Capital unlocking is a separate comparison.
+10. Every watch has a lifecycle. Stale ideas are archived, not nursed.
+
+**Evidence needed before drafting the market half** (when trend matters, when valuation matters, how macro evidence is used, how confirmation works):
+- the October cohort through D+20, read once under the frozen plan (~Nov 30);
+- the post-earnings thesis reviews for TSM (Oct 15), LNG (Oct 29) and CBOE (Oct 30);
+- at least one regime-watch review that either reconfirms or changes PT-006/PT-009 or PT-005 with dated evidence;
+- at least one completed paper trade or shadow, graded A/B/C/D.
+
+**Target:** draft `MARKET_DOCTRINE_v0.1.md` in early December. If the evidence is still thin by then, the doctrine waits.
