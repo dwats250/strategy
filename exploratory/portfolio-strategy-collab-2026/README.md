@@ -1,7 +1,7 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Round 1 (Claude) complete; awaiting Round 2 (ChatGPT).
+**Status:** exploratory. Rounds 1–3 complete (Claude → ChatGPT → Claude synthesis); optional Round 4 only if ChatGPT contests the three open questions in `ROUNDS.md`.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
@@ -30,8 +30,8 @@ unless real use shows a need for more.
 ## Protocol
 
 1. **Round 1 — Claude:** independent proposal. *(done 2026-10-01)*
-2. **Round 2 — ChatGPT:** agreement, material disagreements, weak assumptions, missing instruments or regimes, proposed changes; separate factual disagreement from philosophy. Do not change something just to appear independent.
-3. **Round 3 — Claude:** adjudicate with evidence; revised proposal. Stop here if resolved.
+2. **Round 2 — ChatGPT:** agreement, material disagreements, weak assumptions, missing instruments or regimes, proposed changes; separate factual disagreement from philosophy. Do not change something just to appear independent. *(done 2026-10-01; added a required anti-anchor scan, executed by Claude)*
+3. **Round 3 — Claude:** adjudicate with evidence; revised proposal. Stop here if resolved. *(done 2026-10-01)*
 4. **Round 4 — ChatGPT (optional):** unresolved issues only.
 5. **Round 5 — Claude (optional):** only if Round 4 produced a material correction.
 
