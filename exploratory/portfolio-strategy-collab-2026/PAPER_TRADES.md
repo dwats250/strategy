@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -20,7 +20,13 @@ simulated dollars.
 5. **Grades:** A good decision/good result · B good decision/bad result · C bad decision/good result (a warning) · D bad/bad. Optimise for A + B.
 6. **Market Brief** is read-only evidence; decisions live here.
 7. **Accounts never gate a setup.** TFSA, margin or LIRA is an execution note chosen at the trigger (tax and permission fit), not a research filter.
-8. **Level-numbers govern (new records only, from Round 6).** Every level is written as a number fixed at the timestamp, with its description in brackets — e.g. "close < 214.50 [gap-day low at 14:10 ET]". If the described reference later moves, the number governs. Existing records are not edited; see PT-001's annotation for why this was added.
+8. **Three kinds of level (new records only; Round 6, refined Round 7).** Every level in a new record is one of:
+   - **Fixed known price** — "ACN low as of 13:30 ET = X". The number is frozen at the timestamp.
+   - **End-of-session statistic** — "Day-1 RTH low". It is never written as a number before that session closes.
+   - **Dynamic rule** — "stop = completed Day-1 RTH low". The formula is frozen at the timestamp; the number is filled in after the session completes, with the fill time recorded.
+   Existing records are not edited; PT-001 is preserved as the observation that revealed the problem (`RESEARCH_MAP.md`, methodology finding 2).
+9. **Trade layer vs event layer.** PT records are the trade layer. Earnings-cohort events are recorded in full, whether or not anything triggers, in `RESEARCH_MAP.md` (event layer).
+10. **Speculation never enters this ledger.** Positions labelled SPECULATION — LOSS ACCEPTED (`PROPOSAL.md` §6) are excluded from every family statistic.
 
 ## 2. Capital gates — PAPER eligibility is separate from LIVE eligibility
 

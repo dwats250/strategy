@@ -1,6 +1,6 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 6 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged from Round 5; Round 6 changes only
+**Version:** Round 7 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 7 adds §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
 the live/paper gates, the option-slot wording and the LNG/CME thesis statements (analyses in `ROUNDS.md`,
 Rounds 4–6; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
@@ -103,7 +103,7 @@ the answer is NO TRADE, not a bigger budget.
 The benchmark is one all-in-one global equity ETF at roughly the index multiple (19.2x), broad,
 in a TFSA, needing no attention. The sleeve accepts single-name risk (65% in three names, with
 TSM's Taiwan tail), earnings-timing risk (all three report within 30 days), 100% USD exposure,
-a taxable account, and the behavioural load of six rule-sets.
+possibly a taxable account (the account is chosen at execution), and the behavioural load of six rule-sets.
 
 It expects to be paid because all three holdings sit at or below the index multiple with growth
 far above it (TSM 20x / +63%; CBOE 19x / +45%; LNG 15x / ~10% cash yield), two of the three
@@ -112,6 +112,45 @@ Said plainly: concentration raises variance more reliably than return; CBOE's ca
 volumes staying elevated; the tactical slots are where retail accounts leak. If Dustin would
 not hold TSM through a −30% quarter, the benchmark wins. If he would, this is a market-multiple
 bet on three above-market businesses with tactical risk capped near C$500 in total.
+
+---
+
+## 6. Speculation lane — SPECULATION — LOSS ACCEPTED (Round 7)
+
+A deliberately speculative bet is allowed. It is contained, not banned, so that it cannot
+contaminate the evidence the lab produces.
+
+1. **Written first.** One-line thesis, instrument, entry, and the **maximum dollar loss accepted** — all written before the order, with a timestamp.
+2. **The loss is the budget.** For options that is the whole premium; for shares it is the stated loss amount, enforced by a stop or by the position size.
+3. **No averaging down** unless an add was written into the plan before entry.
+4. **No reclassification.** A losing speculation never becomes an "investment" or a "tactical" trade.
+5. **Not evidence.** A speculative winner never counts toward any strategy family's statistics, ladder progress or A+ status.
+6. **No borrowing.** After entry, no risk budget is taken from another slot or strategy to support it.
+7. **Budget (proposed — Dustin sets the number).** About C$250 per calendar quarter (5% of the sleeve). Unused budget does not roll over. When the quarter's budget is spent, the lane is closed until the next quarter.
+8. **Promotion route.** An idea that keeps recurring as a speculation can become a research setup only through the normal ladder: written before its trigger, paper first, in `PAPER_TRADES.md`.
+
+| Date / time | Instrument | One-line thesis | Max loss accepted (C$) | Pre-planned add? | Exit | Result | Quarter budget left |
+|---|---|---|---|---|---|---|---|
+| — | — | — | — | — | — | — | C$250 (Q4 2026) |
+
+## 7. Capital unlocking is a separate decision (Round 7)
+
+If an opportunity needs more capital than is deployable, selling something else to fund it is a
+second, written decision: **is this opportunity superior to the asset we would sell?** Compare,
+side by side:
+
+| | Candidate | Funding source (e.g. gold or silver) |
+|---|---|---|
+| Thesis and its current evidence | | |
+| Thesis status (intact / weakening / complete) | | |
+| Expected horizon | | |
+| Tax consequence of selling the source (account, gain/loss, superficial-loss timing) | | |
+| Liquidity and cost to exit or enter | | |
+| Opportunity cost if the source's thesis plays out after the sale | | |
+| Concentration after the swap | | |
+
+Proceed only if the candidate is better on thesis quality and evidence, not merely more
+exciting. If the answer is "I need money for this trade", the decision is NO.
 
 Full candidate board (18 names), strategy board (6 setups) and option chains: `ROUNDS.md`, Round 4.
 TSM staging, CBOE-vs-CME engines and the LNG stress test: `ROUNDS.md`, Round 5. Round 6 closes

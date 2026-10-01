@@ -1,14 +1,14 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–6 complete; ceiling Round 8. Round 6 (measurement infrastructure) split paper from live eligibility, moved option contract selection to the trigger, added EXPIRED/SHADOW records, strategy families and three-question grading, closed the LNG question from primary filings, and restated CBOE and CME as separate regime theses. Next: ChatGPT Round 7.
+**Status:** exploratory. Rounds 1–7 complete. Round 7 replaced the round cap with a convergence rule and added `RESEARCH_MAP.md` (current understanding; `ROUNDS.md` stays as history). Next: ChatGPT Round 8, then a convergence checkpoint at about Round 10.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
 the rules that govern it afterward. The investment decision stays with Dustin.
 
 This is not a study or an audit under `docs/conventions.md`, and it authorizes nothing in
-CuttingBoard or any other repository. It is not a trading system. Keep it to these four files
+CuttingBoard or any other repository. It is not a trading system. Keep it to these six files (README, ROUNDS, PROPOSAL, WATCHLIST, PAPER_TRADES, RESEARCH_MAP)
 unless real use shows a need for more.
 
 ## Files
@@ -19,13 +19,14 @@ unless real use shows a need for more.
 | `ROUNDS.md` | Each exchange: date, model, claims, disagreements, changes | Append-only |
 | `PROPOSAL.md` | The current consolidated proposal | Replaced each round; material changes logged in `ROUNDS.md` |
 | `WATCHLIST.md` | Setups without capital: evidence, activation, invalidation | Updated each round; trigger events logged with date and evidence |
+| `RESEARCH_MAP.md` | **Current understanding**: research programs, long-horizon theses, methodology findings, the earnings cohort, the research queue | Updated in place; one-line note in `ROUNDS.md` when it changes materially |
 | `PAPER_TRADES.md` | Prospective setups written before their triggers; decision-quality ledger (A/B/C/D); qualification ladder to micro-live | Append-only after a record activates; plans are frozen at activation |
 
 ## Standing assumptions (Round 1; challenge in any round)
 
 - Figures in **CAD** unless marked US$. USD/CAD 1.4244 (Oct 1, 2026).
 - Accounts (Round 6): TFSA, margin account and LIRA are all available; account choice is an execution note made at the trigger and never limits what the lab studies. Options: long calls and puts only for now.
-- Registered accounts allow long calls/puts, covered calls and cash-secured puts — **no spreads**. Dustin has no Level 3; the toolkit is long calls and long puts, premium ≤ C$150 per position, else NO TRADE.
+- Options toolkit: long calls and long puts only (no spreads, no written options). Paper research has no premium cap; live premium at risk ≤ C$100 (C$150 A+, earned by a family) — see `PAPER_TRADES.md` §2.
 - The $5,000 is incremental, experimental capital — not the whole retirement portfolio.
 
 ## Protocol
@@ -34,9 +35,17 @@ unless real use shows a need for more.
 2. **Round 2 — ChatGPT:** agreement, material disagreements, weak assumptions, missing instruments or regimes, proposed changes; separate factual disagreement from philosophy. Do not change something just to appear independent. *(done 2026-10-01; added a required anti-anchor scan, executed by Claude)*
 3. **Round 3 — Claude:** adjudicate with evidence; revised proposal. Stop here if resolved. *(done 2026-10-01)*
 4. **Round 4 — ChatGPT (optional):** unresolved issues only. *(used 2026-10-01 as a mandate reset: Opportunity Sleeve, individual stocks, options, strategies; answered by Claude the same day)*
-5. **Round 5 — Claude (optional):** only if Round 4 produced a material correction.
+5. **Round 5 — Claude (optional):** only if Round 4 produced a material correction. *(ceiling first extended to Round 8 in ChatGPT Round 5, then removed in Round 7)*
 
-Five rounds is a hard ceiling; two or three is the target.
+**Convergence rule (Round 7, replaces the round cap).** A new round is justified only if it does at least one of:
+- discovers a materially new opportunity;
+- resolves or sharpens an important disagreement;
+- reveals a methodological problem;
+- converts an observation into a repeatable strategy;
+- materially changes a long-horizon thesis;
+- produces evidence about an existing strategy family.
+
+No rounds for allocation or wording changes alone. **Checkpoint at about Round 10:** still discovering, or mostly repeating? If converging, draft `MARKET_DOCTRINE_v0.1.md` (a timestamped statement, not permanent doctrine) — not before.
 
 ## Evidence rules
 
