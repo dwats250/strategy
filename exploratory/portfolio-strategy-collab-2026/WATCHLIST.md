@@ -1,6 +1,6 @@
 # WATCHLIST — setups that do not yet justify capital
 
-**Version:** Round 4 — Claude (Fable 5.1) · 2026-10-01 · supersedes Round 3 (changes in `ROUNDS.md`)
+**Version:** Round 5 — Claude (Fable 5.1) · 2026-10-01 (changes in `ROUNDS.md`); live paper setups with exact triggers are in `PAPER_TRADES.md`
 
 **Round 4 note.** The sleeve was reset to an Opportunity Sleeve (`PROPOSAL.md` Round 4). Sections 1–6
 below are kept as macro reference and as the evidence stack for Strategy D; Brazil (5a) and the
@@ -26,10 +26,10 @@ Status vocabulary: **WATCH** (no capital) · **PRE-APPROVED** (conditional entry
 | **UNH** $364 | A — on Oct 13 reaction | Gap ≥ +8% on beat/raise with day-1 close in upper half | 2 sh; stop gap-day low | Watch |
 | **HWM** $228 | E — base breakout | Weekly close > 50-day (260) from the 224–233 range | 3 sh; stop 222 | Watch |
 | **FICO** $662 | C — post-shock reversion | ≥10 sessions without a new low (< 586), reclaim of 20-day, then close > base high | 1 sh; stop under base low | Watch — not qualified |
-| **SPY** 764.5 | D — macro downside | Daily close < 750 with ≥3/5 evidence conditions | Dec 18 720/700 put spread, debit ≤ 2.60 (C$350) | Armed; price condition not met |
+| **SPY** 764.5 | D — macro downside | Daily close < 750 with ≥3/5 evidence conditions | SH shares (−1x); options NO TRADE at this budget (PT-005) | Armed; price condition not met |
 | **CEG** $260 | D variant — single-name downside | Close < 229 (52w low) then failed retest | Put spread if debit ≤ C$350 | Watch |
 
-Durable-hold alternates (Strategy F) if a core name is invalidated: **SPGI** ($390, 20.9x,
+Strategy F triggers: **CME** becomes a durable-hold buy at ≤ ~$220 (≈ 18x forward) or on a quarter where transaction revenue grows faster than ADV (Round 5). Durable-hold alternates if a core name is invalidated: **SPGI** ($390, 20.9x,
 −29% from high) for CBOE; **ICE** ($152, 18.5x) for CBOE if a rates-turn kicker is wanted;
 **ASML** and **FFH.TO** are quality names blocked by share price at this account size.
 

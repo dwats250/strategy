@@ -1,7 +1,7 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–4 complete. Round 4 was a mandate reset (ChatGPT) answered by Claude with candidate, strategy and options boards and a reconstructed Opportunity Sleeve. Round 5 (Claude final) is available only if Round 4 draws a material correction.
+**Status:** exploratory. Rounds 1–5 complete; ceiling extended to Round 8 (ChatGPT, Round 5). Round 5 corrected options capability to long-only (TFSA Level 2), created `PAPER_TRADES.md` with ten prospective setups, and revisited TSM staging, CBOE vs CME and LNG. Next: ChatGPT Round 6.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
@@ -19,12 +19,13 @@ unless real use shows a need for more.
 | `ROUNDS.md` | Each exchange: date, model, claims, disagreements, changes | Append-only |
 | `PROPOSAL.md` | The current consolidated proposal | Replaced each round; material changes logged in `ROUNDS.md` |
 | `WATCHLIST.md` | Setups without capital: evidence, activation, invalidation | Updated each round; trigger events logged with date and evidence |
+| `PAPER_TRADES.md` | Prospective setups written before their triggers; decision-quality ledger (A/B/C/D); qualification ladder to micro-live | Append-only after a record activates; plans are frozen at activation |
 
 ## Standing assumptions (Round 1; challenge in any round)
 
 - Figures in **CAD** unless marked US$. USD/CAD 1.4244 (Oct 1, 2026).
-- Account (Round 4): **Questrade margin account, cash-only** — spreads require options Level 3, which registered accounts cannot hold. A LIRA cannot accept new contributions. If the sleeve stays in a TFSA, the option slot is dropped.
-- Registered accounts allow long calls/puts, covered calls and cash-secured puts — **no spreads**.
+- Account (Round 5): **Questrade TFSA**. A margin account is opened only when a paper strategy reaches the MICRO-LIVE rung. A LIRA cannot accept new contributions.
+- Registered accounts allow long calls/puts, covered calls and cash-secured puts — **no spreads**. Dustin has no Level 3; the toolkit is long calls and long puts, premium ≤ C$150 per position, else NO TRADE.
 - The $5,000 is incremental, experimental capital — not the whole retirement portfolio.
 
 ## Protocol

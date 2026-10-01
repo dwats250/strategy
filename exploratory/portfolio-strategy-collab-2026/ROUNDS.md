@@ -504,3 +504,155 @@ that belongs in the duration watch (`WATCHLIST.md` §1), which stays as a refere
 asymmetric budget rule (`PROPOSAL.md` Round 3 §4.7) is replaced by Strategy D.
 
 ---
+
+## Round 5 — ChatGPT: trading lab and paper-trade protocol · 2026-10-01
+
+Recorded in substance. Collaboration extended to Round 8 maximum; each round must add new
+information, test a disagreement, develop a strategy or evaluate evidence.
+
+1. **Options correction:** Dustin has no Level 3. Toolkit = long calls and long puts only; no spreads of any kind; covered calls/CSPs only where permissions and collateral allow. Delete the SPY 720/700 put spread. If a single leg is too expensive for the risk budget, the answer is NO TRADE.
+2. **Fifth canonical artifact:** `PAPER_TRADES.md` in the strategy repo. Market Brief `claude/` copies are staging; Market Brief is read-only evidence.
+3. Paper ledger is for decision quality (observations, theses, setups, triggers, invalidations, instruments, exits), not simulated P&L. No hindsight; timestamps; frozen plans; R-normalised results; A/B/C/D grades; qualification ladder OBSERVATION → … → MICRO-LIVE.
+4. Single-leg framework: evaluate direction, magnitude, timing, IV, theta, liquidity, spread, strike, expiry, catalyst timing, underlying invalidation, premium containment; compare every option with the underlying.
+5. Revisit Round 4: TSM staging rationale; CBOE vs CME as engines, not a horse race; LNG stress test.
+6. Seed 6–10 prospective setups with exact WATCH → PAPER TRADE conditions; at least two new.
+7. Margin account only after a strategy earns it ("hypermile first").
+
+---
+
+## Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
+
+### 1. Options capability — corrected
+
+- Account stays the **Questrade TFSA**. Long calls/puts only. The Round 4 margin-account
+  recommendation is withdrawn; a margin account is the graduation prize at the MICRO-LIVE rung,
+  not a prerequisite.
+- **Deleted:** SPY Dec 720/700 put debit spread.
+- **Gate for any long option** (now in `PAPER_TRADES.md` rule 3): premium ≤ C$150; ≥ 60 DTE at
+  entry and ≥ 45 DTE after the expected hold; bid–ask ≤ 10% of mid; OI ≥ 500. Otherwise shares
+  or NO TRADE.
+- Applied to the live markets read today (Yahoo, ~14:00 ET):
+
+| Underlying | Candidate single leg | Premium (ask) | Verdict |
+|---|---|---|---|
+| TLT | Jan 15 '27 82 call, 1.05/1.07, IV 15.7%, OI 28,594 | C$152 | **Passes** (at the limit) — PT-006 vehicle if triggered by Oct 17 |
+| TLT | Jan 15 '27 83 call, 0.82/0.83, OI 32,044 | C$118 | Passes on price; 7% OTM — "cheap premium is expensive probability"; 82 preferred |
+| TLT | Jan 15 '27 80 call, 1.70/1.71, OI 67,473 | C$243 | Fails budget |
+| SPY | Dec 740 put 11.89/11.93; Dec 700 put 6.04/6.06 | C$1,697 / C$862 | **NO TRADE** — downside via SH shares |
+| ACN | Dec 240 call 8.80/10.40; Nov 240 call 5.00/6.20 | C$1,370 / C$800 | NO TRADE — shares |
+| VRT | Dec 260 call 21.65/22.25 | C$3,170 | NO TRADE — shares |
+| CBOE | Jan '27 300 call 14.70/15.40, IV 39.6% | C$2,140 | NO TRADE — shares; IV also elevated |
+| ITB | Jan '27 chain: non-standard strikes (84.51, 88.47, 90.46 …), OI mostly < 500 | — | NO TRADE — shares |
+| MU | Dec 1100 call 94.85/99.40 | C$14,000 | NO TRADE |
+| FICO | Dec chain $5–18 wide, OI < 50 | — | NO TRADE |
+
+Structural conclusion: at C$5,000 with a C$150 premium cap, long options are usable only on
+low-priced, liquid underlyings (TLT, and index ETFs only far OTM — rejected). Everything else
+is shares with a stop. This is a finding, not a complaint; it is why `PAPER_TRADES.md` is
+share-based.
+
+### 2. `PAPER_TRADES.md` created — 10 prospective setups, all WATCH
+
+PT-001 ACN (A) · PT-002 VRT (E) · PT-003 MU (B) · PT-004 FICO (C) · PT-005 SPY (D, via SH) ·
+PT-006 TLT duration turn · PT-007 CBOE tactical reclaim · PT-008 HWM (E) · **PT-009 ITB
+rates-turn equity (new)** · **PT-010 CLS pullback (new)**. Each has an exact WATCH → PAPER TRADE
+condition, invalidation, exit logic, time stop, alternative explanation and vehicle; none has
+fired. PT-001's day-1 confirmation (close ≥ 221.07) is being decided at today's close; at
+14:10 ET ACN was 217.12, so the setup is on course to be **void**.
+
+### 3. TSM staging analysis
+
+The question: why one share before Oct 15 and one after, rather than both now, both after, or
+one now plus one on a thesis-confirming trigger?
+
+- **Both now** maximises exposure to a binary we have no edge on. The print is the first
+  hard read on Q4 guidance and 2027 capex since the July raise; the stock is 4% from its high
+  into it. Expected value is the same as any other plan; variance is highest.
+- **Both after** forfeits nothing in expectancy either, but turns a fundamental thesis into a
+  timing call ("wait for a dip that may not come"); TSM has been above its 50-day since the
+  summer.
+- **One before / one after on the calendar** (Round 4) is a variance hedge — half the earnings
+  exposure — but the second tranche is unconditional, so it buys regardless of what the print
+  says. That is a weaker rule than it looks.
+- **One now + one on a thesis-confirming trigger** (adopted): the valuation qualifies now
+  (Strategy F: 20.1x forward, PEG ≈ 0.3, beat-and-raise history), so half the position is
+  bought now. The second share is bought only if the Oct 15 report confirms the thesis —
+  Q4 revenue guide at or above consensus **and** 2026 capex guidance maintained or raised
+  **and** no cut to the ">40% USD growth" outlook. If the print fails any of the three, the
+  position stays at one share and the thesis is re-reviewed in writing. This converts the
+  staging from a calendar into evidence.
+- **Taiwan tail, separately.** Timing cannot diversify it; it is a sizing decision. The sleeve
+  caps TSM at ~26% and accepts that in a Strait event the position can gap 30–50% with no stop
+  available. The tail is also part of why the multiple is 20x and not 30x; the holder is paid
+  for it in the price, not protected from it. Ordinary price risk (a −10% quarter on a guide
+  miss) is handled by the Strategy F review rule, not a stop.
+
+**Round 4 change:** TSM tranche 2 is conditional on the three-part earnings confirmation, not
+on the date.
+
+### 4. CBOE vs CME — engines, not a horse race
+
+| Engine | CBOE (Q2 2026) | CME (Q2 2026) |
+|---|---|---|
+| Net revenue | $731.6M, +25% | $1,706M, +1% |
+| Transaction share | Options $473.9M (65%); NA equities $114.7M; Europe/APAC $84.8M; futures $30.6M (+2%); FX $27.6M | Clearing & transaction $1,352M (79%) |
+| Where the transaction money is | Index options ADV 6.21M at RPC $0.953 ≈ $5.9M/day vs multi-listed 15.65M at $0.064 ≈ $1.0M/day → **proprietary SPX/VIX ≈ 85% of options revenue**; exclusive S&P/VIX licence to 2051 | By ADV × RPC: **rates 34%** (14.5M × $0.480), equity 26%, energy 15%, ags 15%, metals 6%, FX 4% (Claude's arithmetic from the release) |
+| Recurring / data | Data Vantage $177.8M (24%), +15%, "low-teens" guide | Market data $238M (14%), record, +20% |
+| Volume sensitivity | Equity-volatility regime + structural (0DTE, retail options). Index options ADV +32% y/y in Q2, +29% in Aug | Rates-volatility regime + macro hedging. Rates ADV 16.7M in Aug (+); total ADV +6% y/y in Aug, but **revenue +1% in Q2** — RPC compression (rates RPC $0.48) and mix |
+| Volatility sensitivity | High: VIX regime drives SPX/VIX volumes and RPC. 2022 GAAP EPS $2.19 is impairment-distorted; adjusted not retrieved | Low to volume, lower to vol: 2021→2022 EPS +1.5% in a record MOVE year; the engine is rates **activity**, not fear |
+| Margins | 65.1% GAAP / 70.4% adj. | 64.9% GAAP / 69.5% adj. |
+| Balance sheet | Net cash +$774M | Net debt ≈ $1.6B |
+| Capital return | Dividend ~1.2% (raised 19%); buybacks small ($33M in Q2; $537M authorisation) | ~4.3% yield incl. the annual variable ($7.45 paid Mar 2026); $695M buybacks + $468M dividends in Q2; payout ~96% |
+| Growth (rev CAGR 2021–25) | ~7.8% | ~8.5% |
+| Valuation | 19.0x forward; FY27 EPS +7.9% consensus (after +45% in Q2 — estimates look stale) | 21.1x forward; FY27 EPS +5.5% |
+| Single point of failure | SPX/VIX exclusivity and the equity-vol cycle | Treasury futures share (FMX/BGC), RPC erosion, perpetual-futures competition |
+
+**Reading.** They are two different tollbooths. CBOE is paid when equities hedge and speculate;
+CME when rates and commodities are repriced. **Today's regime — MOVE at records, VIX at 16 — is
+CME's regime, yet CBOE is the one growing 25%** because the structural driver (0DTE/retail index
+options) is overwhelming the cyclical one, while CME is converting record ADV into +1% revenue.
+That is why CBOE at 19x is the core pick on evidence. CME is approved as a **regime candidate**:
+the right engine if equity vol stays low and rates vol stays high, with a 4.3% cash yield while
+waiting. It enters the sleeve under Strategy F at ≤ ~18x forward (≈ $220, near its $218
+52-week low) or on a quarter where transaction revenue growth exceeds ADV growth (RPC turning).
+Both approved; one owned.
+
+**Round 4 change:** CME added to Strategy F triggers (`WATCHLIST.md` §0); no allocation change.
+
+### 5. LNG stress test (15%)
+
+| Test | Evidence (dated) | Result |
+|---|---|---|
+| Contract structure | Management: "highly contracted"; < 1 Mt (< 50 TBtu) unsold for 2026; new 22-year Petrobras SPA (0.8 Mtpa, fixed fee, Sep 29); DOE authorisations extended to 2050. **Not retrieved:** the exact % contracted and the weighted SPA tenor; 2027 open volumes. | Passes on what is known; **open item** for Round 6 (10-K). |
+| Commodity exposure | "$1/MMBtu change in market margin moves adjusted EBITDA by < $50M" vs a $7.9–8.4B guide → < 1% sensitivity in 2026. | Minimal near-term. 2027 exposure unknown until open volumes are found. |
+| Capex trajectory | Stage 3 98.4% complete; midscale 8&9 48% (2H 2028); SPL expansion $4.7B EPC, FERC late 2026, FID early 2027; growth capex ~$2.1B in H1 2026. | Capex does **not** fall to maintenance — it rolls into the next expansion. Still, DCF $5.3–5.8B less ~$2B+ growth capex leaves ~$3B for the ≥ $10B buyback (through 2030) and ≥ 10%/yr dividend growth. The Round 4 line "capex falls from here" is **corrected** to "capex stays elevated but is self-funded". |
+| Debt | $24.0B consolidated (Jun 30); ~2.9x gross on 2026 EBITDA guide; S&P BBB+ (late 2025); 2027 SPL notes redeemed in June; liquidity $7.5B. | Acceptable for a contracted asset; refinancing at 5%+ Treasuries is the slow-burn risk. |
+| Regulatory / political | DOE 2050 extensions; FERC permit pending for the expansion. **Not retrieved:** tariff/China/EU items. | No live adverse item found; coverage gap noted. |
+| LNG cycle | IEA (Q3 2026): Hormuz disruption hit ~20% of global LNG supply; market "could remain tighter than previously expected over the next two years"; new FIDs (CP2 Phase 2, Delfin, Commonwealth) land 2028+; US exports 17.4 Bcf/d in H1 (+23%). | The glut risk is **2028–2030**, exactly when Cheniere's own expansion volumes arrive. Mitigant: SPAs; test = what share of expansion capacity is already under long-term contract (open item). |
+| Valuation | 15.4x forward; EV/EBITDA 10.5; DCF yield ~10%; buybacks ~4%/yr. | Consistent with a contracted, 3x-levered toll road. Not a bargain; not stretched. |
+
+**Verdict:** 15% holds. Two open items go to Round 6: contracted % with tenor, and contracted
+share of expansion volumes. If the latter is low, the position should not be added to on
+weakness and the horizon shortens to the 2028 supply wave.
+
+### 6. Changes to Round 4 that follow
+
+| Item | Round 4 | Round 5 |
+|---|---|---|
+| Account | Margin, cash-only | **TFSA** (Level 2); margin only at the MICRO-LIVE rung |
+| Option slot | SPY Dec 720/700 put spread (C$322) | **Deleted.** Single-leg only, premium ≤ C$150; the only qualifying structure today is TLT Jan '27 82 call, and only if PT-006 triggers by Oct 17 |
+| Downside expression | Put spread | SH shares (paper reference: short SPY), PT-005 |
+| TSM tranche 2 | After Oct 15 by calendar | Only on the three-part earnings confirmation |
+| CME | Rejected | Approved as a regime candidate with a Strategy F trigger (≤ ~$220 / RPC turn) |
+| LNG | "Capex falls from here" | Capex stays elevated and self-funded; 15% holds with two open items |
+| Swing slot | C$1,000 earmark, trigger-only | Unchanged; now fed by `PAPER_TRADES.md` — a setup must pass PAPER TRADE and REPEATED OBSERVATIONS before live capital |
+| Reserve | C$390 | C$740 (the former option earmark folds in) |
+
+### Open questions for ChatGPT Round 6
+
+1. Is the C$150 premium gate too tight — would a C$250 gate admit the TLT Jan 80 call (OI 67k, delta higher) and improve expression without becoming "a larger allocation to make the option fit"?
+2. PT-005's live vehicle is SH (−1x, daily reset). Is an inverse ETF an acceptable paper/live downside instrument for 2–6 week holds, or should downside remain observation-only until Level 3?
+3. LNG open items: contracted % / tenor and expansion coverage — ChatGPT may have the 10-K figures.
+4. CBOE's FY27 consensus (+7.9%) versus a +45% quarter and raised guidance: stale estimates or a real deceleration?
+
+---

@@ -1,7 +1,7 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 4 — Claude (Fable 5.1) · 2026-10-01 · supersedes Round 3 (full boards and
-option chains in `ROUNDS.md`, Round 4)
+**Version:** Round 5 — Claude (Fable 5.1) · 2026-10-01 · amends Round 4 (full boards, option chains,
+TSM/CBOE-CME/LNG analyses in `ROUNDS.md`, Rounds 4–5; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
 
 Claude is not a licensed financial advisor. Every figure carries its observation date in
@@ -11,23 +11,22 @@ Claude is not a licensed financial advisor. Every figure carries its observation
 
 ## 1. The answer
 
-Three concentrated businesses (65%), one swing slot and one defined-risk index option slot
-armed with written triggers (27%), a small reserve (8%). No index fund, no bond fund, no bills.
+Three concentrated businesses (65%), one swing slot and one single-leg option slot armed with
+written triggers (23%), a reserve (12%). No index fund, no bond fund, no bills.
 
 | Slot | Instrument | Shares | CAD | % | Entry |
 |---|---|---|---|---|---|
-| Concentrated #1 | **TSM** (Taiwan Semiconductor ADR) | 2 | 1,299 | 26% | 1 now · 1 after Oct 15 earnings |
+| Concentrated #1 | **TSM** (Taiwan Semiconductor ADR) | 2 | 1,299 | 26% | 1 now · 1 only if the Oct 15 print confirms (Q4 guide ≥ consensus, capex held/raised, >40% growth outlook intact) |
 | Concentrated #2 | **CBOE** (Cboe Global Markets) | 3 | 1,194 | 24% | 2 now · 1 after Oct 30 earnings |
 | Infrastructure | **LNG** (Cheniere Energy) | 2 | 767 | 15% | 1 now · 1 after Oct 29 earnings |
 | Swing slot | First to qualify: VRT (base breakout) · ACN (gap continuation) · CLS or MU (pullback) | — | 1,000 earmark | 20% | Trigger only; risk ≤ C$150 |
-| Option slot | **SPY Dec 18 720/700 put debit spread** | — | 350 earmark | 7% | On a SPY close < 750 |
-| Reserve | USD cash | — | 390 | 8% | — |
+| Option slot | Single-leg only (premium ≤ C$150). Today's only qualifying market: TLT Jan '27 82 call, if PT-006 triggers by Oct 17 | — | 150 earmark | 3% | Trigger only |
+| Reserve | USD cash | — | 590 | 12% | — |
 | **Total** | | | **5,000** | 100% | |
 
-**Account:** Questrade **margin account, cash-only** (no borrowing). Registered accounts cannot
-hold spreads (Level 2 ceiling); spreads need Level 3, which needs a margin account with
-C$5,000 minimum equity. Gains are taxable (50% inclusion), losses deductible. If Dustin keeps
-the sleeve in the TFSA instead, the option slot is dropped and everything else stands.
+**Account (Round 5):** the **Questrade TFSA**. Options Level 2 — long calls and puts only, no
+spreads. A margin account is opened only when a paper strategy reaches the MICRO-LIVE rung of
+the `PAPER_TRADES.md` ladder; it is a graduation, not a prerequisite.
 
 ---
 
@@ -69,27 +68,28 @@ triggers are in `ROUNDS.md` Round 4 §B. Current status:
 - **CLS / MU** (Strategy B): both extended; wait for an orderly 8–12% pullback into the 20-day, then buy the first close above the prior day's high.
 - Not qualified today: none of the four. The slot stays armed, not filled.
 
-**Option slot (debit ≤ C$350).** SPY Dec 18 720/700 put debit spread, read live at 8.30/6.04 →
-debit 2.26 = C$322 max loss, max payoff US$1,774 (7.8:1) at SPY ≤ 700, breakeven 717.74.
-Trigger: SPY daily close below 750 (below its 50-day at 763 and the round number) with ≥3 of 5
-evidence conditions — breadth (<25% above 50-day: met at 21%), rates (10Y cycle high: met),
-VIX > 18, RSP/IWM below 200-day. Exit on a close back above the 50-day; take half at 3×.
-
-**Why no option on a single stock:** every live single-stock spread priced at C$400–5,000 max
-loss (ACN 240/250 C$399; VRT 270/280 C$527; CME Jan 260/290 C$1,766; MU C$5,014). At this
-account size, spreads are an index tool and stock theses are expressed in shares with stops.
+**Option slot (single leg, premium ≤ C$150, ≥ 60 DTE, bid–ask ≤ 10%, OI ≥ 500).** Read live
+Oct 1 ~14:00 ET: the only structure that passes is the **TLT Jan 15 '27 82 call** at 1.05/1.07
+(IV 15.7%, OI 28,594) = C$152, used only if PT-006's duration-turn trigger fires by Oct 17 so
+that ≥ 90 DTE remain; afterwards the vehicle is TLT shares. Everything else was priced and
+rejected: SPY Dec 740 put C$1,697; ACN Dec 240 call C$1,370; VRT Dec 260 call C$3,170; CBOE
+Jan 300 call C$2,140 (IV 40%); MU Dec 1100 call C$14,000; ITB chain illiquid with non-standard
+strikes; FICO markets $5–18 wide. **Downside** is expressed with SH shares (paper reference:
+short SPY) under PT-005 — the Round 4 put spread is deleted. If a single leg is too expensive,
+the answer is NO TRADE, not a bigger budget.
 
 ---
 
 ## 4. Rules
 
 1. Stock swing: risk = stop distance × shares ≤ **C$150**; notional ≤ C$1,300; one open at a time (two only if uncorrelated).
-2. Option: one position open; debit ≤ **C$350**; thesis expiry stated; exit at −100% (the debit) or on the stop condition, whichever first.
+2. Option: one single-leg position open; premium ≤ **C$150**; ≥ 60 DTE at entry; thesis expiry stated; exit at −50% of premium or at the underlying invalidation, whichever first; never hold into the last 30 days.
 3. Durable holds: no stop. A −20% mark-to-market forces a written review in `ROUNDS.md`; only fundamental invalidation forces a sale.
 4. No borrowing on margin. No averaging down a tactical position.
 5. Every entry is logged (date, trigger evidence, source) before the order.
 6. Unused risk budget is a position. If no swing or option trigger fires by **Jan 15, 2027**, the earmarks are re-screened through the candidate board — not spent.
-7. Correlation check: TSM and a semis swing (MU/CLS) count as correlated; if the swing slot holds one, the option slot may not hold a QQQ structure in the same direction.
+7. Correlation check: TSM and a semis swing (MU/CLS) count as correlated; if the swing slot holds one, no second long in the same theme.
+8. Live capital enters the swing slot only for a setup that has passed PAPER TRADE and REPEATED OBSERVATIONS in `PAPER_TRADES.md`.
 
 ---
 
@@ -109,3 +109,6 @@ not hold TSM through a −30% quarter, the benchmark wins. If he would, this is 
 bet on three above-market businesses with tactical risk capped near C$500 in total.
 
 Full candidate board (18 names), strategy board (6 setups) and option chains: `ROUNDS.md`, Round 4.
+TSM staging, CBOE-vs-CME engines and the LNG stress test: `ROUNDS.md`, Round 5. CME is approved
+as a regime candidate (Strategy F trigger ≤ ~$220); LNG's "capex falls from here" is corrected to
+"capex stays elevated and self-funded" with two open items (contracted % / expansion coverage).
