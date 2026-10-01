@@ -1,6 +1,6 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 8 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 8 only removes the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
+**Version:** Round 9 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 9 adds only an informational role reading in §2. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
 the live/paper gates, the option-slot wording and the LNG/CME thesis statements (analyses in `ROUNDS.md`,
 Rounds 4–6; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
@@ -61,6 +61,13 @@ supply glut that breaks take-or-pay recontracting.
 
 Three mechanisms — AI silicon manufacturing, structural hedging demand, US gas exports — with
 little fundamental overlap. Concentration is the point; variance is accepted.
+
+**Round 9 role reading (informational; no allocation change).** Under the underwritability roles
+(`RESEARCH_MAP.md`), CBOE and LNG (its existing asset) read as **CORE** candidates. **TSM reads as a
+SATELLITE** by definition: business underwritability is high, but its geopolitical tail cannot be
+probability-weighted. Its 26% weight was set as if it were core. Whether roles apply to this sleeve or
+to Dustin's whole program decides whether that matters; it is the first Round 10 question. The
+thesis has not changed, so nothing is resized now.
 
 ---
 

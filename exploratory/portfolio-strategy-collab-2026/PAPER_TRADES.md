@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule).
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -95,7 +95,7 @@ vehicle selected under §3, so the lab can compare SH against waiting for a put.
 | Family | Thesis type | Setups (mechanics, frozen) | Records |
 |---|---|---|---|
 | EARNINGS_CONTINUATION (parent) › **RECOVERY** | Earnings force an upward reassessment of a damaged narrative | A (frozen; its ≥ 25%-below-high qualifier makes it a recovery setup) | PT-001, PT-011 (UNH, Oct 12) |
-| EARNINGS_CONTINUATION (parent) › **MOMENTUM** (new, Round 8) | A leader's print confirms or raises expectations and institutions keep buying | A-M (pre-registered below) | — (first possible: TSM, Oct 15) |
+| EARNINGS_CONTINUATION (parent) › **MOMENTUM** (new, Round 8) | A leader's print confirms or raises expectations and institutions keep buying | A-M v2 (frozen below, Round 9) | — (first possible: TSM, Oct 15) |
 | TREND_PULLBACK | A leader in a rising trend is bought on an orderly pullback | B | PT-003, PT-010 |
 | BROKEN_LEADER_RECLAIM | A growth leader that broke trend (below its 50/200-day) bases and reclaims | E | PT-002, PT-008 |
 | POST_SHOCK_REVERSAL | An event-driven collapse overshoots the impairment | C | PT-004 |
@@ -103,15 +103,23 @@ vehicle selected under §3, so the lab can compare SH against waiting for a put.
 | INDEX_DOWNSIDE | Index loses trend with weak breadth and high rates | D | PT-005 |
 | TACTICAL_COMPOUNDER_ENTRY | A durable compounder shaken out without fundamental cause is re-entered on reclaim | E | PT-007 |
 
-**Setup A-M — EARNINGS_MOMENTUM_CONTINUATION (pre-registered 2026-10-01 16:45 ET, before any cohort event; Round 8).**
-Written a priori, not fitted to any October data. It keeps Setup A's mechanics and changes only what the family split requires. ChatGPT may amend it before its first use (TSM, Oct 15); after that it is frozen.
-- **Qualify (at the close before the report):** close above both the 50-day and 200-day averages; 50-day above 200-day; 3-month return above SPY's 3-month return. No drawdown requirement.
-- **Event:** the open gaps up by at least the pre-event **implied move**: the nearest-expiry at-the-money straddle mid ÷ the prior close, read from the live chain at pre-registration. A leader's surprise is measured against what options already priced, not a fixed %. The report must beat consensus with guidance raised or maintained. Day-1 volume ≥ 3× the 3-month average (as in Setup A).
-- **Confirmation:** completed day-1 close location ≥ 0.50 of the day-1 range. Days 2–5: no two consecutive closes below the **completed day-1 midpoint** ((H + L) / 2). This replaces Setup A's VWAP test only because the lab has no reliable intraday VWAP source. Setup A records keep VWAP as written and mark it "unmeasured" when no source exists.
+**Setup A-M v2 — EARNINGS_MOMENTUM_CONTINUATION (frozen 2026-10-01 18:15 ET, before any cohort event; Round 9).**
+v1 (16:45 ET, Round 8) required the opening gap to exceed the options-implied move. That gate was **withdrawn before first use**, on ChatGPT's Round 9 reasoning:
+- the implied move prices magnitude, not direction, and carries an event-vol premium;
+- the opening gap measures only the overnight repricing, while this program studies what happens after information arrives, including during day 1.
+
+The implied move is kept as two **observational features** (GAP_IMPLIED_RATIO, DAY1_IMPLIED_RATIO; `RESEARCH_MAP.md` Program A), never as a gate. v2 is frozen from now; first possible use is TSM, Oct 15.
+
+What the setup detects: **significant new information + strong existing structure + constructive post-information behaviour.** No numeric threshold is invented merely because a field exists. The only numbers are inherited unchanged from Setup A.
+- **Structure (at the close before the report):** close above both the 50-day and 200-day averages; 50-day above 200-day; 3-month return above SPY's. No drawdown requirement.
+- **Information:** the report beats consensus EPS **and** guidance is raised or maintained.
+- **Post-information behaviour, day 1:** day-1 close above the pre-event close; volume ≥ 3× the 3-month average (inherited from Setup A); completed day-1 close location ≥ 0.50 of the range (inherited).
+- **Confirmation, days 2–5:** no two consecutive closes below the completed day-1 midpoint ((H + L) / 2). This is **a midpoint rule specified for this setup, not a substitute for VWAP**; the two answer different questions. VWAP is recorded only from a trustworthy source, otherwise `VWAP: UNMEASURED`, and never stands in for this rule.
 - **Entry:** first close above the completed day-1 high within 10 sessions.
 - **Invalidation (dynamic rule):** close below the completed day-1 RTH low.
 - **Exits and time stop:** as Setup A (half at 2R, trail under the 20-day, 40 sessions). Long only.
-- **Cohort pre-registration rule (mechanical, evening before each report):** ≥ 25% below the 52-week high → Setup A record (RECOVERY). Meets the A-M qualifiers → Setup A-M record (MOMENTUM). Neither → event layer only.
+- **Setup A (RECOVERY) records** keep their frozen VWAP clause; where no trustworthy VWAP source exists it is recorded `VWAP: UNMEASURED`, and that condition is reported as unevaluable, not as passed.
+- **Cohort pre-registration rule (mechanical, evening before each report):** ≥ 25% below the 52-week high → Setup A (RECOVERY). Meets the A-M structure qualifiers → Setup A-M v2 (MOMENTUM). Neither → event layer only.
 
 **Why VRT and HWM are not TREND_PULLBACK** (ChatGPT's Round 6 example list put them there): both
 sit below their 50-day and 200-day averages (VRT 50d 261.7 < 200d 264.1; HWM price 228 under both),

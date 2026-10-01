@@ -4,20 +4,20 @@
 is what matters now. Both Claude and ChatGPT should be able to read it cold and recover the state
 of every idea. Update it in place; record material changes in one line in `ROUNDS.md`.
 
-**Last updated:** 2026-10-01 ~16:45 ET (Round 8 — Claude, Opus 5.5)
+**Last updated:** 2026-10-01 ~18:15 ET (Round 9 — Claude, Opus 5.5)
 
 ---
 
 ## What are we becoming experts in? (provisional)
 
-Working answer after seven rounds: **how prices behave when information or regimes change** —
-- **discrete events:** earnings repricings and event shocks (Programs A, F);
-- **trend structure in a few genuine secular leaders:** pullbacks and reclaims (Program B);
-- **slow macro transitions:** rates/duration (Program C) and breadth/index regime (Program G, candidate);
-- **long-horizon investing core:** businesses that monetise activity or contracted demand rather than requiring a forecast of direction (Programs D, E).
+Working answer after nine rounds: **how prices and businesses behave when information or regimes change.** It splits into two tracks that answer different problems and use different frameworks. The two frameworks are not forced onto each other.
 
-The first three produce evidence quickly; the last is where capital compounds. The Round 10
-checkpoint tests whether this answer still holds.
+| Track | Programs | Central questions | Framework |
+|---|---|---|---|
+| **Long-horizon business research** | D · market infrastructure (CBOE, CME, ICE, SPGI) · E · contracted energy and power (LNG, …) · H · exceptional secular businesses (TSM, …) | Durability · underwritability · valuation · capital allocation · structural growth · irreversible risk | Theses and counter-theses; underwritability → role and size; thesis half-life and re-underwriting |
+| **Trading research** | A · information repricing · B · secular-leader pullbacks and reclaims · C · rates/duration transitions · G · breadth/index deterioration (candidate) · F · post-shock reversals (exploratory) | Is there a repeatable, pre-specifiable setup, and does evidence support it? | Frozen setups, triggers, invalidation, vehicle, PAPER → MICRO-LIVE → SCALE |
+
+The trading track produces evidence quickly; the business track is where capital compounds. Round 10 tests whether this split still describes how we work.
 
 ---
 
@@ -56,6 +56,23 @@ Families (`PAPER_TRADES.md` §5) map to programs; one program can hold several f
 - The Oct–Nov cohort is the forward sample.
 - The outcome framework below was **frozen 2026-10-01 16:45 ET, before the first cohort event (Oct 13)**. It replaces the Round 7 single-endpoint labels, which were never applied.
 
+**The edge we are searching for (Round 9).** Not "rediscover post-earnings drift". PEAD is background evidence: documented for decades, contested in cause and magnitude, and reported to have decayed in large caps. The research problem is **conditional path selection**:
+
+> **Among large information shocks, can information available by the day-1 close (or by D+3) identify which events produce *tradeable* continuation after day 1 — continuation large and orderly enough to be captured with a pre-specified entry, invalidation and vehicle?**
+
+Candidate conditioning variables are features, not gates:
+- surprise magnitude;
+- guidance revision;
+- post-event estimate revisions;
+- day-1 close location;
+- volume;
+- prior trend and relative strength;
+- realised versus implied event move;
+- sector confirmation;
+- later news that confirms or contradicts the thesis.
+
+Average drift across all events is not our edge, even if it exists.
+
 **Two families (split Round 8, prospectively).** EARNINGS_CONTINUATION is now a parent with two children:
 - **RECOVERY** — a damaged narrative forced upward. Setup A, unchanged; its ≥ 25%-below-high qualifier is what makes it a recovery setup.
 - **MOMENTUM** — a leader confirmed by its print. Setup A-M, pre-registered in `PAPER_TRADES.md` §5.
@@ -78,10 +95,25 @@ No threshold in either child is fitted to the cohort.
 
 | Group | Fields |
 |---|---|
-| Pre-event (prior close) | close; % below 52-week high; position vs 50/200-day; 3-month return vs SPY; consensus EPS and revenue; implied move = nearest-expiry ATM straddle mid ÷ close; family qualification (RECOVERY / MOMENTUM / neither) |
-| Day 1 | open gap %; day-1 return; result vs consensus; guidance change; volume ÷ 3-month average; close location in the range (0–1); close vs midpoint; close vs VWAP if a source exists, else "unmeasured" |
+| Pre-event (prior close) | close; % below 52-week high; position vs 50/200-day; 3-month return vs SPY; consensus EPS and revenue; **IMPLIED_EVENT_MOVE** (method below, frozen per event); family qualification (RECOVERY / MOMENTUM / neither) |
+| Day 1 | open gap %; day-1 return; result vs consensus; guidance change; volume ÷ 3-month average; close location in the range (0–1); close vs midpoint; **VWAP: value only from a trustworthy source, otherwise `VWAP: UNMEASURED`**; **GAP_IMPLIED_RATIO** = \|open gap\| ÷ implied move; **DAY1_IMPLIED_RATIO** = \|day-1 close-to-prior-close return\| ÷ implied move |
+| Fundamentals after the event | **POST-EVENT ESTIMATE REVISION** at D+1 and D+3: UPWARD / DOWNWARD / UNCHANGED / UNAVAILABLE, with the raw data kept (below) |
 | Path, from the completed day-1 close | returns at **D+1, D+3, D+5, D+10, D+20**; **MFE and MAE through D+20** (daily highs/lows) with the **session** of each; whether the pre-event close was crossed (gap filled), and on which session |
 | Relative | every path return also **in excess of SPY** and of the **sector ETF** (map below). Both are recorded; neither is primary yet (research queue: relative return) |
+
+**Implied move — method `STRADDLE_V1` (frozen 2026-10-01 18:15 ET; Round 9).**
+- **What:** at the last close before the release, the ATM straddle in the first listed expiry on or after day 1. ATM = the strike nearest the close; if two are equidistant, average the two straddles. Use the mid of the closing bid/ask for call + put, ÷ the underlying close.
+- **Source and stamp:** read live from the Yahoo chain with a timestamp.
+- **Known biases (stated, not corrected):** the straddle also prices the non-event days to expiry and an event volatility premium. It estimates the magnitude of the move, not its direction.
+- **Vendor values:** if a standardised vendor "expected move" is available, record it **in a separate field**. The two are never mixed or switched between companies.
+- **Use:** both ratios are **features, not gates**. No threshold is chosen from the October sample. A stock that gaps +3% and closes +8% against a ±5% implied move, or gaps +8% and closes +1%, is exactly the variation we want to keep.
+
+**Post-event estimate revision — method `YAHOO_EPS_TREND_V1` (frozen 2026-10-01 18:15 ET).**
+- **When:** at D+1 and D+3.
+- **What to record from the Yahoo analysis page:** next-fiscal-year consensus EPS "Current" vs "7 Days Ago" (% change), and the "Up/Down last 7 days" revision counts.
+- **Label:** UPWARD when the % change > 0 and up-revisions outnumber down-revisions; DOWNWARD when both point down; UNCHANGED when neither; UNAVAILABLE when there is no data.
+- **Raw values are always kept.** This is an observation, not an entry gate.
+- **Hypothesis preserved:** a price gap backed by persistent estimate revisions may behave differently from one driven mostly by positioning or short covering.
 
 **Provisional summary label (frozen criteria; the raw path is always kept):**
 - **CONTINUED** — the excess-vs-sector return is in the repricing direction at D+5, D+10 and D+20.
@@ -98,7 +130,8 @@ No threshold in either child is fitted to the cohort.
 **Key open questions** (preserved, not answered):
 - Which path characteristics after day 1 predict continuation?
 - Do leader and recovery repricings behave differently?
-- Is a gap larger than the implied move different?
+- Do GAP_IMPLIED_RATIO or DAY1_IMPLIED_RATIO carry information about continuation?
+- Do events with upward post-event estimate revisions continue more than events without them?
 - Do gap-downs mirror gap-ups?
 - Raw or relative returns?
 
@@ -229,6 +262,12 @@ These are research theses, not positions. Each is held against its counter-thesi
 
 ---
 
+### H · Exceptional secular businesses (business track; named Round 9)
+**Claim:** a few businesses combine a structural growth driver, a durable competitive position and reinvestment at high returns, and deserve years of attention even when their price makes them hard to buy.
+**Current candidate:** TSM. Business underwritability is high; geopolitical underwritability is low (see the table below). Future candidates enter only with a thesis, a counter-thesis and an underwritability reading.
+**Central questions:** durability, valuation relative to the cycle, capital allocation, irreversible risk.
+**What would invalidate it, for TSM:** loss of process leadership at N2/A16; two or more hyperscalers cutting capex; a cross-strait event (an irreversible risk, handled by size and not by forecast).
+
 ## Underwritability (research concept — not canon)
 
 **Working definition:** a long-term investment needs not only an attractive expected outcome but enough confidence that the economic engine can be forecast within a useful range. The questions are descriptive and unscored:
@@ -239,7 +278,29 @@ These are research theses, not positions. Each is held against its counter-thesi
 - **External dependence:** regulation, geopolitics, commodities, capital markets, customers, substitution.
 - **Half-life:** how fast new information could make the underwriting obsolete.
 
-### Case study — Pershing Square and Netflix, 2022 → 2026 (thesis revision, not a trade to copy)
+### Underwritability assigns role and size, not own / don't-own (adopted Round 9)
+
+| Role | Meaning | Capital |
+|---|---|---|
+| **CORE CANDIDATE** | Durable engine; reasonable forecastability; major risks understood; valuation permits an attractive expected return; the thesis is unlikely to become obsolete from one ordinary quarter of information | May receive meaningful capital |
+| **SATELLITE CANDIDATE** | Attractive economics with one or more substantial uncertainties: a geopolitical tail, regulatory dependence, unusual cyclicality, major growth-project execution, customer concentration | Smaller size. The uncertainty is expressed through sizing, not through denial of the risk |
+| **TACTICAL CANDIDATE** | Long-horizon economics hard to underwrite, but a shorter-duration catalyst or price setup is unusually clear | Trade rules (`PAPER_TRADES.md`); a good trade can be a poor investment |
+| **SPECULATION — LOSS ACCEPTED** | Both long-horizon underwritability and tactical evidence are weak; the position is a wager | `PROPOSAL.md` §6; never counted as strategy evidence |
+
+**Principle candidate:** uncertainty may reduce position size faster than it reduces expected upside.
+
+**Provisional roles for names already in the work** (descriptive; the open question is whether roles apply at the sleeve level or Dustin's whole-program level — see Round 10 questions):
+
+| Name | Role | Why |
+|---|---|---|
+| CBOE (held) | CORE candidate, with a named dependency | Durable proprietary franchise exclusive to 2051; the dependency is SPX × retail short-dated demand × regulation |
+| CME (approved, not held) | CORE candidate | Entrenched, diversified franchises; the earnings level is a range across volume regimes, not a point |
+| LNG (held) | CORE candidate (LNG-A), with an embedded growth option (LNG-B) | The existing asset is contracted ~15 years; the expansion is a lower-underwritability option inside the same share |
+| TSM (held, largest at 26%) | **SATELLITE by these definitions** | Exceptional business underwritability, but a geopolitical tail that cannot be probability-weighted. A tail of this kind is the definitional example of a satellite. Its size is a Round 10 question; nothing changes now |
+| NFLX (not held) | Undetermined | A new thesis exists (Pershing 2026), but our own underwriting has not been done; cohort event Oct 20 |
+| MU, VRT, ACN, FICO (watch) | TACTICAL candidates | Cyclical, execution-dependent or post-shock economics; any exposure goes through trade rules |
+
+### Case study — Pershing Square and Netflix, 2022 → 2026: THESIS → DISCONFIRMING INFORMATION → EXIT → CONTINUED OBSERVATION → NEW THESIS (not a trade to copy)
 
 | Date | Event | Price (split-adjusted) |
 |---|---|---|
@@ -254,11 +315,25 @@ These are research theses, not positions. Each is held against its counter-thesi
 - *"We require a high degree of predictability in the businesses in which we invest due to the highly concentrated nature of our portfolio… we have lost confidence in our ability to predict the company's future prospects with a sufficient degree of certainty."*
 - *"The dispersion of outcomes has widened to a sufficiently large extent that it is challenging for the company to meet our requirements for a core holding."*
 
-**Lessons (provisional):**
-1. **A cheaper price did not strengthen the thesis.** The business-model change widened the outcome range faster than the price fell. This is ChatGPT's point, and it holds.
-2. **Losing underwritability was not the same as being wrong.** The changes Pershing called "sensible" worked: ads, the sharing crackdown and the margin expansion. The exit missed ~6×, and the re-entry cost ~3.6× the exit price. **The price of waiting for certainty was paid in full.**
-3. **The requirement scaled with concentration, in Pershing's own words.** Underwritability decided whether Netflix could be a *core holding* of a concentrated book, not whether it could be owned at all.
-4. **Underwritability can be lost by an outsider through disclosure alone.** Netflix stopped reporting subscribers in 2025, so outside forecastability fell even if the business did not change.
+**The two theses are different theses, not the same thesis at a lower price.**
+
+| | 2022 thesis (Jan 26, 2022 letter) | 2026 thesis (Pershing Square Inc. 2Q26 letter, Aug 12, 2026) |
+|---|---|---|
+| Industry | Streaming takes share from linear TV | Streaming has a winner: "over 325 million subscribers, nearly double the combined base of its two closest competitors, Disney+ and HBO Max" — "effectively won the streaming wars" |
+| Revenue engine | Recurring subscriptions, subscriber growth | Subscriptions plus advertising "toward $3 billion of revenue this year"; the ad tier "broadens the addressable market" |
+| Costs and margins | Expected operating leverage | Observed: "cash content spend growing at just a 2% annual rate since 2021", EBIT margin "21% to approximately 31.5%" |
+| Cash | — | "converts approximately 90% of earnings into free cash flow, primarily redeployed into share buybacks" |
+| Price trigger | Fall after a subscriber-guidance miss | Fall of ~50% from the $134 high, "de-rating from over 40 times forward earnings… to 21 times", after "prolonged uncertainty" over the Warner Bros. bid, which Netflix lost in Feb 2026 |
+| Stated risks | — | Engagement metrics, short-form video, AI-generated content (each rebutted in the letter) |
+
+**What changed between them is evidence, not price.** The 2022 disconfirmation was uncertainty about subscriber economics and an operating-model change (the ad tier, the sharing crackdown). That made revenue, margins and capital intensity unforecastable for a concentrated book. By 2026 those same changes are observed history: margins, ad revenue, content-cost discipline and FCF conversion. Pershing also bought **after** the Warner Bros. bid uncertainty resolved, not during it.
+
+**Lessons (provisional — revised Round 9 to remove outcome bias):**
+1. **A cheaper price did not strengthen the thesis.** The operating-model change widened the outcome range faster than the price fell.
+2. **A decision can be correct for its mandate even when the asset later produces an enormous return.** The April 2022 exit is judged on the dispersion and mandate as they stood on April 20, 2022: "sensible" changes, widened dispersion, a concentrated portfolio requiring a "core holding" level of predictability. It is not judged on the later price. This is the same rule as the A/B/C/D grades in `PAPER_TRADES.md`. *Round 8's line "the price of waiting for certainty was paid in full" used later prices to judge the exit; it is withdrawn as outcome bias.* What survives without hindsight: exiting on dispersion knowingly trades expected return for lower variance. If the uncertainty later resolves favourably, re-entry costs more; if unfavourably, the exit saved capital. Which one happens is not knowable at the time of decision.
+3. **The requirement scaled with concentration, in Pershing's own words.** Underwritability decided whether Netflix could be a core holding of a concentrated book, not whether it could be owned at all. This is the role/size reading adopted above.
+4. **Underwritability can be lost by an outsider through disclosure alone.** Netflix stopped reporting subscribers in 2025, so outside forecastability fell even where the business did not change.
+5. **THESIS RE-ENTRY (research concept).** An invalidated thesis does not blacklist an asset. A new thesis may be written later if the facts materially change. It must **stand on its own evidence**, never "the old thesis, now cheaper". The test is whether the variables that made the old thesis unforecastable have become observable.
 
 ### Current candidates
 
@@ -271,6 +346,43 @@ These are research theses, not positions. Each is held against its counter-thesi
 | **External dependence** | **Very high geopolitical:** most leading-edge capacity in Taiwan; ~30% of N2+ eventually in Arizona; US–Taiwan tariff deal (Jan 2026); China ~9% of revenue | Regulation: SEC 0DTE/retail scrutiny (Apr 2026 roundtable); PDT-rule repeal as a tailwind that could reverse; CME micro options with daily expiries | Rate-policy regime; CFTC; FMX/BGC competition | Permits, counterparties, the 2028–30 global supply wave |
 | **Thesis half-life** | Business: years, reconfirmed monthly. Geopolitical: can be obsoleted in a day | Years, reconfirmed monthly by volume; a regulatory shock could shorten it abruptly | Years; FMX share is the quarterly variable | Existing: years. Growth: binary events within ~12 months |
 | **Reading** | High **business** underwritability; **geopolitical** underwritability low and not probability-weightable. One does not cancel the other; the tail is handled by size (26% cap), not argued away | High, with one concentrated dependency (SPX franchise × retail short-dated demand) | High franchise underwritability; the earnings *level* is a range that depends on the volume regime | **Higher-underwritability existing asset + lower-underwritability growth option** in one company; underwrite them separately |
+
+## Candidate decision sequence (hypothesis for a future doctrine — not doctrine)
+
+```
+NEW INFORMATION / OBSERVATION
+  → WHAT ACTUALLY CHANGED?
+  → DOES IT ALTER THE ECONOMIC THESIS?
+  → HOW UNDERWRITABLE IS THE NEW STATE?
+  → INVESTMENT, TRADE, SPECULATION, OR NOTHING?   (role: core / satellite / tactical / speculation / none)
+  → WHAT HAS PRICE ALREADY DISCOUNTED?
+  → IS A REPEATABLE SETUP PRESENT?
+  → WHAT VEHICLE EXPRESSES IT BEST?
+  → WHAT INVALIDATES IT?
+  → HOW MUCH EVIDENCE SUPPORTS THE SETUP?
+  → PAPER → MICRO-LIVE → SCALE
+```
+
+**Does it describe decisions already made? (spot check, Round 9)**
+- **ACN, Oct 1:**
+  - What changed: a beat and record bookings.
+  - Economic thesis: a partial re-rating.
+  - Role: tactical.
+  - Discounted: a +17.8% gap.
+  - Setup: Setup A, whose confirmation failed (close location 0.08), so nothing traded.
+  - **The sequence fits.**
+- **Pershing–Netflix, Apr 2022:**
+  - What changed: subscriber loss plus a business-model change.
+  - Economic thesis: altered.
+  - Underwritability: low for a concentrated core, so the core role was lost and the position was exited.
+  - **The sequence fits.**
+- **TSM, Round 4 → Round 9:**
+  - The thesis is unchanged.
+  - Underwritability: business high, geopolitics low.
+  - Role: satellite by definition.
+  - Price: 20x for +60% growth.
+  - Sizing: currently set as if TSM were core.
+  - **The sequence exposes a mismatch rather than resolving it** — the most useful kind of result. It is carried to Round 10.
 
 ## Methodology findings (preserved observations that revealed them)
 
@@ -292,6 +404,8 @@ These are research theses, not positions. Each is held against its counter-thesi
 5. **Thesis type ≠ mechanics** (revealed by VRT and HWM tagging). Families group by thesis type; the frozen setup letter records mechanics. Keeping both lets the ledger aggregate either way without re-tagging a frozen record.
 6. **Event layer ≠ trade layer** (new, Round 7). Studying only setups that fired selects on the outcome. The earnings cohort records every event, so the trade rules can later be judged against the full population.
 7. **Measure the shape, not the endpoint** (Round 8, from ChatGPT). A single day-20 label mixes information drift, path, tradeability, timing, maximum opportunity and endpoint. The event layer records the path (D+1…D+20, MFE/MAE and their sessions, raw and relative); event drift and trade outcome are concluded separately.
+8. **Missing evidence is preferable to invented equivalence** (Round 9, VWAP). When a trustworthy source is unavailable, record `UNMEASURED`. A substitute (e.g. the day-1 midpoint) is a different rule that must be specified as such, prospectively. Old observations are never reconstructed with inconsistent data except in a separately declared retrospective study.
+9. **Outcome bias applies to investment decisions too** (Round 9, NFLX). A decision is judged against its mandate and the information at the time; a later return neither validates nor condemns it. This is the same separation as the A/B/C/D grades.
 
 ---
 
@@ -354,6 +468,10 @@ The Layer column is provisional until that evening.
 | **Earnings path shape** | Which characteristics after day 1 predict continuation? | A | NEW (Round 8) — the frozen event fields collect this |
 | **Leader vs recovery earnings** | Do positive repricings behave differently near highs versus deeply below them? | A | NEW (Round 8) — the RECOVERY/MOMENTUM split collects this |
 | **Relative return** | Should continuation be judged on raw, SPY-excess or sector-excess return? | A | NEW (Round 8) — all three recorded, none primary yet |
+| **Thesis re-entry** | When does an invalidated thesis become re-underwritable? The test proposed: the variables that made the old thesis unforecastable have become observable (NFLX: ad revenue, margins, content-cost discipline) | Business track | NEW (Round 9) |
+| **Implied-move features** | Do GAP_IMPLIED_RATIO and DAY1_IMPLIED_RATIO carry information about continuation? Features only; no threshold from October | A | NEW (Round 9) |
+| **Post-event estimate revision** | Does a gap backed by upward revisions behave differently from one driven by positioning? | A | NEW (Round 9) |
+| **Role level** | Do roles (core/satellite/…) apply to the C$5,000 sleeve or to Dustin's whole program? | Business track | NEW (Round 9) — Round 10 question |
 | **Re-underwriting after an exit** | NFLX: exit at ~$22.5, re-entry at ~$82 three years later. When does a lost thesis become re-underwritable, and what price of certainty is rational? | Long-horizon | NEW (Round 8) |
 | Post-earnings drift literature (Bernard & Thomas 1989 onward; evidence that drift has weakened in large caps since the 2000s — **to verify**) | Program A should know what is already documented before claiming an edge | A | NEW |
 | Gap-down continuation setup (short / long put) | Setup A is long-only as frozen; the event layer captures gap-downs, the trade layer cannot | A | NEW — design only after event-layer evidence |

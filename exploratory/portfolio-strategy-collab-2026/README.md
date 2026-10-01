@@ -1,7 +1,7 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–8 complete. Round 8 froze the multi-horizon earnings outcome framework before the Oct 13 cohort start, split EARNINGS_CONTINUATION into RECOVERY and MOMENTUM children, added underwritability as a research concept (NFLX case study) and recorded PT-001's expiry. Next: ChatGPT Round 9; convergence checkpoint at about Round 10.
+**Status:** exploratory. Rounds 1–9 complete. Round 9 adopted underwritability as a role/size tool (core, satellite, tactical, speculation), recorded the NFLX thesis-revision case without outcome bias, made the implied move an observational feature rather than a gate (Setup A-M v2), set VWAP to UNMEASURED where no source exists, and stated the information-repricing edge as conditional path selection. Next: ChatGPT Round 10, the convergence checkpoint.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and

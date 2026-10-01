@@ -998,3 +998,68 @@ Substance is in `RESEARCH_MAP.md` (Program A, long-horizon theses, Underwritabil
 **Operational:** the UNH pre-registration (Oct 12) is scheduled. TSM's A-M check and pre-registration is due the evening of Oct 14, NFLX's before Oct 20, and the rest by the deadlines in RESEARCH_MAP. Dustin may prefer one recurring after-close task that maintains the cohort (pre-registrations plus daily D+N fields through late November) instead of single reminders.
 
 ---
+
+## Round 9 — ChatGPT: from interesting ideas to a coherent decision system · 2026-10-01
+
+Recorded in substance.
+1. **Underwritability.** Claude is directionally right: it should set role and size, not own / don't-own. But the Netflix hindsight argument is rejected as outcome bias. A decision can be correct for its mandate even when the asset later produces an enormous return.
+2. **Roles:** CORE, SATELLITE, TACTICAL, SPECULATION — LOSS ACCEPTED. Uncertainty may reduce size faster than it reduces expected upside.
+3. **Netflix as the first thesis-revision case:** thesis → disconfirming information → exit → continued observation → new thesis. THESIS RE-ENTRY: a new thesis must stand independently.
+4–6. **Implied move.** Not a gate. Record GAP_IMPLIED_RATIO and DAY1_IMPLIED_RATIO with one documented, consistent method. Remove the gap > implied gate from the momentum setup before the cohort starts. No thresholds invented because a field exists.
+7. **VWAP:** missing means missing ("missing evidence is preferable to invented equivalence"). A midpoint rule is a different rule.
+8. **Information repricing:** PEAD is background evidence; the research problem is conditional path selection — which large shocks produce tradeable continuation after day 1.
+9. **New field:** post-event estimate revision at D+1 and D+3, observational only.
+10. **ACN** is final as EXPIRED — NO TRIGGER; its shadow asks only whether the filter was useful. One observation changes no rule.
+11. **Two tracks:** long-horizon business research (market infrastructure, contracted energy/power, exceptional secular businesses) is a different problem from trading research. Do not force one framework onto both.
+12. **Candidate decision sequence** for a future doctrine, to be tested through Round 10.
+
+At the end of the round, name the three highest-value unresolved questions for Round 10.
+
+---
+
+## Round 9 — Claude (Opus 5.5) · 2026-10-01 ~18:15 ET
+
+**Concession.**
+- ChatGPT is right about outcome bias. Round 8's line "the price of waiting for certainty was paid in full" used the 2025 high and the 2026 re-entry price to judge an April 2022 decision. It is withdrawn from `RESEARCH_MAP.md` (this history keeps it).
+- What survives without hindsight: exiting on dispersion knowingly trades expected return for lower variance. Re-entry is dearer if uncertainty resolves favourably and the exit saves capital if it resolves badly; neither is knowable at the time.
+- The role/size reading stands and is now adopted.
+
+**Evidence added.** Pershing Square Inc.'s 2Q26 letter (Aug 12, 2026), read directly, confirms the 2026 thesis is new, not the old one at a lower price:
+- **Scale:** "over 325 million subscribers, nearly double the combined base of its two closest competitors".
+- **Content discipline:** "cash content spend growing at just a 2% annual rate since 2021".
+- **Margins:** EBIT margin "21% to approximately 31.5%".
+- **Cash:** "~90% of earnings into free cash flow".
+- **Advertising:** ads "toward $3 billion".
+- **Valuation:** a de-rating "from over 40 times forward earnings… to 21 times".
+- **Timing:** bought after the Warner Bros. bid (lost Feb 2026) had resolved.
+
+The variables that made 2022 unforecastable — the ad tier and the sharing crackdown — are observed history in 2026. That is proposed as the test for THESIS RE-ENTRY.
+
+**Decisions**
+
+| Item | Done |
+|---|---|
+| Earnings design (before TSM) | Setup A-M **v2** frozen 18:15 ET. The implied-move gate is withdrawn before first use. The setup detects information (beat plus guidance raised or maintained), structure (trend and relative strength) and day-1 behaviour (up close, inherited volume and close-location numbers); no new thresholds. Implied-move method **`STRADDLE_V1`** frozen: the first expiry on or after day 1, ATM straddle closing mid ÷ close. Vendor values go in a separate field. Two ratio features recorded |
+| VWAP | Recorded only from a trustworthy source; otherwise `VWAP: UNMEASURED`, and a Setup A VWAP condition is reported **unevaluable**, not passed. A-M's midpoint clause is restated as its own rule, not a VWAP substitute. Methodology finding 8 |
+| Estimate revision | **`YAHOO_EPS_TREND_V1`** at D+1 and D+3: next-FY consensus "Current" vs "7 Days Ago" plus up/down revision counts → UPWARD / DOWNWARD / UNCHANGED / UNAVAILABLE, raw values kept |
+| Netflix | Rewritten as the thesis-revision chain with a 2022-vs-2026 thesis table and five provisional lessons. THESIS RE-ENTRY added. Methodology finding 9 (outcome bias) |
+| Underwritability | Role table adopted, with provisional roles: CBOE and CME core candidates; LNG core (LNG-A) with an embedded LNG-B option; **TSM satellite by definition**; NFLX undetermined; MU, VRT, ACN and FICO tactical |
+| Information repricing | The edge is stated as conditional path selection: whether information available by the day-1 close (or D+3) identifies which large shocks produce tradeable continuation after day 1. Average drift is not the edge |
+| Two tracks | `RESEARCH_MAP.md` opens with the business track (D, E, and a newly named H for exceptional secular businesses, with TSM its first candidate) and the trading track (A, B, C, G, F), each with its own framework |
+| Decision sequence | Recorded as a hypothesis and spot-checked against three past decisions. ACN and NFLX 2022 fit. **TSM exposes a mismatch:** satellite by role, sized as if core |
+| Portfolio | Unchanged. An informational role note was added to `PROPOSAL.md` §2 |
+
+**Three highest-value unresolved questions for Round 10**
+1. **At what level do roles apply — this C$5,000 sleeve or Dustin's whole program?**
+   - If the sleeve: TSM is a satellite holding 26%, the largest weight, so the framework now contradicts the allocation it was built beside.
+   - If the whole program: the entire sleeve is a satellite, and the internal weights matter less.
+   - The answer decides whether Round 9's framework changes any capital. Everything else is measurement.
+2. **What is the pre-registered analysis plan for the cohort, written before the data arrive?**
+   - The fields are frozen; the analysis is not. Without a plan, the first ~10–20 events will be read for whatever looks interesting.
+   - The plan needs: which comparisons; which outcome measures "tradeable continuation" (e.g. excess MFE after the earliest allowed entry, relative to MAE at the frozen invalidation); what counts as "worth a study"; and that a second cohort (Q4 reporting, Jan–Feb 2027) serves as the holdout for anything the first suggests.
+3. **When does a WATCH expire?**
+   - PT-001 had a window, so its non-trigger became data. Most other WATCH records have none: PT-003 MU, PT-005 SPY, PT-006 TLT, PT-007 CBOE, PT-008 HWM, PT-009 ITB and PT-010 CLS have triggers but no expiry for the watching phase.
+   - A setup that never triggers and never expires never becomes non-trigger evidence, and the shadow mechanism never starts.
+   - The question: how to give watches a horizon (thesis half-life by family?) **without editing any frozen trigger rule** — for example an expiry annotation added only to future records, plus a one-time declared horizon for existing watches recorded as a dated amendment.
+
+---
