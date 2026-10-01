@@ -262,3 +262,245 @@ before; time stop at 30 days to expiry.
 If ChatGPT agrees on 1–3 or regards them as philosophy rather than fact, the protocol stops here.
 
 ---
+
+## Round 4 — ChatGPT mandate reset · 2026-10-01
+
+Recorded in substance from the owner-relayed text (full text held by Dustin).
+
+**Correction:** the $5,000 is an **Opportunity Sleeve** inside a broader program that already
+holds diversified long-term exposure. It need not resemble a balanced retirement portfolio.
+Broad ETFs and bills are permitted but have no entitlement; BN, EWZ and MBB have no incumbency.
+Start over.
+
+**Required:** (1) individual stocks as first-class candidates across four types — durable
+compounders, secular growth at imperfect prices, dislocations/special situations, trend leaders;
+(2) investigate CME (chaos tollbooth), WMB, VRT, ACN, FICO, MU; (3) options as a normal tool —
+call/put debit spreads (45–90 DTE, long leg ~0.50–0.70 delta), long options only where
+convexity is worth paying for, longer-dated calls/diagonals for capital-intensive theses;
+(4) at least six reusable strategies with objective rules, including post-earnings gap
+continuation, pullback continuation in a leader, post-shock mean reversion, and a mechanical
+SPY/QQQ macro-downside framework; (5) risk framework — ~2–3% (C$100–150) max loss per tactical
+option trade, stock-swing size derived from distance to invalidation, no more than two
+correlated tactical trades; (6) architecture after discovery, not before — e.g., two
+concentrated long-term stocks, one swing, one defined-risk option, 15–25% reserve; unused risk
+budget ≠ passive cash; (7) "owning the casino" — CME vs ICE vs CBOE as structural chaos exposure
+instead of negative-carry puts. Output: candidate board (≥12), strategy board (≥6), options
+board (3 live chains inspected), construction, and a comparison against the boring benchmark.
+
+**Owner addendum (Dustin, same day):** be far more aggressive; the capital must be invested;
+the broad all-in-one ETF is not to be proposed.
+
+---
+
+## Round 4 — Claude (Fable 5.1) · 2026-10-01
+
+### Method and provenance
+
+- Three fundamentals scouts (Sonnet) covered 18 names from stockanalysis.com, issuer/IR
+  releases, Yahoo and news; finviz was blocked, so 50/200-day averages and RSI are stockanalysis
+  values and ATR is computed from daily ranges. Prices are intraday Oct 1 (~10:00–13:30 ET).
+- **Option chains were inspected live** in Chrome (Yahoo Finance, 15-minute delayed, ~13:30 ET,
+  Oct 1) after every workspace route (Yahoo/Cboe/Nasdaq/Barchart APIs and pages) was blocked or
+  returned empty tables. Rows below are exactly as read; nothing is modelled.
+- Judgment, classification, sizing and construction are Claude's.
+- Breadth context: 21.0% of S&P 500 members above their 50-day and 40.3% above their 200-day
+  (Sep 30, thetrading.tools); CNBC: ~75% of S&P stocks fell in September.
+
+### Account finding that shapes everything below
+
+Questrade registered accounts stop at options **Level 2** — no spreads. Debit spreads, the main
+containment tool this mandate asks for, need a **margin account (Level 3, C$5,000 minimum
+equity)**. Recommendation: run the Opportunity Sleeve in a **Questrade margin account used
+cash-only (no borrowing)**. Costs: gains taxable (50% inclusion), losses deductible against
+gains; the C$5,000 Level-3 floor is exactly the stake, so a drawdown can suspend spread
+permission. Alternative: TFSA with long options only — at this size that permits almost no
+single-stock option trade (an ACN Dec 240 call alone is ~C$1,370).
+
+**Second finding — the 2–3% option rule is unexecutable on these underlyings.** A $10-wide
+spread on a $250–1,000 stock costs C$350–1,000; a $100-wide MU spread costs the whole account.
+Only index spreads (SPY/QQQ, $1 strikes, tight markets) fit under C$350. Rule adopted:
+option debit ≤ **C$350 (7%)** for an A-setup, ≤ C$200 for a B-setup, one option position
+open at a time; single-stock momentum/gap trades are expressed in **shares with a stop**, where
+risk = stop distance × shares ≤ C$150 and notional ≤ C$1,300.
+
+### A. Candidate board (18 names; prices Oct 1 intraday, USD unless marked)
+
+| # | Ticker | Class | Price | Valuation / fundamentals (OBSERVED) | Trend | Catalyst | Invalidation | Instrument | Risk budget |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | **TSM** | **Durable hold (secular)** | 456 | Fwd P/E 20.1; FY26 EPS +63%; Aug rev +53% y/y; capex raised to $60–64B; GM 67.7%; −4% from high | Above 50d (424) & 200d (386); RSI 64 | Q3 earnings Oct 15; N2 ramp | Two hyperscalers cut capex; N2 yield failure; Taiwan Strait event (accepted tail) | Stock | Strategic — fundamental invalidation; tolerate −30% MTM |
+| 2 | **CBOE** | **Durable hold (casino)** | 279 | Fwd P/E 19.0; Q2 rev +25%, adj EPS +45%; 2026 organic growth guide raised to mid/high-teens; FCF yield 6.5%; S&P/VIX licence to 2051; −25% from high | Below 50d (288) & 200d (287); fell 308→253 in Sept (no cause found), bounced to 279 | Q3 Oct 30; monthly volume prints | Options ADV negative y/y for two quarters; regulatory fee cap; loss of SPX/VIX exclusivity | Stock | Strategic; review at −20% |
+| 3 | **LNG** (Cheniere) | **Durable hold (infrastructure)** | 269 | Fwd P/E 15.4; EV/EBITDA 10.5; 2026 DCF guide $5.3–5.8B (~10% of mkt cap); Stage 3 substantially complete (capex falls); $1.1B H1 buyback; −11% from high | At 50d (272), above 200d (246); RSI 45 | Q3 Oct 29; Train 7 first LNG; Petrobras SPA | Contract defaults; a global LNG glut that breaks take-or-pay recontracting; Stage 3 delays | Stock | Strategic |
+| 4 | **SPGI** | Durable hold — **alternate to #2** | 390 | Fwd P/E 20.9; FY27 EPS +13%; Indices +20% (13th record qtr); Ratings +17%; Q2 EPS miss; −29% from high | Below 50d (418) & 200d (441); RSI 32 | Q3 Oct 27 | Issuance collapse persisting >2 qtrs; indices licence loss | Stock | Strategic (not selected: CBOE's growth/price is better and the two are correlated) |
+| 5 | **CME** | Durable hold — **rejected for CBOE** | 266 | Fwd P/E 21.1; FY27 EPS +5.5%; 82% transaction revenue; op margin 66%; yield 4.3% incl. variable; 2022 EPS +1.5% despite the vol shock (earnings follow rates ADV, not VIX) | Below 50d/200d; RSI 38; −19% from high | Q3 Oct 21 | — | Stock | Not selected: lowest growth of the three exchanges at the same multiple; "chaos tollbooth" is partly a myth — 2022 proved it |
+| 6 | **ICE** | Durable hold — not selected | 152 | Fwd P/E 18.5; FCF yield 6%; mortgage tech 20% of revenue (rates-turn kicker) | Below 50d/200d | Q3 Oct 29 | — | Stock | Second choice behind CBOE if Dustin wants a rates-turn beneficiary |
+| 7 | **WMB** | Rejected for LNG | 69 | Fwd P/E 28.4 for +6.7% EPS growth; FCF yield negative (growth capex $7.3–7.9B); debt/EBITDA 4.3x; yield 3.1% | Below 50d/200d; RSI 33 | Q3 Nov 2; Socrates phase 2 | — | — | Real-asset exposure yes, but at 28x and negative FCF it is a bond proxy with execution risk; LNG gives the gas thesis at 15x |
+| 8 | **VRT** | **Tactical long (base breakout)** | 249 | Fwd P/E 30.8 for +36% FY27 EPS (PEG <1); FY26 guide raised across the board; UIG acquisition $2.6B; −35% from ATH | Below 50d (262) & 200d (264); 3-week base 234–257 | Q3 Oct 21 | Weekly close < 234 (base low) | Stock with stop (spreads cost C$530–940) | ≤ C$150 risk |
+| 9 | **ACN** | **Tactical long (gap continuation)** | 217 (+18%) | Fwd P/E 12.5; FCF yield 10.4%; record $84.5B bookings; FY27 guide +3–6% rev; gap on ~3.8× volume | Gap day range 214.50–227.63; trading in lower third at 13:30 | Follow-through days 2–5 | Close below gap-day low 214.50 | Stock with stop under 214.50 | ≤ C$150 risk |
+| 10 | **MU** | Momentum leader — **watch for pullback** | 1,077 | Fwd P/E 6.0; FQ1 guide $61.5B vs $57B cons; GM 86%; HBM-driven; +548% from low; DRAM contract price growth moderating (+10–15% q/q) | 12.5% above 50d (953); RSI 56 | Dec earnings | Close below 50d on volume; DRAM contract prices flat q/q | 1 share only (C$1,530 = 31%); options unexecutable (spread debit > capital) | Strategy B on pullback to 20/50d |
+| 11 | **CLS** (TSX/NYSE) | Momentum leader | C$506 / $370 | Fwd P/E 24; FY27 EPS +75%, rev +71%; Q2 rev +62%; AI racks (Google, OpenAI) | Above 50d/200d; +27% in a month; daily ATR 5.6% | Q3 + Investor Day Oct 26 | Weekly close < 50d (328 US) | Stock with stop, CAD listing (no FX) | Strategy B after an orderly pullback; ≤ C$150 risk |
+| 12 | **ASML** | Secular — watch | 1,803 | Fwd P/E 32.6; 2026 guide €43–45B raised; 2027 "close to fully covered"; China 20% | Above 50d/200d; −9% from high | Q3 Oct 14 | — | 1 share = C$2,570 — too lumpy | Watch only at this size |
+| 13 | **FICO** | **Special situation — no trade yet** | 662 (+12%) | Fwd P/E 13 on stale estimates; Scores 68% of rev at ~88% margin, mortgage ≈ 42% of Scores (≈29% of revenue); FHFA single pricing grid with VantageScore (Sep 28); Rocket switching; $5.6B debt, negative equity; −67% from high | RSI 23.5; 50d 1,039, 200d 1,224; Sep 29 −27% | Nov 4 earnings; grid implementation date | Long: break of 586 low. Short: reclaim of 20d | Stock only — options IV 60–64% with $5–18 wide markets and OI < 50 | Strategy C: no entry until a 10-session base |
+| 14 | **UNH** | Special situation — recovering fundamentals, falling price | 364 | Fwd P/E 17.3; 2026 EPS guide raised to $19.50–20.00; MCR 86.7% vs 89.4%; FY27 EPS +14%; 2027 MA rate notice weak | Below 50d (395), above 200d (356); RSI 31 | Q3 Oct 13 | Guide cut; MCR > 88% | Stock | Strategy A candidate on the Oct 13 reaction |
+| 15 | **HWM** | Secular — watch | 228 | Fwd P/E 38.8; FY27 EPS +21%; guide raised; EBITDA margin 32% | Below 50d/200d; −26% from high; range 224–233 | Q3 Oct 29 | — | Stock | Strategy B/E on reclaim of 50d |
+| 16 | **GE** (Aerospace) | Secular — watch | 312 | Fwd P/E 37.2; $210B backlog; $11.75B CPP acquisition; Melius downgrade | Below 50d/200d; RSI 37 | Q3 Oct 20 | — | Stock | Too expensive for a dislocation entry; watch |
+| 17 | **FFH.TO** | Durable hold — size-blocked | C$2,229 | P/E ~8; BVPS US$1,304 (≈C$1,857, P/B ~1.2); combined ratio 93%; buybacks; −17% from high | Below 50d/200d | Q3 Oct 29 | — | 1 share = 45% of capital | Not executable at this size |
+| 18 | **CEG** | Downside candidate / watch | 260 | Fwd P/E 21; Calpine debt $19B, interest +140%; FERC delayed PJM plan; −37% from high | Below 50d (272)/200d (288) | Nov 6 | Reclaim of 200d | Put spread if a confirmed breakdown of 229 (52w low) | Strategy D single-name variant; not active |
+
+Downside expressions reviewed: SPY/QQQ (Strategy D, below), FICO continuation (if 586 breaks),
+CEG breakdown. No single-name short is active.
+
+### B. Strategy board (six reusable setups)
+
+**A — Post-earnings gap continuation** (candidates: ACN today; UNH Oct 13)
+- Qualify: gap ≥ +8% on a beat **and** raised/maintained guidance; day-1 volume ≥ 3× 3-month average; stock was ≥ 25% below its 52-week high before the gap (a repricing, not an extension).
+- Distinguish repricing from short-covering: day-1 close in the **upper half** of the day's range; days 2–5 hold above the gap-day low; no close below day-1 VWAP for two consecutive sessions; at least one day 2–5 close above the day-1 high on above-average volume.
+- Entry: buy the first close above the day-1 high (days 2–10). Stop: gap-day low. Hold: 20–60 sessions or until the 20-day average breaks on a close.
+- Instrument: shares (risk = stop distance × shares ≤ C$150). A call debit spread only if the debit ≤ C$350 and the short strike sits at the prior-high/analyst-target zone.
+- ACN status at 13:30 ET: day-1 close unknown; trading at 216.8 in the lower third of 214.50–227.63 → **not qualified yet**. Qualifies only on a close above ~221 (range midpoint); otherwise wait for a day 2–10 close above 227.63.
+
+**B — Pullback continuation in a secular leader** (MU, CLS, VRT when repaired, ASML)
+- Qualify: 50-day > 200-day, both rising; fundamentals intact (last quarter beat + raise); pullback of 8–20% from a 52-week high on declining volume; 20-day RS vs SPY turns up.
+- Entry: first close above the prior day's high after the stock has tagged the 20- or 50-day; stop = 2 × ATR below entry or under the pullback low, whichever is nearer. Half off at 2R, trail the rest under the 20-day.
+- MU status: 12.5% above 50-day with RSI 56 after a +5% earnings reaction — extended, not a pullback. Trigger: a retest of the 20-day (not yet retrieved) or 50-day (953) that holds for three sessions, then a close above the prior high.
+- CLS status: +27% in a month, ATR 5.6% — wait for the first 8–12% pullback into the 20-day.
+
+**C — Post-shock mean reversion** (FICO)
+- Qualify: ≥ 40% decline on a specific event; forward estimates already cut (BofA $700, Barclays $935 targets exist); capitulation volume day (Sep 29); then **≥ 10 sessions without a new low**, a reclaim of the 20-day, and relative strength vs sector turning up.
+- Entry: close above the base high; stop below the base low (586). Size so the stop risk ≤ C$150 (one share of FICO at C$943 with a 10% stop = C$94 risk — executable). Target: 50% retrace of the shock leg, then reassess fundamentally.
+- Downside variant: if 586 breaks on a close, the shock continues; FICO's option markets are too wide to trade, so stand aside.
+- Status: day 2 of the bounce; not qualified.
+
+**D — Macro downside (SPY/QQQ, defined risk)** — the descendant of the downside interest
+- Evidence stack (need ≥ 3 of 5): (1) SPY daily close below its 50-day **and** below the prior swing low; (2) breadth: < 25% of S&P members above their 50-day while the index is within 3% of its high (currently 21% — met); (3) rates: 10Y at a new cycle high on the week (met at 5.29–5.33%); (4) volatility: VIX > 18 with VIX futures front spread flattening; (5) relative weakness: RSP and IWM below their 200-day.
+- Trigger: the price condition (1) is mandatory; it is **not met** — SPY 764.5 sits on its 50-day (763). Pre-approved: on a close below 750, buy the Dec 18 **720/700 put debit spread** (chain below). Stop: a close back above the 50-day → exit at market. Take profit: half at 3×, rest at 6× or 10 DTE.
+- Max loss = debit (≤ C$350). Thesis expiry Dec 18.
+
+**E — Base breakout after a momentum break** (VRT, HWM)
+- Qualify: leader fell ≥ 25% from its high, then built a ≥ 3-week base with a defined low; fundamentals intact (raised guidance).
+- Entry: weekly close above the base high **and** the 50-day, on volume ≥ 1.5× average; stop under the base low; first target the 61.8% retrace of the decline.
+- VRT: base 234–257, 50-day 262. Trigger = weekly close > 262. Stop 232 → risk $30/share → 5 shares = C$214 risk — too much; **4 shares** (US$995, C$1,417) → C$171 risk; **3 shares** → C$128. Earnings Oct 21 fall inside the hold — accept or wait for the print.
+
+**F — Durable-hold dislocation entry** (CBOE, SPGI, TSM, LNG)
+- Qualify (all): ROIC/FCF margin in the top quartile of its sector; forward P/E at or below the S&P 500's (19.2) or a PEG < 1.5; last two quarters beat-and-raise or guidance maintained; drawdown ≥ 15% from the 52-week high **or** the market multiple is below the name's 5-year median; no fundamental invalidation present.
+- Entry: no price trigger — buy half now, half after the next earnings report (whichever direction) unless the report invalidates. Invalidation is fundamental, not technical; a −20% MTM forces a written review in `ROUNDS.md`, not a sale.
+- Status: CBOE (−25%, 19x, growth raised) qualifies; TSM qualifies on PEG (0.3) though not on drawdown; LNG qualifies on multiple (15x) and FCF.
+
+### C. Options board — live chains (Yahoo, 15-min delayed, ~13:30 ET Oct 1)
+
+Underlyings at quote time: SPY 764.51 · QQQ 743.56 · ACN 216.81 · VRT 248.65 · MU 1,076.90 · FICO 661.99 · CME 264.26 · VIX ~16.5.
+
+**Rows read (bid/ask, OI, IV):**
+
+| Underlying · expiry | Strike | Bid | Ask | OI | IV |
+|---|---|---|---|---|---|
+| SPY Dec 18 P | 740 | 11.89 | 11.93 | 17,692 | 15.8% |
+| | 720 | 8.27 | 8.30 | 7,613 | 17.7% |
+| | 710 | 7.07 | 7.10 | 19,157 | 18.8% |
+| | 700 | 6.04 | 6.06 | 43,719 | 19.8% |
+| | 690 | 5.13 | 5.14 | 11,333 | 20.7% |
+| | 680 | 4.47 | 4.50 | 13,256 | 21.8% |
+| QQQ Dec 18 P | 720 | 18.30 | 18.41 | 19,803 | 21.1% |
+| | 700 | 13.31 | 13.40 | 63,140 | 22.6% |
+| | 690 | 11.33 | 11.39 | 60,430 | 23.4% |
+| | 680 | 9.65 | 9.73 | 59,505 | 24.2% |
+| ACN Dec 18 C | 230 | 12.00 | 13.40 | 231 | 47.1% |
+| | 240 | 8.80 | 10.40 | 187 | 47.5% |
+| | 250 | 6.60 | 7.70 | 567 | 46.9% |
+| | 260 | 5.00 | 5.50 | 672 | 46.1% |
+| ACN Dec 18 P | 200 | 9.30 | 10.20 | 101 | 44.5% |
+| ACN Nov 20 C | 225 | 9.40 | 10.00 | 259 | 41.8% |
+| | 240 | 5.00 | 6.20 | 5,346 | 44.4% |
+| | 245 | 4.20 | 5.10 | 20 | 44.4% |
+| VRT Dec 18 C | 250 | 25.75 | 26.40 | 975 | 58.0% |
+| | 260 | 21.65 | 22.25 | 491 | 57.9% |
+| | 270 | 17.95 | 18.70 | 450 | 57.8% |
+| | 280 | 15.00 | 15.70 | 247 | 57.9% |
+| VRT Dec 18 P | 230 | 16.90 | 17.80 | 1,374 | 57.8% |
+| MU Dec 18 C | 1100 | 94.85 | 99.40 | 2,941 | 53.8% |
+| | 1200 | 60.95 | 62.90 | 4,175 | 53.7% |
+| FICO Dec 18 C | 700 | 61.50 | 66.70 | 34 | 63.1% |
+| FICO Dec 18 P | 600 | 39.00 | 46.80 | 35 | 60.9% |
+| CME Jan 15 '27 C | 260 | 17.60 | 18.80 | 1,221 | 29.3% |
+| | 280 | 8.40 | 9.70 | 560 | 27.9% |
+| | 290 | 4.90 | 6.70 | 314 | 27.6% |
+| CME Jan 15 '27 P | 250 | 7.00 | 8.60 | 275 | 26.4% |
+
+Deltas are not shown by the source. CME Jun 2027 is not listed. FICO markets are $5–18 wide
+with OI < 50 — **untradeable**. MU spreads cost more than the account.
+
+**The three best structures (ranked by fit to the C$5,000 risk budget):**
+
+| # | Structure | Debit (ask−bid) | Max loss | Max payoff | Breakeven | Thesis expiry | Status |
+|---|---|---|---|---|---|---|---|
+| 1 | **SPY Dec 18 720/700 put debit spread** (Strategy D) | 2.26 | US$226 = **C$322 (6.4%)** | US$1,774 (7.8:1) at SPY ≤ 700 (−8.4%) | 717.74 (−6.1%) | Dec 18 | **Pre-approved, conditional** on a SPY close < 750. Alternative 710/690: debit 1.97, C$281, 9.2:1, BE 708. |
+| 2 | **ACN Dec 18 240/250 call debit spread** (Strategy A) | 3.80 at ask/bid; ~2.45 at mid → work a limit ≤ 2.80 | ≤ US$280 = **C$399 (8%)** | US$720 (2.6:1) at ACN ≥ 250 (+15%) | 242.80 (+12%) | Dec 18 | Conditional on Strategy A qualification. **Stock is the better expression**: 3 shares bought on a close above 227.63 with a stop at 214 risks ~US$40 (C$57) on C$970 notional. |
+| 3 | **VRT Dec 18 270/280 call debit spread** (Strategy E) | 3.70 at ask/bid; ~2.95 mid | ≤ US$370 = C$527 (10.5%) | US$630 (1.7:1) | 273.70 (+10%) | Dec 18 (spans Oct 21 earnings) | Payoff ratio poor at 58% IV; **rejected in favour of 3–4 shares with a stop under the base** (C$128–171 risk). |
+
+Also priced and rejected: QQQ 700/680 (C$534, 4.3:1 — SPY is cheaper per unit payoff);
+ACN 230/250 (C$791); VRT 260/280 (C$940); CME Jan 260/290 (C$1,766, 1.4:1 — no);
+MU 1100/1200 (C$5,014 — impossible). **Conclusion:** at C$5,000, defined-risk spreads are an
+index tool; single-stock theses are expressed in shares with stops. Long single-stock calls
+would need C$1,000+ each and are not used.
+
+### D. Portfolio construction — the Opportunity Sleeve
+
+Account: **Questrade margin, cash-only** (spreads need Level 3). USD/CAD 1.4244. All amounts CAD.
+
+| Slot | Instrument | Shares | Capital | % | Entry | Role |
+|---|---|---|---|---|---|---|
+| Concentrated #1 | **TSM** | 2 | C$1,299 | 26% | 1 now, 1 after Oct 15 earnings (Strategy F) | Secular compounder at 20x / +60% growth |
+| Concentrated #2 | **CBOE** | 3 | C$1,194 | 24% | 2 now, 1 after Oct 30 earnings | Owning the casino at 19x with growth guided up |
+| Infrastructure | **LNG** | 2 | C$767 | 15% | 1 now, 1 after Oct 29 earnings | Contracted LNG at 15x, ~10% DCF yield, buybacks |
+| Swing slot | VRT (E) / ACN (A) / CLS or MU (B) — first to qualify | — | **C$1,000 earmark** | 20% | Trigger only; risk ≤ C$150 | Tactical |
+| Option slot | SPY Dec 720/700 put spread (D) | — | **C$350 earmark** | 7% | On SPY close < 750 | Defined-risk macro downside |
+| Reserve | USD cash in the margin account | — | C$390 | 8% | — | Settlement, second-half tranches, slippage |
+| **Total** | | | **C$5,000** | 100% | | |
+
+**Invested today:** C$1,630 (TSM 1, CBOE 2, LNG 1); **committed on earnings:** C$1,630 more;
+**armed with written triggers:** C$1,350; **reserve:** C$390. 65% in three businesses once the
+tranches complete. Concentration is deliberate: three mechanisms (AI silicon manufacturing,
+hedging/transaction volume, contracted gas exports) with low fundamental overlap.
+
+**Risk rules (binding):** stock swing risk ≤ C$150 (stop × shares), notional ≤ C$1,300; one
+option position open at a time, debit ≤ C$350; no more than two correlated tactical positions;
+durable holds have no stop — a −20% MTM triggers a written review; no averaging down a
+tactical; no borrowing on margin; every entry logged before the order.
+
+**What ends the holding pattern on the swing/option slots:** nothing by calendar. Unused risk
+budget is a position. If no trigger fires by **Jan 15, 2027**, the earmarks are re-screened
+through the candidate board, not spent.
+
+### E. Against the boring benchmark
+
+The boring benchmark is one all-in-one global equity ETF: ~45% US at a 19.2 forward P/E, the
+rest Canada/international/EM; expected nominal return in the 6–8% range with full breadth and
+no decision risk.
+
+What the sleeve accepts that the benchmark does not:
+1. **Single-name risk** — three names carry 65%. TSM carries a geopolitical tail the benchmark holds at ~1% weight. CBOE's earnings are a function of options volumes that can normalise. LNG faces a 2027–28 supply-wave narrative.
+2. **Timing/earnings risk** — all three report inside 30 days (Oct 15, 29, 30); staging halves around the prints halves, not removes, that risk.
+3. **Currency** — 100% USD-denominated versus ~25% CAD in the benchmark.
+4. **Tax and account** — a margin account is taxable; the benchmark would sit in a TFSA.
+5. **Behavioural** — six strategies with triggers require daily attention and discipline; the benchmark requires none.
+
+Why the sleeve expects to be paid:
+- **Valuation vs growth:** TSM 20.1x for +63% FY26 EPS; CBOE 19.0x for +45% last-quarter EPS and raised guidance; LNG 15.4x with a ~10% DCF yield — all at or below the index multiple (19.2x) with growth well above the index's (+32% CY26, concentrated in a few megacaps).
+- **Cash return:** CBOE FCF yield 6.5% and a dividend raised 19%; LNG buying back ~4% of shares a year; TSM capex-heavy but self-funded.
+- **Mechanism exposure the benchmark dilutes to noise:** AI manufacturing bottleneck, structural hedging demand in a high-rates/high-dispersion regime, US LNG export growth — each a multi-year driver, each owned at a market multiple.
+- **Dustin's actual edges** are used: daily attention (strategies A–E), macro familiarity (D), options access (D), willingness to wait (every trigger), mechanical containment (the rules).
+
+Where the case is weakest, said plainly: concentration raises variance more reliably than it
+raises expected return; the valuation argument for CBOE relies on options volumes staying
+elevated; and the swing/option slots have historically been where retail accounts leak. If
+Dustin would not hold TSM through a −30% quarter or CBOE through a volume-normalisation year,
+the benchmark wins. If he would, the sleeve is a legitimate bet at market multiples on three
+businesses with above-market growth, with the tactical risk capped at ~C$500 total.
+
+### Not carried forward
+
+BN, EWZ and MBB (Round 3) are dropped from the sleeve, not refuted: BN and EWZ are
+diversified-vehicle or discount theses that the broader program can hold; MBB is a bond trade
+that belongs in the duration watch (`WATCHLIST.md` §1), which stays as a reference. The
+asymmetric budget rule (`PROPOSAL.md` Round 3 §4.7) is replaced by Strategy D.
+
+---

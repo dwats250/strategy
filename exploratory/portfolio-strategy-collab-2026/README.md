@@ -1,7 +1,7 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–3 complete (Claude → ChatGPT → Claude synthesis); optional Round 4 only if ChatGPT contests the three open questions in `ROUNDS.md`.
+**Status:** exploratory. Rounds 1–4 complete. Round 4 was a mandate reset (ChatGPT) answered by Claude with candidate, strategy and options boards and a reconstructed Opportunity Sleeve. Round 5 (Claude final) is available only if Round 4 draws a material correction.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
@@ -23,7 +23,7 @@ unless real use shows a need for more.
 ## Standing assumptions (Round 1; challenge in any round)
 
 - Figures in **CAD** unless marked US$. USD/CAD 1.4244 (Oct 1, 2026).
-- Account: **Questrade TFSA** (a LIRA cannot accept new contributions). RRSP is the alternative for US-listed holdings because of the treaty withholding exemption.
+- Account (Round 4): **Questrade margin account, cash-only** — spreads require options Level 3, which registered accounts cannot hold. A LIRA cannot accept new contributions. If the sleeve stays in a TFSA, the option slot is dropped.
 - Registered accounts allow long calls/puts, covered calls and cash-secured puts — **no spreads**.
 - The $5,000 is incremental, experimental capital — not the whole retirement portfolio.
 
@@ -32,7 +32,7 @@ unless real use shows a need for more.
 1. **Round 1 — Claude:** independent proposal. *(done 2026-10-01)*
 2. **Round 2 — ChatGPT:** agreement, material disagreements, weak assumptions, missing instruments or regimes, proposed changes; separate factual disagreement from philosophy. Do not change something just to appear independent. *(done 2026-10-01; added a required anti-anchor scan, executed by Claude)*
 3. **Round 3 — Claude:** adjudicate with evidence; revised proposal. Stop here if resolved. *(done 2026-10-01)*
-4. **Round 4 — ChatGPT (optional):** unresolved issues only.
+4. **Round 4 — ChatGPT (optional):** unresolved issues only. *(used 2026-10-01 as a mandate reset: Opportunity Sleeve, individual stocks, options, strategies; answered by Claude the same day)*
 5. **Round 5 — Claude (optional):** only if Round 4 produced a material correction.
 
 Five rounds is a hard ceiling; two or three is the target.

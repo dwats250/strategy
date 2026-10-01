@@ -1,6 +1,10 @@
 # WATCHLIST — setups that do not yet justify capital
 
-**Version:** Round 3 — Claude (Fable 5.1) · 2026-10-01 · supersedes Round 1 (changes in `ROUNDS.md`)
+**Version:** Round 4 — Claude (Fable 5.1) · 2026-10-01 · supersedes Round 3 (changes in `ROUNDS.md`)
+
+**Round 4 note.** The sleeve was reset to an Opportunity Sleeve (`PROPOSAL.md` Round 4). Sections 1–6
+below are kept as macro reference and as the evidence stack for Strategy D; Brazil (5a) and the
+duration ladder (1) are no longer funded from this sleeve. Section 0 is the live tactical board.
 Each entry has a status, the evidence for it (with observation dates), the activation
 conditions, and invalidation. Funding for anything activated comes from the SGOV sleeve under
 `PROPOSAL.md` §4. A trigger counts only once it is logged here or in `ROUNDS.md` with date and
@@ -8,6 +12,26 @@ evidence.
 
 Status vocabulary: **WATCH** (no capital) · **PRE-APPROVED** (conditional entry written in `PROPOSAL.md`) · **ACCUMULATE** (staged buying allowed) ·
 **ACTIVE** (held) · **INVALIDATED** (stand aside until re-set) · **PARKED** (rejected for now).
+
+---
+
+## 0. Round 4 tactical board — armed triggers (Oct 1, 2026)
+
+| Candidate | Strategy | Trigger (objective) | Size / stop | Status |
+|---|---|---|---|---|
+| **VRT** $248.65 | E — base breakout | Weekly close > 262 (50-day) on ≥1.5× avg volume; base 234–257 | 3–4 sh; stop 232 (risk C$128–171) | Armed |
+| **ACN** $216.81 | A — gap continuation | Day-1 close in upper half of 214.50–227.63, or a close > 227.63 within 10 sessions | 3 sh; stop under 214.50 (risk ≈ C$57) | Armed — day-1 close pending |
+| **MU** $1,077 | B — pullback continuation | Retest of 20/50-day (50d 953) holding 3 sessions, then close > prior high | 1 sh only; stop 2×ATR | Armed (extended now) |
+| **CLS** C$506 | B — pullback continuation | First 8–12% pullback into the 20-day, then close > prior day's high | 2 sh; stop 2×ATR (≈C$56/sh) | Armed (extended now) |
+| **UNH** $364 | A — on Oct 13 reaction | Gap ≥ +8% on beat/raise with day-1 close in upper half | 2 sh; stop gap-day low | Watch |
+| **HWM** $228 | E — base breakout | Weekly close > 50-day (260) from the 224–233 range | 3 sh; stop 222 | Watch |
+| **FICO** $662 | C — post-shock reversion | ≥10 sessions without a new low (< 586), reclaim of 20-day, then close > base high | 1 sh; stop under base low | Watch — not qualified |
+| **SPY** 764.5 | D — macro downside | Daily close < 750 with ≥3/5 evidence conditions | Dec 18 720/700 put spread, debit ≤ 2.60 (C$350) | Armed; price condition not met |
+| **CEG** $260 | D variant — single-name downside | Close < 229 (52w low) then failed retest | Put spread if debit ≤ C$350 | Watch |
+
+Durable-hold alternates (Strategy F) if a core name is invalidated: **SPGI** ($390, 20.9x,
+−29% from high) for CBOE; **ICE** ($152, 18.5x) for CBOE if a rates-turn kicker is wanted;
+**ASML** and **FFH.TO** are quality names blocked by share price at this account size.
 
 ---
 
