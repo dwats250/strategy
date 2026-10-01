@@ -359,16 +359,6 @@ September; WTI ~$90; gold −25% from January record.
 
 ---
 
-## 9. Observations not advanced to setups (recorded so they are not re-invented)
-
-- **EWZ post-election** (Round 3): regime position; re-specify after Oct 4 / Oct 25 if desired.
-- **QQQ downside:** correlated with PT-005; one index short at a time.
-- **UNH Oct 13 reaction:** eligible for a Strategy A record if it gaps ≥ 8% on a beat/raise; write the record **before** the print, not after.
-- **CME ≤ ~$225 (≈ 18x forward):** a Strategy F durable-hold trigger, not a paper trade (see `ROUNDS.md` Round 5).
-- **U.UN / uranium:** SPUT discount < 5% trigger (`WATCHLIST.md` §5b).
-
----
-
 ## 8. Completion records (templates)
 
 **Every completed record — three separate questions.**
@@ -405,3 +395,13 @@ Window: from the expiry timestamp through the original thesis horizon
 Subsequent MFE: | Subsequent MAE: | Did the original directional thesis occur? yes / no / partly
 Would a looser rule have worked? (name the looser rule, state the result) | Evidence weight: one observation
 ```
+
+---
+
+## 9. Observations not advanced to setups (recorded so they are not re-invented)
+
+- **EWZ post-election** (Round 3): regime position; re-specify after Oct 4 / Oct 25 if desired.
+- **QQQ downside:** correlated with PT-005; one index short at a time.
+- **UNH Oct 13 reaction:** eligible for a Strategy A record if it gaps ≥ 8% on a beat/raise; write the record **before** the print, not after.
+- **CME ≤ ~$225 (≈ 18x forward):** a Strategy F durable-hold trigger, not a paper trade (see `ROUNDS.md` Round 5).
+- **U.UN / uranium:** SPUT discount < 5% trigger (`WATCHLIST.md` §5b).
