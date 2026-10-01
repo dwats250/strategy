@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -94,13 +94,24 @@ vehicle selected under §3, so the lab can compare SH against waiting for a put.
 
 | Family | Thesis type | Setups (mechanics, frozen) | Records |
 |---|---|---|---|
-| EARNINGS_CONTINUATION | Institutions re-rate after a de-risking print | A | PT-001 |
+| EARNINGS_CONTINUATION (parent) › **RECOVERY** | Earnings force an upward reassessment of a damaged narrative | A (frozen; its ≥ 25%-below-high qualifier makes it a recovery setup) | PT-001, PT-011 (UNH, Oct 12) |
+| EARNINGS_CONTINUATION (parent) › **MOMENTUM** (new, Round 8) | A leader's print confirms or raises expectations and institutions keep buying | A-M (pre-registered below) | — (first possible: TSM, Oct 15) |
 | TREND_PULLBACK | A leader in a rising trend is bought on an orderly pullback | B | PT-003, PT-010 |
 | BROKEN_LEADER_RECLAIM | A growth leader that broke trend (below its 50/200-day) bases and reclaims | E | PT-002, PT-008 |
 | POST_SHOCK_REVERSAL | An event-driven collapse overshoots the impairment | C | PT-004 |
 | MACRO_DURATION_TURN | Long rates reverse; duration and rate-sensitive equity rerate | Duration rules (WATCHLIST §1) | PT-006, PT-009 |
 | INDEX_DOWNSIDE | Index loses trend with weak breadth and high rates | D | PT-005 |
 | TACTICAL_COMPOUNDER_ENTRY | A durable compounder shaken out without fundamental cause is re-entered on reclaim | E | PT-007 |
+
+**Setup A-M — EARNINGS_MOMENTUM_CONTINUATION (pre-registered 2026-10-01 16:45 ET, before any cohort event; Round 8).**
+Written a priori, not fitted to any October data. It keeps Setup A's mechanics and changes only what the family split requires. ChatGPT may amend it before its first use (TSM, Oct 15); after that it is frozen.
+- **Qualify (at the close before the report):** close above both the 50-day and 200-day averages; 50-day above 200-day; 3-month return above SPY's 3-month return. No drawdown requirement.
+- **Event:** the open gaps up by at least the pre-event **implied move**: the nearest-expiry at-the-money straddle mid ÷ the prior close, read from the live chain at pre-registration. A leader's surprise is measured against what options already priced, not a fixed %. The report must beat consensus with guidance raised or maintained. Day-1 volume ≥ 3× the 3-month average (as in Setup A).
+- **Confirmation:** completed day-1 close location ≥ 0.50 of the day-1 range. Days 2–5: no two consecutive closes below the **completed day-1 midpoint** ((H + L) / 2). This replaces Setup A's VWAP test only because the lab has no reliable intraday VWAP source. Setup A records keep VWAP as written and mark it "unmeasured" when no source exists.
+- **Entry:** first close above the completed day-1 high within 10 sessions.
+- **Invalidation (dynamic rule):** close below the completed day-1 RTH low.
+- **Exits and time stop:** as Setup A (half at 2R, trail under the 20-day, 40 sessions). Long only.
+- **Cohort pre-registration rule (mechanical, evening before each report):** ≥ 25% below the 52-week high → Setup A record (RECOVERY). Meets the A-M qualifiers → Setup A-M record (MOMENTUM). Neither → event layer only.
 
 **Why VRT and HWM are not TREND_PULLBACK** (ChatGPT's Round 6 example list put them there): both
 sit below their 50-day and 200-day averages (VRT 50d 261.7 < 200d 264.1; HWM price 228 under both),
@@ -116,7 +127,7 @@ close below its 10-week average). If both fire they count **once** for thesis qu
 
 | ID | Written | Symbol | Setup | Family | Dir | Vehicles · capital eligibility (provisional) | Status | Thesis | Timing | Vehicle | Grade |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| PT-001 | 10-01 14:10 ET | ACN | A | EARNINGS_CONTINUATION | Long | Shares: PAPER + MICRO-LIVE · Call: PAPER ONLY — size | WATCH — day-1 test resolves at 16:00 ET (14:49: 214.86 vs ≥ 221.07 needed) | — | — | — | — |
+| PT-001 | 10-01 14:10 ET | ACN | A | EARNINGS_CONTINUATION › RECOVERY | Long | Shares: PAPER + MICRO-LIVE · Call: PAPER ONLY — size | **EXPIRED — NO TRIGGER** (Oct 1 close 212.30 < 221.07) · SHADOW open to Dec 11 | — | never triggered | — | — |
 | PT-002 | 10-01 14:10 ET | VRT | E | BROKEN_LEADER_RECLAIM | Long | Shares: PAPER + MICRO-LIVE (2 sh normal) · Call: PAPER ONLY — size | WATCH | — | — | — | — |
 | PT-003 | 10-01 14:10 ET | MU | B | TREND_PULLBACK | Long | Shares: PAPER ONLY — size · Call: PAPER ONLY — size | WATCH | — | — | — | — |
 | PT-004 | 10-01 14:10 ET | FICO | C | POST_SHOCK_REVERSAL | Long | Shares: PAPER + MICRO-LIVE if stop ≤ US$70 · Option: PAPER ONLY — liquidity | WATCH — session 2 of 10 | — | — | — | — |
@@ -163,6 +174,14 @@ September; WTI ~$90; gold −25% from January record.
 - **Status:** WATCH. At 14:49 ET ACN 214.86 (+17.2%), day range 213.59–227.58, volume 22.3M vs 6.3M average (3.5×). Day-1 confirmation requires a close ≥ 221.07; it resolves at 16:00 ET. A scheduled follow-up records the close and, if it fails, marks **EXPIRED — NO TRIGGER** and opens the shadow.
 - **Spec finding (not a rule change):** the plan wrote invalidation as "close < 214.50 (gap-day low)". By 14:49 the gap day's actual low was 213.59, so the number and its description diverged. Not material here (the setup is not active), but it is exactly the ambiguity that produces hindsight edits. Rule 8 (numbers govern) is adopted for new records only.
 - **Shadow plan (if expired):** from the Oct 1 close through **Dec 11, 2026** (10-session entry window + 40-session time stop = session 50). Record: MFE and MAE from the Oct 1 close; whether 2R (~255) was reached before a close < 214.50; and whether a looser rule — entering on a close > 227.63 with no day-1 condition — would have triggered and how it would have resolved.
+
+**Status change — 2026-10-01 16:00 ET (recorded 16:42 ET from Yahoo daily history):** **EXPIRED — NO TRIGGER.**
+- Day 1 (Oct 1, RTH): open 215.98 · high 227.58 · low 211.04 · close **212.30** (+15.78% vs 183.37) · volume 28,761,896 (4.6× the 6,302,785 average).
+- Confirmation (1) required a close ≥ 221.07; the close location in the day's range was 0.08 (near the low), below the open (a gap-and-fade). The plan is unchanged and is not loosened.
+- The completed day-1 low (211.04) sits 3.46 below the plan's frozen "214.50 (gap-day low)" — the divergence that produced rule 8.
+- SPY on the same day: 762.63 → 763.99 (+0.18%).
+
+**SHADOW — counterfactual observation only (not a paper trade).** Window: Oct 1 close (212.30) → Dec 11, 2026. Recorded with the event-layer fields of the cohort (`RESEARCH_MAP.md`, E-00): D+1, D+3, D+5, D+10, D+20 returns, raw and in excess of SPY and XLK; MFE/MAE through D+20 with their sessions. Then through Dec 11: whether 2R (~255) was reached before a close < 214.50, and whether the looser rule (any close > 227.63 by Oct 15, no day-1 condition) triggered and how it resolved. Evidence weight: one observation.
 
 ### PT-002 — VRT · base breakout after momentum break (E) · Long
 

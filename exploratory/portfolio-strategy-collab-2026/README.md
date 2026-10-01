@@ -1,7 +1,7 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–7 complete. Round 7 replaced the round cap with a convergence rule and added `RESEARCH_MAP.md` (current understanding; `ROUNDS.md` stays as history). Next: ChatGPT Round 8, then a convergence checkpoint at about Round 10.
+**Status:** exploratory. Rounds 1–8 complete. Round 8 froze the multi-horizon earnings outcome framework before the Oct 13 cohort start, split EARNINGS_CONTINUATION into RECOVERY and MOMENTUM children, added underwritability as a research concept (NFLX case study) and recorded PT-001's expiry. Next: ChatGPT Round 9; convergence checkpoint at about Round 10.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and

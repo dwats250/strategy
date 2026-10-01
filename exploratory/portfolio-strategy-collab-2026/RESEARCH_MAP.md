@@ -4,7 +4,7 @@
 is what matters now. Both Claude and ChatGPT should be able to read it cold and recover the state
 of every idea. Update it in place; record material changes in one line in `ROUNDS.md`.
 
-**Last updated:** 2026-10-01 (Round 7 — Claude, Opus 5.5)
+**Last updated:** 2026-10-01 ~16:45 ET (Round 8 — Claude, Opus 5.5)
 
 ---
 
@@ -51,28 +51,58 @@ Families (`PAPER_TRADES.md` §5) map to programs; one program can hold several f
 
 ### A · Earnings repricing
 **Question:** when an earnings report causes a large repricing, what distinguishes institutional continuation from a one-day reaction?
-**State:** active. PT-001 ACN is pending its day-1 close (Oct 1). Its likely expiry on a gap-and-fade day becomes the first shadow observation. The Oct–Nov cohort below is the forward sample.
-**Two layers, deliberately separated:**
-- **Event layer — every cohort event, both directions, whether or not anything triggers.** This prevents conclusions being drawn only from trades that fired (selection bias).
-- **Trade layer — Setup A records, long only as frozen.** Pre-registered mechanically: **every cohort name ≥ 25% below its 52-week high at the close before its report** gets a Setup A record written that evening. UNH is pre-registered regardless (owner instruction) and its frozen qualifier decides the outcome.
+**State:** active.
+- PT-001 ACN **expired — no trigger** on Oct 1: a gap-and-fade, closing at 0.08 of its range. It becomes E-00, the pilot event, and its shadow runs to Dec 11.
+- The Oct–Nov cohort is the forward sample.
+- The outcome framework below was **frozen 2026-10-01 16:45 ET, before the first cohort event (Oct 13)**. It replaces the Round 7 single-endpoint labels, which were never applied.
 
-**Event-layer capture (fixed before the first event):**
-- **Pre-event (prior close):** % from 52-week high; position vs 50/200-day; consensus EPS and revenue; implied move from the nearest-expiry at-the-money straddle.
-- **Event:** gap % at the open; result vs consensus; guidance change; day-1 volume ÷ 3-month average; day-1 close location in the range (0 = low, 1 = high); close vs day-1 VWAP if available; day-1 return minus SPY.
-- **Follow-through:** returns at +5, +10 and +20 sessions from the day-1 close; whether days 2–5 held the completed day-1 low; whether a close beyond the day-1 high (low, for gap-downs) occurred within 10 sessions.
+**Two families (split Round 8, prospectively).** EARNINGS_CONTINUATION is now a parent with two children:
+- **RECOVERY** — a damaged narrative forced upward. Setup A, unchanged; its ≥ 25%-below-high qualifier is what makes it a recovery setup.
+- **MOMENTUM** — a leader confirmed by its print. Setup A-M, pre-registered in `PAPER_TRADES.md` §5.
 
-**Outcome labels (frozen):**
-- **CONTINUATION** — the +20-session close is beyond the day-1 close in the gap's direction.
-- **REVERSAL** — the gap is fully filled (the prior close is crossed) within 20 sessions.
-- **NEUTRAL** — anything else.
+No threshold in either child is fitted to the cohort.
 
-**Key open questions:**
-- Does day-1 close location predict the 20-session outcome?
-- Does a gap larger than the implied move behave differently?
-- Do damaged names (≥ 25% below their high) continue more than leaders?
+**Two independent conclusions per event, never merged:**
+- **A · Information continuation (event study).** Did the price keep moving in the direction of the initial repricing? Answered from the raw path below.
+- **B · Trade outcome (strategy).** Did the pre-registered setup produce an executable opportunity? Answered from the trade record: trigger, entry, invalidation, MFE/MAE, R, time stop, vehicle.
+- **Combined statement**, written as two halves. Examples:
+  - "EVENT CONTINUED / STRATEGY NOT QUALIFIED"
+  - "EVENT CONTINUED / TRIGGER LATE"
+  - "EVENT REVERSED / STRATEGY STOPPED −1R"
+  - "NO DRIFT / SWING PROFITABLE"
+- **"Trigger late"** means the event's D+20 MFE session came before the trigger session.
+
+**Event-layer fields — frozen 2026-10-01 16:45 ET (every cohort event, both directions, whether or not a trade qualifies)**
+
+*Day 1* is the first regular session after the release: the report day for before-open reports, the next session for after-close reports. The *repricing direction* is the sign of the day-1 close versus the pre-event close (not the gap), so a gap-and-fade is scored by where it settled.
+
+| Group | Fields |
+|---|---|
+| Pre-event (prior close) | close; % below 52-week high; position vs 50/200-day; 3-month return vs SPY; consensus EPS and revenue; implied move = nearest-expiry ATM straddle mid ÷ close; family qualification (RECOVERY / MOMENTUM / neither) |
+| Day 1 | open gap %; day-1 return; result vs consensus; guidance change; volume ÷ 3-month average; close location in the range (0–1); close vs midpoint; close vs VWAP if a source exists, else "unmeasured" |
+| Path, from the completed day-1 close | returns at **D+1, D+3, D+5, D+10, D+20**; **MFE and MAE through D+20** (daily highs/lows) with the **session** of each; whether the pre-event close was crossed (gap filled), and on which session |
+| Relative | every path return also **in excess of SPY** and of the **sector ETF** (map below). Both are recorded; neither is primary yet (research queue: relative return) |
+
+**Provisional summary label (frozen criteria; the raw path is always kept):**
+- **CONTINUED** — the excess-vs-sector return is in the repricing direction at D+5, D+10 and D+20.
+- **REVERSED** — it is against the repricing direction at all three.
+- **MIXED** — anything else.
+- A separate **GAP-FILLED** flag records whether the pre-event close was crossed by D+20.
+
+**Sector benchmarks:**
+- UNH → XLV · TSM → SMH (holds TSM; note the overlap)
+- NFLX → XLC · VRT → XLI
+- CME, SPGI, CBOE → KCE · PG → XLP · NUE → XLB · LNG → XLE
+- ACN → XLK
+
+**Key open questions** (preserved, not answered):
+- Which path characteristics after day 1 predict continuation?
+- Do leader and recovery repricings behave differently?
+- Is a gap larger than the implied move different?
 - Do gap-downs mirror gap-ups?
+- Raw or relative returns?
 
-**Worth deeper study if:** after ~20 event-layer observations, one or two day-1 variables separate CONTINUATION from REVERSAL with a clear margin. That triggers a pre-registered retrospective study under `docs/conventions.md`.
+**Worth deeper study if:** after ~20 event observations, one or two day-1 or early-path variables separate CONTINUED from REVERSED with a visible margin. That triggers a pre-registered retrospective study under `docs/conventions.md`. Ten observations prove nothing; they say where to look.
 
 ### B · Secular-leader pullbacks and reclaims
 **Question:** can we enter genuinely powerful long-term trends during temporary weakness without catching broken momentum?
@@ -118,10 +148,26 @@ Families (`PAPER_TRADES.md` §5) map to programs; one program can hold several f
 
 **Question:** does extreme narrow breadth with restrictive rates and calm equity vol precede index drawdowns often enough to trade with defined risk?
 **Status:** candidate. It becomes a program at Round 10 only if the breadth statistic is verified and a historical sample exists.
+**Kept separate from C (Round 8, agreed with ChatGPT).** Rates asks what regime the discount-rate complex is entering; breadth asks how healthy participation is beneath the index. Their states can combine in all four ways, which is the reason to keep both streams separate:
+- yields falling, breadth deteriorating;
+- yields rising, breadth strong;
+- yields falling, breadth improving;
+- yields rising, breadth weakening (Sep 30, 2026 sat here).
+
+The interaction may become useful later; merging now would hide it.
 
 ---
 
 ## Long-horizon theses
+
+These are research theses, not positions. Each is held against its counter-thesis until evidence decides it.
+
+| Area | Thesis | Counter-thesis | Evidence so far | What would decide it |
+|---|---|---|---|---|
+| **Market infrastructure** (CBOE, CME, ICE, SPGI) | Financial complexity, hedging demand, indexing, derivatives use and data consumption create durable tollbooth economics | Competition, regulation, fee compression or cyclical volumes deny excess returns despite strong businesses | Adjusted EPS rose in 6 of 7 years at CBOE and 4 of 7 at CME (2019–25); SPX licence exclusive to 2051; CME flat 2019–21 despite a VIX-29 year; FMX entering Treasury futures (OI 140k vs 22k a year earlier); SEC 0DTE scrutiny (Apr 2026) | Several years of volume and RPC data through more than one rate and vol regime; whether fee/data pricing power survives new competitors |
+| **Contracted energy and power** (LNG, WMB, later power/grid) | Rising electricity and LNG demand create durable cash flows less dependent on commodity direction | Capital intensity, regulation, financing and project-cycle risk consume the apparent economics | Cheniere 90%+ contracted, ~15-year life, fixed fees payable even on cancelled cargoes; WMB 28x with negative FCF; a 2028–30 LNG supply wave | Returns on new capital after financing at 5%+ rates; recontracting terms when the supply wave lands |
+| **Semiconductor / AI infrastructure** (TSM, MU, ASML, VRT, CLS) | The compute build-out is a multi-year capital cycle with exceptional winners | Expectations, cyclicality and capital intensity make great businesses poor investments at the wrong prices | TSM HPC 66% of revenue, capex $60–64B (~35% of revenue), monthly sales +53% y/y; MU forward P/E 6 on peak-cycle margins; VRT −35% from its high despite raised guidance | Whether hyperscaler capex converts to their own returns; whether memory pricing holds through the next supply response; price paid relative to cycle position |
+| **Information repricing** (Program A) | Markets do not instantly and fully absorb important news, so post-event opportunities repeat | Any drift disappears after costs, selection bias and modern efficiency | Post-earnings drift is long documented academically (Bernard & Thomas 1989), with evidence of decay in large caps (to verify); our own sample is one pilot (ACN, a gap-and-fade) | The cohort, then a retrospective study. The edge, if any, is in **conditioning** on day-1 and early-path behaviour, not in the average drift |
 
 ### D · Market infrastructure (tollbooths)
 **Claim:** exchanges, index/data and clearing businesses are attractive long-horizon holdings because they monetise financial activity rather than requiring a forecast of its direction.
@@ -183,6 +229,49 @@ Families (`PAPER_TRADES.md` §5) map to programs; one program can hold several f
 
 ---
 
+## Underwritability (research concept — not canon)
+
+**Working definition:** a long-term investment needs not only an attractive expected outcome but enough confidence that the economic engine can be forecast within a useful range. The questions are descriptive and unscored:
+- **Engine:** what produces cash?
+- **Forecastability:** what can be estimated 3–5+ years out?
+- **Fragility:** which assumptions move value nonlinearly?
+- **Management dependence:** must management execute something new?
+- **External dependence:** regulation, geopolitics, commodities, capital markets, customers, substitution.
+- **Half-life:** how fast new information could make the underwriting obsolete.
+
+### Case study — Pershing Square and Netflix, 2022 → 2026 (thesis revision, not a trade to copy)
+
+| Date | Event | Price (split-adjusted) |
+|---|---|---|
+| Jan 20–21, 2022 | Q4'21 report: 8.3M net adds, Q1 guided 2.5M; stock −21.8%. Pershing begins buying (3.1M+ pre-split shares). Thesis: "a primary beneficiary of the growth in streaming and the decline in linear TV", "highly recurring revenues", "best-in-class management" | ~$36–40 |
+| Apr 19–20, 2022 | Q1'22: first subscriber loss (−0.2M), Q2 guided −2.0M; "100m+ households" sharing; ad tier and password-sharing changes. Stock −35%. Pershing sells the same day, a ~$400M loss (press figure) | ~$22.5 |
+| May 11, 2022 | Low close | $16.64 |
+| Jun 30, 2025 | All-time high close | $133.91 (~6× the exit) |
+| Q2 2026 | Pershing buys back (Aug 12, 2026 letter): "Netflix has since effectively won the streaming wars." PSUS average cost ~$82 (derived from its semi-annual: −13% vs cost at $71.41) | ~$82 |
+| Oct 1, 2026 | −46% from its 52-week high after the WBD bid and withdrawal (Dec 2025–Feb 2026), guidance below consensus twice, Hastings leaving the board, view hours +2% H1. Reports Oct 20 (cohort E-03) | $67.85 |
+
+**What the exit letter actually said** (Apr 20, 2022, via Deadline/Forbes):
+- *"We require a high degree of predictability in the businesses in which we invest due to the highly concentrated nature of our portfolio… we have lost confidence in our ability to predict the company's future prospects with a sufficient degree of certainty."*
+- *"The dispersion of outcomes has widened to a sufficiently large extent that it is challenging for the company to meet our requirements for a core holding."*
+
+**Lessons (provisional):**
+1. **A cheaper price did not strengthen the thesis.** The business-model change widened the outcome range faster than the price fell. This is ChatGPT's point, and it holds.
+2. **Losing underwritability was not the same as being wrong.** The changes Pershing called "sensible" worked: ads, the sharing crackdown and the margin expansion. The exit missed ~6×, and the re-entry cost ~3.6× the exit price. **The price of waiting for certainty was paid in full.**
+3. **The requirement scaled with concentration, in Pershing's own words.** Underwritability decided whether Netflix could be a *core holding* of a concentrated book, not whether it could be owned at all.
+4. **Underwritability can be lost by an outsider through disclosure alone.** Netflix stopped reporting subscribers in 2025, so outside forecastability fell even if the business did not change.
+
+### Current candidates
+
+| | TSM | CBOE | CME | LNG |
+|---|---|---|---|---|
+| **Engine** | Leading-edge wafers and advanced packaging. HPC is 66% of Q2'26 revenue | SPX/VIX proprietary index options (~85% of options transaction value by Q2 ADV × RPC) plus data (~24% of net revenue) | Clearing and transaction fees (~79%) across rates, equity, energy, ags, metals and FX; market data ~14%; BrokerTec/EBS ~4% | Existing: fixed liquefaction fees. Growth: the Midscale 8 & 9 and Sabine expansions |
+| **Forecastability (3–5 yr)** | High on direction (13 fabs in build, N2 ramp, ~56%+ through-cycle margin target) and medium on magnitude (AI capex cycle). Monthly sales give fast reconfirmation | High on franchise (exclusive to 2051) and medium on volume (retail/0DTE behaviour) | High on franchise, medium on earnings level: volume regimes move EPS (flat 2019–21); annual price increases (+1–1.5% for 2026) | Existing: high (90%+ contracted, ~15-year life). Growth: low until FERC/DOE and FID (early 2027 target) |
+| **Fragility** | Utilisation → margin is nonlinear; top customer 19%, top ten 78% of 2025 revenue; capex ~35% of revenue; overseas fabs dilute 2–4 pts | One product family; a retail-driven volume regime | RPC/mix; Treasury-futures share if FMX scales (full curve listed Aug 3, 2026) | Refinancing ~$24B at 5%+; IPM index-linked share undisclosed |
+| **Management dependence** | Low — executing a known playbook | Medium — the Q1'26 realignment (exits, ~20% headcount) is subtraction, lower risk | Low — the core is incumbent; new initiatives (24/7 crypto, tokenised cash) are optional | Existing: low. Growth: high (construction, contracting, financing) |
+| **External dependence** | **Very high geopolitical:** most leading-edge capacity in Taiwan; ~30% of N2+ eventually in Arizona; US–Taiwan tariff deal (Jan 2026); China ~9% of revenue | Regulation: SEC 0DTE/retail scrutiny (Apr 2026 roundtable); PDT-rule repeal as a tailwind that could reverse; CME micro options with daily expiries | Rate-policy regime; CFTC; FMX/BGC competition | Permits, counterparties, the 2028–30 global supply wave |
+| **Thesis half-life** | Business: years, reconfirmed monthly. Geopolitical: can be obsoleted in a day | Years, reconfirmed monthly by volume; a regulatory shock could shorten it abruptly | Years; FMX share is the quarterly variable | Existing: years. Growth: binary events within ~12 months |
+| **Reading** | High **business** underwritability; **geopolitical** underwritability low and not probability-weightable. One does not cancel the other; the tail is handled by size (26% cap), not argued away | High, with one concentrated dependency (SPX franchise × retail short-dated demand) | High franchise underwritability; the earnings *level* is a range that depends on the volume regime | **Higher-underwritability existing asset + lower-underwritability growth option** in one company; underwrite them separately |
+
 ## Methodology findings (preserved observations that revealed them)
 
 1. **Post-shock indicator contamination** (revealed by PT-004 FICO).
@@ -202,6 +291,7 @@ Families (`PAPER_TRADES.md` §5) map to programs; one program can hold several f
 4. **Non-trigger shadows.** Expired setups are tracked through their thesis horizon as counterfactuals. This is how we will learn whether the confirmation filters protect or merely delay. One missed move changes nothing.
 5. **Thesis type ≠ mechanics** (revealed by VRT and HWM tagging). Families group by thesis type; the frozen setup letter records mechanics. Keeping both lets the ledger aggregate either way without re-tagging a frozen record.
 6. **Event layer ≠ trade layer** (new, Round 7). Studying only setups that fired selects on the outcome. The earnings cohort records every event, so the trade rules can later be judged against the full population.
+7. **Measure the shape, not the endpoint** (Round 8, from ChatGPT). A single day-20 label mixes information drift, path, tradeability, timing, maximum opportunity and endpoint. The event layer records the path (D+1…D+20, MFE/MAE and their sessions, raw and relative); event drift and trade outcome are concluded separately.
 
 ---
 
@@ -211,9 +301,10 @@ Dates confirmed by the company unless marked *est.* Prices and distances are Oct
 
 | # | Date | Ticker | Timing | Variation role | % below 52w high | Layer | Notes |
 |---|---|---|---|---|---|---|---|
-| E-01 | Oct 13 | UNH | Before open (call 8:00 ET) | Damaged former leader / recovery | 21.1% | Event + **Setup A pre-registered Oct 12** | Qualifier (≥ 25%) currently not met — the frozen rule decides |
-| E-02 | Oct 15 | TSM | Before open | Strong secular leader at highs (held) | 4.3% | Event | Also decides TSM tranche 2 (three-part confirmation) |
-| E-03 | Oct 20 | NFLX | After close | Damaged high-expectation growth | 45.4% | Event + Setup A (rule) | New, found independently; −27% YTD |
+| E-00 | Oct 1 | ACN | Before open | Damaged former leader (pilot) | 37% (pre-gap) | Event (pilot) + PT-001 | Day 1: gap +17.8%, close +15.8%, close location 0.08, volume 4.6×. PT-001 EXPIRED — NO TRIGGER; SHADOW to Dec 11. Pre-event implied move was not captured (pilot) |
+| E-01 | Oct 13 | UNH | Before open (call 8:00 ET) | Damaged former leader / recovery | 21.1% | Event + **Setup A (RECOVERY) pre-registered Oct 12** | The ≥ 25% qualifier is currently not met. UNH fits the RECOVERY *profile* but fails its *threshold* — exactly the misclassification Round 8 flagged; the frozen rule decides |
+| E-02 | Oct 15 | TSM | Before open | Strong secular leader at highs (held) | 4.3% | Event + Setup A-M (MOMENTUM) if qualified Oct 14 | First possible A-M record; also decides TSM tranche 2 (three-part confirmation) |
+| E-03 | Oct 20 | NFLX | After close | Damaged high-expectation growth | 45.4% | Event + Setup A (RECOVERY) | Also the underwritability case study (above) |
 | E-04 | Oct 21 *est.* | VRT | Before open *est.* | Broken high-expectation leader | 35.0% | Event + Setup A (rule) | Vendors disagree (Oct 21 vs Oct 28); PT-002 suspension clause applies |
 | E-05 | Oct 21 | CME | Before open | Tollbooth (Program D) | 19.3% | Event | Program D check: clearing/transaction revenue growth vs ADV growth |
 | E-06 | Oct 22 | PG | Before open (webcast 8:30 ET) | Defensive (staples de-rated) | 13.7% | Event | New |
@@ -230,6 +321,13 @@ Dates confirmed by the company unless marked *est.* Prices and distances are Oct
 - HWM Oct 29
 - ICE Oct 29
 - FICO Nov 4 *est.* (overlaps Program F)
+
+**Trade-layer rule (mechanical, evening before each report):**
+- ≥ 25% below the 52-week high → Setup A (RECOVERY).
+- Meets the A-M qualifiers → Setup A-M (MOMENTUM).
+- Neither → event layer only.
+
+The Layer column is provisional until that evening.
 
 **Pre-registration deadlines:** the evening before each report, after the 16:00 ET close and before the release:
 - before-open reports: before 06:00 ET on report day;
@@ -251,6 +349,12 @@ Dates confirmed by the company unless marked *est.* Prices and distances are Oct
 
 | Item | Why it matters | Program | Status |
 |---|---|---|---|
+| **Underwritability** | Can we tell uncertainty that only widens a valuation range from uncertainty that makes the thesis unusable? NFLX 2022 suggests the answer depends on concentration and position role | D, E, long-horizon | NEW (Round 8) |
+| **Thesis half-life** | How long can each kind of thesis go without explicit reconfirmation (monthly-data businesses vs permit-dependent projects vs geopolitics)? | All | NEW (Round 8) |
+| **Earnings path shape** | Which characteristics after day 1 predict continuation? | A | NEW (Round 8) — the frozen event fields collect this |
+| **Leader vs recovery earnings** | Do positive repricings behave differently near highs versus deeply below them? | A | NEW (Round 8) — the RECOVERY/MOMENTUM split collects this |
+| **Relative return** | Should continuation be judged on raw, SPY-excess or sector-excess return? | A | NEW (Round 8) — all three recorded, none primary yet |
+| **Re-underwriting after an exit** | NFLX: exit at ~$22.5, re-entry at ~$82 three years later. When does a lost thesis become re-underwritable, and what price of certainty is rational? | Long-horizon | NEW (Round 8) |
 | Post-earnings drift literature (Bernard & Thomas 1989 onward; evidence that drift has weakened in large caps since the 2000s — **to verify**) | Program A should know what is already documented before claiming an edge | A | NEW |
 | Gap-down continuation setup (short / long put) | Setup A is long-only as frozen; the event layer captures gap-downs, the trade layer cannot | A | NEW — design only after event-layer evidence |
 | Does Setup A's "≥ 25% below 52-week high" filter matter? | It excludes leaders (TSM, UNH at 21%); the event layer will show whether leaders' gaps continue as well | A | NEW |

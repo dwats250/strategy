@@ -1,6 +1,6 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 7 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 7 adds §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
+**Version:** Round 8 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 8 only removes the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
 the live/paper gates, the option-slot wording and the LNG/CME thesis statements (analyses in `ROUNDS.md`,
 Rounds 4–6; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
@@ -115,7 +115,7 @@ bet on three above-market businesses with tactical risk capped near C$500 in tot
 
 ---
 
-## 6. Speculation lane — SPECULATION — LOSS ACCEPTED (Round 7)
+## 6. Speculation lane — SPECULATION — LOSS ACCEPTED (Round 7; revised Round 8)
 
 A deliberately speculative bet is allowed. It is contained, not banned, so that it cannot
 contaminate the evidence the lab produces.
@@ -126,12 +126,12 @@ contaminate the evidence the lab produces.
 4. **No reclassification.** A losing speculation never becomes an "investment" or a "tactical" trade.
 5. **Not evidence.** A speculative winner never counts toward any strategy family's statistics, ladder progress or A+ status.
 6. **No borrowing.** After entry, no risk budget is taken from another slot or strategy to support it.
-7. **Budget (proposed — Dustin sets the number).** About C$250 per calendar quarter (5% of the sleeve). Unused budget does not roll over. When the quarter's budget is spent, the lane is closed until the next quarter.
+7. **No calendar budget (Round 8).** The Round 7 C$250-per-quarter idea is withdrawn: there was no evidence that a quarter is the right unit. Instead the log keeps a **rolling cumulative speculation-loss total** and its share of the sleeve. At the Round 10 checkpoint the actual behaviour is inspected; a portfolio-level cap is introduced only if the evidence shows speculation consuming excessive capital or attention.
 8. **Promotion route.** An idea that keeps recurring as a speculation can become a research setup only through the normal ladder: written before its trigger, paper first, in `PAPER_TRADES.md`.
 
-| Date / time | Instrument | One-line thesis | Max loss accepted (C$) | Pre-planned add? | Exit | Result | Quarter budget left |
-|---|---|---|---|---|---|---|---|
-| — | — | — | — | — | — | — | C$250 (Q4 2026) |
+| Date / time | Instrument | One-line thesis | Max loss accepted (C$) | Pre-planned add? | Exit | Result (C$) | Rolling speculation P&L (C$) | Rolling loss as % of sleeve |
+|---|---|---|---|---|---|---|---|---|
+| — | — | — | — | — | — | — | 0 | 0% |
 
 ## 7. Capital unlocking is a separate decision (Round 7)
 
