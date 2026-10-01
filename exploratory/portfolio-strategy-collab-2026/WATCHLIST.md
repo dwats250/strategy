@@ -1,6 +1,6 @@
 # WATCHLIST — setups that do not yet justify capital
 
-**Version:** Round 5 — Claude (Fable 5.1) · 2026-10-01 (changes in `ROUNDS.md`); live paper setups with exact triggers are in `PAPER_TRADES.md`
+**Version:** Round 6 — 2026-10-01 (changes in `ROUNDS.md`); live paper setups, strategy families and capital eligibility are in `PAPER_TRADES.md`, which supersedes §0 below where they differ
 
 **Round 4 note.** The sleeve was reset to an Opportunity Sleeve (`PROPOSAL.md` Round 4). Sections 1–6
 below are kept as macro reference and as the evidence stack for Strategy D; Brazil (5a) and the

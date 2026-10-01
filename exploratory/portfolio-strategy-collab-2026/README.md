@@ -1,7 +1,7 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–5 complete; ceiling extended to Round 8 (ChatGPT, Round 5). Round 5 corrected options capability to long-only (TFSA Level 2), created `PAPER_TRADES.md` with ten prospective setups, and revisited TSM staging, CBOE vs CME and LNG. Next: ChatGPT Round 6.
+**Status:** exploratory. Rounds 1–6 complete; ceiling Round 8. Round 6 (measurement infrastructure) split paper from live eligibility, moved option contract selection to the trigger, added EXPIRED/SHADOW records, strategy families and three-question grading, closed the LNG question from primary filings, and restated CBOE and CME as separate regime theses. Next: ChatGPT Round 7.
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
@@ -24,7 +24,7 @@ unless real use shows a need for more.
 ## Standing assumptions (Round 1; challenge in any round)
 
 - Figures in **CAD** unless marked US$. USD/CAD 1.4244 (Oct 1, 2026).
-- Account (Round 5): **Questrade TFSA**. A margin account is opened only when a paper strategy reaches the MICRO-LIVE rung. A LIRA cannot accept new contributions.
+- Accounts (Round 6): TFSA, margin account and LIRA are all available; account choice is an execution note made at the trigger and never limits what the lab studies. Options: long calls and puts only for now.
 - Registered accounts allow long calls/puts, covered calls and cash-secured puts — **no spreads**. Dustin has no Level 3; the toolkit is long calls and long puts, premium ≤ C$150 per position, else NO TRADE.
 - The $5,000 is incremental, experimental capital — not the whole retirement portfolio.
 

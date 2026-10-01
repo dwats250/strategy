@@ -656,3 +656,207 @@ weakness and the horizon shortens to the 2028 supply wave.
 4. CBOE's FY27 consensus (+7.9%) versus a +45% quarter and raised guidance: stale estimates or a real deceleration?
 
 ---
+
+## Round 6 — ChatGPT: separate strategy edge from capital constraints · 2026-10-01
+
+Recorded in substance. Measurement infrastructure only; no portfolio redesign.
+1. Split PAPER eligibility (no dollar cap; real, timestamped, liquid, pre-move, executable apart from size) from MICRO-LIVE eligibility (premium at risk ≤ C$100 normal, ≤ C$150 A+; whole premium counts). Labels: PAPER + MICRO-LIVE / PAPER ONLY — size / permissions / liquidity.
+2. Toolkit: purchased calls and puts only; no spreads; no written options until permissions and collateral are verified.
+3. Contract selection follows the setup (thesis → setup → trigger → live chain → contract). TLT Jan '27 82 call is a reference, not a specification; remove the Oct 17 date; "THESIS VALID / OPTION NO TRADE" when no contract fits.
+4. Non-trades are data: EXPIRED — NO TRIGGER, kept permanently, with a SHADOW counterfactual through the thesis horizon. One missed move never changes a rule.
+5. Every completed record answers three separate questions: thesis quality, timing/setup quality, vehicle quality.
+6. Every paper option gets an underlying shadow and a four-way classification.
+7. SH: tactical only, explicit trigger/horizon/max hold/time stop, SPY comparison over the identical interval; evaluate long puts separately for longer bearish theses.
+8. TLT: activation by market behaviour; chain decided after activation.
+9. Close the LNG question from primary disclosures, separating existing-asset durability from expansion risk.
+10. CBOE and CME as separate regime theses, not a horse race.
+11–12. Tag families (EARNINGS_CONTINUATION, TREND_PULLBACK, POST_SHOCK_REVERSAL, MACRO_DURATION_TURN, INDEX_DOWNSIDE, TACTICAL_COMPOUNDER_ENTRY); add capital-eligibility and family fields.
+13. Work PT-001–PT-010 without retrospective rule changes.
+
+**Owner direction (Dustin, same day):** TFSA, margin account and LIRA are all available and must
+not become a major limitation; he manages actively; a central aim of the experiment is to find
+places to look and focus, with intermediate research and AI discussion before capital.
+
+---
+
+## Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET
+
+### Method and provenance
+
+- Quotes read live in Chrome (Yahoo, 14:49–14:52 ET, Oct 1) for all ten underlyings and ^TNX; FICO and TLT daily history read from Yahoo history pages.
+- Two retrieval scouts (Sonnet): Cheniere primary filings (FY2025 10-K and Q2 2026 10-Q via the company's lngir.cheniere.com filing mirror; sec.gov itself was blocked) and CBOE/CME annual results 2018–2025 from their Q4 releases (SEC-hosted exhibits) plus FRED VIX and 10Y. Extraction ran through a summarising fetcher; quotes are as returned, cross-checked where two documents overlapped.
+- Judgment, statuses and every annotation are Claude's. No PT plan text was edited except PT-006's withdrawn Oct 17 clause, which is struck through, not deleted.
+
+### 1. Deliverables implemented in `PAPER_TRADES.md`
+
+| ChatGPT item | Where | Note |
+|---|---|---|
+| Paper vs micro-live gates | §2 | Stock vehicles use the same 2% / 3% risk budget plus a C$1,500 notional cap. **A+ is earned by a family** (≥ 3 completed A/B observations, no process violation) — until then everything live is Normal. |
+| Long calls/puts only | §2–3, rule 7 | Accounts never gate a setup (owner direction); account is an execution note. |
+| Contract selection at trigger | §3 | Delta targets by family, minimum DTE, liquidity test, tie-breaks, estimated delta via Black-Scholes (Yahoo shows none), mid and ask-in/bid-out both recorded, close by 21 DTE. |
+| TLT corrected | PT-006 annotation | Oct 17 withdrawn (it existed only because the plan was bound to one contract). Frozen M1–M3 mapped to ChatGPT's activation list; the curve condition is not mandatory in the frozen rule — noted, not patched. |
+| EXPIRED — NO TRIGGER + SHADOW | rule 2, §8 | PT-001 shadow pre-specified (through Dec 11). |
+| Three questions; option underlying shadow; four-way class | §8 | |
+| SH treatment | §4, PT-005 annotation | Fields separate the **path effect** (ideal daily −1× vs −SPY) from **fund drag** (actual SH vs ideal). PT-005 now carries three vehicles from one timestamp: SH, an SPY put chosen under §3, and short-SPY as reference. |
+| Families + eligibility fields | §5–6 | Seven families (ChatGPT's six plus BROKEN_LEADER_RECLAIM — see below). |
+
+**One disagreement with ChatGPT's tagging, on the frozen-plan rule:** VRT and HWM were listed as
+TREND_PULLBACK examples. Both trade below their 50- and 200-day averages; the frozen setup-B
+definition requires a rising 50 > 200 trend and an 8–20% pullback. They were written as setup E.
+Re-tagging them would change a frozen setup, so they go into a new family, BROKEN_LEADER_RECLAIM.
+CBOE (also setup E) is tagged TACTICAL_COMPOUNDER_ENTRY because its thesis is the business, not the
+chart. Families group by thesis type; the frozen setup letter records the mechanics. Both are kept,
+so the ledger can be aggregated either way.
+
+### 2. Status of PT-001 – PT-010 (Oct 1, ~14:50 ET)
+
+| ID | Family | Last | Status | Distance to trigger |
+|---|---|---|---|---|
+| PT-001 ACN | EARNINGS_CONTINUATION | 214.86 (+17.2%); range 213.59–227.58; vol 22.3M vs 6.3M avg | WATCH → resolves at the 16:00 ET close | Needs a close ≥ 221.07; trading 6.21 below with ~70 min left. A follow-up is scheduled to record the close and, if it fails, mark EXPIRED and open the shadow. |
+| PT-002 VRT | BROKEN_LEADER_RECLAIM | 247.06 (+2.4%) | WATCH | Weekly close > 262 (first test Oct 2) |
+| PT-003 MU | TREND_PULLBACK | 1,086.00 (+2.0%) | WATCH | Pullback to ≤ ~1,008 touching the 20/50-day |
+| PT-004 FICO | POST_SHOCK_REVERSAL | 670.19 (+13.1%) | WATCH — session 2/10 | Session 10 = Oct 13; 20-day ~898 still to reclaim |
+| PT-005 SPY | INDEX_DOWNSIDE | 764.31 (+0.2%) | WATCH | Close < 750 (−1.9%) |
+| PT-006 TLT | MACRO_DURATION_TURN | 77.74 (+0.3%) after a new 52-wk low 76.76 | WATCH | Weekly M1–M3 |
+| PT-007 CBOE | TACTICAL_COMPOUNDER_ENTRY | 277.96 (+1.0%) | WATCH | Close > 288 (+3.6%) |
+| PT-008 HWM | BROKEN_LEADER_RECLAIM | 228.31 (+0.9%) | WATCH | Close > 248 (+8.6%) |
+| PT-009 ITB | MACRO_DURATION_TURN | 87.15 (+0.1%) after a new 52-wk low 84.81 | WATCH | M1 + MND ≤ 7.35% + close > 20-day |
+| PT-010 CLS | TREND_PULLBACK | C$531.15 (+3.2%) | WATCH | 8–12% pullback into the 20-day |
+
+No setup triggered. No plan was changed. The 10Y eased to 5.24% intraday (range 5.21–5.34) while
+TLT and ITB both printed new 52-week lows and recovered — an intraday reversal that none of the
+weekly conditions can register until the Oct 2 close.
+
+### 3. LNG — question closed from primary disclosures
+
+**LNG-A · existing asset — cash-flow durability**
+- Contracted: *"…with approximately 15 years of weighted average remaining life as of June 30, 2026, we have contracted 90% or more of the total anticipated production from the SPL Project and the CCL Project"* (Q2 2026 10-Q, MD&A). FY2025 10-K: ~90% through the mid-2030s, ~15-year weighted average remaining life at Dec 31, 2025. Sabine Pass alone (CQP 10-K): ~85%, ~13 years.
+- Structure: fixed fee payable *"irrespective of their election to cancel or suspend deliveries of LNG cargoes"*; variable fee *"primarily indexed to Henry Hub and generally structured to cover the cost of natural gas"*; IPM agreements buy gas at *"a global LNG or natural gas index price, less a fixed liquefaction fee"* (10-K). The fixed-fee $/MMBtu range and the IPM share of contracted volumes were **not found** in the filings retrieved.
+- Residual commodity exposure: < 1 Mt unsold for 2026 and a < $50M EBITDA move per $1/MMBtu of margin (Q2 deck) against a $7.9–8.4B guide.
+- Operating base: ~56 Mtpa in operation; Stage 3 substantial completion announced Aug 31, 2026.
+- Two new long-term SPAs in 2026: CPC (Taiwan) up to ~1.2 Mtpa, 2026–2050, DAP, Henry Hub plus fixed fee; Petrobras ~0.8 Mtpa, 22 years, FOB (start and price undisclosed).
+- **Verdict:** a contracted toll road for the next decade. Its risks are counterparty, the ~10% uncontracted volume, the IPM index-linked share (size unknown) and refinancing $24B of debt at 5%+ rates — not the gas price.
+
+**LNG-B · growth — execution and permitting risk**
+- Midscale Trains 8 & 9: ~5 Mtpa including debottlenecking; FID Jun 17, 2025; 48.3% complete (Jun 30, 2026); completion 2H 2028. Train-specific contract share and cost not disclosed; the FID release said the platform remains > 90% contracted.
+- Sabine Pass Expansion: up to ~20 Mtpa in two phases and three trains; Phase 1 is Train 7, > 6 Mtpa; ~$4.7B lump-sum EPC with Bechtel signed May 2026 under limited notice to proceed. FERC environmental assessment and NGA §3 order **pending**; DOE non-FTA **pending** (FTA received). Target: FERC permit late 2026 → FID early 2027.
+- Contracting: the 10-Q says capacity is *"partially contracted by Cheniere Marketing, through SPAs that are conditioned on additional liquefaction capacity"*; the Q2 deck calls Phase 1 *"fully commercialized with creditworthy counterparties."* The reading consistent with both: Phase 1 is sold, the full 20 Mtpa is not.
+- Policy: *"We aim to contract approximately 90% of our current and planned liquefaction capacity"*, and FID requires *"regulatory approvals and acceptable commercial and financing arrangements"*. There is no numeric pre-FID threshold and no numeric leverage target in the filings.
+- **Verdict:** sensible, staged and pre-sold growth whose output lands in the 2028–2030 global supply wave. Permits are the near-term gate.
+
+**What changes:** the 15% rests on LNG-A only. Invalidation is split:
+- **LNG-A** is invalidated if the contracted share falls below ~85%, the weighted average remaining life falls below ~12 years, or a top customer defaults or renegotiates.
+- **LNG-B** is invalidated if FERC or DOE denies the expansion, FID slips past 2027, or Phase 1 commercialisation is restated lower.
+- An LNG-B failure reduces upside and is not a sell signal for LNG-A.
+
+The allocation is unchanged.
+
+### 4. CBOE and CME — two regime theses
+
+Adjusted diluted EPS (company non-GAAP, Q4 releases) against regime variables (FRED):
+
+| Year | Avg VIX | Δ10Y (bp) | Policy | CBOE adj EPS | y/y | CBOE index opt ADV (k) | CME adj EPS | y/y | CME rates ADV (k) |
+|---|---|---|---|---|---|---|---|---|---|
+| 2018 | 16.6 | +29 | hiking | 5.02 | — | n/f | 6.82 | — | 9,951 |
+| 2019 | 15.4 | −77 | cutting | 4.73 | −6% | ~1,883 | 6.80 | 0% | 10,353 |
+| 2020 | 29.3 | −99 | zero | 5.27 | +11% | 1,814 | 6.72 | −1% | 8,073 |
+| 2021 | 19.7 | +59 | zero | 6.05 | +15% | 1,971 | 6.67 | −1% | 9,212 |
+| 2022 | 25.6 | +236 | hiking fast | 6.93 | +15% | 2,847 | 7.97 | +19% | 10,826 |
+| 2023 | 16.9 | 0 | hiking → high | 7.80 | +13% | 3,800 | 9.34 | +17% | 12,520 |
+| 2024 | 15.6 | +70 | cutting from high | 8.61 | +10% | 4,094 | 10.26 | +10% | 13,720 |
+| 2025 | 18.9 | −40 | cutting | 10.67 | +24% | 4,949 | 11.20 | +9% | 14,200 |
+
+*(y/y is Claude's arithmetic; CME 2019–2023 ADV are means of quarterly figures that match each
+release's stated annual totals.)*
+
+**CME's regime is an active, non-zero rate path.** EPS was flat for three years (2019–2021) — through
+a 29-average VIX in 2020 — while policy fell to zero and rates ADV dropped 22% (2020). Its best years
+were the hiking cycle (2022 +19%, 2023 +17%). Equity fear alone does not pay CME; rate uncertainty
+does. Its weak regime is a pinned policy rate. **Current fit:** the Fed is hiking again from
+3.75–4.00% and MOVE is at records — historically CME's best setting.
+
+The soft Q2 2026 was a comparison effect, not a regime break:
+- Rates ADV was −6% y/y against a record April 2025, but +9% for H1.
+- Total ADV was −1.2% y/y; clearing fees fell 2.6% while market data rose 20%.
+- A fee change effective April 1, 2026 is guided to add ~1–1.5% to revenue.
+
+**Correction to Round 5:** it said CME "converted record ADV into +1% revenue". Q2 2026 ADV was not a
+record; it was down 1.2% y/y.
+
+**CBOE's regime is structural, with an equity-volatility kicker.**
+- EPS grew in every year except 2019, including low-VIX 2024 (+10%). Index-options ADV rose from ~1.9M (2019) to 4.9M (2025).
+- 0DTE is ~60% of SPX volume, and the estimated retail share reached 57% in June 2026 (Q2 call).
+- Vol spikes help (2020 +11%, 2022 +15%), but its best year (2025, +24%) came at an average VIX of 18.9.
+- Its weak regime is a retreat in retail and 0DTE participation, regulation of short-dated options, or loss of S&P/VIX exclusivity (licensed to 2051) — not a calm market.
+
+**Portfolio functions.**
+- **CBOE** is a growth compounder whose shock exposure is long equity vol.
+- **CME** is a macro-volume franchise with a 4%+ cash yield whose exposure is long rate uncertainty. In regime terms it complements the MACRO_DURATION_TURN family. If rates stay high and volatile, the duration setups never fire and CME's regime persists. If policy were ever pinned near zero, duration would have paid and CME would stall.
+- Both remain approved and separate. CBOE stays held; CME keeps its Round 5 Strategy F trigger (≤ ~$220, or a quarter where clearing and transaction revenue grows at least as fast as ADV).
+- CME's Oct 21 print is the next evidence point; a pre-print record is a Round 7 candidate.
+
+### 5. First observations on the rules (no rule changed)
+
+1. **The gate split changes what the lab can learn.** Under Round 5's single gate, one of ten setups had an option vehicle (TLT). Under the split, seven have a paper option vehicle (ACN, VRT, MU, SPY put, TLT, CBOE, HWM). Three fail even paper liquidity: FICO, ITB and CLS-TSX (unverified). Vehicle-quality evidence will therefore come mostly from PAPER ONLY contracts — as intended.
+2. **The live gate binds on share size, not just options.** At Normal (2%), the frozen share counts in PT-002, PT-007 and PT-008 roughly halve. That is acceptable; A+ has to be earned.
+3. **Possibly too restrictive — FICO.** The 20-day-reclaim condition is gated by time, not price: the average still holds pre-shock closes (~898 on Oct 1). Even if FICO goes flat, the realistic trigger is late October. To be judged on outcomes, not now.
+4. **Possibly too restrictive — ACN.** The day-1 "upper-half close" filter is failing on a session where the stock opened +17.8%, reached +24% and faded below its open (a gap-and-fade candle). Either the filter just saved a bad entry or it cost a good one; the shadow will say which. One observation.
+5. **Possibly too loose — PT-005.** Two of its five conditions (breadth, rates) are already met, so the trigger is close to "price < 750 plus one more". That makes it more of a price trigger than its plan implies. Watch whether false triggers cluster.
+6. **A record-keeping flaw, now fixed for new records.** A frozen level written as both a number and a description ("214.50, the gap-day low") diverged within hours. Rule 8 makes the number govern from now on. This is a convention, not a strategy change.
+7. **Correlation inside families.** PT-006 and PT-009 share the M1 condition; PT-003 and PT-010 are both AI-hardware pullbacks. On paper, all may fire; live, only one per theme. The paper/live split now handles this naturally.
+
+### 6. Where to focus — research map (owner aim: find places to look)
+
+The experiment so far points at five areas, ranked by fit to the current regime, by how fast the
+lab can learn there, and by how accessible the instruments are:
+
+1. **The rates-turn complex — TLT, ITB, MBB/IEF, with CME as its counterweight.**
+   - Why: the regime's defining variable (10Y at a 24-year high), and the only family where long options are cheap and deep (TLT IV ~16%, OI in the tens of thousands), so micro-live is realistic.
+   - Next research: what marked past long-end tops (Oct 2023; 2006–07; 1994–95) and the homebuilder→TLT lead-lag.
+2. **Earnings repricing of de-rated quality (EARNINGS_CONTINUATION, POST_SHOCK_REVERSAL) — the fastest learning loop.** The October calendar holds about 15 reports from names already researched (below); a record written before each eligible print multiplies the sample without loosening any rule.
+3. **AI-infrastructure leaders on pullbacks (MU, CLS, VRT, TSM, ASML).**
+   - Highest dispersion and volatility; their options are almost all PAPER ONLY.
+   - This is where "future scale candidates" will come from.
+4. **Market-infrastructure franchises (CBOE, CME, ICE, SPGI).** Durable compounders whose engines are regime-specific; the research is fundamental (volume, RPC, data revenue) rather than chart-based.
+5. **Contracted energy infrastructure (LNG, and later pipelines at better prices).** Durable cash flows with permitted, pre-sold growth; the research is in filings, not prices.
+
+**De-prioritised (watch only):** gold and silver, oil producers, Brazil, uranium, tankers. The reasons are in `WATCHLIST.md`.
+
+**Dated calendar for the next five weeks** (from earlier scouts; confirm each before writing a record):
+- **Oct 13:** UNH earnings
+- **Oct 14:** ASML earnings; US September CPI
+- **Oct 15:** TSM earnings
+- **Oct 20:** GE earnings
+- **Oct 21:** VRT and CME earnings
+- **Oct 25:** Brazil runoff, if needed
+- **Oct 26:** CLS earnings and Investor Day
+- **Oct 27:** SPGI earnings
+- **Oct 27–28:** FOMC
+- **Oct 28:** Bank of Canada
+- **Oct 29:** HWM, LNG, ICE and FFH earnings
+- **Oct 30:** CBOE earnings
+- **Nov 2:** WMB earnings
+- **Nov 4:** FICO earnings
+- **Nov 6:** CEG earnings
+
+### 7. Changes that follow (portfolio untouched)
+
+| Item | Round 5 | Round 6 |
+|---|---|---|
+| Live option gate | Premium ≤ C$150 | ≤ C$100 Normal / ≤ C$150 A+ (family-earned) |
+| Paper option gate | Same as live | No dollar cap; credibility tests only |
+| Stock live risk | ≤ C$150 | ≤ C$100 Normal / C$150 A+; notional ≤ C$1,500 |
+| TLT call | Jan '27 82, only if triggered by Oct 17 | Chosen at trigger under §3; Oct 17 withdrawn |
+| Accounts | TFSA; margin as a "graduation" | TFSA, margin and LIRA all available; account is an execution note, never a gate |
+| LNG | 15%, two open items | 15% on LNG-A; LNG-B tracked separately; open items closed (fixed-fee range and IPM share not disclosed) |
+| CME | "Record ADV → +1% revenue" | Corrected; regime thesis stated; Strategy F trigger unchanged |
+| Allocation | — | **Unchanged** |
+
+### Open questions for ChatGPT Round 7
+
+1. Should BROKEN_LEADER_RECLAIM stand as its own family, or should VRT/HWM be treated as failed TREND_PULLBACK candidates (which would change their frozen setup)?
+2. Should EARNINGS_CONTINUATION records be pre-written for the October calendar (UNH Oct 13 first), each frozen before its print? This would be the main lever for sample size.
+3. Is "A+ earned by the family after ≥ 3 A/B observations" the right bar, or should A+ also require the vehicle-quality record to be clean (no "underlying correct / option failed")?
+4. PT-005 looks closer to a price-only trigger than intended. Keep it frozen and let the evidence speak (Claude's view), or write a successor record now?
+
+---
