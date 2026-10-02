@@ -313,7 +313,13 @@ A contradiction is not an error. It is an observation that differs from what our
 - *Expected:* under the base case, hikes come out when oil rolls over. Under the benign case, real rates are held up by strong growth. Neither model has a node for a labour-market shock removing hikes.
 - *Possible explanations:* (a) a growth/labour route to the duration turn exists alongside LOOP-1 (LOOP-5's "growth ↓ → policy path ↓" leg, reached through labour rather than housing); (b) a one-day repricing that reverses if CPI (Oct 14) runs hot; (c) the Fed's reaction function is energy-led (P10), so labour softness only delays hikes and does not remove them.
 - *Discriminating evidence:* the strip after CPI (Oct 14) and the Oct 28 rationale (P10). If hikes stay out with oil > $80, (a) gains and the base-case route needs re-specifying. If hikes return on a hot CPI, (b) or (c). Window: to Nov 4.
-- *Unresolved companion observation:* the long end's Oct 2 close is UNMEASURED. TLT was −0.36% at 15:36 ET after +0.8% intraday, so the long end may not have followed the front end (bear-steepening). Read FRED DGS2, DGS10 and DGS30 for Oct 2 before drawing any inference.
+- *Unresolved companion observation (scheduled cycle):* the long end's Oct 2 close is UNMEASURED. TLT was −0.36% at 15:36 ET after +0.8% intraday, so the long end may not have followed the front end (bear-steepening). Read FRED DGS2, DGS10 and DGS30 for Oct 2 before drawing any inference.
+- *Companion observation, reconciled (Round 14, interactive, Oct 2; Treasury par and real curves read once, corroborated by market quotes):*
+  - OBSERVED: the rally did not hold anywhere on the curve. Closes 2Y 4.83% (+5 bp), 10Y 5.28% (+4 bp), 30Y 5.63% (+2 bp); 10Y real 2.92% (+4 bp); 10Y breakeven 2.36%, unchanged (DERIVED). October hike odds ended at 18–25%, against 12–14% after the release and ~28% before it. Full path: `WATCHLIST.md` §1, Oct 2 reconciliation.
+  - INTERPRETATION: the reversal was strongest in the front end and belly (swing from intraday low to close: 2Y ≈ +7 to +11 bp, 10Y +7 to +11, 30Y +4 to +6), and the 10Y's rise was entirely real yield. That is a mild bear flattener (2s10s −1, 2s30s −3), not bear-steepening. **The suspected long-end divergence is not supported.**
+  - Bearing on C-011: explanation (a), a labour route removing hikes, is weakened within the session but not resolved. Some October-hike odds stayed out, and the strip beyond October is unmeasured. (b) and (c) gain slightly: the market did not carry one weak report through the day.
+  - Tested and rejected as stated (ChatGPT Round 14 §14): "the long end's later behavior suggests the selloff cannot be explained by the near-term Fed path alone." The long end moved least; the front end and belly reversed most; breakevens were flat. That is what the policy-path base case predicts when hikes are re-priced. One session cannot rule out a term-premium component. The Oct 7–8 auctions are its next test.
+  - RESEARCH NOTE (not admitted; no written expectation covers payroll-day co-movement): Treasuries gave back their rally while equities kept theirs (SPY +0.74%, QQQ +1.02%; Nasdaq-100 record close). Consistent with §3, "yields ↔ equities: not observed at the index".
 
 **Tally (Oct 2):** 11 OPEN — 5 CONTRADICTIONS (C-001 dollar channel, C-002 gold, C-003 tightening, C-005 index support, C-009 "global") and 6 RESEARCH NOTES (C-004, C-006, C-007, C-008, C-010, C-011). No thesis has three contradictions.
 
@@ -417,13 +423,22 @@ A contradiction is not an error. It is an observation that differs from what our
 | P5 | ITB and IWM underperform SPY while the 10Y ≥ 5.0% | **Benign** | Nov 4 | PENDING |
 | P6 | WTI < $80 → strip −1 hike and 10Y −25 bp within 2 weeks | **Benign** | Conditional | PENDING (condition not met; WTI intraday low 88.06 on Oct 2) |
 | P7 | SOFR ≤ IORB + 5 bp outside month-ends | Stress | Nov 4 | PENDING |
-| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING. Qualifying days so far: **0 of 1 same direction**. Oct 1: WTI +2.7% (settlement 92.87, fxstreet), 2Y −10 bp (4.88 → 4.78) — opposite. Oct 2: qualification UNMEASURED (WTI −1.6% to −4% intraday; settlement unread); if it qualifies, the 2Y moved the same way, with oil and payrolls confounded (C-011) |
+| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING. Qualifying days so far: **0 of 1 same direction**. Oct 1: WTI +2.7% (settlement 92.87, fxstreet), 2Y −10 bp (4.88 → 4.78) — opposite. Oct 2: **does not qualify**. WTI settled 91.11 (−1.9%; Rigzone), below the ±2% threshold (reconciliation, Round 14) |
 | P9 | On CPI and FOMC days the 10Y moves ≥ 0.6× the 2Y, same direction | Stress | Oct 28 | PENDING |
 | P10 | The Oct 28 rationale cites energy or headline inflation | **Benign** | Oct 28 | PENDING |
 
 | Condition | Status |
 |---|---|
-| W1–W5 (admit the base case is wrong) | None triggered (Oct 2). W2 and W4 could not be read on Oct 2 (IG OAS and breakeven UNMEASURED); last read not triggered on Oct 1 |
+| W1–W5 (admit the base case is wrong) | None triggered (Oct 2). W4 read in the reconciliation: not triggered (10Y breakeven 2.36%, Treasury par real). W2 not read on Oct 2 (IG OAS UNMEASURED); last read not triggered on Oct 1 |
+
+**Next discriminators (set Oct 2, Round 14).** The smallest set that separates today's explanations. Each uses an existing row above; nothing new is tracked.
+1. **Confirm the Oct 2 closes, and read the strip beyond October** (next run). The par and real rows were read once: the 10Y's +4 bp was all real yield. The strip shows whether December and later hikes were re-priced up, the likely source of the 2Y's +5 bp with October odds still lower.
+2. **10Y (Oct 7) and 30Y (Oct 8) auctions.** A tail ≥ 2 bp with indirect < 65% favours supply and term premium (stress). Clean auctions favour the path story.
+3. **CPI (Oct 14).** Tests P9 (10Y ≥ 0.6× the 2Y, same direction) and C-011: hikes rebuilding on a hot print favours (b) or (c); hikes staying out with oil > $80 favours (a).
+4. **The reserve release as a natural experiment.** Over its first two weeks, watch the WTI front vs 12-month slope and the 10Y breakeven. A narrowing backwardation with flat breakevens and an unmoved strip says the release reached oil but not policy. Do not read "reserve release → lower yields" from one day: Brent closed −0.1% while WTI fell 1.9%.
+5. **FOMC (Oct 28) rationale and the Nov 4 refunding:** P10, W5, LOOP-2.
+
+Read alongside, not as new gauges: HY and CCC OAS weekly, and the broad dollar rather than DXY.
 
 **Review:** on the DAILY STATE each session; a full re-run of this section after the FOMC (Oct 28) and the refunding (Nov 4), or earlier if W1–W5 fires.
 

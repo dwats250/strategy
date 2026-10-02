@@ -59,19 +59,45 @@ CAPITAL-MOVING  alarms tripped · OPPORTUNITY SCAN: NO ACTION | <what, and where
 
 *Written by the unattended daily cycle; time: see commit. **Data coverage was partial.** Direct reads of FRED and Yahoo's chart API were blocked in this run, and so were many quote pages; only pages surfaced by web search could be read. Fields not read reliably are UNMEASURED. Several rates figures are **post-release intraday** readings, not closes, and are labelled that way. (STRUCTURAL GAP — REVIEW REQUIRED: see `ROUNDS.md`, Weekly review — week ending 2026-10-02.)*
 
+**Interactive reconciliation (Round 14, Claude; time: see commit). Supersedes the scheduled text below where they conflict; the scheduled text is kept as written.**
+- **Event path** (times ET; sources disagree on some levels, so ranges are shown):
+
+  | | Before 08:30 | Initial reaction | Later session | Close |
+  |---|---|---|---|---|
+  | 2Y | 4.78% (Oct 1 par) | 4.72–4.76% (−3 to −7 bp; Reuters, Indexbox) | UNMEASURED | **4.83% (+5 bp; Treasury par)** · TE 4.85% |
+  | 10Y | 5.23–5.24% | 5.175–5.21% (−3 to −7 bp) | back to 5.28% by 13:32 (HousingWire) | **5.28% (+4 bp; Treasury par)** · TE 5.28%; IEF −0.27% ≈ +4 bp |
+  | 30Y | 5.61% | 5.57–5.59% (−2 to −4 bp) | UNMEASURED | **5.63% (+2 bp; Treasury par)** · TE 5.61%; TLT −0.36% ≈ +2 bp |
+  | 10Y real · breakeven | 2.88% · 2.36% (Oct 1 par real) | UNMEASURED | UNMEASURED | **2.92% (+4 bp) · 2.36% (unchanged)** (Treasury par real; breakeven DERIVED) |
+  | October hike odds | ~28% (investinglive), ~70% on Monday | 12–14% (Reuters; FedWatch via Schwab) | ~21% (Reuters); "one in four" at 15:08 (BNN) | 18% at 16:26 (TheStreet / FedWatch) |
+  | Equities | S&P fut +0.5%, NQ +0.7% (Yahoo; time n/s) | S&P opened +0.9% (Reuters) | gains held | SPY +0.74% · QQQ +1.02% · IWM +0.90% · RSP +0.39% (stockanalysis) |
+  | WTI | ~89.2 (−3.9%; G7 news out by 06:40) | ~89.4 (Schwab 09:13) | recovered to ~91.4 | **91.11 settle (−1.9%)** · Brent 102.25 (−0.1%) (Rigzone 16:10) |
+  | Gold · DXY | ~4,217 · ~102.0 | +0.8–0.9% · 101.8–101.9 | — | ~4,214–4,217 (+0.3%) · UNMEASURED |
+
+  **Closes are from Treasury's par and real curves, read once at ~14:22 PT.** A second, cache-busted read did not yet show the Oct 2 row, so re-read it next run. The values agree with TradingEconomics, TLT and IEF. 30Y real 3.34% (+3 bp); 30Y breakeven 2.29% (−1 bp, DERIVED). The strip beyond October: UNMEASURED.
+- **Release (BLS, OBSERVED):** payrolls +29k; July revised to −10k and August to +133k (−60k combined); unemployment 4.2% ("changed little"; 4.1% prior per secondary sources); AHE +0.1% m/m, +3.0% y/y; workweek 34.4h. Consensus ~84–90k; sources differ.
+- **What the path shows (INTERPRETATION):** weak payrolls were followed by a curve-wide rally, then a curve-wide reversal.
+  - The reversal was **strongest in the front end and belly**: from intraday low to close, 2Y ≈ +7 to +11 bp, 10Y ≈ +7 to +11 bp, 30Y ≈ +4 to +6 bp. Close to close: 2Y +5, 10Y +4, 30Y +2.
+  - The long end moved least. 2s10s closed at 45 bp (−1) and 2s30s at 80 bp (−3): a mild bear flattener, not the bear steepener the scheduled text suspected.
+  - **The 10Y's rise was all real yield** (+4 bp real, breakeven unchanged at 2.36%). This is the policy-path signature, not an inflation-expectations or term-premium-led one.
+  - October hike odds kept part of their drop (28% → 18–25%).
+- **Corrections to the scheduled text:** "Changed" item 3 and the Rates interpretation's bear-steepening line are not supported by the closes as measured. P8: Oct 2 **does not qualify** (WTI −1.9% at settlement, below the ±2% threshold), so the tally stays 0 of 1.
+- **Research note, not a contradiction:** Treasuries gave back their rally while equities kept theirs. No expectation written beforehand covered payroll-day co-movement (P9 covers CPI and FOMC only), so it is recorded under C-011, not admitted. It fits §3's existing reading: yields and equities are not linked at the index.
+- **Thesis states:** unchanged (one session). Evidence notes are in `MARKET_MODEL.md` C-011 and §8 "Next discriminators".
+- **Next run:** confirm the Oct 2 par and real rows (read only once; FRED DGS2/DGS10/DGS30, DFII10, T10YIE are the cross-check). Read the strip beyond October if any source allows.
+
 **Changed:**
 1. **The October hike was largely priced out.** September payrolls came in at +29k against ~85–90k expected. Unemployment rose to 4.2%; average hourly earnings rose 0.1% m/m and 3.0% y/y; July and August were revised down a combined 60k (BLS). OBSERVED: October-hike odds fell to 12% (Reuters) or 14% (CME FedWatch via Schwab), from ~70% early in the week (Schwab). The sources attribute the repricing to payrolls. WTI was also falling before the release (−3.9% at 06:00 ET), so causality is unclear (research note C-011).
-2. **G7 announced a 100M-barrel oil and diesel reserve release**, spread over four months with diesel front-loaded. WTI traded down 2–4% intraday (low 88.06). Its settlement is UNMEASURED.
-3. **The front end rallied after the release; the long end's close is unresolved.** TLT stood at 77.43 (−0.36%) at 15:36 ET, after a high of 78.32. That says the long end gave back its morning rally (DERIVED; see Rates).
+2. **G7 announced a 100M-barrel oil and diesel reserve release**, spread over four months with diesel front-loaded. WTI traded down 2–4% intraday (low 88.06). Its settlement is UNMEASURED. *[Settlement read in the reconciliation: 91.11, −1.9% (Rigzone).]*
+3. **The front end rallied after the release; the long end's close is unresolved.** TLT stood at 77.43 (−0.36%) at 15:36 ET, after a high of 78.32. That says the long end gave back its morning rally (DERIVED; see Rates). *[Superseded: the whole curve reversed, front end and belly most, long end least. See the interactive reconciliation above.]*
 
 **Rates**
 - *Observed:*
   - Oct 1 closes confirmed: 2Y 4.78% (−10 bp; stockmarketwatch, matching the derived value in the Oct 1 state) · 10Y 5.24% · 30Y 5.61%.
   - **Oct 2, post-release intraday (Reuters via investing.com):** 2Y 4.716% (−7 bp) · 10Y 5.176% (−6 bp) · 30Y 5.569% (−4 bp). The 10Y at 5.17–5.18% is corroborated by Yahoo ^TNX, Schwab and Quartz.
-  - **Oct 2 closes: UNMEASURED.** Sources conflict. TradingEconomics reports the 10Y at 5.28% (+4 bp), the 2Y at 4.85% and the 30Y at 5.63% late in the day, but its pages were inconsistent between reads (one TE page showed the 30Y at 5.57%, −4 bp). Next run: read FRED DGS2, DGS10 and DGS30 for Oct 2.
+  - **Oct 2 closes: UNMEASURED.** Sources conflict. TradingEconomics reports the 10Y at 5.28% (+4 bp), the 2Y at 4.85% and the 30Y at 5.63% late in the day, but its pages were inconsistent between reads (one TE page showed the 30Y at 5.57%, −4 bp). Next run: read FRED DGS2, DGS10 and DGS30 for Oct 2. *[Read in the reconciliation: Treasury par 4.83 / 5.28 / 5.63.]*
   - DERIVED, intraday: 2s10s ≈ 46 bp.
   - 10Y real, breakeven, fed funds strip levels, MOVE: UNMEASURED. Only the October-meeting probability was read (above).
-- *Interpretation:* the front end repriced on a growth (labour) shock, by the sources' account, with oil falling the same morning. A labour route is neither the base case's oil route (LOOP-1) nor the benign alternative's strong economy. POLICY-LED REAL-RATE REPRICING: ACTIVE, unchanged; one session is not enough to move it, and the December/2027 strip is unmeasured. DURATION TURN: DORMANT, unchanged. Its up-condition ("strip removes ≥ 1 hike" plus M1) is not met: DERIVED, about 0.56–0.58 of a hike came out of October (70% → 12–14%), the removal across the whole strip is unmeasured, and M1 is far from met. INTERPRETATION, low confidence: the long end did not follow the front end, which would be the bear-steepening the stress alternative predicts. It stays unconfirmed until the closes are read.
+- *Interpretation:* the front end repriced on a growth (labour) shock, by the sources' account, with oil falling the same morning. A labour route is neither the base case's oil route (LOOP-1) nor the benign alternative's strong economy. POLICY-LED REAL-RATE REPRICING: ACTIVE, unchanged; one session is not enough to move it, and the December/2027 strip is unmeasured. DURATION TURN: DORMANT, unchanged. Its up-condition ("strip removes ≥ 1 hike" plus M1) is not met: DERIVED, about 0.56–0.58 of a hike came out of October (70% → 12–14%), the removal across the whole strip is unmeasured, and M1 is far from met. INTERPRETATION, low confidence: the long end did not follow the front end, which would be the bear-steepening the stress alternative predicts. It stays unconfirmed until the closes are read. *[Superseded: not supported by the closes as measured; see the interactive reconciliation above.]*
 - *Contradiction / alternative:* new research note **C-011** (labour data, alongside oil, moved the front end). P8 evidence so far runs against the base case (see Active watches).
 - *What changes the view:* the Oct 2 closes. If the 10Y closed near unchanged with the 2Y lower, the curve steepened on a dovish front end, a stress-alternative signature worth a note. Also: the Oct 7–8 long-end auctions and Oct 14 CPI.
 
@@ -106,7 +132,7 @@ CAPITAL-MOVING  alarms tripped · OPPORTUNITY SCAN: NO ACTION | <what, and where
 - PT-005 SPY: 769.64, no trigger (needs a close < 750). Conditions were not re-read: VIX < 18, and breadth is unmeasured.
 - PT-010 CLS: C$544.70 (Oct 2, last read), extending. No pullback. WATCH.
 - PT-007 CBOE and PT-008 HWM: closes UNMEASURED. A trigger needs a close > 288 (+3.9% from Oct 1) and > 248 (+8.6%) respectively. **Next run: read the Oct 2 closes and volume.**
-- **P8 evidence (first entries):** Oct 1: WTI +2.7%, 2Y −10 bp → opposite direction. Oct 2: WTI ≥ 2% qualification UNMEASURED (it depends on settlement); if it qualifies, the 2Y moved the same way, with oil and payrolls confounded. Tally: 0 of 1 qualifying sessions moved the same way.
+- **P8 evidence (first entries):** Oct 1: WTI +2.7%, 2Y −10 bp → opposite direction. Oct 2: WTI ≥ 2% qualification UNMEASURED (it depends on settlement); if it qualifies, the 2Y moved the same way, with oil and payrolls confounded. Tally: 0 of 1 qualifying sessions moved the same way. *[Reconciliation: Oct 2 does not qualify (WTI −1.9%); tally stays 0 of 1.]*
 - Thesis-state changes today: **none**.
 
 **Dated decisions (next five sessions):** Oct 5 Cboe September volume (~Oct 2–5) · Oct 7 NFCI (week to Oct 2) and 10Y auction · Oct 8 30Y auction.

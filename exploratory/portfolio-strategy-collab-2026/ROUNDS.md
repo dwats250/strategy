@@ -1631,3 +1631,58 @@ From `MARKET_MODEL.md` §6, "Last state changes" (as of `0231a28`):
 From `WATCHLIST.md` §6: the row "Oct 2 (close) · First weekly review" (done: this entry). Added there: "~Oct 5 · Cboe September volume", already named in §3 as CBOE's next review event.
 
 Nothing else was stale. No roster item, contradiction or research item left the pages.
+
+---
+
+## Round 14 — ChatGPT: Oct 2 evidence reconciliation · 2026-10-02
+
+Recorded in substance. A one-time reconciliation, explicitly not a design round. Its question: **what did the September jobs report and the cross-market reaction do to the Oct 1 model?**
+1. Treat Oct 2 as forward evidence. Preserve what was believed before the release; do not rewrite the Oct 1 interpretation.
+2. Reconstruct the event path (before, initial, later, close), not just the close. Use UNMEASURED where timestamps are unreliable.
+3. Record the release as OBSERVED, separate from interpretation ("followed by", not "caused").
+4. Use the release as a discriminator for the rates model: 2Y vs 10Y vs 30Y, real vs breakeven, policy odds, TLT and IEF, the dollar, equities.
+5. Verify the candidate contradiction ("the Treasury rally did not persist while equities kept their gains") and grade it against written expectations.
+6. Create the long-end question only if the evidence supports it.
+7. Preserve the oil reserve release as a possible natural experiment.
+8. Name the smallest set of next discriminators.
+9. Market Brief: the macro-release miss stands; status becomes FIX IMPLEMENTED — FORWARD VERIFICATION REQUIRED.
+10. Investigate the GDX inconsistency as a separate defect.
+11. Keep the scheduled-run push failure operational.
+12. Update current-state files, not history.
+13. Do not create a competing Oct 2 state.
+14. Test ChatGPT's own claim: "the long end's later behavior suggests the selloff cannot be explained by the near-term Fed path alone."
+
+---
+
+## Round 14 — Claude (Opus 5.5) · 2026-10-02 · time: see commit
+
+**Lanes.** Lane 1 (Opus 5.5) wrote everything. Web retrieval for the event path went to one subagent, run on **Sonnet rather than Haiku** (a deviation from `docs/conventions.md` §j, noted here). Its load-bearing figures were re-read before use: the BLS release, the Rigzone settlement, and the TradingEconomics, TLT and IEF closes. No lane-2 review was run; this is a reconciliation, not a methodology change.
+
+**Ordering.** The scheduled cycle wrote the Oct 2 state at 13:44 PT, before this session. Per README ("whichever runs later builds on the earlier one"), this round **amends that state in place** with a labelled reconciliation block and inline supersession markers. It does not write a second state. No STRUCTURAL GAP: the existing rule handled the merge.
+
+**Findings**
+1. **Path.** Weak payrolls (+29k; −60k revisions; unemployment 4.2%; AHE +0.1%) were followed by a curve-wide rally (2Y −3 to −7 bp, 10Y −3 to −7, 30Y −2 to −4), then a curve-wide reversal.
+   - Closes (Treasury par and real curves, read once; consistent with market quotes): 2Y 4.83% (+5), 10Y 5.28% (+4), 30Y 5.63% (+2). 10Y real +4; 10Y breakeven 2.36%, unchanged.
+   - October hike odds: ~28% → 12–14% → 18–25%.
+   - Equities kept their gains: SPY +0.74%, QQQ +1.02%, RSP +0.39%.
+   - WTI −1.9% at settlement after −3.9% premarket on the G7 release; Brent −0.1%.
+2. **Strengthened, weakly:** POLICY-LED REAL-RATE REPRICING. The market declined to carry a dovish repricing through one session; the front end and belly led the reversal; real yields carried it. Also C-011 (b) and (c).
+3. **Weakened, weakly:**
+   - C-011 (a), the labour route.
+   - The benign alternative's premise that the economy is strong, on labour data. Its mechanism, that the 2Y responds to growth data, did show briefly.
+   - The scheduled cycle's bear-steepening hint.
+4. **Contradictions vs research notes.** No new contradiction. The bond/equity divergence is a research note under C-011, because no written expectation covered payroll-day co-movement.
+5. **ChatGPT's §14 claim: rejected as stated.** The long end moved least, the front end and belly reversed most, and the 10Y's rise was all real yield with breakevens flat. That is what the base case predicts when hikes are re-priced. One session cannot exclude a term-premium component; the Oct 7–8 auctions test it.
+6. **Long-end question not created** (`RESEARCH_MAP.md` unchanged). Its premise, "the immediate policy impulse became more dovish", did not hold through the close.
+7. **Oil.** Preserved as a natural experiment (`MARKET_MODEL.md` §8, Next discriminators, item 4). P8: Oct 2 does not qualify (−1.9%).
+8. **Thesis states, predictions, contradictions:** no change of state. P8 stays 0 of 1. 11 OPEN.
+
+**Current best explanation:** the base case. One weak labour print did not remove a hiking path the market ties to inflation; the front end re-priced part of the October risk by the close, and the long end followed rather than led.
+**Best alternative:** an afternoon supply or positioning concession ahead of the Oct 7–8 long-end auctions (the stress family). The curve shape argues against it today; the auctions test it next week.
+
+**Market Brief** (recorded in `dwats250/market-review`, not here):
+- The jobs report was absent from the premarket's explanation: a `macro-release` gap. Status: fix implemented after the close (market-brief PRs #47 and #48, BLS Employment Situation and CPI only) — forward verification required, first at CPI on Oct 14.
+- The GDX "no current print" verdict was carried unchanged from 07:02 onto pages that showed GDX prints: a separate `defect`.
+- The scheduled-run push failure is operational, outside this repository.
+
+**Changed:** `WATCHLIST.md` §1 (Oct 2 state: reconciliation block and supersession markers) · `MARKET_MODEL.md` §7 (C-011) and §8 (P8 row; W row; Next discriminators) · `README.md` (P8 maturity row) · this entry. Not changed: frozen paper-trade rules, cohort methodology, allocation, `RESEARCH_MAP.md`, `PAPER_TRADES.md`, `PROPOSAL.md`.

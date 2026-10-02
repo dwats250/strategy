@@ -64,7 +64,7 @@ A trading journal, a macro newsletter, a screener, a portfolio tracker, an archi
 | Post-earnings thesis reviews | 0 (first: TSM, Oct 15) |
 | Thesis-state changes on evidence after the register opened | 0 |
 | Predictions resolved (P1–P10) · contradictions resolved | 0 · 0 (11 OPEN: 5 contradictions, 6 research notes) [10 OPEN] |
-| P8 qualifying sessions recorded (first prediction with running evidence) | 1 (0 same-direction); Oct 2 pending the WTI settlement |
+| P8 qualifying sessions recorded (first prediction with running evidence) | 1 (0 same-direction); Oct 2 does not qualify (WTI −1.9%; Round 14) |
 | Daily states written · of which with full gauge coverage | 2 · 1 (Oct 2 was partial: data access, see `ROUNDS.md`) |
 | Real-money decisions informed by the system (recorded) | 0 |
 | Decisions taken outside a written rule | Not yet tracked; needs Dustin's report |
