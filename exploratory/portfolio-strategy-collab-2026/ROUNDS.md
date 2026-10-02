@@ -1686,3 +1686,21 @@ Recorded in substance. A one-time reconciliation, explicitly not a design round.
 - The scheduled-run push failure is operational, outside this repository.
 
 **Changed:** `WATCHLIST.md` §1 (Oct 2 state: reconciliation block and supersession markers) · `MARKET_MODEL.md` §7 (C-011) and §8 (P8 row; W row; Next discriminators) · `README.md` (P8 maturity row) · this entry. Not changed: frozen paper-trade rules, cohort methodology, allocation, `RESEARCH_MAP.md`, `PAPER_TRADES.md`, `PROPOSAL.md`.
+
+---
+
+## Round 14 — amendment (owner ruling) · 2026-10-02 · time: see commit
+
+Dustin accepted Round 14's factual reconciliation and ruled on two epistemic grades. This entry corrects the Round 14 Claude entry above, which stays as written (append-only).
+
+1. **Finding 5 is re-graded:** ChatGPT's long-end claim is **NOT ESTABLISHED / NARROWED**, not "rejected".
+   - October-meeting odds fell versus pre-release (~28% → 18–25%) while the official curve closed higher (2Y +5, 10Y +4, 30Y +2 bp).
+   - October odds alone therefore cannot distinguish an expected real-policy-path repricing from term premium or other real-yield components. "All real yield, breakeven flat" rules out inflation expectations, but not term premium.
+   - What stands: the long end did not diverge from the front end on Oct 2, so the claim cannot rest on the long end's relative behaviour.
+   - It stays pending until the expected policy path beyond October is measured.
+2. **"Best alternative" is re-graded:** afternoon selling ahead of the Oct 7–8 auctions is **PLAUSIBLE / UNTESTED**. There is no positioning or auction evidence yet.
+3. **Consistency correction, Claude's (the same logic applied):** finding 2's "strengthened, weakly: POLICY-LED REAL-RATE REPRICING" also leaned on reading the higher close as policy path. It is withdrawn. Oct 2 is **consistent with the base case but does not discriminate it** from a term-premium or real-yield component. Likewise, the WATCHLIST line calling the move "the policy-path signature" is corrected.
+
+Thesis states, predictions and the contradiction tally are unchanged. No architecture change.
+
+**Changed:** `MARKET_MODEL.md` §7 C-011 (claim grade; C-011 bearing; auction-selling grade) and §8 Next discriminators item 1 (the strip as the discriminator; term-premium estimate) · `WATCHLIST.md` §1 Oct 2 reconciliation (real-yield line) · this entry.
