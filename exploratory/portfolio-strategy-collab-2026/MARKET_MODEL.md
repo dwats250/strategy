@@ -219,10 +219,7 @@ States: **FORMING · ACTIVE · STRENGTHENING · WEAKENING · INVALIDATED · DORM
 | **FUNDING / PLUMBING STRESS** | **DORMANT** | SOFR = IORB at quarter-end; SRF $1.2B; reserves $2.95T; RRP ≈ 0 | SOFR − IORB > +5 bp outside month-ends (watch) or > +10 bp outside quarter-ends (alarm); SRF > $10B | — |
 
 **Last state changes (since the last weekly review; moved to `ROUNDS.md` at the weekly review)**
-- 2026-10-01 · Register opened (Round 11). Initial states as above. Two changes from Round 10's implicit narrative:
-  - GOLD AS A RATE CASUALTY: implied ACTIVE → **WEAKENING** (evidence: §2 link 11).
-  - "Long-rate stress" as the headline: implied ACTIVE → split into **POLICY-LED REAL-RATE REPRICING — ACTIVE** and **LONG-RATE STRESS TRANSMISSION — FORMING** (evidence: §2 links 3–4).
-  - OIL SUPPLY SHOCK → FED REACTION opened at **FORMING**, not ACTIVE: the Sep 16 statement does not name energy, so the link is inferred (lane-2 review finding, before commit).
+- None since the 2026-10-02 weekly review. The register-opening changes of 2026-10-01 were moved to `ROUNDS.md` (Weekly review — week ending 2026-10-02).
 
 ## 7. Contradictions (current: open and recently resolved)
 
@@ -310,7 +307,15 @@ A contradiction is not an error. It is an observation that differs from what our
 - *Possible explanations:* (a) the deep-discount MBS universe (WAC 3.63%) has little prepayment optionality left; (b) bank and overseas MBS demand at these yields.
 - *Discriminating evidence:* MBB underperforming IEF duration-adjusted by > 1% over a month while the MOVE stays > 100 → spread transmission returns.
 
-**Tally (Oct 1, after the Round 12 re-screen):** 10 OPEN — 5 CONTRADICTIONS (C-001 dollar channel, C-002 gold, C-003 tightening, C-005 index support, C-009 "global") and 5 RESEARCH NOTES (C-004, C-006, C-007, C-008, C-010). No thesis has three contradictions.
+**C-011 · 2026-10-02 · Route of the front-end repricing · OPEN**
+- *Grade:* **RESEARCH NOTE.** No expectation written beforehand covered a labour-data repricing. The base case names oil → Fed (LOOP-1) as the most likely route to a duration turn. The benign alternative assumes a strong economy. It does not count toward any thesis tally.
+- *Observed:* September payrolls +29k (consensus ~85–90k); July and August revised −60k; unemployment 4.2%; AHE +0.1% m/m (BLS, Oct 2). October-hike odds fell to 12–14% from ~70% early in the week (Reuters; CME FedWatch via Schwab). The 2Y fell 7 bp intraday (Reuters). **Causality is unclear:** WTI was already −3.9% at 06:00 ET (Yahoo), before the 08:30 ET release, and the G7 reserve release came the same day. The sources attribute the hike repricing to payrolls (INTERPRETATION by the sources). Oil and labour cannot be separated for this session.
+- *Expected:* under the base case, hikes come out when oil rolls over. Under the benign case, real rates are held up by strong growth. Neither model has a node for a labour-market shock removing hikes.
+- *Possible explanations:* (a) a growth/labour route to the duration turn exists alongside LOOP-1 (LOOP-5's "growth ↓ → policy path ↓" leg, reached through labour rather than housing); (b) a one-day repricing that reverses if CPI (Oct 14) runs hot; (c) the Fed's reaction function is energy-led (P10), so labour softness only delays hikes and does not remove them.
+- *Discriminating evidence:* the strip after CPI (Oct 14) and the Oct 28 rationale (P10). If hikes stay out with oil > $80, (a) gains and the base-case route needs re-specifying. If hikes return on a hot CPI, (b) or (c). Window: to Nov 4.
+- *Unresolved companion observation:* the long end's Oct 2 close is UNMEASURED. TLT was −0.36% at 15:36 ET after +0.8% intraday, so the long end may not have followed the front end (bear-steepening). Read FRED DGS2, DGS10 and DGS30 for Oct 2 before drawing any inference.
+
+**Tally (Oct 2):** 11 OPEN — 5 CONTRADICTIONS (C-001 dollar channel, C-002 gold, C-003 tightening, C-005 index support, C-009 "global") and 6 RESEARCH NOTES (C-004, C-006, C-007, C-008, C-010, C-011). No thesis has three contradictions.
 
 ## 8. Adversarial challenge to the Oct 1 narrative (mandatory, Round 11 §14)
 
@@ -410,15 +415,15 @@ A contradiction is not an error. It is an observation that differs from what our
 | P3 | IG OAS < 1.00%; HY 2.90–4.00% | Stress | Nov 4 | PENDING |
 | P4 | Mortgage − 10Y spread 1.8–2.3 pp | Stress | Nov 4 | PENDING |
 | P5 | ITB and IWM underperform SPY while the 10Y ≥ 5.0% | **Benign** | Nov 4 | PENDING |
-| P6 | WTI < $80 → strip −1 hike and 10Y −25 bp within 2 weeks | **Benign** | Conditional | PENDING (condition not met) |
+| P6 | WTI < $80 → strip −1 hike and 10Y −25 bp within 2 weeks | **Benign** | Conditional | PENDING (condition not met; WTI intraday low 88.06 on Oct 2) |
 | P7 | SOFR ≤ IORB + 5 bp outside month-ends | Stress | Nov 4 | PENDING |
-| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING |
+| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING. Qualifying days so far: **0 of 1 same direction**. Oct 1: WTI +2.7% (settlement 92.87, fxstreet), 2Y −10 bp (4.88 → 4.78) — opposite. Oct 2: qualification UNMEASURED (WTI −1.6% to −4% intraday; settlement unread); if it qualifies, the 2Y moved the same way, with oil and payrolls confounded (C-011) |
 | P9 | On CPI and FOMC days the 10Y moves ≥ 0.6× the 2Y, same direction | Stress | Oct 28 | PENDING |
 | P10 | The Oct 28 rationale cites energy or headline inflation | **Benign** | Oct 28 | PENDING |
 
 | Condition | Status |
 |---|---|
-| W1–W5 (admit the base case is wrong) | None triggered (Oct 1) |
+| W1–W5 (admit the base case is wrong) | None triggered (Oct 2). W2 and W4 could not be read on Oct 2 (IG OAS and breakeven UNMEASURED); last read not triggered on Oct 1 |
 
 **Review:** on the DAILY STATE each session; a full re-run of this section after the FOMC (Oct 28) and the refunding (Nov 4), or earlier if W1–W5 fires.
 

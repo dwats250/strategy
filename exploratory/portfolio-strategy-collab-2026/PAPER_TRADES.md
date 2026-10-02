@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed. Round 12: §12 provenance correction (timestamps), no record edited. Round 13: a pointer note under §12 only.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed. Round 12: §12 provenance correction (timestamps), no record edited. Round 13: a pointer note under §12 only. Daily cycle (from 2026-10-02): §13 status annotations only.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -496,3 +496,23 @@ PT-001 to PT-010 ("written 14:10 ET") match their commit (`8e532d7`, 14:13 ET). 
 - the dated decisions are in §6.
 
 The Round 4 duration rules and the uranium trigger (§5, §9) are in git history before `f4757b7`.
+
+---
+
+## 13. Daily-cycle annotations (status only; no record edited)
+
+Written by the scheduled daily cycle; time: see commit. **No trigger, invalidation, exit, time stop or vehicle rule is changed.** Values are closes unless marked. A close not read reliably is UNMEASURED and is evaluated at the next run from the recorded close; this is not hindsight, because each trigger was frozen beforehand.
+
+**2026-10-02 (Fri)**
+
+| Record | Evidence | Status |
+|---|---|---|
+| PT-002 VRT | First weekly test. Weekly close 252.18 (Yahoo; stockanalysis), against the > 262 trigger. The volume condition is moot | WATCH — not triggered; expires at the Oct 20 close |
+| PT-003 MU | 1,075.64 at 15:44 ET; 50-day 956.08 (stockanalysis). No qualifying pullback | WATCH |
+| PT-004 FICO | Close 661.25; intraday low 609.00 (stockanalysis); no close < 586.05 | WATCH — **session 3 of 10** (session 10 = Oct 13) |
+| PT-005 SPY | Close 769.64 (stockanalysis), above the 50-day (763.1 on Oct 1); no close < 750 | WATCH |
+| PT-006 TLT | **Weekly regime review.** M1 not met: 10Y ≥ 5.17% (post-release intraday low across sources; the close is UNMEASURED), far above a 10-week average near the 50-day (4.82, Oct 1). M2 not met: TLT 77.43 at 15:36 ET against a 50-day of ~81.8. M3 moot (10Y breakeven UNMEASURED) | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** |
+| PT-007 CBOE | Oct 2 close and volume UNMEASURED (needs > 288 on ≥ 1.5× the 20-day volume). Read at the next run | WATCH (pending read) |
+| PT-008 HWM | Oct 2 close and volume UNMEASURED (needs > 248 on ≥ 1.5× volume). Read at the next run | WATCH (pending read) |
+| PT-009 ITB | M1 not met (as PT-006). MND and ITB close UNMEASURED | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** |
+| PT-010 CLS | CLS.TO C$544.70 (Oct 2, last read; stockanalysis), extending. No pullback | WATCH |

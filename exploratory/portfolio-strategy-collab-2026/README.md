@@ -55,14 +55,17 @@ A trading journal, a macro newsletter, a screener, a portfolio tracker, an archi
 
 **2. Market-edge evidence: immature.** We do not yet know whether earnings continuation, leader pullbacks, duration turns, post-shock reversals, or any tactical rule has positive expectancy.
 
-| Item | Count at Round 13 (2026-10-01) |
+| Item | Count at the weekly review, 2026-10-02 (Round 13 baseline 2026-10-01 in brackets where changed) |
 |---|---|
 | Frozen setups written · triggered · completed and graded | 10 · 0 · 0 |
 | Expired without trigger | 1 (PT-001 ACN; shadow open to Dec 11) |
+| Frozen triggers tested and not met | 1 weekly test (PT-002 VRT, Oct 2) [0]; daily non-triggers are not counted |
 | Cohort events completed through D+20 | 0 of 10 (first: UNH, Oct 13) |
 | Post-earnings thesis reviews | 0 (first: TSM, Oct 15) |
 | Thesis-state changes on evidence after the register opened | 0 |
-| Predictions resolved (P1–P10) · contradictions resolved | 0 · 0 (10 OPEN: 5 contradictions, 5 research notes) |
+| Predictions resolved (P1–P10) · contradictions resolved | 0 · 0 (11 OPEN: 5 contradictions, 6 research notes) [10 OPEN] |
+| P8 qualifying sessions recorded (first prediction with running evidence) | 1 (0 same-direction); Oct 2 pending the WTI settlement |
+| Daily states written · of which with full gauge coverage | 2 · 1 (Oct 2 was partial: data access, see `ROUNDS.md`) |
 | Real-money decisions informed by the system (recorded) | 0 |
 | Decisions taken outside a written rule | Not yet tracked; needs Dustin's report |
 

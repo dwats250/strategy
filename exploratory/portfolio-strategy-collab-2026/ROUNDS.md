@@ -1580,3 +1580,54 @@ Archived ideas are not refuted. They are no longer described by a live thesis, s
 - It runs in the cloud and is not tied to Dustin's computer, so Claude in Chrome may be unavailable. In that case it reads data through web fetches, and fields it cannot read reliably are marked UNMEASURED.
 - It is barred from redesign and from capital deployment; it flags those for interactive review.
 - The UNH pre-registration reminder (Oct 12) stays separate. The daily task will not duplicate its records.
+
+---
+
+## Weekly review — week ending 2026-10-02 · scheduled daily cycle (Claude, unattended) · time: see commit
+
+**Scope.** The first weekly review. The "week" is two sessions: Oct 1, when the system was built through Rounds 1–13, and Oct 2, the first scheduled run. This is a lightweight review, not a redesign. Nothing structural was changed.
+
+**What changed materially**
+- **The priced October hike mostly came out.** October-hike odds fell from ~70% early in the week to 12–14% after the September payroll miss (+29k; −60k of revisions; unemployment 4.2%). WTI was also lower that morning, before the release, and the G7 announced a 100M-barrel reserve release. Logged as research note **C-011**: the route of the front-end repricing is labour, oil, or both.
+- Equities rose on leadership: SPY +0.74%, QQQ +1.02%, RSP +0.39%. Credit price gauges were flat (HYG, BKLN).
+- The long end's Oct 2 close is unresolved. TLT −0.36% at 15:36 ET, after a morning rally, hints that the long end did not follow the front end. It is not recorded as evidence until the closes are read.
+
+**Hypotheses.** No state changed. POLICY-LED REAL-RATE REPRICING stays ACTIVE, though its route is under question (C-011). DURATION TURN stays DORMANT: its up-condition ("strip removes ≥ 1 hike" plus M1) is unmet, and M1 is far away. The first P8 qualifying session (Oct 1: WTI +2.7%, 2Y −10 bp) went against the base case: one day, no state change.
+
+**Contradictions.** 11 OPEN (5 contradictions, 6 research notes). None resolved. The first discriminating dates are the Oct 7 NFCI (C-003) and the Oct 7–8 auctions.
+
+**Predictions.** None resolved. P8 has running evidence; see the `MARKET_MODEL.md` §8 tracker.
+
+**Setups.** None stale. PT-002 VRT failed its first weekly test (252.18 vs > 262). PT-004 FICO is at session 3 of 10. PT-006 and PT-009 were reconfirmed as ACTIVE REGIME WATCH on Oct 2. PT-007 CBOE and PT-008 HWM have unread Oct 2 closes, to be read next run.
+
+**Candidates.** None earned more attention. No evidence event passed, so none are archived.
+
+**Gauges that added little.** Too early to judge: one scheduled day, with most gauges unread.
+
+**Did the system make or prevent a decision?** No. The opportunity scan was NO ACTION on both days.
+
+**What we do not understand.** If the closes confirm it: why the long end did not hold a front-end rally on a dovish surprise (term premium, supply ahead of the Oct 7–8 auctions, or the hot ISM prices paid of Oct 1).
+
+**STRUCTURAL GAP — REVIEW REQUIRED: data access for the unattended run.** This is a gap with a cause, not a one-off. In the unattended cloud run:
+- direct fetches of FRED, Yahoo's chart API and Treasury pages are blocked, because the permission prompt goes unanswered;
+- Claude in Chrome is unavailable;
+- only pages surfaced by web search can be read, and several of those returned stale cached snapshots (quote pages dated Sep 4–28).
+
+Unmeasured on Oct 2 as a result: OAS (IG, HY, CCC), real yields and breakevens, the fed funds strip beyond the October meeting, MOVE, the broad dollar, USD/JPY and USD/CAD, the WTI settlement and curve, copper, breadth, the funding alarm, all Friday weekly gauges (NFCI is not due until Oct 7), and the CBOE, HWM and ITB closes. It will recur on every run. Options for an interactive session (none decided here):
+1. Allow the scheduled task to fetch fred.stlouisfed.org, query1.finance.yahoo.com and home.treasury.gov without a prompt.
+2. Run the task on Dustin's computer with Claude in Chrome ("Require this computer").
+3. Accept a smaller unattended gauge set and leave the rest to interactive sessions.
+
+Also noted for Round 14 (ChatGPT's question 1, template length): the Oct 2 state ran past "one line per field" because partial data needed source and timing notes. No template change was made unattended.
+
+**Moved out of current pages (recoverable here)**
+
+From `MARKET_MODEL.md` §6, "Last state changes" (as of `0231a28`):
+> - 2026-10-01 · Register opened (Round 11). Initial states as above. Two changes from Round 10's implicit narrative:
+>   - GOLD AS A RATE CASUALTY: implied ACTIVE → **WEAKENING** (evidence: §2 link 11).
+>   - "Long-rate stress" as the headline: implied ACTIVE → split into **POLICY-LED REAL-RATE REPRICING — ACTIVE** and **LONG-RATE STRESS TRANSMISSION — FORMING** (evidence: §2 links 3–4).
+>   - OIL SUPPLY SHOCK → FED REACTION opened at **FORMING**, not ACTIVE: the Sep 16 statement does not name energy, so the link is inferred (lane-2 review finding, before commit).
+
+From `WATCHLIST.md` §6: the row "Oct 2 (close) · First weekly review" (done: this entry). Added there: "~Oct 5 · Cboe September volume", already named in §3 as CBOE's next review event.
+
+Nothing else was stale. No roster item, contradiction or research item left the pages.
