@@ -72,6 +72,11 @@ Update this table at each weekly review.
 
 **Daily — nearly every market day.** Purpose: identify what changed, decide whether it matters, and decide whether anything deserves attention or capital.
 
+**Automation.** The daily cycle runs unattended as the scheduled task **"Strategy · daily market state"**, every weekday at 13:20 Pacific, starting 2026-10-02.
+- It skips full-market U.S. holidays and adds the weekly review on Fridays.
+- It cannot redesign the system, create files, or deploy capital. Instead it flags `STRUCTURAL GAP — REVIEW REQUIRED` or `CAPITAL DECISION REQUIRED` for an interactive session.
+- Interactive sessions can write a state too; whichever runs later builds on the earlier one.
+
 | Step | What to do |
 |---|---|
 | 1. Observe | Update only the measurements that matter (WATCHLIST §2). Don't collect data because it is available |

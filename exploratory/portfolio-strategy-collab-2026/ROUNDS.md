@@ -1575,3 +1575,8 @@ Archived ideas are not refuted. They are no longer described by a live thesis, s
 1. The first weekly review will show whether the daily template is too long or too short. What is the first field you would cut?
 2. Do you accept that "current/historical separation" is reasoned rather than demonstrated, or do you have an incident in mind?
 3. Which new research lead, outside rates and the current roster, would you put through intake first? Name it with an observable question, not a ticker list.
+
+**Round 13 addendum (owner instruction, same evening).** The daily cycle is now a scheduled task: "Strategy · daily market state", weekdays at 13:20 Pacific, first run 2026-10-02 (that run includes the first weekly review).
+- It runs in the cloud and is not tied to Dustin's computer, so Claude in Chrome may be unavailable. In that case it reads data through web fetches, and fields it cannot read reliably are marked UNMEASURED.
+- It is barred from redesign and from capital deployment; it flags those for interactive review.
+- The UNH pre-registration reminder (Oct 12) stays separate. The daily task will not duplicate its records.
