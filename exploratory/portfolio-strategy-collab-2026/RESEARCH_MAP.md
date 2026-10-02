@@ -4,7 +4,7 @@
 is what matters now. Both Claude and ChatGPT should be able to read it cold and recover the state
 of every idea. Update it in place; record material changes in one line in `ROUNDS.md`.
 
-**Last updated:** 2026-10-01 ~23:30 ET (Round 11 — Claude, Opus 5.5) · the daily-use page is `WATCHLIST.md` (Market Roster) · the rates/credit/liquidity model is `MARKET_MODEL.md` (new in Round 11)
+**Last updated:** 2026-10-01, Round 12 — Claude (Opus 5.5); the authoritative time is the git commit time (methodology finding 11) · the daily-use page is `WATCHLIST.md` (Market Roster) · the rates/credit/liquidity model is `MARKET_MODEL.md` (new in Round 11)
 
 ---
 
@@ -528,6 +528,25 @@ NEW INFORMATION / OBSERVATION
 7. **Measure the shape, not the endpoint** (Round 8, from ChatGPT). A single day-20 label mixes information drift, path, tradeability, timing, maximum opportunity and endpoint. The event layer records the path (D+1…D+20, MFE/MAE and their sessions, raw and relative); event drift and trade outcome are concluded separately.
 8. **Missing evidence is preferable to invented equivalence** (Round 9, VWAP). When a trustworthy source is unavailable, record `UNMEASURED`. A substitute (e.g. the day-1 midpoint) is a different rule that must be specified as such, prospectively. Old observations are never reconstructed with inconsistent data except in a separately declared retrospective study.
 9. **Outcome bias applies to investment decisions too** (Round 9, NFLX). A decision is judged against its mandate and the information at the time; a later return neither validates nor condemns it. This is the same separation as the A/B/C/D grades.
+10. **The rate-shock correction: STATE → STORY → ADVERSARIAL TEST → REVISED MODEL** (Rounds 10–11; preserved as a process, not as a conclusion).
+    - **What happened.** Round 10's narrative ("rates are the shock… transmitting through every price-sensitive channel except equity volatility") was plausible, coherent and agreed by both models. Round 11 measured the state against it, which weakened or rejected five claims:
+      - a global bond crisis (US +46 bp vs Bund +15 and JGB +8);
+      - broad dollar strength (the broad dollar was flat; the move was euro-led);
+      - broad credit stress (only the CCC tail);
+      - gold as a simple real-yield casualty;
+      - weak breadth as an automatic index signal.
+    - **What made the correction possible.**
+      1. The story was **written down and committed before the test** (`792fce3`), so there was something to falsify.
+      2. The brief **required** an adversarial pass; nobody had to volunteer doubt.
+      3. Each claim was tested against a **"compared with what?"**: broad dollar vs DXY, Bund and JGB vs US, IG vs CCC vs loans, real yields vs breakevens, today vs March 2026's stress.
+      4. The decomposition data were **free and specific** (FRED).
+      5. An **independent review pass** then caught the correction's own over-claims: a model-estimated 55/45 split presented with observed-grade certainty, and an oil → Fed link the Fed never stated.
+    - **What nearly prevented it.** Round 10 recorded that market-review hypotheses H1–H5 were "all consistent with the Oct 1 readings" (`792fce3`, WATCHLIST.md line 70). **"Consistent with" is not a test.** A test needs an alternative that predicts something different.
+    - **What not to conclude.** The revised base case is itself a story awaiting its own test (`MARKET_MODEL.md` §8, P1–P10). The lesson is the sequence, not the content.
+11. **Timestamps must come from the clock** (Round 12 audit).
+    - **Observation.** Times written into Rounds 9–11 ran ahead of the commits that contain them: "18:15 ET" (Round 9, committed 17:48 ET), "~19:30 ET" (Round 10, committed 18:47 ET), "~23:30 ET" (Round 11, committed 20:25 ET). They were estimated, not read.
+    - **Did it break anything?** No pre-registration is invalidated: every freeze still precedes its event (A-M v2 before TSM on Oct 15; the cohort plan before UNH on Oct 13). But the lab's evidentiary value rests on time order, and a rigorous-looking record carried invented times.
+    - **Rule from now on.** The git commit time is the authoritative timestamp. A time written in a file must be read from a clock, or it says "see commit". Corrections are dated notes (`ROUNDS.md` Round 12; `PAPER_TRADES.md` §12); no past record is edited.
 
 ---
 
@@ -691,27 +710,7 @@ NEW INFORMATION · OBSERVATION · MANDATE CHANGE
 - zero regime-watch status changes;
 - zero post-earnings reviews of a held thesis.
 
-**Outline of the process half** (held here; not a separate file until the market half has evidence):
-1. Thesis before capital: an economic thesis for investments; setup, trigger and invalidation for trades.
-2. Investing and trading are different problems with different frameworks.
-3. Underwritability sets role and size at the program level, not ownership.
-4. Decisions are judged on the information and mandate at the time; outcomes are graded separately (A/B/C/D; outcome bias).
-5. The research universe ≠ the deployment universe; "capital constrained" is a valid outcome.
-6. Evidence ladder: paper → micro-live → scale. Non-trades and shadows are data. One observation never changes a rule.
-7. Frozen rules: fixed numbers, end-of-session statistics and dynamic rules are kept distinct. Missing evidence is preferable to invented equivalence.
-8. Options only when they improve the expression; the whole premium is the risk; the contract is chosen at the trigger.
-9. Speculation is labelled and excluded from evidence. Capital unlocking is a separate comparison.
-10. Every watch has a lifecycle. Stale ideas are archived, not nursed.
-11. *(Round 11)* **Capital reallocation looks only forward: which dollar has the weakest forward case?**
-    - When new capital is needed, every available source is evaluated from the present forward, cash and "do nothing" included.
-    - Unrealised gain or loss is not itself a reason to keep or sell.
-    - Losers are not privileged to avoid "locking in" a loss; winners are neither privileged nor sold because they worked.
-    - Tax is the one place the past enters, and only in the non-registered account (`PROPOSAL.md` §7).
-12. *(Round 11)* **Contradictions are evidence.**
-    - Record them with what was expected and what would discriminate between the explanations.
-    - Accumulate them; do not rewrite a thesis on one.
-    - Repeated contradiction against the same thesis is evidence the model is weak.
-    - Use causality labels (mechanical / plausible / historical / observed / hypothesis) and never write "causes" for "moves with".
+**Outline of the process half:** superseded in Round 12 by the four first pillar candidates below. The twelve-item outline is preserved in git (`679e9f7`), and the mapping table below shows where each item went.
 
 **Evidence needed before drafting the market half** (when trend matters, when valuation matters, how macro evidence is used, how confirmation works):
 - the October cohort through D+20, read once under the frozen plan (~Nov 30);
@@ -720,3 +719,123 @@ NEW INFORMATION · OBSERVATION · MANDATE CHANGE
 - at least one completed paper trade or shadow, graded A/B/C/D.
 
 **Target:** draft `MARKET_DOCTRINE_v0.1.md` in early December. If the evidence is still thin by then, the doctrine waits.
+
+---
+
+## First pillar candidates (Round 12 — candidates, not doctrine)
+
+**How they were chosen.** Ten candidates (ChatGPT Round 12, A–J) and the twelve-item process outline were audited against ChatGPT's seven criteria: repeatedly useful, falsifiable, generalizable, durable, decision-relevant, resistant to narrative, simple. The full audit — strongest case, strongest criticism, where following it would harm — is in `ROUNDS.md` Round 12. They compress to **four**.
+
+**Qualifier that applies to all four.**
+- Each was used repeatedly *during design*: on one market day, in one regime, by two language models.
+- None has yet been tested against a completed outcome (evidence ledger, `README.md`).
+- Their durability rests mostly on established practice outside this project: pre-registration, separating observation from inference, the disposition-effect literature, staged capital.
+- This project has shown only that they apply here.
+
+### P1 — STATE BEFORE STORY, LABELLED HONESTLY (from A, B, J)
+
+**Statement.** Establish what changed before explaining it. Label every claim:
+- **OBSERVED** — a printed price or official number;
+- **DERIVED** — arithmetic on observed values (spreads, returns);
+- **MODEL ESTIMATE** — output of a model with assumptions (term premium, an option's estimated delta);
+- **INTERPRETATION** — an explanation or causal claim;
+- **PREDICTION** — a dated claim about the future;
+- **UNMEASURED** — when the evidence is missing.
+
+A proxy or a model never inherits the certainty of a measurement.
+
+**Why it survived.**
+- Measuring state overturned five claims of the Round 10 story (methodology finding 10).
+- The review then caught two claims in the *correction* carrying observed-grade certainty: the 55/45 term-premium split and oil → Fed.
+- VWAP `UNMEASURED` and the ACN level rule.
+
+**What could overturn or modify it.**
+- *Observation is theory-laden:* the gauge list is itself a model. If the fixed daily-state fields keep missing the variable that mattered (a surprise the gauges did not contain), state must add a periodic look outside the fixed fields.
+- *Labels may not stick:* if they go unapplied or blur in practice over ~30 daily states, the set collapses to three (OBSERVED / ESTIMATE / INTERPRETATION).
+- *The ordering itself (lane-2 review):* run a head-to-head through the Nov 4 review. Pit the Round 10 story's implied predictions (broad dollar strengthening with yields, gold falling with real yields, credit stress spreading, global long ends moving together) against the measured-state model's P1–P10. If the story-first account predicts better, state-first added nothing that time; after two such losses, P1 is demoted.
+
+### P2 — COMMIT BEFORE YOU LOOK (from C, I; absorbs outline items 7 and 12)
+
+**Statement.** Write the rule, the prediction or the expectation before the outcome, and judge against what was written. Disagreement with a written expectation is recorded, not explained away. A failure may change the next rule, never the past record.
+
+**Why it survived.** It is the most-used principle and the only thing that turns paper results into evidence instead of stories. Uses:
+- the ACN level kept as frozen;
+- lifecycle and mechanism annotations instead of edits;
+- the cohort plan frozen before UNH;
+- the Round 12 timestamp correction recorded as a note, not an edit;
+- Round 11's contradictions — but only half of them qualified against a narrative committed beforehand (`MARKET_MODEL.md` §7 re-screen).
+
+**Its own escape hatch (strongest criticism).** Rules changed "before first use" — the A-M v1 gate, PT-006's Oct 17 clause — were withdrawn by the same party that wrote them, judged as legitimate by that party.
+
+**What could overturn or modify it.**
+- Frozen records force us to record measurement errors more often than they block hindsight.
+- Shadows show the freezing process systematically locks in bad specifications. That would change how setups are written, not the principle.
+- Recorded times prove unreliable. Finding 11 showed they can; git commit time is now the authority.
+
+### P3 — THE DECISION CHAIN HAS SEPARATE LINKS (from E; absorbs outline items 1, 4 and 8)
+
+**Statement.** Thesis, timing, instrument and size are separate decisions, each with its own horizon and failure condition. A right thesis does not excuse a bad entry, a bad entry does not refute a thesis, and neither is judged by the outcome alone.
+
+**Guard.** A thesis without its own horizon and invalidation is not a thesis. Otherwise "thesis right, timing wrong" becomes a permanent excuse.
+
+**Why it survived.**
+- ACN: a +15.8% day, but the setup failed.
+- The HYG put: a sound hedge, rejected on price.
+- TLT: call vs shares.
+- SPY: put vs SH.
+- ITB: options illiquid, shares only.
+- PT-006: mechanism mis-specified, trigger still valid.
+- NFLX 2022: thesis vs concentration.
+
+**What could overturn or modify it.** Completed grades show the separation used mainly to excuse — say, most losing records graded "thesis confirmed". The separation would then be protecting theses rather than teaching, and thesis grading would need a stricter horizon rule.
+
+### P4 — CAPITAL FOLLOWS EVIDENCE (from F, D; absorbs outline items 5 and 6)
+
+**Statement (trading track).** Watching is broad and free; trading capital is narrow and earned. It climbs OBSERVATION → WATCH → SPECIFIED SETUP → PAPER → REPEATED EVIDENCE → MICRO-LIVE → SCALE. A gauge never becomes a position without a setup, and one win scales nothing.
+
+**Scope.** Long-horizon investments are *outside* P4: a ten-year thesis cannot be paper-traded. They are gated by underwriting (a written thesis, counter-thesis and invalidation), which rests on G — still PROVISIONAL.
+
+**Why it survived.** It said "no" consistently: ACN, the HYG put, MU's size, the live premium gates. It is why the watchlist did not become a shopping list.
+
+**Honest weakness.** It has only worked as a filter; no strategy has climbed a single rung.
+
+**What could overturn or modify it.**
+- Paper results fail to predict micro-live results (slippage, behaviour): the middle rungs are miscalibrated.
+- The ladder is so slow that capital moves outside it: then it is unusable as written. The evidence ledger's "decisions outside a written rule" count is the test.
+
+### Provisional, rejected and conventions
+
+| Candidate | Verdict | Reason | What would promote or retire it |
+|---|---|---|---|
+| **G — Underwritability sets role and size** (outline 3) | **PROVISIONAL** | One external case (NFLX) and one classification (TSM). An unmeasured judgement that can rationalise favourites and under-size early winners | The first post-earnings reviews (TSM Oct 15, LNG Oct 29, CBOE Oct 30) and a filled exposure map |
+| **H — Evaluate capital from today forward** (outline 11) | **PROVISIONAL**, with a modification adopted now | The disposition effect is well documented, but this principle has been used **zero** times here. For an active manager, "weakest forward case" can become a licence to churn. **Modification:** a swap needs a margin over the weakest source that covers costs, tax and estimation error; the default is no swap (`PROPOSAL.md` §7) | The first real reallocation decision, graded |
+| A — State before story, alone | **REJECT as standalone** → P1 | Observation is theory-laden; on its own it invites "we just looked at the data" | — |
+| J — Missing evidence stays missing, alone | **REJECT as standalone** → P1 | A special case of honest labels | — |
+| D — Gauges are not trades | **CONVENTION** (and P4's first rung) | Organises the roster; says nothing about markets on its own | — |
+| Outline 2 — Investing and trading are different problems | **CONVENTION** (the two-track structure) | True, but descriptive | — |
+| Outline 9–10 — Speculation lane; watch lifecycles | **CONVENTION** | Housekeeping that serves P2 and P4 | — |
+| Round 11's append-forever contradiction rule | **REPLACED** | A current model must stay readable. Resolved items now leave for `ROUNDS.md` under a lifecycle with guards (`MARKET_MODEL.md` §7) | — |
+
+**What promotes a pillar candidate to doctrine (MARKET_DOCTRINE_v0.1).** Each pillar needs at least one recorded instance where it changed or blocked a decision **and** the outcome of that decision is known and graded. The target is still early December, and still conditional.
+
+---
+
+## Gap map (Round 12)
+
+The smallest credible next step for each gap, not a solution. The **When** column keeps each step inside the build freeze (`README.md`).
+
+| Area | Gap | Why it matters | Smallest credible next step | When |
+|---|---|---|---|---|
+| **Market mechanics** | What moved the policy path: oil-driven inflation or growth / a higher neutral rate (base vs benign case) | It decides whether a duration turn needs oil to fall | No new work: P8 (2Y vs oil through October) and P10 (the Oct 28 FOMC rationale) | Now (no new structure) |
+| | Term premium rests on one lagged model (Kim–Wright) | The 55/45 split is load-bearing for PT-006's mechanism | Add the ACM estimate as a weekly cross-check — one series | At the Nov 4 review (a new gauge) |
+| | Gold's drivers (dollar vs real yields vs official buying) | Dustin's metals exposure | One monthly attribution table since 2022, read once | After Nov 4 (not urgent) |
+| **Business analysis** | Underwritability is judgement, not measurement; no thesis has yet been reviewed after new information | Role and size depend on it | Write the TSM review on Oct 15 against its stated invalidations **before** reading commentary | Oct 15 |
+| | Valuation discipline untested: every candidate was argued as "at or below the market multiple" | Easy to state, hard to keep | At each review, record the price against the price at which the thesis was written | At each review |
+| **Trading process** | Zero completed paper trades; zero cohort events; no vehicle comparison has run | Nothing yet distinguishes skill from story | Nothing to build. Triggers and the cohort (UNH Oct 13) will produce evidence; grade each completion within one session | As evidence arrives |
+| | The cohort read's detectable effect is not stated (n = 10) | A null may be read as "no edge", a lucky read as "edge" | State it: at n = 10 a single rank correlation needs about ±0.65 to clear 5% two-sided. The frozen plan reads several features across several horizons, so the effective noise floor is higher still. The read is calibration, not proof | Before Nov 30, as a dated annotation beneath the frozen plan |
+| **Risk** | Every control is conceptual: stops, premium caps, the −20% review, the correlation rule, the regime alarms — none has fired | Untested controls fail at the first real stress | The first micro-live trade logs adherence: stop executed as written? size as written? | At the first micro-live trade |
+| | No control for over-activity (Dustin describes himself as "probably over-active") | Trade frequency is a known retail leak | Count decisions taken outside a written rule (evidence ledger) | Now (evidence ledger) |
+| **Portfolio** | Whole-program exposures unknown (LIRA, TFSA, margin, metals, cash) | Roles, sizing and "what are we adding?" are all hypothetical | Dustin fills the schema (about ten rows). This is the one step only he can take | When Dustin is ready |
+| | The sleeve itself is unexecuted, yet the dated decisions are written as "tranche 2" | Oct 15 / 29 / 30 may be framed wrongly | Treat them as first-entry decisions unless tranche 1 is executed (`WATCHLIST.md` §7) | Done (`WATCHLIST.md` §7) |
+| **Data** | Daily-state observation is manual (dozens of reads per state) | Maintenance cost may kill the daily state | Run it by hand through the build freeze. Automate only the Observed fields, and only if the state survives | Through Nov 4 by hand; automation decided at Nov 4 |
+| | Breadth comes from a single source (thetrading.tools); there is no VWAP source | Frozen conditions depend on both | Find one cross-check for % above the 50-day; VWAP stays `UNMEASURED` | Now — a correction (it verifies an existing frozen input), not a new gauge |

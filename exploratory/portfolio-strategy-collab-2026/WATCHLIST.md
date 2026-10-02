@@ -30,7 +30,8 @@ Round 10's roster is in git history (commit `792fce3`).
 **Purpose: continuity.** Tomorrow's reasoning starts from today's state instead of reconstructing everything.
 - One line per field. Write "unchanged" where nothing moved.
 - Cite theses by name (`MARKET_MODEL.md` §6) and contradictions by ID (§7).
-- A new state is written below the last one; the previous state moves to `ROUNDS.md` only when a round closes.
+- Keep the **latest state and the one before it**; older states live in git history, one commit per state (Round 12: this page stays current; history stays recoverable). Daily states do not go into `ROUNDS.md`.
+- Template fields are fixed. A field is added or dropped only at a scheduled review (next: Nov 4), never because today's data looked interesting.
 
 ### Template
 
@@ -111,7 +112,7 @@ CAPITAL-MOVING Dated decisions within 5 sessions · alarms tripped · live-capit
   - It is tested against the benign alternative by P5, P6, P8 and P10, with P8 and P10 testable without any oil move.
 - **Best alternative: growth-led normalisation.** Strong profits justify higher real rates; nothing cascades; yields stay high even if oil falls.
 - **Second alternative (less supported, not by a wide margin): fiscal/term-premium stress** ending in a funding accident. Term premium is a large minority, and the curve has bear-steepened mildly.
-- **Round 10 statements corrected** (logged as contradictions, not erased):
+- **Round 10 statements corrected** (logged in `MARKET_MODEL.md` §7, not erased; C-006 is graded a research note):
   - "the pressure is global" (C-009);
   - "the dollar is transmitting the shock" (C-001);
   - "gold reflects real-yield pressure" (C-002);
@@ -191,6 +192,8 @@ Full plans and annotations are in `PAPER_TRADES.md`.
 | **UNH** | A | First cohort event; a damaged leader | The cohort event itself (PT-011 pre-registered the evening before) | Oct 13 |
 
 ## 7. What would actually cause capital to move (decision points, dated)
+
+**Note (Round 12):** the sleeve is **not executed** (`PROPOSAL.md`). The "tranche 2 / third share" decisions below assume a first tranche that does not yet exist. Unless Dustin executes tranche 1 first, each date is a **first-entry** decision under the same written conditions.
 
 | Date | Decision | Rule already written | Where |
 |---|---|---|---|

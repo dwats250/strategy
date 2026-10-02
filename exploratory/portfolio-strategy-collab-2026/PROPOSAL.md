@@ -1,6 +1,6 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 11 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 11 formalises the capital-reallocation principle (§7) and adds no instrument (the rates/credit instrument screen is in `MARKET_MODEL.md` §4 and moved nothing here). Round 10 recorded that roles are program-level (§2). Round 9 added the informational role reading. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
+**Version:** Round 12 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 12 adds a no-churn hurdle to §7 and marks it provisional. Round 11 formalised the capital-reallocation principle (§7) and adds no instrument (the rates/credit instrument screen is in `MARKET_MODEL.md` §4 and moved nothing here). Round 10 recorded that roles are program-level (§2). Round 9 added the informational role reading. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
 the live/paper gates, the option-slot wording and the LNG/CME thesis statements (analyses in `ROUNDS.md`,
 Rounds 4–6; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
@@ -144,7 +144,7 @@ contaminate the evidence the lab produces.
 
 ## 7. Capital reallocation — which dollar has the weakest forward case? (Round 7; principle formalised Round 11)
 
-**Principle (preserved for the doctrine, `RESEARCH_MAP.md` principle 11):**
+**Principle (preserved for the doctrine; `RESEARCH_MAP.md`, First pillar candidates — H, PROVISIONAL):**
 > When new capital is needed, evaluate all available sources from the present forward. Unrealized gain or loss is not itself a reason to keep or sell an asset.
 
 The question is **"Which dollar has the weakest forward case?"**
@@ -170,6 +170,8 @@ Fill one column per candidate source:
 **Decision rule:** proceed only if the opportunity's forward case beats the weakest source's
 forward case on thesis quality and evidence, net of tax and costs — not merely because it is more
 exciting.
+- **Hurdle (Round 12).** "Forward case" is an estimate, and re-ranking every dollar invites churn, especially for an active manager. **The default is no swap.** A swap needs a margin over the weakest source large enough to cover costs, tax *and* estimation error, and that margin is written down before the trade.
+- **Status:** this principle is **PROVISIONAL**, not a first pillar candidate. It has not yet been used in a real decision (`RESEARCH_MAP.md`, First pillar candidates).
 - "I need money for this trade" → **NO**.
 - "It's down; I'll wait to get back to even" → not a reason.
 - "It's up; take profits" → not a reason.

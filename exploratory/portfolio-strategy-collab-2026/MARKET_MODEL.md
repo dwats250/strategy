@@ -4,13 +4,20 @@
 
 **Created:** Round 11 — Claude (Opus 5.5) · 2026-10-01 · values are the Oct 1 close unless dated otherwise. The daily page is `WATCHLIST.md` (Market Roster); it carries the compact **DAILY STATE**, which cites this file by section, thesis name and contradiction ID.
 
-**Edit rules (different from `RESEARCH_MAP.md`, which is why this is a separate file):**
+**Edit rule (revised Round 12): this file is current understanding only.** It must stay readable; history must stay recoverable. Those are different goals with different homes: history lives in `ROUNDS.md` and git.
+
 | Section | Rule |
 |---|---|
-| §1–§5 (map, links, causality, instruments, missing cogs) | Current understanding: updated in place, with a one-line note in `ROUNDS.md` |
-| §6 Thesis register | **State history is append-only.** Each state change adds a dated line with its evidence; old lines are never rewritten |
-| §7 Contradictions log | **Append-only.** New entries get the next ID; an entry's status changes by a dated line beneath it, never by editing the entry |
+| §1–§5 (map, links, causality, instruments, missing cogs) | Updated in place, with a one-line note in `ROUNDS.md` |
+| §6 Thesis register | Shows each thesis's **current** state and its **last** change (date + evidence). Older changes move to `ROUNDS.md` when the round closes |
+| §7 Contradictions | Shows **OPEN** entries and those resolved during the current round. Resolved entries move to `ROUNDS.md`, with their resolution, when the round closes. **Nothing leaves without a written status and the evidence for it** |
 | §8 Adversarial challenge | Redone whenever the base case changes; earlier versions stay in `ROUNDS.md` |
+
+*Round 11 had made §6 and §7 append-only. Round 12 replaced that rule (ChatGPT Round 12 §7): git already guarantees recoverability, and a log that only grows stops being read.*
+
+**Two label axes.**
+- **Claims** carry evidence labels (pillar P1, `RESEARCH_MAP.md`): OBSERVED · DERIVED · MODEL ESTIMATE · INTERPRETATION · PREDICTION · UNMEASURED.
+- **Relationships** carry the causality labels below. The causality label OBSERVED means *seen in the current data over a stated window*, which is still not causation.
 
 **Causality labels used throughout (ChatGPT Round 11 §3).** We do not write "X causes Y" when all we know is that X and Y are moving together.
 - **MECHANICAL:** an identity or a contractual or rule-based link, such as nominal = real + breakeven, a mortgage priced off Treasuries, or a vol-target fund's sizing rule.
@@ -189,79 +196,99 @@ States: **FORMING · ACTIVE · STRENGTHENING · WEAKENING · INVALIDATED · DORM
 | **SYSTEMATIC DELEVERAGING** | **FORMING** (fuel without trigger) | Exposure at the 98th (Deutsche Bank) to 100th (BofA, secondary) percentile; VIX 16.4; realised vol low | VIX > 20 with realised vol rising and the index below its 50-day | Exposure normalises without a drawdown |
 | **FUNDING / PLUMBING STRESS** | **DORMANT** | SOFR = IORB at quarter-end; SRF $1.2B; reserves $2.95T; RRP ≈ 0 | SOFR − IORB > +5 bp outside month-ends (watch) or > +10 bp outside quarter-ends (alarm); SRF > $10B | — |
 
-**State history (append-only)**
+**Last state changes (this round; moved to `ROUNDS.md` when the round closes)**
 - 2026-10-01 · Register opened (Round 11). Initial states as above. Two changes from Round 10's implicit narrative:
   - GOLD AS A RATE CASUALTY: implied ACTIVE → **WEAKENING** (evidence: §2 link 11).
   - "Long-rate stress" as the headline: implied ACTIVE → split into **POLICY-LED REAL-RATE REPRICING — ACTIVE** and **LONG-RATE STRESS TRANSMISSION — FORMING** (evidence: §2 links 3–4).
   - OIL SUPPLY SHOCK → FED REACTION opened at **FORMING**, not ACTIVE: the Sep 16 statement does not name energy, so the link is inferred (lane-2 review finding, before commit).
 
-## 7. Contradictions log (append-only)
+## 7. Contradictions (current: open and recently resolved)
 
 A contradiction is not an error. It is an observation that differs from what our working explanation would normally imply. We record it, accumulate it, and do not rewrite the thesis on one. Repeated contradiction against the same thesis is evidence the model is weak.
 
-Status vocabulary: **OPEN · RESOLVED-FOR (the thesis) · RESOLVED-AGAINST · STALE** (no discriminating evidence arrived within its window).
+**Lifecycle (revised Round 12):**
+- **OPEN** — recorded; waiting for its discriminating evidence.
+- **EXPLAINED** — the discriminating evidence named in the entry arrived and favoured an explanation compatible with the current model. **A new story without that evidence does not count:** the entry stays OPEN. This is the guard against explaining contradictions away.
+- **MODEL UPDATED** — the evidence favoured an explanation the current model did not hold, and §1–§6 were changed. The entry names what changed.
+- **INCONCLUSIVE** — the window closed (default six weeks unless the entry says otherwise) without discriminating evidence.
+
+**Admission rule (Round 12).** A new contradiction must be against a **written** expectation that predates the observation: a link's confirmation or contradiction cell in §2, a prediction P1–P10 or condition W1–W5, or a thesis's up/down condition in §6. A divergence noticed by scanning many series is a *research note*, not a contradiction. This protects against noticing only the interesting variables.
+
+*Round 11's vocabulary (OPEN · RESOLVED-FOR · RESOLVED-AGAINST · STALE) maps to OPEN · EXPLAINED · MODEL UPDATED · INCONCLUSIVE.*
+
+*Round 12 re-screen (prompted by the lane-2 review).* Round 11 admitted all ten entries, but only five had an expectation written before the observation, in the committed Round 10 roster (`792fce3`): C-001, C-002, C-003, C-005, C-009. The other five (C-004, C-006, C-007, C-008, C-010) were expectations written beside the data. They are kept, because each names a discriminating test, but they are graded **RESEARCH NOTE** and do not count toward any thesis's three-contradiction review. **Half of Round 11's log was post-hoc — a concrete instance of the forking-paths risk.**
 
 **C-001 · 2026-10-01 · Dollar · OPEN** (against DOLLAR AS A TRANSMISSION CHANNEL)
+- *Grade (Round 12 re-screen):* **CONTRADICTION** — written beforehand in `792fce3` WATCHLIST §1: "the dollar is at a 52-week high", listed as a channel the rate shock was transmitting through.
 - *Observed:* 10Y +85 bp since Jun 30, but the broad dollar is −0.5% (to Sep 25). DXY's 52-week high comes from euro weakness; the yen rose 3%.
 - *Expected under the Oct 1 narrative:* a broad dollar rally.
 - *Possible explanations:* (a) foreign yields rose too, keeping differentials stable; (b) the dollar is pricing a US-specific risk premium (fiscal) that offsets rate carry; (c) the dollar response is lagged — September's +1.5% is the start.
 - *Discriminating evidence:* broad dollar vs the US−Bund and US−JGB 2Y spreads over October. (c) predicts a further broad rise; (b) predicts yields up and the dollar down on supply news (the refunding, Nov 4).
 
 **C-002 · 2026-10-01 · Gold · OPEN** (against GOLD AS A RATE CASUALTY)
+- *Grade:* **CONTRADICTION** — `792fce3` WATCHLIST: "gold is −4% over a month" listed as a transmission channel; gauge reading "real-yield/dollar pressure".
 - *Observed:* 10Y real +73 bp since Jun 30, yet gold (front future) +4% (4,038 → 4,212). June's −12% came with the 10Y flat (but 5Y real +32 bp and the broad dollar +1.7%).
 - *Expected:* gold falling with real yields.
 - *Possible explanations:* (a) official-sector buying sets a floor (Q2 289t, +62% y/y; PBoC 22 months running); (b) gold trades the dollar month to month, not real yields; (c) a geopolitical hedge (LOOP-6) offsets opportunity cost.
 - *Discriminating evidence:* the next month in which real yields and the dollar move in *opposite* directions. Gold following the dollar → (b). Gold flat through both → (a).
 
 **C-003 · 2026-10-01 · Financial conditions · OPEN** (against "rate shock → tightening")
+- *Grade:* **CONTRADICTION** — `792fce3` WATCHLIST gauge reading: "yields tightening conditions through the dollar".
 - *Observed:* NFCI −0.548 (Sep 25) and STLFSI −0.81 are both looser than on Jun 30 (−0.514; −0.64).
 - *Expected:* conditions tightening.
 - *Possible explanations:* (a) equity strength and tight IG spreads outweigh rates in the index; (b) the index lags; the last week's HY widening is not in it; (c) the rate shock is being absorbed (benign alternative).
 - *Discriminating evidence:* the NFCI for the weeks ending Oct 2 and Oct 9 (published Oct 7 and Oct 14). (b) predicts a jump; (c) predicts no change.
 
 **C-004 · 2026-10-01 · Credit dispersion · OPEN** (against CCC TAIL REPRICING as a hiking-channel story)
+- *Grade:* **RESEARCH NOTE** — the "floating-rate borrowers hurt first" expectation was written in Round 11 beside the observation. It does not count toward a thesis tally.
 - *Observed:* CCC OAS +209 bp since Jun 30 (wider than in March's stress), while floating-rate loan prices (BKLN) are flat (total return +2.2%) and IG is +8 bp.
 - *Expected under the hiking channel:* floating-rate borrowers (loans) hurt first.
 - *Possible explanations:* (a) the CCC widening is sector-specific (not rate-driven); (b) loans lag because coupons reset upward and defaults come later; (c) the fixed-rate CCC tail faces a refinancing wall at much higher rates.
 - *Discriminating evidence:* loan prices and default headlines over the next 4–6 weeks. BKLN below 20.21 supports (b). Stable loans with continued CCC widening supports (a) or (c).
 
 **C-005 · 2026-10-01 · Earnings vs discount rate · OPEN** (against INDEX_DOWNSIDE, PT-005, and "rates pressure equities")
+- *Grade:* **CONTRADICTION** — against the explanation written in `792fce3` WATCHLIST §1: "The headline index is held up by a narrow set of leaders and by mechanical positioning."
 - *Observed:* the 10Y is at 5.24%, yet the S&P forward P/E is 19.2 (10-year average 19.0) and Q3 estimates *rose* 1.3% during the quarter (5-year norm −2.2%). The forward earnings yield (5.21%) ≈ the 10Y yield.
 - *Expected:* multiple compression.
 - *Possible explanations:* (a) earnings growth (+29% Q3, +32% CY26) is outrunning the discount-rate effect; (b) concentration: a few megacaps and energy carry the aggregate; (c) the equity risk premium is compressed and fragile.
 - *Discriminating evidence:* the Q3 season (from mid-October). Broadening beats and guidance → (a). Beats confined to tech and energy with misses elsewhere → (b). P/E falling on in-line results → (c).
 
 **C-006 · 2026-10-01 · Volatility split · OPEN** (against link 14)
+- *Grade:* **RESEARCH NOTE** — Round 10 posed rate-vol → equity-vol as a *question*, not a prediction. The "within weeks" expectation was written in Round 11. (Round 10's "Calm" reading is corrected in §8; that is a description, not a failed prediction.)
 - *Observed:* MOVE 108, near its March peak (115), while VIX is 16.4, half its March peak (31.1). VIX is ordinary (200-day 18.1), not "unusually calm". The anomaly is the gap.
 - *Expected:* rate vol of this size reaches equity vol within weeks, as it did in March.
 - *Possible explanations:* (a) earnings strength anchors equity vol; (b) systematic and short-vol positioning suppresses realised vol until it breaks (LOOP-3); (c) March was a joint oil-and-growth shock, while today is a policy-path shock that equities consider benign.
 - *Discriminating evidence:* VIX on CPI (Oct 14) and FOMC (Oct 28) days. VIX > 20 with realised vol rising → (b). VIX steady while the MOVE falls → (c).
 
 **C-007 · 2026-10-01 · Yen · OPEN**
+- *Grade:* **RESEARCH NOTE** — no prior written expectation about the yen.
 - *Observed:* the US−JGB 10Y spread widened (US +85 bp since Jun 30; JGB +27 bp since Jul 6), yet the yen rose 3% against the dollar.
 - *Expected:* a wider differential weakens the yen.
 - *Possible explanations:* (a) the BoJ hike (Sep 18, to 1.25%) narrowed *front-end* differentials; (b) repatriation (Japanese banks sold ~$70B of foreign bonds this year, per Reuters); (c) intervention risk above 160.
 - *Discriminating evidence:* USD/JPY on US data surprises in October. If it stops responding to US yields, (b) gains.
 
 **C-008 · 2026-10-01 · Oil vs breakevens · OPEN** (against "oil → inflation expectations → long yields")
+- *Grade:* **RESEARCH NOTE** — the chain appeared only as an illustrative loop in ChatGPT's Round 11 prompt. Round 10 had already recorded that the move was mostly real yield.
 - *Observed:* WTI +34% since Jun 30 and headline CPI 3.4%, but the 10Y breakeven rose only +12 bp; 5y5y is 2.36%.
 - *Expected under the prompt's example chain:* breakevens leading yields higher.
 - *Possible explanations:* (a) the steeply backwardated curve tells markets the shock is temporary; (b) the Fed's hike anchored expectations, so the transmission ran through real yields instead.
 - *Discriminating evidence:* if breakevens rise > 2.5% while oil holds, the inflation-expectations channel is opening and the base case is re-specified ("the Fed is behind").
 
 **C-009 · 2026-10-01 · Our own Round 10 narrative · OPEN**
+- *Grade:* **CONTRADICTION** — `792fce3` WATCHLIST §1: "The pressure is global: JGB 10Y 3.10%, French OATs at 2002 highs."
 - *Observed:* in the last month US 10Y +46 bp, Bund +15, JGB +8, Gilt +21, Canada +13. Only France (+65) and Italy (+47) kept pace.
 - *Expected (Round 10 §1):* "the pressure is global".
 - *Possible explanations:* (a) a US-specific policy shock; (b) global term premium plus a euro-periphery fiscal story.
 - *Discriminating evidence:* on the next long-end selloff day, check whether Bund and JGB move ≥ half as much as the US.
 
 **C-010 · 2026-10-01 · Rate vol vs mortgage spreads · OPEN**
+- *Grade:* **RESEARCH NOTE** — no prior written expectation about MBS spreads.
 - *Observed:* MOVE +65% in 3 months, while the mortgage–Treasury spread (~2.0 pp) and MBS OAS (MBB 38.5 bp, Sep 30; current coupon ~36 bp per Goldman, Sep 17) are unchanged.
 - *Expected:* high rate vol widens MBS spreads through negative-convexity hedging.
 - *Possible explanations:* (a) the deep-discount MBS universe (WAC 3.63%) has little prepayment optionality left; (b) bank and overseas MBS demand at these yields.
 - *Discriminating evidence:* MBB underperforming IEF duration-adjusted by > 1% over a month while the MOVE stays > 100 → spread transmission returns.
 
-**Tally (Oct 1):** 10 OPEN, one each against: the dollar channel (C-001), gold as a rate casualty (C-002), "rate shock → tightening" (C-003), the CCC hiking channel (C-004), rates-pressure-equities / INDEX_DOWNSIDE (C-005), vol transmission (C-006), the yen differential (C-007), the oil → inflation-expectations chain (C-008), "the pressure is global" (C-009) and MBS spread transmission (C-010). No thesis has three yet.
+**Tally (Oct 1, after the Round 12 re-screen):** 10 OPEN — 5 CONTRADICTIONS (C-001 dollar channel, C-002 gold, C-003 tightening, C-005 index support, C-009 "global") and 5 RESEARCH NOTES (C-004, C-006, C-007, C-008, C-010). No thesis has three contradictions.
 
 ## 8. Adversarial challenge to the Oct 1 narrative (mandatory, Round 11 §14)
 

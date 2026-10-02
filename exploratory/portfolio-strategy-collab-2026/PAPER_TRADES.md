@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed. Round 12: §12 provenance correction (timestamps), no record edited.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -475,3 +475,17 @@ These are dated annotations. **No trigger, invalidation, exit, time stop or vehi
 | PT-005 SPY | Its strongest counter-evidence is logged as contradiction **C-005**: Q3 estimates rose 1.3% during the quarter, and the forward P/E (19.2) sits at its 10-year average. The Nov 2 monthly review reads C-005 alongside the five frozen conditions. Nothing changed | BREADTH / RATE-SENSITIVE ROTATION — ACTIVE · INDEX EARNINGS OFFSET — ACTIVE · SYSTEMATIC DELEVERAGING — FORMING |
 
 **Regime review, 2026-10-01 close (PT-006 / PT-009), unchanged from §10:** M1 not met, M2 not met, M3 at the next weekly close. **Status: ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-01.**
+
+---
+
+## 12. Round 12 provenance correction (dated note; no record edited)
+
+Times written into Rounds 9–11 were estimated rather than read from a clock, and they run ahead of the commits that contain them. **The git commit time is authoritative** (`RESEARCH_MAP.md` methodology finding 11).
+
+| Where | Written | Committed (git) | Effect |
+|---|---|---|---|
+| Setup A-M v2 "frozen 2026-10-01 18:15 ET" (§5) | 18:15 ET | `f4757b7`, 17:48 ET | None: frozen before its first possible use (TSM, Oct 15) |
+| §10 lifecycle annotations "19:30 ET"; cohort analysis plan "frozen 19:30 ET" (`RESEARCH_MAP.md`) | 19:30 ET | `792fce3`, 18:47 ET | None: both precede UNH (Oct 13) |
+| §11 mechanism annotations "~23:30 ET" | 23:30 ET | `679e9f7`, 20:25 ET | None: no event depends on them |
+
+PT-001 to PT-010 ("written 14:10 ET") match their commit (`8e532d7`, 14:13 ET). Rounds 5–8 were checked: their written times fall within minutes of their commits. From Round 12 on, a time in this file is either read from a clock or written as "see commit".

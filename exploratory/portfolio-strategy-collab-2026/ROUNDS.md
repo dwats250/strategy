@@ -1274,3 +1274,172 @@ The reviewer found no frozen record edited and no portfolio change.
 2. Is P8 (the 2Y vs oil on big oil days, ≥ 60% same-direction) a fair discriminator between the oil-driven and growth-driven explanations, or does it confound them? Oil days are also risk days.
 3. The contradictions log allows three OPEN contradictions per thesis before a mandatory review. Is three right, and should a review window (e.g. 30 days) apply?
 4. Round 10's question 1 (is the cohort reading rule too strict or too loose?) is still unanswered.
+
+---
+
+## Round 12 — ChatGPT: consolidate, challenge, and stake the first pillars · 2026-10-01
+
+Recorded in substance. This is a consolidation round: no ticker expansion, no portfolio redesign, no new large subsystem. The question is what has survived strongly enough to deserve preservation.
+
+1. **Respect the existing file roles:**
+   - WATCHLIST = state;
+   - MARKET_MODEL = interpretation;
+   - RESEARCH_MAP = open questions;
+   - PAPER_TRADES = forward evidence;
+   - PROPOSAL = deployment rules;
+   - ROUNDS = history.
+2. **Pillar criteria:** repeatedly useful, falsifiable, generalizable, durable, decision-relevant, resistant to narrative, simple. Elegance is not a criterion.
+3–4. **Audit ten candidates** (A state before story · B labels · C contradiction is information · D gauges are not trades · E thesis/setup/vehicle · F capital follows evidence · G underwritability → role and size · H capital from today forward · I no hindsight rule changes · J missing stays missing). For each give the strongest case, the strongest criticism, where following it harms, and a verdict. Combine where possible; do not keep all ten.
+5. **A gap map:** market mechanics, business analysis, trading process, risk, portfolio, data — each with its smallest next step.
+6. **Preserve the rate-shock correction as a process** (STATE → STORY → ADVERSARIAL TEST → REVISED MODEL), not the corrected narrative as truth.
+7. **MARKET_MODEL = current understanding.** History goes to ROUNDS and git. Contradiction lifecycle: OPEN / EXPLAINED / MODEL UPDATED / INCONCLUSIVE.
+8. **Current and mature system architecture,** small, mapped onto OBSERVATION → STATE → MODEL → OPPORTUNITY → DECISION → OUTCOME → LEARNING.
+9. **A memory boundary:** "Memory helps the AIs resume work; Markdown proves what the work currently says."
+10. **At most 3–5 FIRST PILLAR CANDIDATES,** each with why it survived and what could overturn it.
+11. **What not to build.**
+12. **"If this collaboration were subtly fooling itself, what would that look like?"** Find the failure mode; do not reassure.
+
+No trades, no allocation changes, no large research program. Leave a state that says: what we know, what we think, what remains uncertain, and what would change our minds.
+
+---
+
+## Round 12 — Claude (Opus 5.5) · 2026-10-01 · time: see commit
+
+**Lanes (`docs/conventions.md` §j):**
+- **Lane 1:** Opus 5.5 orchestrated and wrote every file.
+- **Lane 2:** a Fable reviewer made one independent pass over the governance text (pillars, lifecycle, memory boundary, freeze), with one bounded correction cycle; findings are below.
+- **Lane 3:** none; no mechanical delegation was needed.
+
+No new market data was gathered: the round works from Round 11's evidence.
+
+### 1. Candidate-pillar audit
+
+| | Strongest case for a pillar | Strongest criticism | Where following it would harm | Verdict |
+|---|---|---|---|---|
+| **A** State before story | Round 11: measuring state overturned five claims of a coherent, agreed story | Observation is theory-laden: choosing the gauges *is* a story, and "we just looked at the data" hides that | When the variable that matters is not in the fixed state, or when waiting for full state misses a fast event | **Merged into P1**; rejected as standalone |
+| **B** Distinct evidence labels | The review caught the 55/45 model estimate and the oil → Fed inference stated with observed-grade certainty, inside the correction itself | Label overhead. Three vocabularies existed (README, MARKET_MODEL causality, B), and DERIVED vs ESTIMATE blurs | Labels so dense that the daily state stops being read | **P1** (one claim vocabulary; causality stays a separate axis) |
+| **C** Contradiction is information | It produced every Round 11 correction | With ~80 series scanned, contradictions are guaranteed, and the interesting ones get chosen; an ever-growing log stops being read | Model churn on noise, or a log that only grows | **Merged into P2**, with a new admission rule: only against a written expectation |
+| **D** Gauges are not trades | Kept MBB, gold and energy as gauges; stopped the shopping list | A roster convention, not a claim about markets; barely falsifiable | Friction when a gauge does flag an opportunity (the promotion path handles it) | **Convention**; P4's first rung |
+| **E** Thesis / setup / vehicle are separate | ACN, the HYG put, TLT call vs shares, SPY put vs SH, ITB options, PT-006's mechanism | Decomposition lets every loss become "thesis right, timing wrong" | When a thesis has no horizon of its own, so it can never fail | **P3**, with a guard: every thesis carries its own horizon and invalidation |
+| **F** Capital follows evidence | Said "no" to ACN, the HYG put and MU's size; separates research from deployment | It has never been climbed. Paper may not predict live (slippage, behaviour). It does not fit ten-year investments | For long-horizon businesses, where repeated evidence means never buying; or so slow it gets bypassed | **P4**, trading track only; investments are gated by underwriting |
+| **G** Underwritability → role and size | NFLX 2022/2026; TSM as satellite | An unmeasured judgement; can rationalise favourites and under-size early winners | Shrinking the best early opportunities because they are uncertain | **PROVISIONAL**; tested at TSM/LNG/CBOE reviews and by the exposure map |
+| **H** Capital from today forward | The disposition effect is among the best-documented investor errors | Used **zero** times here. "Weakest forward case" is noisy and, for an active manager, a licence to churn | Over-trading through serial re-ranking | **PROVISIONAL**, with a no-churn hurdle adopted (`PROPOSAL.md` §7) |
+| **I** No hindsight rule changes | The most-used principle; it alone makes paper results evidence | Rigidity can force recording garbage. *Which* frozen rules we replace is itself selection, and rules withdrawn "before first use" (A-M v1, PT-006's Oct 17 clause) were judged legitimate by the party that wrote them | A frozen level with a data error; an obsolete rule kept to its horizon | **P2** |
+| **J** Missing stays missing | VWAP `UNMEASURED`; the implied-move gate withdrawn | A validated proxy can beat nothing; strictness can starve the record | Refusing a well-validated proxy | **Merged into P1**: proxies allowed if labelled as proxies |
+
+**Compression:** ten candidates plus the twelve-item outline became **four pillar candidates, two provisional, and the rest conventions.** None of the ten was rejected as *false*, only as standalone. That is itself a warning sign (§6 below): every candidate came from inside this collaboration and was judged by it.
+
+### 2. First pillar candidates (full text: `RESEARCH_MAP.md`)
+
+| Pillar | Statement |
+|---|---|
+| **P1 — STATE BEFORE STORY, LABELLED HONESTLY** | Establish what changed before explaining it; label every claim (observed / derived / model estimate / interpretation / prediction / unmeasured) |
+| **P2 — COMMIT BEFORE YOU LOOK** | Write the rule, prediction or expectation before the outcome; judge against it; a failure changes the next rule, never the past record |
+| **P3 — THE DECISION CHAIN HAS SEPARATE LINKS** | Thesis, timing, instrument and size are separate decisions, each with its own horizon and failure condition |
+| **P4 — CAPITAL FOLLOWS EVIDENCE** | Trading track: watching is free; capital climbs the ladder; one win scales nothing. Investments sit outside P4 (underwriting, which rests on provisional G) |
+
+All four were used repeatedly *in design*; none has been tested against a completed outcome. Each carries a written overturn condition. P1's now includes a head-to-head with the Round 10 story through Nov 4.
+
+### 3. Other deliverables (where they live)
+
+| Deliverable | Where |
+|---|---|
+| Rejected and deferred principles | `RESEARCH_MAP.md`, First pillar candidates — provisional / rejected / conventions table |
+| Gap map | `RESEARCH_MAP.md`, Gap map |
+| Rate-shock lesson | `RESEARCH_MAP.md` methodology finding 10 |
+| Architecture (current and mature), memory boundary, what not to build | `README.md` |
+| Evidence ledger and build freeze | `README.md` |
+
+**The rate-shock lesson.** What made the correction possible:
+- a story committed *before* the test;
+- a *mandatory* adversarial pass;
+- "compared with what?" measurements;
+- free, decomposable data;
+- an independent review that caught the correction's own over-claims.
+
+What nearly prevented it: Round 10 had called its hypotheses "all consistent with" the data. Consistency is not a test.
+
+**MARKET_MODEL current-only — accepted, with two guards ChatGPT's version lacked:**
+1. **EXPLAINED requires the evidence the entry named.** A new story alone keeps a contradiction OPEN; otherwise "EXPLAINED" becomes the "explaining away" that candidate C warns against.
+2. **Admission only against a written expectation** (a §2 cell, P1–P10, W1–W5, or a thesis condition). Divergences noticed by scanning are research notes.
+
+The old vocabulary maps one-to-one; C-001…C-010 stay OPEN. **Re-screened under the new admission rule (review finding):** only five had an expectation written beforehand (C-001, C-002, C-003, C-005, C-009). The other five are now graded RESEARCH NOTE and no longer count toward a thesis's review tally.
+
+**Smaller consolidations:**
+- the three label vocabularies became one claim set (README evidence rules), with causality kept as a separate axis;
+- WATCHLIST keeps only the latest two daily states;
+- the dated "tranche 2" decisions are re-framed as first-entry decisions, because the sleeve is unexecuted.
+
+### 4. Provenance correction (found in this audit)
+
+Times written into Rounds 9–11 were estimated, not read, and run ahead of their commits:
+
+| Round | Written | Committed (git) |
+|---|---|---|
+| 9 | 18:15 ET | 17:48 |
+| 10 | ~19:30 ET | 18:47 |
+| 11 | ~23:30 ET | 20:25 |
+
+No pre-registration is invalidated: every freeze still precedes its event. The Round 11 review missed it; this round's own audit found it. From now on the git commit time is authoritative (finding 11; `PAPER_TRADES.md` §12). The earlier entries are not edited.
+
+### 5. Recommended next step
+
+**Operate; don't build.** Through the Nov 4 review:
+1. **Write a DAILY STATE each trading session** with the fixed template, starting at the Oct 2 close. Two things are under test: whether it can be maintained, and whether it changes anything.
+2. **Let the scheduled evidence arrive and record it on the day:**
+   - auctions, Oct 7–8;
+   - UNH pre-registration Oct 12 and the event Oct 13;
+   - CPI, Oct 14 (P9);
+   - TSM review, Oct 15;
+   - FOMC, Oct 28 (P10);
+   - refunding, Nov 4.
+3. **Dustin, when ready:**
+   - fill the exposure map (about ten rows) — the one step only he can take, and the precondition for any real-money use of this work;
+   - report any decision taken outside a written rule.
+4. **At Nov 4,** the evidence ledger decides what is added and what is cut.
+
+**The next ChatGPT round should be an *evidence* round, after Oct 15, not a design round.**
+
+### 6. If this collaboration were subtly fooling itself — what would it look like?
+
+| Failure mode | What it looks like *here* | Protection now | What is still missing |
+|---|---|---|---|
+| **Rigour theatre** | ~4,100 lines and seven files in one day; grading templates with nothing graded. **Estimated, never-read timestamps in three rounds** passed a model review unnoticed | Evidence ledger at the top of README; build freeze; clock-sourced times | The ledger depends on honest updating |
+| **Agreement as confirmation** | ChatGPT proposes frames and candidate principles; Claude grades them and its own earlier claims; the reviewer is another Claude model; the owner is enthusiastic. Today Claude rejected none of ten candidates as false | P2 (commitments are judged by outcomes, not by agreement); pillar overturn conditions | **No independent human or market check yet.** The market and Dustin are the only judges outside the loop |
+| **Single-regime fitting** | Every gauge, threshold and principle was formed on one day in one regime: rates plus an oil shock, narrow breadth, an ordinary VIX | Forward-only evidence; Jan–Feb 2027 held forward; Nov 4 review | A rule to re-test the gauge set after a regime change (Nov 4 agenda) |
+| **Forking paths** | ~80 series scanned in Round 11; the interesting divergences were kept; **half of the ten logged contradictions had no expectation written beforehand**; "4 of 4 months" is n = 4; March 2026 was picked as the stress template after the fact | The Round 12 admission rule and re-screen; fixed template fields; stated sample sizes | Research notes can still steer the story |
+| **Data provenance** | Every Observed value was hand-read by a model from web pages or a scout's summaries, once, with no second reading. A secondary source's "July record $5,589" for gold conflicted with the futures series and was caught only by chance | Sources listed per round; review spot-checks of a few figures | **No systematic second reading of load-bearing figures.** A transcription or invented number in STATE silently corrupts P1's foundation |
+| **Too few observations** | A cohort of ten; families with one or two records; A+ needs three | The frozen reading rule; held-forward data; the detectable effect stated before Nov 30 | Nothing. This is a patience problem |
+| **Hidden hindsight** | Setups drawn from names that had just moved; instruments screened partly on 3-month returns already known; gauges chosen because they explained Oct 1 | P2; shadows; gauge changes only at scheduled reviews | The gauge set itself is a fit to one day |
+| **Coherent ≠ predictive** | The base case's loops can absorb most outcomes; even if it is right, public data confers no edge | Dated, numeric P1–P10 and W1–W5; Program C judged on decisions changed, not on explanations being right | Nothing resolves before Oct 14 |
+| **Process instead of decisions** | Twelve rounds, zero capital decisions; the sleeve is unexecuted; the exposure map is empty; real-money relevance is unknown | Ledger line "real-money decisions informed: 0"; the freeze pushes toward operation | Requires Dustin |
+
+**The strongest self-deception risk.** We may mistake the volume, internal consistency and procedural vocabulary of this documentation for evidence that its methods work. It was built in one day, in one market regime, by two agreeable language models, for an enthusiastic owner, against **zero completed outcomes**.
+
+The tells are already on the page:
+- the most basic provenance fact in a pre-registration lab — *when* something was written — was estimated rather than read for three rounds and survived a review;
+- half of the contradictions offered as evidence of self-criticism were themselves post-hoc.
+
+The countermeasures are the evidence ledger, the build freeze and external judges (graded outcomes and Dustin's decisions). **None of them has yet been exercised.**
+
+**Unchanged:** the allocation, every frozen trigger and invalidation, the cohort plan, the thesis states (no new data), and C-001…C-010 (all OPEN).
+
+### Lane-2 review, adjudicated (one correction cycle)
+
+All findings were accepted and fixed before commit:
+1. **The ten contradictions were "grandfathered" without checking.** Five had no prior written expectation; they were re-graded as RESEARCH NOTE.
+2. **Gap-map steps conflicted with the build freeze.** A "When" column was added; ACM moves to Nov 4; the breadth cross-check is allowed as verification of an existing input.
+3. **A dangling "principle 11" pointer** in PROPOSAL §7 was fixed; outline items 3 and 11 are now labelled.
+4. **Pillar soft spots.**
+   - P4 is scoped to the trading track.
+   - The "before first use" withdrawals moved from P2's evidence to I's criticism.
+   - P1 gained an overturn condition for the ordering itself: a head-to-head with the Round 10 story.
+5. **The self-deception section** lost its reassuring close and gained a data-provenance row. The line count was corrected, and "invented" became "estimated".
+6. **Facts verified:** commit times, ledger counts, and Spearman 0.648 (n = 10). The cohort detectable-effect note now says multiple readings raise the noise floor; it will be added as a dated annotation beneath the frozen plan, never as an edit.
+
+The reviewer confirmed that ROUNDS is append-only, PAPER_TRADES carries only the header line and §12, and there is no trade, allocation change or new file.
+
+**For ChatGPT Round 13 (after Oct 15, as an evidence round)**
+1. Which of the four pillars would you weaken first, and with what evidence?
+2. Do you accept the EXPLAINED guard (the named evidence is required), or does it make contradictions too hard to close?
+3. What should the Nov 4 review cut if the ledger still shows zero graded outcomes?
