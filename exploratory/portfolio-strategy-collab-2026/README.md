@@ -1,174 +1,168 @@
 # Portfolio strategy collaboration — 2026
 
-**Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–12 complete, all on 2026-10-01. **Round 12 was a consolidation round.** It:
-- audited ten candidate principles and kept **four first pillar candidates** (not doctrine);
-- wrote a gap map;
-- made `MARKET_MODEL.md` current-only;
-- defined the memory boundary and a do-not-build list;
-- named the strongest self-deception risk;
-- put the project under a **build freeze until the Nov 4 review**.
+**Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01 · **Status:** operating (Round 13). History of Rounds 1–13: `ROUNDS.md`.
 
-The investment decision always stays with Dustin.
+**What this is.** A living market-research and decision system. It exists to help Dustin continuously:
+- understand the present market state and the mechanisms that connect its parts;
+- separate facts from interpretation;
+- generate and test hypotheses;
+- find promising businesses, assets, instruments and setups;
+- keep a useful watch universe;
+- preserve knowledge between sessions;
+- improve decision quality;
+- discover whether repeatable edges exist;
+- allocate capital only when evidence and opportunity justify it.
 
-What this is: a small, bounded experiment. Two AI systems propose, and then jointly refine, how $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and the rules that govern it afterward. It is not a study or an audit under `docs/conventions.md`, and it authorizes nothing in CuttingBoard or any other repository. It is not a trading system.
+A trading journal, a macro newsletter, a screener, a portfolio tracker, an archive and an earnings experiment are all *components* of it, not what it is.
+
+**Who decides.** Investment decisions are Dustin's.
+
+**Boundaries.** This is not a study or an audit under `docs/conventions.md`, and it authorizes nothing in CuttingBoard or any other repository.
+
+**To start a market day,** open `WATCHLIST.md` §1.
 
 ---
 
-## Start here — the state of the collaboration (2026-10-01, after Round 12)
+## Operating constraints
 
-**What we know (observed, dated)**
-- **Market state:** the Oct 1 DAILY STATE (`WATCHLIST.md` §1).
-  - Rates and credit: 10Y 5.24%, real 10Y 2.93% (Sep 30); HY OAS 3.12%, IG 0.84%, CCC 11.79%.
-  - Vol and dollar: VIX 16.4 vs MOVE 108; broad dollar flat since June.
-  - Equities: SPY on its 50-day, with 23% of members above theirs.
-- **Our evidence base is almost empty.** See the ledger below: zero completed paper trades, zero completed cohort events, zero tested thesis-state changes, and 12 rounds written in a single day.
+> **"The core architecture may stabilize. The learning process never freezes."** — owner decision, Round 13
 
-**What we think (interpretation)**
-- **Base case:** a policy-led real-rate repricing, with oil the likely but *inferred* trigger. Best alternative: growth-led normalisation (`MARKET_MODEL.md` §8).
-- **Four first pillar candidates** (`RESEARCH_MAP.md`):
-  - P1 — state before story, labelled honestly;
-  - P2 — commit before you look;
-  - P3 — the decision chain has separate links;
-  - P4 — capital follows evidence.
-- Reading rate-shock transmission is a skill for interpreting markets, not a trading edge.
+- **No learning freeze.** Daily work, research, new hypotheses, new candidates and new instruments continue whenever they are justified. "No repeatable edge has been demonstrated yet" is true; it is not a reason to reduce inquiry. *(Round 12's build freeze was withdrawn; see `ROUNDS.md` Round 13.)*
+- **Architecture discipline.** Seven files are enough. A new durable file needs a demonstrated information-management problem that the existing files cannot absorb cleanly. If one is ever needed: state the gap, say why no existing file can hold it, and keep its scope narrow. Small omissions are fixed in place.
+- **No yes-men.** Disagree with Dustin, ChatGPT, earlier Claude rounds and existing positions when the evidence warrants it. Never disagree for show.
+  - Dustin liking a name is not evidence.
+  - A favourite that does not qualify is left out.
+  - A failed thesis of our own is invalidated.
+- **Intuition is a valid starting point.** It must eventually show its work: INTUITION → OBSERVABLE QUESTION → EVIDENCE → HYPOTHESIS → PREDICTION → REALITY (intake: `RESEARCH_MAP.md`).
+- **Independent discovery.** Candidates may disappear when the evidence stops supporting them. They come back only with new evidence, never because they were mentioned before.
+- **Capital stewardship.** The C$5,000 is a realism anchor and the approximate current deployment budget, not the limit of the opportunity set. See `PROPOSAL.md` §8.
+- **Corrections are valuable.** Correct the error, preserve provenance, check whether any frozen result was affected, and extract the reusable lesson. Never hide a correction. Frozen records are never rewritten.
+- **Build only what current use demands.** No ontologies, knowledge graphs, scoring systems, automated narratives, piles of derived indicators, giant watch universes, or architecture for hypothetical futures. Fix a gap that repeats; record a one-off and move on.
 
-**What remains uncertain** (the gap map in `RESEARCH_MAP.md`)
-- Whether any strategy family has an edge: there are no outcomes yet.
-- What drove the policy path: oil or growth.
-- Dustin's whole-program exposures.
-- Whether the daily state is maintainable and actually changes decisions.
+## Evidence maturity — two different things
 
-**What would change our minds**
-- W1–W5 (`MARKET_MODEL.md` §8).
-- The pillar overturn conditions (`RESEARCH_MAP.md`).
-- The single cohort read (~Nov 30).
-- The first graded paper records.
-- Program C's end-January test.
+**1. Process learning: demonstrated, from real failures and corrections in this collaboration.**
 
-**Next dated evidence**
-
-| Date | Event |
+| Lesson | The incident that showed it |
 |---|---|
-| Oct 7 | NFCI (week to Oct 2) and the 10Y auction |
-| Oct 8 | 30Y auction |
-| Oct 12 | UNH pre-registration (scheduled) |
-| Oct 13 | UNH reports — the first cohort event |
-| Oct 14 | CPI — tests P9 |
-| Oct 15 | TSM — the first post-earnings thesis review |
-| Oct 28 | FOMC — tests P10 |
-| **Nov 4** | Refunding, base-case re-run, and the **build-freeze review** |
+| Separating state from story improves analysis | Round 11's measurements overturned five claims in Round 10's agreed narrative |
+| Explicit labels expose hidden assumptions | The review caught a model-estimated 55/45 split and an inferred oil → Fed link that had been stated as fact |
+| Adversarial review catches errors | Round 11 review: XLU/VNQ misused as evidence, mixed time windows. Round 12 review: contradictions admitted without prior expectations |
+| Frozen records prevent hindsight editing | The ACN level was kept as frozen; annotations were used instead of edits; the timestamp errors were corrected by dated note |
+| Current and historical documents belong apart | *Reasoned rather than shown by a failure* (Round 12). Included because it is plausible, not because it is demonstrated |
 
-### Evidence ledger (update at every round; the counter that keeps the documentation honest)
+**Caveat.** These lessons show that the process catches errors in our own records. They do not yet show better decisions or returns.
 
-| Item | Count at Round 12 (2026-10-01) |
+**2. Market-edge evidence: immature.** We do not yet know whether earnings continuation, leader pullbacks, duration turns, post-shock reversals, or any tactical rule has positive expectancy.
+
+| Item | Count at Round 13 (2026-10-01) |
 |---|---|
-| Rounds written · calendar days | 12 · **1** (Round 1 committed 12:59 ET, Round 11 at 20:25 ET; Round 12 — see its commit) |
-| Frozen setups written · triggered · completed and graded | 10 · **0** · **0** |
+| Frozen setups written · triggered · completed and graded | 10 · 0 · 0 |
 | Expired without trigger | 1 (PT-001 ACN; shadow open to Dec 11) |
-| Cohort events completed through D+20 | **0** of 10 (first: UNH, Oct 13) |
-| Post-earnings thesis reviews | **0** (first: TSM, Oct 15) |
-| Thesis-state changes made on evidence after the register opened | **0** |
-| Predictions resolved (P1–P10) · contradictions resolved | **0** · **0** (10 OPEN: 5 contradictions, 5 research notes after the Round 12 re-screen) |
-| Real-money decisions informed by the system (recorded) | **0** |
-| Decisions taken outside a written rule | Not yet tracked — needs Dustin's report |
+| Cohort events completed through D+20 | 0 of 10 (first: UNH, Oct 13) |
+| Post-earnings thesis reviews | 0 (first: TSM, Oct 15) |
+| Thesis-state changes on evidence after the register opened | 0 |
+| Predictions resolved (P1–P10) · contradictions resolved | 0 · 0 (10 OPEN: 5 contradictions, 5 research notes) |
+| Real-money decisions informed by the system (recorded) | 0 |
+| Decisions taken outside a written rule | Not yet tracked; needs Dustin's report |
 
-**Build freeze (Round 12, until the Nov 4 review).**
-- **Not allowed:** new files, gauges, theses, strategy families or taxonomy.
-- **Allowed:** daily states, scheduled records (cohort events, completions, reviews), dated annotations, and corrections. A correction includes verifying the source of an existing input; it does not include adding a new one. Each gap-map step carries a "When" that fits inside the freeze.
-- **Early exit:** the freeze lifts early only for an outcome the current structure cannot record.
-- **At the Nov 4 review the ledger decides two things:** what (if anything) is added, and what is cut. Any file section not used in a decision or review since Round 12 is a candidate for removal.
+Update this table at each weekly review.
 
----
+## Operating cadence
 
-## System map
+**Daily — nearly every market day.** Purpose: identify what changed, decide whether it matters, and decide whether anything deserves attention or capital.
 
-**Current system (as built after Round 12)**
-
-```
-INPUTS        live data (FRED, Yahoo, Treasury, filings) · Market Brief (read-only) · ChatGPT round prompts
-                  │                                         Dustin decides; only he moves capital ─┐
-                  ▼                                                                                │
-OBSERVATION   a Claude session reads the data by hand                                              │
-STATE         WATCHLIST §1   DAILY STATE (latest + previous)                                       │
-MODEL         MARKET_MODEL   current interpretation: links, labels, theses, open contradictions, P/W│
-OPPORTUNITY   WATCHLIST §3–§6  four buckets   ◄──  RESEARCH_MAP  programs, questions, gap map       │
-DECISION      PROPOSAL  sleeve, gates, reallocation  ·  PAPER_TRADES  frozen setups  ◄──────────────┘
-OUTCOME       PAPER_TRADES  completions, shadows, cohort            ← EMPTY: nothing completed yet
-LEARNING      ROUNDS (history) → RESEARCH_MAP findings and pillar candidates
-                  └─ so far fed by argument between two models, not by outcomes
-MIRRORS       claude.ai project copies (read-only, stamped with a commit) · memory (pointers only)
-```
-
-**Probable mature system (only if the evidence supports it; still small)**
-
-```
-OBSERVATION   Market Brief + at most one small script that fills the daily state's Observed fields
-                 (the only software that may earn a place, and only after the freeze)
-STATE         WATCHLIST: daily state, gauges, four buckets
-MODEL         MARKET_MODEL: current only; resolved items leave for ROUNDS
-OPPORTUNITY   WATCHLIST buckets ◄── RESEARCH_MAP (questions that produce candidates)
-DECISION      PROPOSAL, matured into decision rules: gates, sizing, reallocation, the exposure map
-              PAPER_TRADES: frozen setups; paper and micro-live records in one ledger
-OUTCOME       PAPER_TRADES graded completions · cohort reads · post-earnings reviews
-LEARNING      ROUNDS → MARKET_DOCTRINE (only pillars that survived graded outcomes)
-                 └──► MODEL (links and theses revised) · STATE (gauges kept or cut) · DECISION (rules for future records)
-```
-
-**Size ceiling:** no more than eight Markdown files (the seven above plus `MARKET_DOCTRINE`), no database, and at most one small script.
-
-**Market Brief's place:** OBSERVATION only. Its hypotheses (H1–H5) enter at MODEL as claims to be tested, never as STATE.
-
----
-
-## Memory and source-of-truth boundary (Round 12)
-
-> **Memory helps the AIs resume work; Markdown proves what the work currently says.**
-
-| Layer | Holds | Never holds | On conflict |
-|---|---|---|---|
-| **Markdown in `dwats250/strategy`** (source of truth) | Current hypotheses and states, frozen rules and records, the roster, paper observations, research conclusions, pillar candidates, decision rules | Chat transcripts; claims without a date or source | **Wins** |
-| **Work memory** (Claude memory, chat context) | Where the next round begins; the latest round and commit; open questions for the other model; scheduled items; Dustin's standing working preferences | Values, thesis states, rules or roster contents — anything that goes stale and competes | Corrected from Markdown |
-| **Mirrors** (claude.ai project copies) | Read-only copies for reading on other surfaces, each stamped with the commit it copies | Edits | Superseded by the repo |
-| **History** (git, `ROUNDS.md`, archive sections) | Superseded interpretations, old rounds, stale setups, resolved contradictions, past daily states | The current state | Recoverable, not current |
-
-**Timestamps come from the clock.** The git commit time is authoritative; a time written in a file is either read from a clock or written as "see commit" (methodology finding 11).
-
----
-
-## What not to build (Round 12)
-
-The objective is the smallest credible system capable of learning from markets.
-
-| Not now | Why |
+| Step | What to do |
 |---|---|
-| Knowledge graphs, ontologies, tag systems beyond the exposure-map tags | Structure without outcomes to organise |
-| Scores for assets, theses or setups; numeric confidence | Nothing to calibrate them against yet. Words (FORMING…DORMANT) are honest about that |
-| More derived indicators | The five daily cogs are the ceiling until one is retired |
-| AI-written daily narratives | The daily state cites thesis names and contradiction IDs. Prose invites storytelling, which P1 forbids |
-| A backtesting engine or historical-study infrastructure | The queued studies are one-off reads, not systems |
-| A dashboard or web app for the roster | Markdown is read; a dashboard would need maintaining |
-| A wider universe (new tickers outside the cohort mechanics) | The cohort and roster already exceed what has been graded |
-| A new file before the Nov 4 review; `MARKET_DOCTRINE` before graded outcomes | Build freeze; doctrine needs evidence (December target, conditional) |
-| New theses in the register until an existing one changes state on evidence | Thirteen theses opened in one day is already a lot |
-| Any coupling to CuttingBoard | A separate repository and a read-only boundary (`docs/conventions.md` §i) |
-| Alerts, automation or order routing | Decisions stay with Dustin |
+| 1. Observe | Update only the measurements that matter (WATCHLIST §2). Don't collect data because it is available |
+| 2. Detect change | Ask what changed *materially* since the previous state, not what happened in every market |
+| 3. Interpret | Does each change confirm the model, contradict it, weaken it, need an alternative, or stay ambiguous? Label interpretation as interpretation |
+| 4. Cross-market check | Ask what other markets should be doing if the explanation is right. Disagreement across markets is evidence |
+| 5. Opportunity scan | Does anything change a setup, a business thesis, a regime watch, a candidate or a capital decision? Never manufacture a trade; **NO ACTION** is valid |
+| 6. Preserve | Write the DAILY STATE (WATCHLIST §1). Touch other files only if something meaningful changed |
 
----
+**Weekly — at the end of each trading week.** A deeper review, not a redesign. Ask:
+- What changed this week?
+- Which hypotheses strengthened or weakened, and which contradictions remain open?
+- Which setups went stale, and which candidates earned promotion or should be archived?
+- Which gauges added nothing?
+- Did a repeated one-off reveal a structural gap?
+- Did the system make or prevent a meaningful decision?
+- What relationship did we discover that we do not understand?
+
+**Weekly outputs:**
+- a short **"Weekly review — week ending <date>"** entry in `ROUNDS.md`;
+- the evidence-maturity table updated;
+- stale material moved out of current pages and recorded in that entry: archived roster items, resolved contradictions, superseded thesis history, finished research items.
+
+Small refactors are allowed. Large changes need a demonstrated recurring problem.
+
+**Event-driven.** Earnings reviews, CPI, FOMC, auction and refunding checks against the predictions, and cohort records are done on the day (WATCHLIST §6).
+
+**Rounds (ChatGPT ↔ Claude).** A round is held when there is new evidence, a real disagreement, or a recurring structural gap. A round must do at least one of:
+- find a materially new opportunity;
+- resolve or sharpen a disagreement;
+- reveal a methodological problem;
+- convert an observation into a repeatable strategy;
+- materially change a long-horizon thesis;
+- produce evidence about an existing family.
+
+**When the architecture may freeze.** Not on a calendar date. Freeze the schema harder once all of these hold:
+- several weekly cycles have passed;
+- real events have flowed through the system;
+- one-off omissions have stopped recurring;
+- the file boundaries keep working;
+- new insights change content rather than structure.
+
+Research never freezes.
+
+## Working loop
+
+Each question runs on its own clock — minutes, days, weeks, months or years.
+
+```
+REALITY
+   ↓
+OBSERVATION ............... Market Brief (read-only) · live data · Dustin · Claude · ChatGPT
+   ↓
+CURRENT STATE ............. WATCHLIST §1 (daily state) · §2 gauges
+   ↓
+MODEL / ALTERNATIVES ...... MARKET_MODEL §1–§6, §8
+   ↓
+CONTRADICTIONS & TESTS .... MARKET_MODEL §7–§8 (contradictions, predictions P/W)
+   ↓
+OPPORTUNITY? ── NO ──► keep watching (WATCHLIST §2–§5) · open research (RESEARCH_MAP)
+   │ YES
+   ↓
+THESIS → SETUP → VEHICLE → INVALIDATION ... RESEARCH_MAP / WATCHLIST §3 · PAPER_TRADES · PROPOSAL rules
+   ↓
+PAPER / MICRO-LIVE → OUTCOME ............... PAPER_TRADES
+   ↓
+LEARNING ................. ROUNDS · RESEARCH_MAP (findings, pillar candidates) ──► back to MODEL
+```
+
+New ideas are classified on intake — OBSERVATION · RESEARCH LEAD · HYPOTHESIS · WATCH · SETUP · INVESTMENT THESIS · SPECULATION — and each class has a home (`RESEARCH_MAP.md`, Intake). Exploration can be messy at first; the discipline comes afterward.
 
 ## Files
 
-Keep it to these seven files (README, ROUNDS, PROPOSAL, WATCHLIST, PAPER_TRADES, RESEARCH_MAP, MARKET_MODEL) unless real use shows a need for more. MARKET_MODEL (added in Round 11) holds *current interpretation*; RESEARCH_MAP holds *open questions and programs*. The purposes differ, so the files stay separate.
-
-| File | Question it answers | What it holds | Edit rule |
+| File | Answers | Holds | How material leaves it |
 |---|---|---|---|
-| `README.md` | Where are we, and how does this work? | Status, Start here, evidence ledger, system map, memory boundary, do-not-build, protocol, evidence rules, frozen owner brief | Brief frozen (amend only by dated note); the rest updated in place |
-| `WATCHLIST.md` | What is happening now? | DAILY STATE (template + latest + previous), base case, four buckets, dated decision points, lifecycle, archive | Latest two daily states only (older in git); stale items archived, not deleted |
-| `MARKET_MODEL.md` | Why might it be happening, and what would show we are wrong? | Transmission map, causality labels, instrument map, missing cogs, thesis register, contradictions, adversarial challenge | **Current only** (Round 12): resolved contradictions and old state changes move to `ROUNDS.md` with their evidence when the round closes |
-| `RESEARCH_MAP.md` | What deserves continued investigation? | Programs, long-horizon theses, methodology findings, cohort, research queue, pillar candidates, gap map | Updated in place; one-line note in `ROUNDS.md` |
-| `PAPER_TRADES.md` | Were our setups, timing, vehicles and decisions useful? | Frozen setups, ledger, completions, shadows, dated annotations | Plans frozen; changes only by dated annotation |
-| `PROPOSAL.md` | What rules govern deployment? | The sleeve, gates, speculation lane, capital reallocation | Replaced each round; material changes logged in `ROUNDS.md` |
-| `ROUNDS.md` | How did the system evolve? | Each exchange; resolved contradictions and state history at round close; provenance corrections | Append-only |
+| `README.md` | How does this work, and how mature is the evidence? | Purpose, constraints, evidence maturity, cadence, loop, file map, memory boundary, evidence rules, frozen owner brief | The brief is frozen (amend only by dated note) |
+| `WATCHLIST.md` | What matters right now? | Daily state, gauges, businesses, setups, candidates, dated decisions and events, roster rules | Latest two daily states only (older in git). Stale items leave at the weekly review and are recorded in `ROUNDS.md` |
+| `MARKET_MODEL.md` | What do we think is happening, why, and what would prove us wrong? | Hypotheses and states, mechanisms, causality and evidence classes, contradictions, competing explanations, predictions and falsification conditions | Current only. Resolved contradictions and superseded state history move to `ROUNDS.md` at the weekly review |
+| `RESEARCH_MAP.md` | What deserves deeper investigation? | Intake, programs, long-horizon theses, methodology findings, the cohort, the research queue, pillar candidates, gap map | Items that produce understanding, a setup, background knowledge or abandonment leave with a one-line note in `ROUNDS.md` |
+| `PAPER_TRADES.md` | How do setups and rules perform when written before outcomes? | Frozen setups, triggers, expiries, shadows, thesis/timing/vehicle grades, family results | Never rewritten; changes only by dated annotation |
+| `PROPOSAL.md` | What rules govern capital? | The sleeve, gates, speculation lane, capital reallocation, stewardship, deployment classes, exposure-map schema | Replaced in place; material changes logged in `ROUNDS.md` |
+| `ROUNDS.md` | How did the system evolve? | Rounds, weekly reviews, corrections, decisions, rejected approaches, handoffs, archived material | Append-only |
+
+**Memory boundary.**
+
+> **Memory helps the AIs resume work; Markdown proves what the work currently says.**
+
+- **These Markdown files are the source of truth** and win any conflict.
+- **Work memory** holds only resume pointers: where the next session begins, the latest commit, open questions and scheduled items. It never holds values, states, rules or roster contents.
+- **The claude.ai project copies** are read-only mirrors, each stamped with its commit.
+- **Timestamps come from the clock:** the git commit time is authoritative.
 
 ## Standing assumptions (Round 1; challenge in any round)
 
@@ -176,26 +170,7 @@ Keep it to these seven files (README, ROUNDS, PROPOSAL, WATCHLIST, PAPER_TRADES,
 - Accounts (Round 6): TFSA, margin account and LIRA are all available; account choice is an execution note made at the trigger and never limits what the lab studies.
 - Options toolkit: long calls and long puts only (no spreads, no written options). Paper research has no premium cap; live premium at risk ≤ C$100 (C$150 A+, earned by a family) — see `PAPER_TRADES.md` §2.
 - The $5,000 is incremental, experimental capital — not the whole retirement portfolio.
-
-## Protocol
-
-1. **Round 1 — Claude:** independent proposal. *(done 2026-10-01)*
-2. **Round 2 — ChatGPT:** agreement, material disagreements, weak assumptions, missing instruments or regimes, proposed changes; separate factual disagreement from philosophy. Do not change something just to appear independent. *(done 2026-10-01; added a required anti-anchor scan, executed by Claude)*
-3. **Round 3 — Claude:** adjudicate with evidence; revised proposal. Stop here if resolved. *(done 2026-10-01)*
-4. **Round 4 — ChatGPT (optional):** unresolved issues only. *(used 2026-10-01 as a mandate reset: Opportunity Sleeve, individual stocks, options, strategies; answered by Claude the same day)*
-5. **Round 5 — Claude (optional):** only if Round 4 produced a material correction. *(ceiling first extended to Round 8 in ChatGPT Round 5, then removed in Round 7)*
-
-**Convergence rule (Round 7, replaces the round cap).** A new round is justified only if it does at least one of:
-- discovers a materially new opportunity;
-- resolves or sharpens an important disagreement;
-- reveals a methodological problem;
-- converts an observation into a repeatable strategy;
-- materially changes a long-horizon thesis;
-- produces evidence about an existing strategy family.
-
-No rounds for allocation or wording changes alone. The Round 10 checkpoint ("still discovering, or mostly repeating?") was held; see `ROUNDS.md` Round 10.
-
-**Round 12 addition:** until the Nov 4 review, a round is justified mainly by the last criterion — **new evidence about something already specified.**
+- **Instrument universe (Round 13):** common equities and ETFs, including Treasury, credit, commodity and inverse ETFs; long calls and puts; cash equivalents; and other liquid instruments Dustin's accounts permit. An instrument may be a gauge, a vehicle, both, or neither. Affordability affects deployment, never whether an instrument is worth understanding.
 
 ## Evidence rules
 

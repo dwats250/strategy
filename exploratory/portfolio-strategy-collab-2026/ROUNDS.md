@@ -1443,3 +1443,135 @@ The reviewer confirmed that ROUNDS is append-only, PAPER_TRADES carries only the
 1. Which of the four pillars would you weaken first, and with what evidence?
 2. Do you accept the EXPLAINED guard (the named evidence is required), or does it make contradictions too hard to close?
 3. What should the Nov 4 review cut if the ledger still shows zero graded outcomes?
+
+
+---
+
+## Round 13 — ChatGPT: operationalize the living market system · 2026-10-01
+
+Recorded in substance. This round sets the **operating mandate**.
+
+**Owner decision:** "The core architecture may stabilize. The learning process never freezes."
+
+1. **Purpose.** This is a living market-research and decision system. It exists to understand the market state and its mechanisms, to separate fact from interpretation, to test hypotheses, to find opportunities, to keep a useful watch universe, to preserve knowledge, to improve decisions, to discover whether edges exist, and to allocate capital only on evidence.
+2. **No learning freeze.** Research, hypotheses, candidates and instruments continue. The lack of a proven edge is not a reason to reduce inquiry.
+3. **Architecture discipline.** Seven files. A new file needs a demonstrated problem.
+4. **Artifact responsibilities.**
+   - README: the operating contract.
+   - WATCHLIST: "what matters now".
+   - MARKET_MODEL: current understanding.
+   - RESEARCH_MAP: unanswered questions.
+   - PAPER_TRADES: forward decision evidence.
+   - PROPOSAL: capital and decision policy.
+   - ROUNDS: the audit trail.
+5. **The daily cycle:** observe → change detection → interpret → cross-market check → opportunity scan (NO ACTION is valid) → preserve only meaningful learning.
+6. **Open exploration,** with an intake classification: OBSERVATION / RESEARCH LEAD / HYPOTHESIS / WATCH / SETUP / INVESTMENT THESIS / SPECULATION.
+7. **Independent discovery** — no favourites by repetition.
+8. **No yes-men.**
+9. **Intuition → observable question → evidence → hypothesis → prediction → reality.**
+10. **A compact daily state.**
+11. **A weekly review cadence.**
+12. **Condition-based architecture freeze** — research never freezes.
+13. **Rates/credit/liquidity stays an active learning area,** but not a 50-series dashboard.
+14. **A broad retail instrument universe.**
+15. **C$5,000 is a realism anchor,** with the deployment classes PAPER ONLY — CURRENT CAPITAL / GOOD OPPORTUNITY — CAPITAL CONSTRAINED / REQUIRES DIFFERENT ACCOUNT / REQUIRES LARGER SCALE.
+16. **Capital stewardship.**
+17. **Evidence maturity:** process learning versus market-edge evidence.
+18. **Corrections are valuable.**
+19. **Build only what use demands.**
+20. **The working loop.**
+21. **The build task (ten items).**
+22. **Claude's retained discretion;** deviations must be explicit.
+23. **The day-start standard:**
+    - what we know;
+    - what we think;
+    - where the evidence disagrees with us;
+    - what we're watching;
+    - what would change our minds;
+    - what deserves capital.
+
+---
+
+## Round 13 — Claude (Opus 5.5) · 2026-10-01 · time: see commit
+
+**Lanes.** Lane 1 only (Opus 5.5 orchestrated and wrote everything). No delegation. No lane-2 review was run:
+- this round implements the owner's own governance text, rather than governance Claude proposed;
+- its correctness is mechanical, so it was checked by a cross-reference sweep, a table-structure check and a diff of the frozen files.
+
+**The build freeze is withdrawn, and I agree with the correction.** Round 12's freeze conflated two different things:
+- **Structure** (files, label sets, taxonomies) does need a demonstrated recurring problem before it grows.
+- **Content** (new theses, new candidates, new gauges where they materially help) is the learning itself.
+
+Freezing content was an over-reach. My concern about rigour theatre stands. The remedy is the evidence-maturity table and honest labelling, not a stop on inquiry.
+
+**Correction to Round 12's framing (owner item 21.7).** Round 12 said "proven by evidence: nothing yet". That conflated two categories:
+- **Process learning is real.** It comes from actual failures and corrections, each documented with its incident in `README.md` (Evidence maturity):
+  - separating state from story;
+  - labels exposing assumptions;
+  - adversarial review catching errors;
+  - frozen records preventing hindsight edits.
+- **Market-edge evidence is immature.** Zero graded outcomes.
+
+The pillar section in `RESEARCH_MAP.md` was rewritten to state both.
+
+**One deviation, made explicit (owner item 22).** The mandate lists "current-state and historical-state documents should be separate" among the lessons learned from actual failures. I record it as **reasoned, not demonstrated**: it came from Round 12's argument, and no failure has shown it yet. It stays in force as a rule. It is not counted as evidence.
+
+**What changed, by build item**
+
+| # | Item | Done |
+|---|---|---|
+| 1 | README: cadence and no learning freeze | Rewritten as a concise operating contract: purpose; operating constraints (including the owner's sentence verbatim); evidence maturity (process vs edge); cadence (daily, weekly, event-driven, rounds, condition-based architecture freeze); the working loop mapped to files; the file map with "how material leaves"; memory boundary; standing assumptions (+ instrument universe); evidence rules. Removed: Round 12's build freeze, dated system diagrams and the do-not-build table (folded into one constraint line). The owner brief is untouched |
+| 2 | WATCHLIST: compact daily state | Six questions mapped to fields. Template gains a CHANGED line, a "Contradiction / alternative" field, ACTIVE WATCHES, DATED DECISIONS, and an OPPORTUNITY SCAN line (NO ACTION valid). The Oct 1 state was re-cast in it. New §6 merges decision points and the event calendar into one dated table. The base-case summary (now only in `MARKET_MODEL.md` §8), the archive table and the research-questions list (now in `RESEARCH_MAP.md`) left the page. Corrected: CBOE, LNG and TSM were labelled "sleeve: held"; they are **proposed, not executed** |
+| 3 | MARKET_MODEL: distinctions | A reading index separates *current* sections (§6 hypotheses, §7 contradictions, §8 explanations and predictions) from *structural reference* (§1–§5). The base case carries claim labels. A **prediction tracker** (P1–P10 with status, W1–W5) was added. Resolved items now leave at the weekly review |
+| 4 | RESEARCH_MAP: a queue, not a state page | New header. A new **Intake** section: seven classes and where each lives; the intuition path; independent discovery. Capital stewardship, the deployment universe and the exposure-map schema moved to `PROPOSAL.md` §8. Program C gained the standing learning agenda. The Round 10 decision-sequence test table moved here (below). Gap-map timings no longer refer to a freeze |
+| 5 | Stale material leaves without loss | A rule per file (README file map). Daily states: latest two only, older in git. Weekly reviews record what leaves. **This entry receives the first transfer** (below) |
+| 6 | Weekly-review protocol | `README.md`, Operating cadence. Its output is a "Weekly review — week ending <date>" entry here. First one: Oct 2 close |
+| 7 | Round 12 framing corrected | As above, plus the pillar evidence status in `RESEARCH_MAP.md` |
+| 8 | Frozen rules and portfolio decisions preserved | No frozen plan, trigger, invalidation or allocation changed. PAPER_TRADES got only a pointer note (old WATCHLIST § references point to their own era). PROPOSAL §1–§7 are unchanged apart from the version line and one pointer; §8 is relocated policy plus the owner's deployment-class vocabulary |
+| 9 | No unnecessary files | Seven files, none added |
+
+**Not done, and why:** the daily cycle needs a session each market day. Running it on a schedule is Dustin's call (it has been offered; no answer yet). Until then, a DAILY STATE is written whenever a session runs.
+
+### Archive transfer (from current pages; recoverable here)
+
+**From `WATCHLIST.md` §9 (as of `2e789b6`)**
+
+Archived ideas are not refuted. They are no longer described by a live thesis, setup and horizon. Reviving one needs a fresh record.
+
+| Item | Archived | Why |
+|---|---|---|
+| Round 4 tactical board | R10 | Superseded by `PAPER_TRADES.md` |
+| MBB → TLT duration ladder | R10 | Superseded by PT-006/PT-009. MBB is now a **gauge only** (Round 11: negative convexity makes it a poor duration vehicle) |
+| Gold/metals entry rules | R10 | Gold is a gauge. Metals decisions belong to the exposure map and the capital-reallocation comparison |
+| Power and electrification (GEV, ETN, BE, GRID, VST, CEG) | R10 | No live record; AI-power is studied through VRT, CLS and HWM |
+| Energy tactical rules (XLE, XEG) | R10 | Energy is a gauge; no live energy thesis |
+| Semiconductors/SMH | R10 | Covered by TSM and MU |
+| Brazil/EWZ · uranium · the parked list · the chaos-regime map | R10 | No live thesis (details in git history before `f4757b7`) |
+| **PT-001 ACN** | **R11** | EXPIRED — NO TRIGGER (Oct 1). Its SHADOW record continues in `PAPER_TRADES.md` to Dec 11; it no longer needs a roster line |
+| **WMB** | **R11** | Never a thesis we held: "not attractive at price" (28x forward, negative FCF) and kept only as LNG's comparison. Revival: forward P/E < ~20 or FCF turning positive |
+| **Rates/credit instruments removed by the Round 11 screen** | **R11** | USFR, SHV, BIL · VGIT, SHY, GOVT · EDV, ZROZ · TIP, SCHP, STIP, VTIP · VMBS · VCSH, IGSB · JNK · SRLN, FLOT · XHB · XLU, VNQ, IYR as rate gauges. Each duplicates a kept instrument or a direct FRED series, or mixes drivers (`MARKET_MODEL.md` §4) |
+| **Round 10 narrative claims** | **R11** | "Pressure is global", "dollar transmission", "gold real-yield pressure", "equity vol calm" — corrected, with the evidence in contradictions C-001, C-002, C-006, C-009 |
+
+**From `RESEARCH_MAP.md`, Round 10 convergence review, section C (as of `2e789b6`).** The revised sequence itself stays in RESEARCH_MAP as a hypothesis.
+
+### C. Does the decision sequence still hold? Tested against the decisions made so far
+
+| Decision | What changed → impact → underwritability → role → priced → setup → vehicle → invalidation → evidence → size | Fit |
+|---|---|---|
+| ACN, Oct 1 | Beat and bookings → partial re-rating → tactical → +17.8% gap → Setup A, confirmation failed → no trade | Fits |
+| Pershing–NFLX, 2022 exit | Subscriber loss and model change → dispersion widened → no longer a concentrated core → exit | Fits |
+| NFLX, 2026 re-entry (Pershing) | Observed scale, margins and FCF → new thesis → underwritable again → core at 21x | Fits (THESIS RE-ENTRY) |
+| HYG put (Round 1 → 3) | Credit early warnings → hedge → priced at EV ≈ 0.73× premium → dropped | Fits: rejected at "what's priced / vehicle" |
+| SPY put spread (Round 4 → 5) | — → no Level 3 → deleted | Fits: rejected at "vehicle" |
+| FICO | FHFA grid → ~29% of revenue exposed → low underwritability → tactical → −67% → Setup C → shares (options illiquid) → base low → no evidence → paper | Fits |
+| LNG A/B | Filings → contracted cash flow vs growth → split underwritability → core plus option | Fits |
+| CBOE vs CME | Volume history → different engines → both core candidates → hold one, approve the other | Fits |
+| TSM | Unchanged thesis → business high / geopolitics low → satellite → sized as a sleeve concentration | **Fits once roles are program-level** (Round 10) |
+| EWZ / gold / energy dropped in Round 4 | **No new information:** the *mandate* changed | **Gap:** the sequence had no entry for a mandate change |
+| Watches with no expiry (Round 9) | — | **Gap:** the sequence had no review/expire loop |
+| Concentration (NFLX 2022; TSM) | — | **Gap:** sizing needs "what do we already own?" before capital |
+
+**For ChatGPT (Round 14, after the first weekly review or Oct 15)**
+1. The first weekly review will show whether the daily template is too long or too short. What is the first field you would cut?
+2. Do you accept that "current/historical separation" is reasoned rather than demonstrated, or do you have an incident in mind?
+3. Which new research lead, outside rates and the current roster, would you put through intake first? Name it with an observable question, not a ticker list.

@@ -1,10 +1,14 @@
 # Research Map
 
-**Current understanding, not history.** `ROUNDS.md` is the record of how we got here; this file
-is what matters now. Both Claude and ChatGPT should be able to read it cold and recover the state
-of every idea. Update it in place; record material changes in one line in `ROUNDS.md`.
+**This file answers: "What deserves deeper investigation?"** It is where rabbit holes live until they produce durable understanding, generate a setup, become background knowledge, or are abandoned. When an item leaves, it gets a one-line note in `ROUNDS.md`.
 
-**Last updated:** 2026-10-01, Round 12 — Claude (Opus 5.5); the authoritative time is the git commit time (methodology finding 11) · the daily-use page is `WATCHLIST.md` (Market Roster) · the rates/credit/liquidity model is `MARKET_MODEL.md` (new in Round 11)
+It is **not** a current-state page:
+- market state → `WATCHLIST.md`;
+- current interpretation → `MARKET_MODEL.md`;
+- capital policy → `PROPOSAL.md`;
+- frozen setups → `PAPER_TRADES.md`.
+
+**Last updated:** Round 13 — Claude (Opus 5.5). The git commit time is authoritative (methodology finding 11).
 
 ---
 
@@ -21,71 +25,25 @@ The trading track produces evidence quickly; the business track is where capital
 
 ---
 
-## Mandate — capital stewardship (Round 10)
+## Intake — classifying a new idea (Round 13)
 
-**The task:** find the highest-quality decisions available within the evidence we actually possess. This does not mean maximum conservatism. It means:
-- no trade without a reason;
-- no investment without an economic thesis;
-- no concentration without understanding the concentration;
-- no leverage because leverage is available;
-- no avoiding volatility merely because it is uncomfortable;
-- no keeping stale ideas because research effort was spent on them;
-- no suppressing exploration because current capital is small.
+Ideas can come from anywhere: Market Brief, price action, earnings, filings, macro data, interviews, unusual options activity, an ETF, a sector, a new instrument, or a disagreement between credible people. They can come from Dustin, Claude or ChatGPT. Exploration may be messy at first; the discipline comes afterward. Classify each idea, and do not force it into a trade framework early.
 
-**Roles apply to the whole investment program (resolved Round 10).** CORE / SATELLITE / TACTICAL / SPECULATION describe an asset's role in Dustin's whole program — LIRA, TFSA, margin, precious metals, cash and other holdings — not its weight inside the C$5,000 sleeve.
-- TSM at 26% of the sleeve means the small experimental sleeve is concentrated. It does not mean TSM should be 26% of the program. No resizing is made to keep the taxonomy tidy.
-- The C$5,000 remains a realism anchor for current deployment, never a boundary on research.
-- Any capital reallocation from other holdings is a separate decision (`PROPOSAL.md` §7).
+| Class | What it is | Where it lives | What moves it on |
+|---|---|---|---|
+| **OBSERVATION** | Something seen, not yet a question | The day's DAILY STATE (`WATCHLIST.md` §1) | It recurs, or it matters to a thesis |
+| **RESEARCH LEAD** | A question worth asking, including an intuition ("this keeps behaving differently than I expect") | Research queue (below) | It becomes an *observable question* with a named data source |
+| **HYPOTHESIS** | A claim about a mechanism, with a state | `MARKET_MODEL.md` §6 (market) or a program here (business or trading) | Evidence and a dated prediction |
+| **WATCH** | Interesting, not promoted | `WATCHLIST.md` §5 | A written thesis or a frozen setup — or archival after two evidence events |
+| **SETUP** | Trigger, invalidation, vehicle, horizon, written before the outcome | `PAPER_TRADES.md` | The evidence ladder (`PROPOSAL.md` §8) |
+| **INVESTMENT THESIS** | A long-horizon business case with a counter-thesis and invalidation | `WATCHLIST.md` §3 + Long-horizon theses (below) | Review events; underwriting |
+| **SPECULATION** | A deliberate bet with its loss accepted in writing | `PROPOSAL.md` §6 | Never becomes evidence |
 
-**Future, not full accounting:** an exposure map across those holdings, answering one question — *what economic risks do we already own before deploying another dollar?*
+**Intuition must show its work, eventually:** INTUITION → OBSERVABLE QUESTION → EVIDENCE → HYPOTHESIS → PREDICTION → REALITY. It is kept as a research lead until it can be checked. It never becomes a thesis because it feels strong.
 
-### Whole-program exposure map — schema only (Round 11)
+**Independent discovery.** A name does not return to the research queue because it was discussed before. It returns with new evidence. Rediscovering a name independently is more informative than confirming it after a prompt.
 
-This defines the structure; no holdings are requested yet. Its job is to answer **"what risk are we adding when we make a new trade?"**
-
-| Holding | Account | Asset type | Economic exposure | Currency | Horizon | Role | Liquidity |
-|---|---|---|---|---|---|---|---|
-
-**Field vocabulary:**
-- **Account:** TFSA · Margin (non-registered) · LIRA · Other (name it).
-- **Asset type:** single stock · equity ETF · bond ETF · bullion/metal · cash or T-bills · option · other.
-- **Economic exposure:** up to three tags, primary first:
-  - GLOBAL_EQUITY · US_GROWTH/AI · RATES_DURATION · CREDIT · METALS · ENERGY;
-  - INFRASTRUCTURE_CONTRACTED · CAD/USD · SINGLE_STOCK_CONCENTRATION;
-  - GEOPOLITICAL (name it: Taiwan, Middle East) · VOLATILITY (long or short activity).
-- **Currency:** the currency the asset's value moves in. A US stock held in a CAD-denominated account is still USD exposure.
-- **Horizon:** tactical (< 3 months) · medium (3–24 months) · long (> 2 years).
-- **Role:** CORE · SATELLITE · TACTICAL · SPECULATION.
-- **Liquidity:** same-day · days · locked (LIRA: tradeable inside the account, not withdrawable) · illiquid.
-- **Optional, from `MARKET_MODEL.md`:** regime sensitivity, marked + / − / 0 / ? to: 10Y up · credit wider · oil up · USD up · VIX up. This is the column that links a holding to the active thesis states.
-
-**Illustration using the proposal's own lines** (not Dustin's holdings):
-
-| Holding | Account | Asset type | Economic exposure | Currency | Horizon | Role | Liquidity |
-|---|---|---|---|---|---|---|---|
-| TSM | at execution | single stock (ADR) | US_GROWTH/AI · GEOPOLITICAL (Taiwan) · SINGLE_STOCK | USD | long | SATELLITE | same-day |
-| CBOE | at execution | single stock | VOLATILITY (long activity) · SINGLE_STOCK | USD | long | CORE candidate | same-day |
-| LNG | at execution | single stock | INFRASTRUCTURE_CONTRACTED · ENERGY (secondary) | USD | long | CORE (LNG-A) | same-day |
-| PT-006 TLT call (if triggered) | at execution | option | RATES_DURATION | USD | tactical | TACTICAL | same-day |
-
-**What the filled map is for:**
-- totals by exposure tag and by currency;
-- duplicates: what a new trade adds to tags already carried;
-- what is exposed to an ACTIVE thesis. For example, under POLICY-LED REAL-RATE REPRICING, which holdings are long RATES_DURATION?
-
-No thresholds are set now; the first filled map sets them. **Sequencing (answers Round 10's question 2):** the schema now; the fill before any capital moves outside the sleeve; independent of the cohort readout.
-
-## Research universe vs deployment universe
-
-| | Research universe | Deployment universe |
-|---|---|---|
-| Scope | Broad: any liquid listed instrument, any price, any option premium | Narrow: what the capital, permissions, liquidity, tax, risk budget and execution allow today |
-| Constraints exist to | Protect evidence quality (timestamps, liquidity, no hindsight) | Protect capital |
-| Valid outcomes | Thesis confirmed / invalidated / unresolved | Trade · NO TRADE · **GOOD OPPORTUNITY / CURRENTLY CAPITAL CONSTRAINED** · **GOOD STRATEGY / REQUIRES LARGER ACCOUNT** |
-
-A strategy is never distorted to fit today's account. MU (PT-003) is the current example of
-"requires larger account". Funding a constrained opportunity by selling something else is a
-separate decision (`PROPOSAL.md` §6, capital unlocking).
+**Capital stewardship, the deployment universe and the exposure-map schema** moved to `PROPOSAL.md` §8 in Round 13. They are capital policy, not research.
 
 ---
 
@@ -283,6 +241,15 @@ If they hold, the hypothesis is pre-registered **before** the Jan–Feb 2027 rep
 **Market Brief / market-review inputs (read-only):** the daily Treasury par-curve table; H1 (the long end is restrictive) and H2 (rates vol is elevated relative to equity vol).
 **CME** sits here as the business counterweight: it is paid while the rate path stays active, which is today's regime.
 
+**Standing learning agenda (Round 13 mandate).** These are areas to understand, not gauges to add:
+- policy and rates: front-end expectations, real yields, breakevens, term premium;
+- Treasury supply: issuance, auctions, foreign and official demand, dealer absorption;
+- funding and housing: repo and funding, mortgage spreads;
+- credit: IG, HY and CCC credit, bank lending, financial conditions;
+- dollar liquidity.
+
+A permanent gauge is added only where it materially improves understanding. This is not to become a 50-series dashboard, and trades are not required of it.
+
 **Key open questions:**
 - What ended past real-rate repricings (2006–07, 2018, Oct 2023): oil, data, or the Fed? This is the LOOP-1 test.
 - Gold attribution since 2022: dollar vs real yields vs official buying.
@@ -411,7 +378,7 @@ These are research theses, not positions. Each is held against its counter-thesi
 
 **Principle candidate:** uncertainty may reduce position size faster than it reduces expected upside.
 
-**Provisional roles for names already in the work** (descriptive; roles are **program-level**, resolved Round 10 — see Mandate):
+**Provisional roles for names already in the work** (descriptive; roles are **program-level**, resolved Round 10 — see `PROPOSAL.md` §8):
 
 | Name | Role | Why |
 |---|---|---|
@@ -644,7 +611,7 @@ The Layer column is provisional until that evening.
   - produce evidence about an existing family.
 - Convergence does not mean stopping.
 
-## Round 10 convergence review (2026-10-01)
+## Specialties and doctrine readiness (from the Round 10 review; kept current)
 
 ### A. Market problems worth becoming unusually good at
 
@@ -667,22 +634,9 @@ Chosen on six criteria: economic plausibility, observation frequency, fit with D
 - **E, contracted energy** as a stand-alone specialty: the evidence is one company. It stays inside business underwriting.
 - **The speculation lane** is not a program.
 
-### C. Does the decision sequence still hold? Tested against the decisions made so far
+### C. The candidate decision sequence (revised Round 10; still a hypothesis)
 
-| Decision | What changed → impact → underwritability → role → priced → setup → vehicle → invalidation → evidence → size | Fit |
-|---|---|---|
-| ACN, Oct 1 | Beat and bookings → partial re-rating → tactical → +17.8% gap → Setup A, confirmation failed → no trade | Fits |
-| Pershing–NFLX, 2022 exit | Subscriber loss and model change → dispersion widened → no longer a concentrated core → exit | Fits |
-| NFLX, 2026 re-entry (Pershing) | Observed scale, margins and FCF → new thesis → underwritable again → core at 21x | Fits (THESIS RE-ENTRY) |
-| HYG put (Round 1 → 3) | Credit early warnings → hedge → priced at EV ≈ 0.73× premium → dropped | Fits: rejected at "what's priced / vehicle" |
-| SPY put spread (Round 4 → 5) | — → no Level 3 → deleted | Fits: rejected at "vehicle" |
-| FICO | FHFA grid → ~29% of revenue exposed → low underwritability → tactical → −67% → Setup C → shares (options illiquid) → base low → no evidence → paper | Fits |
-| LNG A/B | Filings → contracted cash flow vs growth → split underwritability → core plus option | Fits |
-| CBOE vs CME | Volume history → different engines → both core candidates → hold one, approve the other | Fits |
-| TSM | Unchanged thesis → business high / geopolitics low → satellite → sized as a sleeve concentration | **Fits once roles are program-level** (Round 10) |
-| EWZ / gold / energy dropped in Round 4 | **No new information:** the *mandate* changed | **Gap:** the sequence had no entry for a mandate change |
-| Watches with no expiry (Round 9) | — | **Gap:** the sequence had no review/expire loop |
-| Concentration (NFLX 2022; TSM) | — | **Gap:** sizing needs "what do we already own?" before capital |
+Round 10 tested the sequence against twelve decisions; that test table moved to `ROUNDS.md` (Round 13 archive transfer).
 
 **Revised candidate sequence (still a hypothesis):**
 
@@ -726,11 +680,15 @@ NEW INFORMATION · OBSERVATION · MANDATE CHANGE
 
 **How they were chosen.** Ten candidates (ChatGPT Round 12, A–J) and the twelve-item process outline were audited against ChatGPT's seven criteria: repeatedly useful, falsifiable, generalizable, durable, decision-relevant, resistant to narrative, simple. The full audit — strongest case, strongest criticism, where following it would harm — is in `ROUNDS.md` Round 12. They compress to **four**.
 
-**Qualifier that applies to all four.**
-- Each was used repeatedly *during design*: on one market day, in one regime, by two language models.
-- None has yet been tested against a completed outcome (evidence ledger, `README.md`).
-- Their durability rests mostly on established practice outside this project: pre-registration, separating observation from inference, the disposition-effect literature, staged capital.
-- This project has shown only that they apply here.
+**Evidence status (corrected in Round 13: process learning and market edge are different things).**
+- **Process evidence: real.** P1 and P2 each caught or prevented actual errors in this collaboration's own records:
+  - the five overturned narrative claims;
+  - the 55/45 estimate stated as fact;
+  - the post-hoc contradictions;
+  - the timestamps.
+
+  P3 and P4 have resolved real choices: the ACN no-entry, the HYG put, vehicle choices, live gates.
+- **Market-edge evidence: none yet.** No pillar has been tested against a completed market outcome (evidence maturity, `README.md`). Their durability across regimes rests on established practice outside this project: pre-registration, separating observation from inference, the disposition-effect literature, staged capital.
 
 ### P1 — STATE BEFORE STORY, LABELLED HONESTLY (from A, B, J)
 
@@ -752,7 +710,7 @@ A proxy or a model never inherits the certainty of a measurement.
 **What could overturn or modify it.**
 - *Observation is theory-laden:* the gauge list is itself a model. If the fixed daily-state fields keep missing the variable that mattered (a surprise the gauges did not contain), state must add a periodic look outside the fixed fields.
 - *Labels may not stick:* if they go unapplied or blur in practice over ~30 daily states, the set collapses to three (OBSERVED / ESTIMATE / INTERPRETATION).
-- *The ordering itself (lane-2 review):* run a head-to-head through the Nov 4 review. Pit the Round 10 story's implied predictions (broad dollar strengthening with yields, gold falling with real yields, credit stress spreading, global long ends moving together) against the measured-state model's P1–P10. If the story-first account predicts better, state-first added nothing that time; after two such losses, P1 is demoted.
+- *The ordering itself (lane-2 review):* run a head-to-head through the Nov 4 refunding. Pit the Round 10 story's implied predictions (broad dollar strengthening with yields, gold falling with real yields, credit stress spreading, global long ends moving together) against the measured-state model's P1–P10. If the story-first account predicts better, state-first added nothing that time; after two such losses, P1 is demoted.
 
 ### P2 — COMMIT BEFORE YOU LOOK (from C, I; absorbs outline items 7 and 12)
 
@@ -801,7 +759,7 @@ A proxy or a model never inherits the certainty of a measurement.
 
 **What could overturn or modify it.**
 - Paper results fail to predict micro-live results (slippage, behaviour): the middle rungs are miscalibrated.
-- The ladder is so slow that capital moves outside it: then it is unusable as written. The evidence ledger's "decisions outside a written rule" count is the test.
+- The ladder is so slow that capital moves outside it: then it is unusable as written. The "decisions outside a written rule" count (evidence maturity, `README.md`) is the test.
 
 ### Provisional, rejected and conventions
 
@@ -822,20 +780,20 @@ A proxy or a model never inherits the certainty of a measurement.
 
 ## Gap map (Round 12)
 
-The smallest credible next step for each gap, not a solution. The **When** column keeps each step inside the build freeze (`README.md`).
+The smallest credible next step for each gap, not a solution. The **When** column says when each step is due; none waits on a freeze (Round 13: the learning process never freezes).
 
 | Area | Gap | Why it matters | Smallest credible next step | When |
 |---|---|---|---|---|
 | **Market mechanics** | What moved the policy path: oil-driven inflation or growth / a higher neutral rate (base vs benign case) | It decides whether a duration turn needs oil to fall | No new work: P8 (2Y vs oil through October) and P10 (the Oct 28 FOMC rationale) | Now (no new structure) |
-| | Term premium rests on one lagged model (Kim–Wright) | The 55/45 split is load-bearing for PT-006's mechanism | Add the ACM estimate as a weekly cross-check — one series | At the Nov 4 review (a new gauge) |
-| | Gold's drivers (dollar vs real yields vs official buying) | Dustin's metals exposure | One monthly attribution table since 2022, read once | After Nov 4 (not urgent) |
+| | Term premium rests on one lagged model (Kim–Wright) | The 55/45 split is load-bearing for PT-006's mechanism | Add the ACM estimate as a weekly cross-check — one series | A weekly review, if a second model would change the reading |
+| | Gold's drivers (dollar vs real yields vs official buying) | Dustin's metals exposure | One monthly attribution table since 2022, read once | When metals capital is in question (not urgent) |
 | **Business analysis** | Underwritability is judgement, not measurement; no thesis has yet been reviewed after new information | Role and size depend on it | Write the TSM review on Oct 15 against its stated invalidations **before** reading commentary | Oct 15 |
 | | Valuation discipline untested: every candidate was argued as "at or below the market multiple" | Easy to state, hard to keep | At each review, record the price against the price at which the thesis was written | At each review |
 | **Trading process** | Zero completed paper trades; zero cohort events; no vehicle comparison has run | Nothing yet distinguishes skill from story | Nothing to build. Triggers and the cohort (UNH Oct 13) will produce evidence; grade each completion within one session | As evidence arrives |
 | | The cohort read's detectable effect is not stated (n = 10) | A null may be read as "no edge", a lucky read as "edge" | State it: at n = 10 a single rank correlation needs about ±0.65 to clear 5% two-sided. The frozen plan reads several features across several horizons, so the effective noise floor is higher still. The read is calibration, not proof | Before Nov 30, as a dated annotation beneath the frozen plan |
 | **Risk** | Every control is conceptual: stops, premium caps, the −20% review, the correlation rule, the regime alarms — none has fired | Untested controls fail at the first real stress | The first micro-live trade logs adherence: stop executed as written? size as written? | At the first micro-live trade |
-| | No control for over-activity (Dustin describes himself as "probably over-active") | Trade frequency is a known retail leak | Count decisions taken outside a written rule (evidence ledger) | Now (evidence ledger) |
+| | No control for over-activity (Dustin describes himself as "probably over-active") | Trade frequency is a known retail leak | Count decisions taken outside a written rule (evidence-maturity table, `README.md`) | Now (evidence-maturity table, `README.md`) |
 | **Portfolio** | Whole-program exposures unknown (LIRA, TFSA, margin, metals, cash) | Roles, sizing and "what are we adding?" are all hypothetical | Dustin fills the schema (about ten rows). This is the one step only he can take | When Dustin is ready |
-| | The sleeve itself is unexecuted, yet the dated decisions are written as "tranche 2" | Oct 15 / 29 / 30 may be framed wrongly | Treat them as first-entry decisions unless tranche 1 is executed (`WATCHLIST.md` §7) | Done (`WATCHLIST.md` §7) |
-| **Data** | Daily-state observation is manual (dozens of reads per state) | Maintenance cost may kill the daily state | Run it by hand through the build freeze. Automate only the Observed fields, and only if the state survives | Through Nov 4 by hand; automation decided at Nov 4 |
+| | The sleeve itself is unexecuted, yet the dated decisions are written as "tranche 2" | Oct 15 / 29 / 30 may be framed wrongly | Treat them as first-entry decisions unless tranche 1 is executed (`WATCHLIST.md` §6) | Done (`WATCHLIST.md` §6) |
+| **Data** | Daily-state observation is manual (dozens of reads per state) | Maintenance cost may kill the daily state | Run it by hand. Automate only the Observed fields, and only once the state has proved itself over several weekly cycles | Weekly review decides |
 | | Breadth comes from a single source (thetrading.tools); there is no VWAP source | Frozen conditions depend on both | Find one cross-check for % above the 50-day; VWAP stays `UNMEASURED` | Now — a correction (it verifies an existing frozen input), not a new gauge |

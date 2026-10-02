@@ -1,6 +1,6 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 12 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 12 adds a no-churn hurdle to §7 and marks it provisional. Round 11 formalised the capital-reallocation principle (§7) and adds no instrument (the rates/credit instrument screen is in `MARKET_MODEL.md` §4 and moved nothing here). Round 10 recorded that roles are program-level (§2). Round 9 added the informational role reading. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
+**Version:** Round 13 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 13 moved capital stewardship, the deployment universe and the exposure-map schema here as §8 (capital policy, from `RESEARCH_MAP.md`) and adopted the owner's deployment-class vocabulary. Round 12 added a no-churn hurdle to §7 and marks it provisional. Round 11 formalised the capital-reallocation principle (§7) and adds no instrument (the rates/credit instrument screen is in `MARKET_MODEL.md` §4 and moved nothing here). Round 10 recorded that roles are program-level (§2). Round 9 added the informational role reading. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
 the live/paper gates, the option-slot wording and the LNG/CME thesis statements (analyses in `ROUNDS.md`,
 Rounds 4–6; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
@@ -79,7 +79,7 @@ consistent.
 triggers are in `ROUNDS.md` Round 4 §B. Current status:
 Live capital enters only for a setup that has passed PAPER TRADE and REPEATED OBSERVATIONS in
 `PAPER_TRADES.md`; until then the slot is fed by paper results, not by triggers alone. Status of all
-ten setups: PT-001 ACN **EXPIRED — NO TRIGGER** at the Oct 1 close (SHADOW to Dec 11); the other nine are WATCH (`WATCHLIST.md` §5).
+ten setups: PT-001 ACN **EXPIRED — NO TRIGGER** at the Oct 1 close (SHADOW to Dec 11); the other nine are WATCH (`WATCHLIST.md` §4).
 
 **Option slot (single leg; live premium ≤ C$100 Normal, C$150 A+ once a family earns it).** The
 contract is chosen from the live chain **at the trigger** under `PAPER_TRADES.md` §3; the Oct 1
@@ -163,7 +163,7 @@ Fill one column per candidate source:
 | Risk: what loses money, how much, how fast | | | | — |
 | Liquidity and cost to exit or enter | | | | — |
 | Tax consequence — only in the margin (non-registered) account; TFSA and LIRA sales have none. Superficial-loss rule if the same security is bought within 30 days before or after the sale, in *any* account, TFSA included | | | | — |
-| Concentration after the swap (exposure-map tags, `RESEARCH_MAP.md`) | | | | — |
+| Concentration after the swap (exposure-map tags, §8.2) | | | | — |
 | Opportunity quality: setup, evidence, underwritability | | | | — |
 | Opportunity cost if the source's thesis plays out after the sale | | | | — |
 
@@ -184,3 +184,80 @@ the LNG open items from Cheniere's 10-K/10-Q and restates CBOE and CME as separa
 (CBOE: structural index-options growth with an equity-vol kicker; CME: paid by an active,
 non-zero rate path, weak when policy is pinned at zero). CME stays an approved candidate with its
 Strategy F trigger (≤ ~$220).
+
+---
+
+## 8. Capital stewardship, deployment universe and exposure map (moved from `RESEARCH_MAP.md` in Round 13)
+
+This is capital and decision policy, so it lives here.
+
+### 8.1 Capital stewardship (Round 10; Round 13 mandate)
+
+**The task:** make the best decision the available evidence permits, treating Dustin's capital with institutional seriousness. That does not mean maximum conservatism. It means:
+- understand why capital is deployed;
+- distinguish risk from uncertainty;
+- define invalidation;
+- avoid thesis drift and sunk-cost reasoning;
+- never scale from one lucky result;
+- no trade without a reason;
+- no investment without an economic thesis;
+- no concentration without understanding the concentration;
+- no leverage because leverage is available;
+- no avoiding volatility merely because it is uncomfortable;
+- no keeping stale ideas because research effort was spent on them;
+- no suppressing strong opportunities, or exploration, because current capital is small.
+
+**Roles apply to the whole investment program (resolved Round 10).** CORE / SATELLITE / TACTICAL / SPECULATION describe an asset's role in Dustin's whole program — LIRA, TFSA, margin, precious metals, cash and other holdings — not its weight inside the C$5,000 sleeve.
+- TSM at 26% of the sleeve means the small experimental sleeve is concentrated. It does not mean TSM should be 26% of the program. No resizing is made to keep the taxonomy tidy.
+- The C$5,000 remains a realism anchor for current deployment, never a boundary on research.
+- Any capital reallocation from other holdings is a separate decision (§7).
+
+**Future, not full accounting:** an exposure map across those holdings, answering one question — *what economic risks do we already own before deploying another dollar?*
+
+### 8.2 Whole-program exposure map — schema only (Round 11)
+
+This defines the structure; no holdings are requested yet. Its job is to answer **"what risk are we adding when we make a new trade?"**
+
+| Holding | Account | Asset type | Economic exposure | Currency | Horizon | Role | Liquidity |
+|---|---|---|---|---|---|---|---|
+
+**Field vocabulary:**
+- **Account:** TFSA · Margin (non-registered) · LIRA · Other (name it).
+- **Asset type:** single stock · equity ETF · bond ETF · bullion/metal · cash or T-bills · option · other.
+- **Economic exposure:** up to three tags, primary first:
+  - GLOBAL_EQUITY · US_GROWTH/AI · RATES_DURATION · CREDIT · METALS · ENERGY;
+  - INFRASTRUCTURE_CONTRACTED · CAD/USD · SINGLE_STOCK_CONCENTRATION;
+  - GEOPOLITICAL (name it: Taiwan, Middle East) · VOLATILITY (long or short activity).
+- **Currency:** the currency the asset's value moves in. A US stock held in a CAD-denominated account is still USD exposure.
+- **Horizon:** tactical (< 3 months) · medium (3–24 months) · long (> 2 years).
+- **Role:** CORE · SATELLITE · TACTICAL · SPECULATION.
+- **Liquidity:** same-day · days · locked (LIRA: tradeable inside the account, not withdrawable) · illiquid.
+- **Optional, from `MARKET_MODEL.md`:** regime sensitivity, marked + / − / 0 / ? to: 10Y up · credit wider · oil up · USD up · VIX up. This is the column that links a holding to the active thesis states.
+
+**Illustration using the proposal's own lines** (not Dustin's holdings):
+
+| Holding | Account | Asset type | Economic exposure | Currency | Horizon | Role | Liquidity |
+|---|---|---|---|---|---|---|---|
+| TSM | at execution | single stock (ADR) | US_GROWTH/AI · GEOPOLITICAL (Taiwan) · SINGLE_STOCK | USD | long | SATELLITE | same-day |
+| CBOE | at execution | single stock | VOLATILITY (long activity) · SINGLE_STOCK | USD | long | CORE candidate | same-day |
+| LNG | at execution | single stock | INFRASTRUCTURE_CONTRACTED · ENERGY (secondary) | USD | long | CORE (LNG-A) | same-day |
+| PT-006 TLT call (if triggered) | at execution | option | RATES_DURATION | USD | tactical | TACTICAL | same-day |
+
+**What the filled map is for:**
+- totals by exposure tag and by currency;
+- duplicates: what a new trade adds to tags already carried;
+- what is exposed to an ACTIVE thesis. For example, under POLICY-LED REAL-RATE REPRICING, which holdings are long RATES_DURATION?
+
+No thresholds are set now; the first filled map sets them. **Sequencing (answers Round 10's question 2):** the schema now; the fill before any capital moves outside the sleeve; independent of the cohort readout.
+
+### 8.3 Research universe vs deployment universe — and what C$5,000 means
+
+| | Research universe | Deployment universe |
+|---|---|---|
+| Scope | Broad: any liquid listed instrument, any price, any option premium | Narrow: what the capital, permissions, liquidity, tax, risk budget and execution allow today |
+| Constraints exist to | Protect evidence quality (timestamps, liquidity, no hindsight) | Protect capital |
+| Valid outcomes | Thesis confirmed / invalidated / unresolved | TRADE · NO TRADE · **PAPER ONLY — CURRENT CAPITAL** · **GOOD OPPORTUNITY / CAPITAL CONSTRAINED** · **REQUIRES DIFFERENT ACCOUNT** · **REQUIRES LARGER SCALE** (Round 13 vocabulary) |
+
+**The C$5,000** is a realism anchor and the approximate current experimental deployment budget. It is **not** the maximum intellectual opportunity set: research may identify opportunities that need more capital. A strategy is never distorted to fit today's account; MU (PT-003) is the current example of REQUIRES LARGER SCALE. Funding a constrained opportunity from other holdings is a separate decision (§7).
+
+**The evidence ladder (pillar P4, trading track):** OBSERVATION → WATCH → SPECIFIED SETUP → PAPER → REPEATED EVIDENCE → MICRO-LIVE → SCALE. One win scales nothing. Long-horizon investments are gated by a written thesis, counter-thesis and invalidation instead.

@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed. Round 12: §12 provenance correction (timestamps), no record edited.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed. Round 12: §12 provenance correction (timestamps), no record edited. Round 13: a pointer note under §12 only.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -489,3 +489,10 @@ Times written into Rounds 9–11 were estimated rather than read from a clock, a
 | §11 mechanism annotations "~23:30 ET" | 23:30 ET | `679e9f7`, 20:25 ET | None: no event depends on them |
 
 PT-001 to PT-010 ("written 14:10 ET") match their commit (`8e532d7`, 14:13 ET). Rounds 5–8 were checked: their written times fall within minutes of their commits. From Round 12 on, a time in this file is either read from a clock or written as "see commit".
+
+**Round 13 note (pointers only; no record edited).** References in this file to `WATCHLIST.md` sections point to the version that was current when each passage was written; earlier versions are in git. As of Round 13:
+- the lifecycle rules cited in rule 11 are in `WATCHLIST.md` §7;
+- the active setups are in §4;
+- the dated decisions are in §6.
+
+The Round 4 duration rules and the uranium trigger (§5, §9) are in git history before `f4757b7`.

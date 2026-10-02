@@ -1,6 +1,28 @@
 # Market Model — rates, credit and liquidity (MARKET_MODEL.md)
 
-**What this file is:** the falsifiable model of how a rate shock moves through markets. It says what each component measures, how strong each link really is, which instruments carry information and which can express a view, what we expect next if our explanation is right, and what would make us admit it is wrong.
+**This file answers: "What do we currently think is happening, why, and what would prove us wrong?"** It is current understanding, not the historical archive. Today it covers the rates/credit/liquidity complex, the area that currently looks most central. Other market hypotheses join §6 when they arise, because the learning process does not freeze.
+
+**How to read it.** It has two kinds of section.
+
+**Current — changes with the market; read these first:**
+
+| What | Where |
+|---|---|
+| Active hypotheses and their states | §6 |
+| Contradictions and research notes | §7 |
+| Base case, competing explanations, discriminating observations | §8 |
+| Predictions and falsification conditions (with a status tracker) | §8 |
+
+**Structural reference — changes rarely:**
+
+| What | Where |
+|---|---|
+| Mechanisms: the transmission map and its links | §1–§2 |
+| Causality classes | §3 |
+| Instrument classes: gauge or vehicle | §4 |
+| Why each gauge is kept | §5 |
+
+Claims carry the evidence labels (OBSERVED · DERIVED · MODEL ESTIMATE · INTERPRETATION · PREDICTION · UNMEASURED). Relationships carry the causality labels.
 
 **Created:** Round 11 — Claude (Opus 5.5) · 2026-10-01 · values are the Oct 1 close unless dated otherwise. The daily page is `WATCHLIST.md` (Market Roster); it carries the compact **DAILY STATE**, which cites this file by section, thesis name and contradiction ID.
 
@@ -9,8 +31,8 @@
 | Section | Rule |
 |---|---|
 | §1–§5 (map, links, causality, instruments, missing cogs) | Updated in place, with a one-line note in `ROUNDS.md` |
-| §6 Thesis register | Shows each thesis's **current** state and its **last** change (date + evidence). Older changes move to `ROUNDS.md` when the round closes |
-| §7 Contradictions | Shows **OPEN** entries and those resolved during the current round. Resolved entries move to `ROUNDS.md`, with their resolution, when the round closes. **Nothing leaves without a written status and the evidence for it** |
+| §6 Thesis register | Shows each thesis's **current** state and its **last** change (date + evidence). Older changes move to `ROUNDS.md` at the weekly review |
+| §7 Contradictions | Shows **OPEN** entries and those resolved since the last weekly review. Resolved entries move to `ROUNDS.md`, with their resolution, at the weekly review. **Nothing leaves without a written status and the evidence for it** |
 | §8 Adversarial challenge | Redone whenever the base case changes; earlier versions stay in `ROUNDS.md` |
 
 *Round 11 had made §6 and §7 append-only. Round 12 replaced that rule (ChatGPT Round 12 §7): git already guarantees recoverability, and a log that only grows stops being read.*
@@ -196,7 +218,7 @@ States: **FORMING · ACTIVE · STRENGTHENING · WEAKENING · INVALIDATED · DORM
 | **SYSTEMATIC DELEVERAGING** | **FORMING** (fuel without trigger) | Exposure at the 98th (Deutsche Bank) to 100th (BofA, secondary) percentile; VIX 16.4; realised vol low | VIX > 20 with realised vol rising and the index below its 50-day | Exposure normalises without a drawdown |
 | **FUNDING / PLUMBING STRESS** | **DORMANT** | SOFR = IORB at quarter-end; SRF $1.2B; reserves $2.95T; RRP ≈ 0 | SOFR − IORB > +5 bp outside month-ends (watch) or > +10 bp outside quarter-ends (alarm); SRF > $10B | — |
 
-**Last state changes (this round; moved to `ROUNDS.md` when the round closes)**
+**Last state changes (since the last weekly review; moved to `ROUNDS.md` at the weekly review)**
 - 2026-10-01 · Register opened (Round 11). Initial states as above. Two changes from Round 10's implicit narrative:
   - GOLD AS A RATE CASUALTY: implied ACTIVE → **WEAKENING** (evidence: §2 link 11).
   - "Long-rate stress" as the headline: implied ACTIVE → split into **POLICY-LED REAL-RATE REPRICING — ACTIVE** and **LONG-RATE STRESS TRANSMISSION — FORMING** (evidence: §2 links 3–4).
@@ -321,14 +343,14 @@ A contradiction is not an error. It is an observation that differs from what our
 7. **What would the benign interpretation look like?** Below.
 
 **BASE CASE — policy-led real-rate repricing, most likely triggered by the oil supply shock.**
-- An oil supply shock (WTI +34% since June; Brent above $100; Hormuz and Middle East shut-ins) pushed headline CPI to 3.4%.
-- The Fed hiked with core CPI at 2.4%. Its statement says only "Inflation remains elevated" and does not name energy, so the oil → Fed link is our inference (OIL → FED REACTION — FORMING).
-- Markets price ~2½ more hikes by mid-2027. The 10Y rose ~85 bp, almost all real: roughly 55% expected policy path and 45% term premium.
-- The shock shows where the link is mechanical, or plausible and observed: mortgages, homebuilders, small caps, the CCC tail.
+- OBSERVED: WTI +34% since June; Brent above $100; headline CPI 3.4%. INTERPRETATION: an oil supply shock (Hormuz and Middle East shut-ins, per secondary reports) pushed headline inflation up.
+- OBSERVED: the Fed hiked with core CPI at 2.4%. Its statement says only "Inflation remains elevated" and does not name energy, so the oil → Fed link is our inference (OIL → FED REACTION — FORMING).
+- DERIVED: futures price ~2½ more hikes by mid-2027; the 10Y rose ~85 bp, almost all real. MODEL ESTIMATE: roughly 55% expected policy path, 45% term premium.
+- INTERPRETATION: the shock shows where the link is mechanical, or plausible and observed: mortgages, homebuilders, small caps, the CCC tail.
 - It has *not* reached IG credit, bank lending, funding markets or aggregate financial conditions. At the index, earnings growth (+29% Q3 est.) has so far offset the discount-rate effect (C-005, open).
 - The dollar and gold readings were over-stated.
 - The system is fragile in two places, the CCC tail and record systematic equity exposure, but neither has a trigger yet.
-- The shock is **self-limiting through LOOP-1**: if oil rolls over, the strip unwinds and duration turns.
+- PREDICTION (tested by P6, P8): the shock is **self-limiting through LOOP-1**: if oil rolls over, the strip unwinds and duration turns.
 
 **BEST ALTERNATIVE EXPLANATION — growth-led normalisation (benign).**
 - Real yields are rising because the economy and profits are strong (CY26 EPS +32%, estimates rising, positive guidance far above its five-year average), and the market is pricing a higher neutral rate.
@@ -378,6 +400,25 @@ A contradiction is not an error. It is an observation that differs from what our
 - **W3.** Breadth recovers to > 50% above the 50-day while the 10Y holds ≥ 5.0% and CCC tightens → the benign alternative.
 - **W4.** Breakevens > 2.60% with oil up → the inflation-expectations channel has opened (2.50–2.60% is a watch zone between P2 and W4). The base case is re-specified as "the Fed is behind", which is a different regime.
 - **W5.** P8 fails (the 2Y ignores oil through October) **and** the Oct 28 rationale cites growth or a higher neutral rate → the benign alternative replaces the base case.
+
+**Prediction tracker (Round 13).** Updated by the daily cycle whenever a prediction resolves. Statuses: PENDING · HIT · MISS · VOID (its condition never arose).
+
+| ID | Prediction (short) | Separates base case from | Resolves by | Status |
+|---|---|---|---|---|
+| P1 | 2s10s stays 25–65 bp | Stress | Nov 4 | PENDING |
+| P2 | 10Y breakeven 2.20–2.50% | Stress | Nov 4 | PENDING |
+| P3 | IG OAS < 1.00%; HY 2.90–4.00% | Stress | Nov 4 | PENDING |
+| P4 | Mortgage − 10Y spread 1.8–2.3 pp | Stress | Nov 4 | PENDING |
+| P5 | ITB and IWM underperform SPY while the 10Y ≥ 5.0% | **Benign** | Nov 4 | PENDING |
+| P6 | WTI < $80 → strip −1 hike and 10Y −25 bp within 2 weeks | **Benign** | Conditional | PENDING (condition not met) |
+| P7 | SOFR ≤ IORB + 5 bp outside month-ends | Stress | Nov 4 | PENDING |
+| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING |
+| P9 | On CPI and FOMC days the 10Y moves ≥ 0.6× the 2Y, same direction | Stress | Oct 28 | PENDING |
+| P10 | The Oct 28 rationale cites energy or headline inflation | **Benign** | Oct 28 | PENDING |
+
+| Condition | Status |
+|---|---|
+| W1–W5 (admit the base case is wrong) | None triggered (Oct 1) |
 
 **Review:** on the DAILY STATE each session; a full re-run of this section after the FOMC (Oct 28) and the refunding (Nov 4), or earlier if W1–W5 fires.
 
