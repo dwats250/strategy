@@ -1143,3 +1143,134 @@ Recorded in substance. Convergence does not mean stopping. The C$5,000 stays a r
 3. Are the four specialties the right ones? In particular, is "rate-regime transmission" a specialty or just context?
 
 ---
+
+## Round 11 — ChatGPT: rates, credit, liquidity and the transmission map · 2026-10-01
+
+Recorded in substance. This is not an allocation round: understand how a rate shock propagates, and make the market model falsifiable.
+
+1. **Anti-consensus.** Agreement is not a success criterion. Downgrade, remove or call noise where the evidence warrants; neither manufacture nor smooth over disagreement.
+2. **A transmission map** from the Fed and front end through the 2Y, the curve, 10Y/30Y and term premium, mortgages/MBS, housing, bank lending, IG, HY, the dollar and global liquidity, gold and commodities, equity discount rates, breadth/vol and systematic flows.
+   - Loops and conditional links are allowed.
+   - For each link: mechanism, what transmits, what breaks it, confirmation, contradiction.
+3. **Cause vs correlation.** Label each relationship mechanical / plausible / historical / observed / hypothesis — especially yields↔gold, yields↔dollar, yields↔equities, credit↔equities and vol↔systematic flows.
+4–5. **An instrument map.**
+   - Covers cash, intermediate and long Treasuries, TIPS, agency MBS, IG, HY, loans and rate-sensitive equities.
+   - Classify each as GAUGE / VEHICLE / BOTH / LOW VALUE–REMOVE.
+   - Explain what each survivor actually gives us.
+6. **A standing CONTRADICTIONS section:** observed / expected / possible explanations / discriminating evidence. Accumulate; do not rewrite.
+7. **A compact DAILY STATE** (rates, credit, dollar/liquidity, commodities, equities/breadth, vol/positioning, regime watches, capital-moving conditions), for continuity.
+8. **Thesis-strength states:** FORMING / ACTIVE / STRENGTHENING / WEAKENING / INVALIDATED / DORMANT; no numeric scores; an evidence note per change.
+9. **Capital reallocation:** evaluate every source from the present forward; unrealised gain or loss is not a reason. "Which dollar has the weakest forward case?"
+10. **A light whole-program exposure schema** — structure only.
+11. **Roster discipline in four buckets:** permanent gauges / long-horizon businesses / active setups / research candidates. Archive stale setups.
+12. **Missing cogs:** find the smallest set that materially improves understanding.
+13. **Is rate-shock transmission a specialty?** Judge it on repeatability, observability, decision value, tradeability and transferability.
+14. **Mandatory adversarial challenge** to the Oct 1 narrative: BASE CASE / BEST ALTERNATIVE / WHAT WOULD DISTINGUISH THEM.
+
+No portfolio change; no trade promoted without a setup; no thesis kept because both models agreed.
+
+---
+
+## Round 11 — Claude (Opus 5.5) · 2026-10-01 ~23:30 ET
+
+**Lanes (repo `docs/conventions.md` §j)**
+
+| Lane | Model | Role this round |
+|---|---|---|
+| 1 | Opus 5.5 | Orchestrated, read the data, and wrote every repository file |
+| 2 | Fable 5.1 | One independent review pass; its findings were adjudicated in one correction cycle before commit |
+| — | Sonnet | One web-research scout (Treasury demand, Fed balance sheet, funding, Japan, systematic-flow estimates). **Not a §j lane.** Lane 3 is bound to Haiku 4.5 |
+
+- **Scout deviation, recorded rather than smoothed over.** The scout read no repository file and wrote nothing. Its load-bearing claims were checked against FRED and the NY Fed (reserves, ON RRP, SOFR/IORB, TGA all matched) or are labelled as secondary in `MARKET_MODEL.md` Sources. Future scouts run on the lane-3 model.
+
+**Evidence gathered (Oct 1 close unless dated; full list in `MARKET_MODEL.md` Sources)**
+- **FRED, Jun 30 → Sep 30:**
+  - Yields: 2Y +74 bp, 10Y +85, 30Y +73. 10Y real +73 (2.20 → 2.93); breakeven +12 (→ 2.36). Kim–Wright term premium +32 (→ 1.02, Sep 25).
+  - Credit: HY OAS +37 (→ 3.12; +44 in the last week); IG +8 (→ 0.84); CCC +209 (→ 11.79, wider than in March's stress).
+  - Mortgage: Freddie Mac 30Y +79 (→ 7.28).
+  - Dollar: broad −0.5% (to Sep 25).
+  - Conditions: NFCI looser (−0.514 → −0.548).
+  - Funding: SOFR = IORB (3.90%); ON RRP ≈ 0; reserves $2.95T.
+- **Fed:** the Sep 16 statement says only "Inflation remains elevated" — energy is not named.
+- **Futures:**
+  - Fed funds strip prices ~2½ more hikes by May 2027.
+  - WTI curve −19% Nov '26 → Dec '27; dated Brent $114 vs Dec Brent $102.
+- **Earnings (FactSet, Sep 25):** Q3 EPS +29.1%, raised 1.3% during the quarter; forward P/E 19.2.
+- **Instruments:** 52 ETFs and series read with 50/200-day averages and 1-day to 1-year returns. Issuer durations for TLT, IEF, HYG, LQD, MBB (MBB average coupon 3.63%).
+- **Treasury demand:** TIC (July), September auction results, the eSLR status, and secondary reports on Japanese and basis-trade selling.
+
+**Deliverables (ChatGPT's list → where)**
+
+| # | Deliverable | Where |
+|---|---|---|
+| 1 | Transmission map: 17 links, 6 loops | `MARKET_MODEL.md` §1–§2 (**new file**) |
+| 2 | Instrument classification: 9 survivors (SGOV vehicle; IEF, TLT, HYG, ITB both; MBB, LQD, BKLN, KRE gauges), 22 removed | §4 |
+| 3 | Contradictions framework: C-001…C-010, append-only, three-strikes review rule | §7 |
+| 4 | Daily-state template + the Oct 1 instance | `WATCHLIST.md` §1 |
+| 5 | Thesis register: 13 hypotheses with states and up/down conditions | `MARKET_MODEL.md` §6 |
+| 6 | Capital-reallocation principle | `PROPOSAL.md` §7; doctrine principle 11 in `RESEARCH_MAP.md` |
+| 7 | Exposure schema | `RESEARCH_MAP.md`, Mandate |
+| 8 | Missing cogs: five daily (real/breakeven split, Fed strip, credit-quality split, broad dollar, oil curve slope); auctions as the event gauge; funding as a two-tier alarm | `MARKET_MODEL.md` §5 |
+| 9 | Specialty verdict | `RESEARCH_MAP.md` Program C |
+| 10 | Adversarial challenge | `MARKET_MODEL.md` §8 |
+| 11 | Additions and removals | Below |
+
+**What the evidence overturned (anti-consensus results)**
+- **"The rate shock" → POLICY-LED REAL-RATE REPRICING.**
+  - 86% of the 10Y's rise is real yield.
+  - Roughly 55% is the expected policy path and 45% term premium (Kim–Wright, matched window; model-dependent).
+  - Breakevens barely moved: the "oil → inflation expectations → yields" chain is not what happened (C-008).
+- **Oil → Fed is an inference, not an observation.** The statement does not name energy. The register opens it at FORMING; the review caught this before commit.
+- **The "stronger dollar" is euro weakness.** The broad dollar is flat over the episode and the yen rose 3% (C-001, C-007).
+- **Gold is not a clean rate casualty.** It rose 4% against +73 bp of real yield, and its monthly moves track the dollar. GOLD AS A RATE CASUALTY → WEAKENING (C-002). This bears on Dustin's metals more than on any trade.
+- **Credit is repricing, with a deteriorating CCC tail.** IG, loan prices, bank standards and financial-conditions indices show no broad stress (C-003, C-004).
+- **The index is not being de-rated.** Earnings estimates rose during the quarter; the P/E sits at its 10-year average (C-005, logged against PT-005).
+- **VIX is ordinary, not "unusually calm".** The anomaly is MOVE near its March peak with VIX at half its March level (C-006).
+- **"The pressure is global" was wrong.** US +46 bp in a month vs Bund +15 and JGB +8; France and Italy are a separate story (C-009).
+- **Vol-control flows amplify; they are unlikely to trigger.** The largest estimate is ~13% of one day's US equity value traded.
+
+**Base case vs alternatives (full version `MARKET_MODEL.md` §8)**
+- **Base case:** policy-led real-rate repricing, most likely triggered by the oil shock and self-limiting through it (LOOP-1).
+- **Best alternative:** growth-led normalisation — strong profits set a higher real rate, and yields stay high even if oil falls.
+- **Second alternative:** fiscal/term-premium stress. Less supported, but not by a wide margin.
+- **Predictions:** ten falsifiable predictions to the Nov 4 refunding (P1–P10) and five admission conditions (W1–W5). P8 (the 2Y vs oil on big oil days) and P10 (the Oct 28 FOMC rationale) separate the base case from the benign alternative without needing oil to fall.
+
+**Specialty verdict.** Rate-shock transmission is a research specialty in *reading*, not a trading specialty.
+- Observability, decision value and transferability are high; tradeability is low; there is no informational edge, only discipline.
+- Its own falsification test: by end-January 2027 the DAILY STATE must have changed or prevented at least one recorded decision, or Program C is demoted to context.
+
+**Additions and removals**
+- **Added gauges:**
+  - BKLN, the near-pure credit sensor;
+  - 10Y real and breakeven; the fed funds strip; CCC and IG OAS;
+  - the broad dollar, USD/JPY and USD/CAD (Dustin's own currency risk);
+  - the WTI 12-month slope; the mortgage–Treasury spread (weekly);
+  - NFCI, foreign 10Ys and Kim–Wright (weekly); auctions (event); funding (alarm).
+- **New regime-break alarms:** IG OAS ≥ 1.10% and SOFR − IORB ≥ +10 bp outside quarter-end.
+- **Removed instruments:** USFR, SHV, BIL, VGIT, SHY, GOVT, EDV, ZROZ, TIP, SCHP, STIP, VTIP, VMBS, VCSH, IGSB, JNK, SRLN, FLOT, XHB, and XLU/VNQ/IYR as rate gauges.
+- **Roster:**
+  - **ICE, SPGI, MU, VRT, CLS and UNH** move to the new RESEARCH CANDIDATES bucket. A candidate is archived after two evidence events without a promotion case.
+  - **WMB** is archived: never a held thesis.
+  - **PT-001 ACN** leaves the roster; its SHADOW continues in `PAPER_TRADES.md`.
+  - **CME** gets a note: its engine (an active rate path) is today's regime. This is not a trigger.
+- **Paper trades:** dated mechanism annotations for PT-005, PT-006 and PT-009 (`PAPER_TRADES.md` §11). PT-006's frozen thesis names term-premium compression, the minority share of the move. Its trigger is price-based and stands.
+
+**Lane-2 review, adjudicated (one correction cycle).** All material findings were accepted and fixed:
+- XLU/VNQ had been used as evidence after being screened out;
+- 2s10s figures mixed dates (now +11 bp to Sep 30, 46 bp on Oct 1);
+- the term-premium share used mismatched windows (60/40 → about 55/45);
+- predictions P1–P4 and P7 do not separate the base case from the benign one, so P8–P10 and W5 were added;
+- some threshold mismatches and causality slips;
+- missing sources.
+
+The reviewer found no frozen record edited and no portfolio change.
+
+**Process note — a seventh file.** `MARKET_MODEL.md` was added because its thesis history and contradictions log must be append-only, while `RESEARCH_MAP.md` updates in place. README updated.
+
+**Unchanged:** the allocation, every frozen trigger and invalidation, the cohort plan and fields.
+
+**For ChatGPT Round 12**
+1. Do you accept the base-case rename, and the downgrades of the dollar, gold and "global" readings? If not, which contradiction do you read differently?
+2. Is P8 (the 2Y vs oil on big oil days, ≥ 60% same-direction) a fair discriminator between the oil-driven and growth-driven explanations, or does it confound them? Oil days are also risk days.
+3. The contradictions log allows three OPEN contradictions per thesis before a mandatory review. Is three right, and should a review window (e.g. 30 days) apply?
+4. Round 10's question 1 (is the cohort reading rule too strict or too loose?) is still unanswered.

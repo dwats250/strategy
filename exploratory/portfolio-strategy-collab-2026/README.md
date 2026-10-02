@@ -1,21 +1,23 @@
 # Portfolio strategy collaboration — 2026
 
 **Owner:** Dustin Watson · **Collaborators:** Claude and ChatGPT · **Opened:** 2026-10-01
-**Status:** exploratory. Rounds 1–10 complete. Round 10 (convergence checkpoint) did four things:
-- turned `WATCHLIST.md` into the daily **Market Roster** (permanent gauges, the working narrative, investable and tactical rosters, dated decision points, the stale archive);
-- resolved roles as program-level;
-- froze the earnings-cohort analysis plan before UNH (Oct 13);
-- gave every watch a lifecycle.
+**Status:** exploratory. Rounds 1–11 complete. Round 11 (rates, credit, liquidity) built `MARKET_MODEL.md`. It holds:
+- a transmission map with feedback loops and causality labels;
+- an instrument screen (22 rates/credit instruments removed; BKLN added; five missing cogs adopted as daily gauges);
+- a thesis-state register and an append-only contradictions log;
+- an adversarial challenge that renamed the base case: **policy-led real-rate repricing**, most likely triggered by the oil shock — an inferred link (best alternative: growth-led normalisation).
 
-Its review chose four specialties and judged MARKET_DOCTRINE half ready (process yes, market no — target early December).
+`WATCHLIST.md` gained a compact DAILY STATE and four roster buckets. Rate-shock transmission was judged a research specialty in *reading*, not trading, with its own falsification test by end-January 2027.
+
+Round 10 (convergence checkpoint) had turned `WATCHLIST.md` into the daily Market Roster, resolved roles as program-level, frozen the cohort analysis plan before UNH, and given every watch a lifecycle. MARKET_DOCTRINE remains half ready (process yes, market no — target early December).
 
 A small, bounded experiment: two AI systems independently and then jointly propose how
 $5,000 of incremental capital should be deployed, staged or deliberately left undeployed, and
 the rules that govern it afterward. The investment decision stays with Dustin.
 
 This is not a study or an audit under `docs/conventions.md`, and it authorizes nothing in
-CuttingBoard or any other repository. It is not a trading system. Keep it to these six files (README, ROUNDS, PROPOSAL, WATCHLIST, PAPER_TRADES, RESEARCH_MAP)
-unless real use shows a need for more.
+CuttingBoard or any other repository. It is not a trading system. Keep it to these seven files (README, ROUNDS, PROPOSAL, WATCHLIST, PAPER_TRADES, RESEARCH_MAP, MARKET_MODEL)
+unless real use shows a need for more. (MARKET_MODEL was added in Round 11 because its thesis history and contradictions log must be append-only, which RESEARCH_MAP's update-in-place rule cannot hold.)
 
 ## Files
 
@@ -24,7 +26,8 @@ unless real use shows a need for more.
 | `README.md` | Purpose, assumptions, protocol, evidence rules, frozen owner brief | Brief is frozen; amend only by a dated note below it |
 | `ROUNDS.md` | Each exchange: date, model, claims, disagreements, changes | Append-only |
 | `PROPOSAL.md` | The current consolidated proposal | Replaced each round; material changes logged in `ROUNDS.md` |
-| `WATCHLIST.md` | **Market Roster — the daily page**: narrative, permanent gauges, investable and tactical rosters, dated decision points, lifecycle, stale archive | Gauges refreshed when used; narrative changed only on meaningful change; stale items archived, not deleted |
+| `WATCHLIST.md` | **Market Roster — the daily page**: DAILY STATE (template + latest), base case, four buckets (permanent gauges · long-horizon businesses · active setups · research candidates), dated decision points, lifecycle, stale archive | Gauges refreshed when used; a new DAILY STATE is written below the last; base case changed only on meaningful change; stale items archived, not deleted |
+| `MARKET_MODEL.md` | **Rates/credit/liquidity model** (Round 11): transmission map and loops, link table, cause-vs-correlation labels, instrument map, missing cogs, thesis register, contradictions log, adversarial challenge with falsifiable predictions | §1–§5 updated in place; thesis-state history and the contradictions log are **append-only**; §8 redone when the base case changes |
 | `RESEARCH_MAP.md` | **Current understanding**: research programs, long-horizon theses, methodology findings, the earnings cohort, the research queue | Updated in place; one-line note in `ROUNDS.md` when it changes materially |
 | `PAPER_TRADES.md` | Prospective setups written before their triggers; decision-quality ledger (A/B/C/D); qualification ladder to micro-live | Append-only after a record activates; plans are frozen at activation |
 

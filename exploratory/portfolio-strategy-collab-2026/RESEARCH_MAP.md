@@ -4,7 +4,7 @@
 is what matters now. Both Claude and ChatGPT should be able to read it cold and recover the state
 of every idea. Update it in place; record material changes in one line in `ROUNDS.md`.
 
-**Last updated:** 2026-10-01 ~19:30 ET (Round 10 — Claude, Opus 5.5) · the daily-use page is `WATCHLIST.md` (Market Roster)
+**Last updated:** 2026-10-01 ~23:30 ET (Round 11 — Claude, Opus 5.5) · the daily-use page is `WATCHLIST.md` (Market Roster) · the rates/credit/liquidity model is `MARKET_MODEL.md` (new in Round 11)
 
 ---
 
@@ -15,7 +15,7 @@ Working answer after nine rounds: **how prices and businesses behave when inform
 | Track | Programs | Central questions | Framework |
 |---|---|---|---|
 | **Long-horizon business research** | D · market infrastructure (CBOE, CME, ICE, SPGI) · E · contracted energy and power (LNG, …) · H · exceptional secular businesses (TSM, …) | Durability · underwritability · valuation · capital allocation · structural growth · irreversible risk | Theses and counter-theses; underwritability → role and size; thesis half-life and re-underwriting |
-| **Trading research** | A · information repricing · B · secular-leader pullbacks and reclaims · C · rates/duration transitions · G · breadth/index deterioration (candidate) · F · post-shock reversals (exploratory) | Is there a repeatable, pre-specifiable setup, and does evidence support it? | Frozen setups, triggers, invalidation, vehicle, PAPER → MICRO-LIVE → SCALE |
+| **Trading research** | A · information repricing · B · secular-leader pullbacks and reclaims · C · rates/credit/liquidity transmission (a reading layer; duration-turn trades are rare) · G · breadth/index deterioration (candidate) · F · post-shock reversals (exploratory) | Is there a repeatable, pre-specifiable setup, and does evidence support it? | Frozen setups, triggers, invalidation, vehicle, PAPER → MICRO-LIVE → SCALE |
 
 The trading track produces evidence quickly; the business track is where capital compounds. Round 10 tests whether this split still describes how we work.
 
@@ -39,6 +39,42 @@ The trading track produces evidence quickly; the business track is where capital
 
 **Future, not full accounting:** an exposure map across those holdings, answering one question — *what economic risks do we already own before deploying another dollar?*
 
+### Whole-program exposure map — schema only (Round 11)
+
+This defines the structure; no holdings are requested yet. Its job is to answer **"what risk are we adding when we make a new trade?"**
+
+| Holding | Account | Asset type | Economic exposure | Currency | Horizon | Role | Liquidity |
+|---|---|---|---|---|---|---|---|
+
+**Field vocabulary:**
+- **Account:** TFSA · Margin (non-registered) · LIRA · Other (name it).
+- **Asset type:** single stock · equity ETF · bond ETF · bullion/metal · cash or T-bills · option · other.
+- **Economic exposure:** up to three tags, primary first:
+  - GLOBAL_EQUITY · US_GROWTH/AI · RATES_DURATION · CREDIT · METALS · ENERGY;
+  - INFRASTRUCTURE_CONTRACTED · CAD/USD · SINGLE_STOCK_CONCENTRATION;
+  - GEOPOLITICAL (name it: Taiwan, Middle East) · VOLATILITY (long or short activity).
+- **Currency:** the currency the asset's value moves in. A US stock held in a CAD-denominated account is still USD exposure.
+- **Horizon:** tactical (< 3 months) · medium (3–24 months) · long (> 2 years).
+- **Role:** CORE · SATELLITE · TACTICAL · SPECULATION.
+- **Liquidity:** same-day · days · locked (LIRA: tradeable inside the account, not withdrawable) · illiquid.
+- **Optional, from `MARKET_MODEL.md`:** regime sensitivity, marked + / − / 0 / ? to: 10Y up · credit wider · oil up · USD up · VIX up. This is the column that links a holding to the active thesis states.
+
+**Illustration using the proposal's own lines** (not Dustin's holdings):
+
+| Holding | Account | Asset type | Economic exposure | Currency | Horizon | Role | Liquidity |
+|---|---|---|---|---|---|---|---|
+| TSM | at execution | single stock (ADR) | US_GROWTH/AI · GEOPOLITICAL (Taiwan) · SINGLE_STOCK | USD | long | SATELLITE | same-day |
+| CBOE | at execution | single stock | VOLATILITY (long activity) · SINGLE_STOCK | USD | long | CORE candidate | same-day |
+| LNG | at execution | single stock | INFRASTRUCTURE_CONTRACTED · ENERGY (secondary) | USD | long | CORE (LNG-A) | same-day |
+| PT-006 TLT call (if triggered) | at execution | option | RATES_DURATION | USD | tactical | TACTICAL | same-day |
+
+**What the filled map is for:**
+- totals by exposure tag and by currency;
+- duplicates: what a new trade adds to tags already carried;
+- what is exposed to an ACTIVE thesis. For example, under POLICY-LED REAL-RATE REPRICING, which holdings are long RATES_DURATION?
+
+No thresholds are set now; the first filled map sets them. **Sequencing (answers Round 10's question 2):** the schema now; the fill before any capital moves outside the sleeve; independent of the cohort readout.
+
 ## Research universe vs deployment universe
 
 | | Research universe | Deployment universe |
@@ -61,7 +97,7 @@ Families (`PAPER_TRADES.md` §5) map to programs; one program can hold several f
 |---|---|---|---|---|---|---|---|
 | A · Earnings repricing | EARNINGS_CONTINUATION | High — dozens of large gaps each quarter | 2–8 weeks | Slow institutional repositioning after a de-risking print (post-earnings drift) | Earnings calendar, consensus, implied move, day-1 OHLCV + VWAP, 20-session follow-through | Medium–high (liquid large caps) | Confusing short-covering spikes with repricing; small samples; a documented anomaly that may already be arbitraged in large caps |
 | B · Secular-leader pullbacks and reclaims | TREND_PULLBACK, BROKEN_LEADER_RECLAIM | Medium — a few per month across 10–20 leaders | 3–12 weeks; can become investments | Trend persistence in names with rising estimates | Daily OHLCV, moving averages, relative strength, estimate revisions | High | Catching broken momentum; leaders correlated with each other (AI hardware) |
-| C · Rates / duration regime | MACRO_DURATION_TURN | Rare — one or two regime turns a cycle | 1–6 months | Convexity at a genuine long-end turn; cheap liquid options (TLT IV ~16%) | Treasury par/real curves, term premium, MOVE, auctions, Fed path, mortgage rates, Market Brief rates block | High | Buying "high yields" before the trend turns; fiscal/term-premium drivers that outlast the Fed |
+| C · Rates, credit and liquidity transmission (reading layer, Round 11) + duration-turn trades (rare) | MACRO_DURATION_TURN | Reading: daily. Trades: rare — one or two regime turns a cycle | Trades 1–6 months | Reading: discipline, not information — honest causality labels, a contradictions log, fewer narrative errors. Trades: convexity at a genuine turn; cheap liquid TLT options (IV ~16%) | `MARKET_MODEL.md` §5: real/breakeven split, Fed strip, IG/HY/CCC OAS + BKLN, broad dollar, oil curve slope; auctions; funding alarm | Reading: n/a. Trades: high | Narrative over-reach (Round 10's dollar, gold and "global" claims); buying "high yields" before the policy path turns |
 | D · Market infrastructure (tollbooths) | TACTICAL_COMPOUNDER_ENTRY (+ strategic holds) | Monthly data; quarterly decisions | Years | Monetising activity without predicting direction; operating leverage; proprietary products | Monthly ADV/RPC releases, segment revenue, data revenue, capital returns | High | Paying peak multiples at peak volumes; competition or regulation of a franchise product |
 | E · Contracted energy and power infrastructure | (strategic holds) | Quarterly | Years | Long-dated contracted cash flows plus permitted growth, bought at a toll-road multiple | Filings (contract %, tenor, fee structure), permits, financing, global supply schedule | High | Mistaking commodity or merchant exposure for contracted cash flow; financing costs; supply waves |
 | F · Post-shock / special situations (exploratory) | POST_SHOCK_REVERSAL | Low–medium | 4–10 weeks | Overshoot after forced selling | Event detail, estimate cuts, positioning, post-event price structure | Low–medium | High information cost per trade; "down a lot" mistaken for "cheap"; contaminated indicators |
@@ -213,23 +249,46 @@ If they hold, the hypothesis is pre-registered **before** the Jan–Feb 2027 rep
 
 **Worth deeper study if:** both families produce completed observations with clean timing records. Then a retrospective study on a defined leader universe becomes worth running, because this is the most capital-scalable program.
 
-### C · Rates / duration regime
-**Question:** can we recognise the transition from a rising-rate regime to a duration-positive regime early enough to act, without catching falling bonds?
-**State:** WATCH (PT-006 TLT, PT-009 ITB — one family, one shared condition M1).
+### C · Rates, credit and liquidity transmission (renamed Round 11; was "Rates / duration regime")
+**Questions:**
+1. *Reading:* how is a rate shock moving through the system right now, and what would show our explanation is wrong?
+2. *Trading (rare):* can we recognise the transition to a duration-positive regime early enough to act, without catching falling bonds?
 
-**Evidence as of Oct 1:**
-- 10Y 5.29% on Sep 30 (a 24-year high) and 5.24% intraday Oct 1.
-- About 73 of the 85 bp Q3 rise in the 10Y was real yield.
-- MOVE at records; the Fed hiked on Sep 16.
-- TLT and ITB both printed new 52-week lows Oct 1, then recovered.
+**State:**
+- The reading layer runs daily through the DAILY STATE (`WATCHLIST.md` §1) and the model in `MARKET_MODEL.md`.
+- Trades: PT-006 TLT and PT-009 ITB are ACTIVE REGIME WATCHES — one family, one shared condition M1. Their thesis, DURATION TURN, is **DORMANT** (Oct 1).
 
-**Market Brief / market-review inputs (read-only):** the daily Treasury par-curve table and hypotheses H1 (the long end is restrictive) and H2 (rates vol is elevated relative to equity vol).
-**CME** sits in this program as a business counterweight: it is paid while the rate path stays active, and duration pays when it turns.
+**Round 11 findings that change this program** (evidence: `MARKET_MODEL.md` §2 and §8):
+- **Policy path, mostly.** Over the matched window Jun 30 → Sep 25, the 10Y's rise was roughly 55% expected policy path and 45% term premium (Kim–Wright; model-dependent). Through Sep 30 it is +73 real / +12 breakeven, and the 2Y rose +74 bp.
+  - A duration turn is therefore somewhat more likely to come through the **policy path** (oil rolling over → hikes priced out; LOOP-1) than through term-premium compression, which is the mechanism PT-006's frozen thesis names.
+  - The frozen trigger is price-based and stands. A dated annotation records the mechanism point (`PAPER_TRADES.md` §11).
+- **Mostly US.** The move is mostly US-specific: over one month, US +46 bp vs Bund +15 and JGB +8. This answers Round 10's open question on foreign long ends.
+- **Mortgage spreads are not amplifying.** The mortgage–Treasury spread is stable at ~2.0 pp. The MBS universe's 3.63% average coupon has left little prepayment optionality, so rate vol is not widening MBS spreads (C-010). Homebuilders cannot lead TLT through a spread channel today; only through the rate itself.
+
+**Specialty verdict (answers Round 10's question 3 and ChatGPT Round 11 §13)**
+
+| Criterion | Evidence | Judgement |
+|---|---|---|
+| Repeatability | Rate regimes shift every one to three years (2013, 2018, 2020, 2022, 2023, March 2026, now); within a regime the reading updates daily | Reading: high · turn trades: low |
+| Observability | The best free data in finance: official daily yields, real yields, breakevens, OAS, funding, futures strips. Gaps: cross-currency basis, dealer positioning | **High** |
+| Decision value | Round 11 alone changed the base case, the meaning of two gauges (dollar, gold), PT-006's mechanism, the regime-break alarms (IG and funding added) and 22 instrument slots. It also bears on every rate-sensitive holding and on Dustin's metals | **High** — mostly defensive (error avoidance and timing), not alpha |
+| Tradeability | Long TLT calls (liquid, IV ~16%) and TLT/ITB shares. HYG puts were studied and rejected on price. No futures, no spreads | Low–medium; rare |
+| Transferability | CME (active rate path → volumes); ICE (mortgage tech on a turn); LNG (financing cost, oil and gas shock); CBOE (equity-vol regime); metals (dollar vs real-yield attribution); Program A (rate-sensitive sectors' earnings); PT-005 (breadth) | **High** |
+| Edge | Everyone sees these series; there is no informational edge. Any edge is in the discipline: honest causality labels, a contradictions log, falsifiable predictions | Low as alpha · high as an error filter |
+
+**Verdict: a research specialty in *reading*, not a trading specialty.** It earns its place by conditioning other decisions. Direct trades stay rare regime watches.
+
+**The specialty's own falsification test:** by the end of January 2027, the DAILY STATE must have changed at least one decision, or prevented at least one error, that is recorded in `ROUNDS.md` or `PAPER_TRADES.md`. If it has not, Program C is demoted to context: the gauges stay and the specialty label goes.
+
+**Market Brief / market-review inputs (read-only):** the daily Treasury par-curve table; H1 (the long end is restrictive) and H2 (rates vol is elevated relative to equity vol).
+**CME** sits here as the business counterweight: it is paid while the rate path stays active, which is today's regime.
+
 **Key open questions:**
-- What preceded past long-end tops (Oct 2023, 2006–07, 1994–95)?
-- Do homebuilders or mortgage spreads lead TLT?
-- How much of the move is foreign long-end pressure (JGB 10Y 3.10%, OAT at 2002 highs)?
-**Worth deeper study if:** always — rare but high-convexity. The study of past tops is the next step regardless of triggers.
+- What ended past real-rate repricings (2006–07, 2018, Oct 2023): oil, data, or the Fed? This is the LOOP-1 test.
+- Gold attribution since 2022: dollar vs real yields vs official buying.
+- Does the CCC-vs-loans divergence (C-004) resolve toward loans weakening?
+
+**Worth deeper study if:** always for the reading layer (daily). The study of past turns is the next step for the trade family regardless of triggers.
 
 ### F · Post-shock / special situations (exploratory — must earn attention)
 **Question:** can severe event-driven repricings produce repeatable opportunities after the first forced move?
@@ -540,11 +599,14 @@ The Layer column is provisional until that evening.
 | Gap-down continuation setup (short / long put) | Setup A is long-only as frozen; the event layer captures gap-downs, the trade layer cannot | A | NEW — design only after event-layer evidence |
 | Does Setup A's "≥ 25% below 52-week high" filter matter? | It excludes leaders (TSM, UNH at 21%); the event layer will show whether leaders' gaps continue as well | A | NEW |
 | Post-shock indicator study | Finding 1 | F | Design ready; data source needed (daily OHLCV history for a large-cap shock sample) |
-| MOVE/VIX divergence | Record rates vol with calm equity vol: does it resolve by equity vol rising (good for CBOE, relevant to G) or rates vol falling (relevant to C)? | C, D, G | NEW — needs a MOVE history source (not on FRED) |
+| MOVE/VIX divergence | MOVE near its March peak with VIX at half its March level (C-006): does it resolve by equity vol rising (good for CBOE, relevant to G) or rates vol falling (relevant to C)? | C, D, G | Source found (Round 11): Yahoo `^MOVE` daily history. Logged as C-006; resolves on CPI/FOMC days |
 | Monthly exchange volume releases | Turns Program D into a monthly evidence stream | D | NEW — start with the October releases |
-| Past long-end tops (Oct 2023, 2006–07, 1994–95) | What preceded duration turns: Fed, auctions, term premium, curve | C | Next step for C |
-| Foreign long ends as US term-premium drivers (JGB 10Y 3.10%, BoJ hiking; OAT 2002 highs) | Possible leading input for C | C | Queue |
-| Muni/Treasury ratio (~80%) and mortgage–Treasury spread (~231 bp) as stress gauges | Cross-asset dislocation may lead a duration turn | C | Queue |
+| Past long-end tops (Oct 2023, 2006–07, 1994–95) — reframed Round 11: **what ended past real-rate repricings** — oil, data, or the Fed? | What preceded duration turns; the LOOP-1 test (`MARKET_MODEL.md` §1) | C | Next step for C |
+| Foreign long ends as US term-premium drivers | Possible leading input for C | C | **Partly answered (Round 11):** over one month the US moved ~3× Bund and ~6× JGB; France and Italy are a separate story (C-009). Kept as a weekly gauge |
+| Mortgage–Treasury spread as a stress gauge | Cross-asset dislocation may lead a duration turn | C | **Adopted as a weekly gauge (Round 11):** stable at ~2.0 pp (Freddie Mac − 10Y). The muni/Treasury ratio is dropped (no link to a decision) |
+| **Gold attribution** (NEW, Round 11) | Month to month, gold has tracked the dollar (4 of 4 months) more than real yields (2 of 4), with an official-sector bid underneath (C-002). This bears on Dustin's metals, not on a trade | Exposure map, C | Queue: monthly attribution since 2022 |
+| **CCC vs leveraged loans** (NEW, Round 11) | CCC +209 bp since June while BKLN's price held flat (C-004): is the hiking channel reaching floating-rate borrowers? | C | Watch weekly; BKLN < 20.21 is the signal |
+| **Oil curve → Fed path → duration** (NEW, Round 11) | The base case says the shock is self-limiting through oil (LOOP-1, prediction P6) | C | Live test: WTI front < $80 with backwardation narrowing |
 | Breadth extreme ("21% above 50-day with the index near highs — three times since 1927", one source) | Verify, then study forward returns | G | Verify first |
 | Contracted vs merchant power (CEG, VST vs LNG, WMB) | Program E's central distinction | E | Queue |
 | 2028–30 global LNG supply wave vs Cheniere expansion timing | LNG-B's main risk | E | Queue |
@@ -575,6 +637,8 @@ Chosen on six criteria: economic plausibility, observation frequency, fit with D
 | 2 | **Underwriting durable businesses** (D, H, and E within it): role and size from underwritability, thesis revision and re-entry | Fits the 25-year horizon; the most scalable; quarterly and monthly evidence; regime-robust by construction | Slow feedback; valuation discipline is easy to state and hard to keep |
 | 3 | **Reading rate-regime transmission** (rates → dollar → credit → equity vol; C as the lens, the gauges as instruments) | It conditions every other decision: sizing, which setups are favoured, when to review theses. Strong fit with Dustin's macro interest | The *trades* are rare. It is a reading skill first and a trading program second |
 | 4 | **Secular-leader trend structure** (B) — a candidate specialty | Medium frequency, risk definable, highly scalable | Works mainly in trending regimes; today's candidates are all one AI-hardware factor |
+
+**Round 11 note on #3:** confirmed as a research specialty in *reading*, not a trading specialty, with a falsification test by end-January 2027. The criteria table is under Program C above; the model is `MARKET_MODEL.md`.
 
 ### B. Programs that stay exploratory
 
@@ -638,6 +702,16 @@ NEW INFORMATION · OBSERVATION · MANDATE CHANGE
 8. Options only when they improve the expression; the whole premium is the risk; the contract is chosen at the trigger.
 9. Speculation is labelled and excluded from evidence. Capital unlocking is a separate comparison.
 10. Every watch has a lifecycle. Stale ideas are archived, not nursed.
+11. *(Round 11)* **Capital reallocation looks only forward: which dollar has the weakest forward case?**
+    - When new capital is needed, every available source is evaluated from the present forward, cash and "do nothing" included.
+    - Unrealised gain or loss is not itself a reason to keep or sell.
+    - Losers are not privileged to avoid "locking in" a loss; winners are neither privileged nor sold because they worked.
+    - Tax is the one place the past enters, and only in the non-registered account (`PROPOSAL.md` §7).
+12. *(Round 11)* **Contradictions are evidence.**
+    - Record them with what was expected and what would discriminate between the explanations.
+    - Accumulate them; do not rewrite a thesis on one.
+    - Repeated contradiction against the same thesis is evidence the model is weak.
+    - Use causality labels (mechanical / plausible / historical / observed / hypothesis) and never write "causes" for "moves with".
 
 **Evidence needed before drafting the market half** (when trend matters, when valuation matters, how macro evidence is used, how confirmation works):
 - the October cohort through D+20, read once under the frozen plan (~Nov 30);

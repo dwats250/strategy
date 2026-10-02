@@ -2,7 +2,7 @@
 
 **Canonical location:** `dwats250/strategy/exploratory/portfolio-strategy-collab-2026/PAPER_TRADES.md`
 **Opened:** Round 5 — Claude (Fable 5.1) · 2026-10-01 14:10 ET
-**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8.
+**Revised:** Round 6 — Claude (Opus 5.5) · 2026-10-01 ~15:00 ET — measurement infrastructure only. Round 7 (same day): rules 8–10 only. Round 8 (same day): PT-001 expiry + shadow; EARNINGS_CONTINUATION split into RECOVERY and MOMENTUM children; Setup A-M pre-registered. Round 9: Setup A-M v2 (implied-move gate withdrawn before first use; VWAP UNMEASURED rule). Round 10: rule 11 and §10 watch-lifecycle annotations; tradeable-continuation fields in §8. Round 11: §11 mechanism annotations only (PT-005, PT-006, PT-009), no rule changed.
 The ten original plans below are **unchanged** (verbatim, under "Frozen plan"); Round 6 adds
 annotations beneath each one. The only plan edit is the one ChatGPT Round 6 mandated for PT-006's
 option clause, shown struck through rather than deleted.
@@ -461,3 +461,17 @@ These are dated annotations. They add a **watch type and expiry** to records tha
 | PT-010 CLS | Tactical setup | **Oct 26 close** if not triggered | Its plan's re-arm-after-earnings clause; a re-arm is a fresh record |
 
 **Regime review, 2026-10-01 (PT-006 / PT-009):** M1 not met (10Y 5.24% against a rising 10-week average). M2 not met (TLT closed at a new 52-week low, 77.71). M3 is checked at the next weekly close. **Status: ACTIVE REGIME WATCH — no change.**
+
+---
+
+## 11. Round 11 annotations — mechanism evidence (2026-10-01 ~23:30 ET)
+
+These are dated annotations. **No trigger, invalidation, exit, time stop or vehicle rule is changed.** They record what Round 11's rates/credit model (`MARKET_MODEL.md`) says about the mechanism each record assumes. A completion record can then grade the thesis against the mechanism that actually delivered (or failed to deliver) the move.
+
+| Record | Annotation | Thesis state (`MARKET_MODEL.md` §6) |
+|---|---|---|
+| PT-006 TLT | The frozen thesis names **term-premium compression** as the mechanism. Round 11's decomposition attributes roughly 55% of the 10Y's rise to the **expected policy path** and 45% to term premium (Kim–Wright, matched window Jun 30 → Sep 25; model-dependent). Breakevens contributed +12 bp of the +85 bp to Sep 30. The trigger (M1–M3) is price-based and mechanism-agnostic, so it stands unchanged. If the record activates, its completion notes which mechanism delivered the turn (policy path / term premium / both). Of the optional conditions, "2Y ≥ 25 bp off its cycle high" is the one aligned with the base case | DURATION TURN — **DORMANT**; route most likely LOOP-1 (oil → strip) |
+| PT-009 ITB | The plan's stated advantage, "without duration's term-premium problem", is weaker than written: term premium is a large minority (~45%) of the move, not its driver. The mortgage–Treasury spread has been stable at ~2.0 pp, so the frozen "MND ≤ 7.35%" condition behaves in practice as a 10Y condition. Nothing changed | DURATION TURN — DORMANT · HOUSING TRANSMISSION — ACTIVE |
+| PT-005 SPY | Its strongest counter-evidence is logged as contradiction **C-005**: Q3 estimates rose 1.3% during the quarter, and the forward P/E (19.2) sits at its 10-year average. The Nov 2 monthly review reads C-005 alongside the five frozen conditions. Nothing changed | BREADTH / RATE-SENSITIVE ROTATION — ACTIVE · INDEX EARNINGS OFFSET — ACTIVE · SYSTEMATIC DELEVERAGING — FORMING |
+
+**Regime review, 2026-10-01 close (PT-006 / PT-009), unchanged from §10:** M1 not met, M2 not met, M3 at the next weekly close. **Status: ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-01.**

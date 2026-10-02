@@ -1,6 +1,6 @@
 # PROPOSAL — $5,000 Opportunity Sleeve
 
-**Version:** Round 10 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 10 records that roles are program-level (§2). Round 9 added the informational role reading. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
+**Version:** Round 11 — Claude (Opus 5.5) · 2026-10-01 · allocation unchanged; Round 11 formalises the capital-reallocation principle (§7) and adds no instrument (the rates/credit instrument screen is in `MARKET_MODEL.md` §4 and moved nothing here). Round 10 recorded that roles are program-level (§2). Round 9 added the informational role reading. Round 8 removed the speculation calendar budget (§6). Round 7 added §6 (speculation lane) and §7 (capital unlocking). Round 6 changed only
 the live/paper gates, the option-slot wording and the LNG/CME thesis statements (analyses in `ROUNDS.md`,
 Rounds 4–6; prospective setups in `PAPER_TRADES.md`)
 **Status:** Proposal for owner decision. Not executed. The final decision is Dustin's.
@@ -79,7 +79,7 @@ consistent.
 triggers are in `ROUNDS.md` Round 4 §B. Current status:
 Live capital enters only for a setup that has passed PAPER TRADE and REPEATED OBSERVATIONS in
 `PAPER_TRADES.md`; until then the slot is fed by paper results, not by triggers alone. Status of all
-ten setups (Oct 1 ~14:50 ET): WATCH; PT-001 ACN's day-1 confirmation resolves at the Oct 1 close.
+ten setups: PT-001 ACN **EXPIRED — NO TRIGGER** at the Oct 1 close (SHADOW to Dec 11); the other nine are WATCH (`WATCHLIST.md` §5).
 
 **Option slot (single leg; live premium ≤ C$100 Normal, C$150 A+ once a family earns it).** The
 contract is chosen from the live chain **at the trigger** under `PAPER_TRADES.md` §3; the Oct 1
@@ -142,24 +142,39 @@ contaminate the evidence the lab produces.
 |---|---|---|---|---|---|---|---|---|
 | — | — | — | — | — | — | — | 0 | 0% |
 
-## 7. Capital unlocking is a separate decision (Round 7)
+## 7. Capital reallocation — which dollar has the weakest forward case? (Round 7; principle formalised Round 11)
 
-If an opportunity needs more capital than is deployable, selling something else to fund it is a
-second, written decision: **is this opportunity superior to the asset we would sell?** Compare,
-side by side:
+**Principle (preserved for the doctrine, `RESEARCH_MAP.md` principle 11):**
+> When new capital is needed, evaluate all available sources from the present forward. Unrealized gain or loss is not itself a reason to keep or sell an asset.
 
-| | Candidate | Funding source (e.g. gold or silver) |
-|---|---|---|
-| Thesis and its current evidence | | |
-| Thesis status (intact / weakening / complete) | | |
-| Expected horizon | | |
-| Tax consequence of selling the source (account, gain/loss, superficial-loss timing) | | |
-| Liquidity and cost to exit or enter | | |
-| Opportunity cost if the source's thesis plays out after the sale | | |
-| Concentration after the swap | | |
+The question is **"Which dollar has the weakest forward case?"**
+- **Losers get no privilege.** "Selling would lock in the loss" is not a reason to keep one: the loss has already happened, and selling only changes what that dollar does next. The one exception is tax — a realised loss in the non-registered account has tax value.
+- **Winners get no privilege either way.** "It has worked" is not a reason to keep, and "take profits" is not a reason to sell.
+- **Cash and "do nothing" are candidates too.** The opportunity must beat the *weakest* existing dollar, not merely look attractive.
+- **Selling to fund is its own written decision.** If an opportunity needs more capital than is deployable, selling something else to fund it is a second, written decision, made with the table below.
 
-Proceed only if the candidate is better on thesis quality and evidence, not merely more
-exciting. If the answer is "I need money for this trade", the decision is NO.
+Fill one column per candidate source:
+
+| | New opportunity | Source A (e.g. gold or silver) | Source B | Cash |
+|---|---|---|---|---|
+| Current thesis and its latest evidence | | | | — |
+| Thesis status (intact / weakening / complete / invalidated) | | | | — |
+| Expected forward return and horizon (a range, with its basis) | | | | Risk-free rate |
+| Risk: what loses money, how much, how fast | | | | — |
+| Liquidity and cost to exit or enter | | | | — |
+| Tax consequence — only in the margin (non-registered) account; TFSA and LIRA sales have none. Superficial-loss rule if the same security is bought within 30 days before or after the sale, in *any* account, TFSA included | | | | — |
+| Concentration after the swap (exposure-map tags, `RESEARCH_MAP.md`) | | | | — |
+| Opportunity quality: setup, evidence, underwritability | | | | — |
+| Opportunity cost if the source's thesis plays out after the sale | | | | — |
+
+**Decision rule:** proceed only if the opportunity's forward case beats the weakest source's
+forward case on thesis quality and evidence, net of tax and costs — not merely because it is more
+exciting.
+- "I need money for this trade" → **NO**.
+- "It's down; I'll wait to get back to even" → not a reason.
+- "It's up; take profits" → not a reason.
+
+Claude is not a licensed advisor; this is a comparison discipline, not a recommendation to sell anything.
 
 Full candidate board (18 names), strategy board (6 setups) and option chains: `ROUNDS.md`, Round 4.
 TSM staging, CBOE-vs-CME engines and the LNG stress test: `ROUNDS.md`, Round 5. Round 6 closes
