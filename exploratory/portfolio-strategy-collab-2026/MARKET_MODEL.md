@@ -299,6 +299,7 @@ A contradiction is not an error. It is an observation that differs from what our
 - *Expected (Round 10 §1):* "the pressure is global".
 - *Possible explanations:* (a) a US-specific policy shock; (b) global term premium plus a euro-periphery fiscal story.
 - *Discriminating evidence:* on the next long-end selloff day, check whether Bund and JGB move ≥ half as much as the US.
+- *Oct 5 (scheduled cycle), not discriminating:* US 10Y +3 to +4 bp, 30Y +4 to +5 bp. Bund +5 bp, Gilt +4, JGB −1, Canada +1 (TradingEconomics; single source; the Bund page's text is internally inconsistent). The US move followed the 10:00 ET ISM release, after Tokyo had closed and late in Europe's session, so timing confounds it. Stays OPEN.
 
 **C-010 · 2026-10-01 · Rate vol vs mortgage spreads · OPEN**
 - *Grade:* **RESEARCH NOTE** — no prior written expectation about MBS spreads.
@@ -427,16 +428,17 @@ A contradiction is not an error. It is an observation that differs from what our
 | P5 | ITB and IWM underperform SPY while the 10Y ≥ 5.0% | **Benign** | Nov 4 | PENDING |
 | P6 | WTI < $80 → strip −1 hike and 10Y −25 bp within 2 weeks | **Benign** | Conditional | PENDING (condition not met; WTI intraday low 88.06 on Oct 2) |
 | P7 | SOFR ≤ IORB + 5 bp outside month-ends | Stress | Nov 4 | PENDING |
-| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING. Qualifying days so far: **0 of 1 same direction**. Oct 1: WTI +2.7% (settlement 92.87, fxstreet), 2Y −10 bp (4.88 → 4.78) — opposite. Oct 2: **does not qualify**. WTI settled 91.11 (−1.9%; Rigzone), below the ±2% threshold (reconciliation, Round 14) |
+| P8 | ≥ 60% of October's ±2% WTI days see the 2Y move the same way | **Benign** | Oct 30 | PENDING. Qualifying days so far: **0 of 1 same direction**. Oct 1: WTI +2.7% (settlement 92.87, fxstreet), 2Y −10 bp (4.88 → 4.78) — opposite. Oct 2: **does not qualify**. WTI settled 91.11 (−1.9%; Rigzone), below the ±2% threshold (reconciliation, Round 14). Oct 5: **does not qualify**. WTI Nov settled 89.43 (−1.8%; Rigzone); 2Y ~flat |
 | P9 | On CPI and FOMC days the 10Y moves ≥ 0.6× the 2Y, same direction | Stress | Oct 28 | PENDING |
 | P10 | The Oct 28 rationale cites energy or headline inflation | **Benign** | Oct 28 | PENDING |
 
 | Condition | Status |
 |---|---|
-| W1–W5 (admit the base case is wrong) | None triggered (Oct 2). W4 read in the reconciliation: not triggered (10Y breakeven 2.36%, Treasury par real). W2 not read on Oct 2 (IG OAS UNMEASURED); last read not triggered on Oct 1 |
+| W1–W5 (admit the base case is wrong) | None triggered (Oct 5). W1 not met (WTI 89.43). W4 last read Oct 2: not triggered (10Y breakeven 2.36%, Treasury par real); Oct 5 breakeven UNMEASURED, and ISM prices paid ran hot (74), so re-read it next run. W2 not read since Oct 1 (IG OAS UNMEASURED); last read not triggered |
 
 **Next discriminators (set Oct 2, Round 14).** The smallest set that separates today's explanations. Each uses an existing row above; nothing new is tracked.
 1. **Confirm the Oct 2 closes, and read the strip beyond October** (next run). The par and real rows were read once: the 10Y's +4 bp was all real yield. The strip is the discriminator for the higher close: December and later hikes re-priced up favours the policy path; a flat strip with real yields up favours term premium or another real-yield component. Add the week's term-premium estimate (Kim–Wright) when published.
+   - *Oct 5 (scheduled cycle):* Oct 2 closes confirmed by Fed H.15 (2Y 4.83, 10Y 5.28, 30Y 5.63; 10Y real 2.92). Strip at Friday's close: October hike ~22%, December cumulative ≥ 25 bp 88.6% (FedWatch via Phemex). **Oct 5 was a bear steepener:** 2Y ~4.82% (flat), 10Y 5.31–5.32% (+3 to +4), 30Y 5.66–5.67% (+4 to +5) on market quotes, with December odds ~84% after the close (FedWatch via Invezz; not like-for-like). ISM services prices paid 74 (hot); WTI −1.8%. This matches the written §6 down-condition of POLICY-LED REAL-RATE REPRICING ("10Y rises with the strip flat") for one session. **Admission rule, pre-committed before the official read:** if the Oct 5 H.15 row shows the 10Y up ≥ 3 bp with the 2Y flat or lower, and the 10Y real yield carries most of the rise, admit C-012 against that down-condition. If the breakeven carries most of it, record a W4-zone note instead. Either way, the Oct 7–8 auctions are the next test.
 2. **10Y (Oct 7) and 30Y (Oct 8) auctions.** A tail ≥ 2 bp with indirect < 65% favours supply and term premium (stress). Clean auctions favour the path story.
 3. **CPI (Oct 14).** Tests P9 (10Y ≥ 0.6× the 2Y, same direction) and C-011: hikes rebuilding on a hot print favours (b) or (c); hikes staying out with oil > $80 favours (a).
 4. **The reserve release as a natural experiment.** Over its first two weeks, watch the WTI front vs 12-month slope and the 10Y breakeven. A narrowing backwardation with flat breakevens and an unmoved strip says the release reached oil but not policy. Do not read "reserve release → lower yields" from one day: Brent closed −0.1% while WTI fell 1.9%.

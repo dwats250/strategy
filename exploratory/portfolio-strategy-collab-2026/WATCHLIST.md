@@ -55,6 +55,61 @@ DATED DECISIONS next five sessions (from §6)
 CAPITAL-MOVING  alarms tripped · OPPORTUNITY SCAN: NO ACTION | <what, and where it was recorded>
 ```
 
+### DAILY STATE — 2026-10-05 (close) · previous: 2026-10-02
+
+*Written by the unattended daily cycle; time: see commit. **Data coverage was partial** (same cause as Oct 2: direct FRED, Yahoo-chart and quote-page fetches are blocked in this run; only pages surfaced by web search were readable). Oct 5 rates closes are market quotes; the Treasury par / H.15 row for Oct 5 was not read. Fields not read reliably are UNMEASURED.*
+
+**Changed:**
+1. **The long end sold off while the front end held: a bear steepener to new 24-year highs.** OBSERVED (market quotes at the close): 2Y 4.82% (−0.2 to −1.6 bp), 10Y 5.31–5.32% (+3 to +4 bp), 30Y 5.66–5.67% (+4 to +5 bp) (TheStreet 16:07 ET; TradingEconomics). Intraday the 10Y reached ~5.35% and the 30Y ~5.70%, the highest since April / May 2002 (MPA; Invezz; Yahoo). Sources disagree on the 10Y close (5.31–5.35%); two of four put it at 5.31–5.32%. DERIVED: 2s10s ≈ 49 bp (+4), 2s30s ≈ 84 bp (+4).
+2. **ISM services prices paid ran hot.** OBSERVED (Yahoo; MPA): September ISM services 54.9 (consensus 55.2, prior 55.4); prices paid 74 (consensus 73, prior 72.6). Sources attribute the long-end move to it and to "momentum selling" (INTERPRETATION by the sources).
+3. **Oil kept falling and the October hike stayed mostly out.** WTI Nov settled 89.43 (−1.8%; Rigzone 16:07 ET), Brent Dec 100.32 (−1.9%). October hike odds ~18–22% (CME FedWatch via Invezz: 82% hold; prediction markets 21%).
+
+**Rates**
+- *Observed:*
+  - **Oct 2 closes confirmed by a second official source** (Fed H.15, read this run): 2Y 4.83 · 10Y 5.28 · 30Y 5.63; 10Y real 2.92 · 30Y real 3.34. Matches the Round 14 Treasury-par read.
+  - Oct 5: 2Y · 10Y · 30Y as in Changed 1. 10Y real, breakeven, MOVE: UNMEASURED.
+  - Strip: December hike ~84% (FedWatch via Invezz, after the close) against 88.6% cumulative ≥ 25 bp at Friday's close (FedWatch via Phemex, 00:06 Oct 5). Prediction markets: December 74% (DeFi Rate). Different sources; not like-for-like. 2027 strip: UNMEASURED.
+- *Interpretation (low confidence):* the 10Y and 30Y rose with the 2Y flat and no sign of the strip adding hikes. That is the written down-condition of POLICY-LED REAL-RATE REPRICING ("10Y rises with the strip flat → term premium story") and the up-condition of LONG-RATE STRESS TRANSMISSION. Three explanations are open: (a) term premium / supply concession ahead of the Oct 7–8 auctions (stress family; PLAUSIBLE / UNTESTED); (b) an inflation-expectations response to ISM prices paid (breakeven; W4 watch zone); (c) a path repricing beyond December that the Oct/Dec odds do not capture. The real/breakeven split separates (b). **One session; no state change.** Oil fell 1.8% the same day, so the long-end rise was not oil-led.
+- *Contradiction / alternative:* **candidate, not admitted.** Admission rule pre-committed here: if the Oct 5 H.15 row shows the 10Y up ≥ 3 bp with the 2Y flat or lower, and the 10Y real yield carries most of the rise, admit **C-012** against POLICY-LED REAL-RATE REPRICING's §6 down-condition. If the breakeven carries it, record a W4-zone note instead (`MARKET_MODEL.md` §8, Next discriminators 1).
+- *What changes the view:* the Oct 5 H.15 row; the 10Y (Oct 7) and 30Y (Oct 8) auctions (tail ≥ 2 bp with indirect < 65%).
+
+**Credit**
+- *Observed:* HYG 76.87 (−0.06%, 13:15 ET) · BKLN 20.49 (+0.05%, 12:04 ET) (stockanalysis). IG, HY, CCC OAS: UNMEASURED.
+- *Interpretation:* unchanged. No price sign of spread stress on a 24-year-high long-end day.
+
+**Dollar / liquidity**
+- *Observed:* DXY 102.14 (+0.2%) · USD/JPY 157.96 (+0.06%) · USD/CAD 1.4255 (flat) (TradingEconomics, time n/s, single source). Broad dollar and SOFR − IORB: UNMEASURED; funding alarm last read off (Sep 30).
+- *Interpretation:* unchanged. A firmer dollar with US yields up does not test C-001.
+
+**Commodities**
+- *Observed:* WTI and Brent as in Changed 3; TradingEconomics' 89.36 (−1.9%) corroborates the level. WTI 12-month slope: UNMEASURED. Gold 4,139–4,190 (sources disagree on level and sign: TE −0.03%, Yahoo +0.11%, TheStreet +0.65%). Copper 6.58 (+1.4%; TE).
+- *Interpretation:* day 2 of the G7 release. WTI 91.11 → 89.43; the curve and breakevens that would show transmission are unmeasured (natural experiment, `MARKET_MODEL.md` §8 item 4). Nothing to conclude.
+
+**Equities / breadth**
+- *Observed (closes, stockanalysis unless marked):* SPY 774.83 (+0.67%) · RSP 211.14 (+0.67%) · IWM 283.92 (+0.85%, 15:25 ET) · QQQ UNMEASURED (Nasdaq Composite +0.95–1.05%; TheStreet, Yahoo). S&P 500 7,774–7,775 (+0.66–0.68%). Breadth: UNMEASURED.
+- *Interpretation:* unchanged. Equities rose for a second session while the long end sold off (§3: yields ↔ equities not linked at the index). Small caps beat SPY on a day the 10Y rose: one day of evidence against P5's direction, which resolves over the window.
+
+**Volatility / positioning**
+- *Observed:* VIX 15.55 (+1.6%; Yahoo, time n/s). MOVE: UNMEASURED.
+- *Interpretation:* unchanged. SYSTEMATIC DELEVERAGING: FORMING.
+
+**Active watches**
+- PT-002 VRT 253.62 (+0.6%): no weekly test today. WATCH.
+- PT-004 FICO close 689.61 (+4.3%; low 648.95): **session 4 of 10** without a close < 586.05.
+- PT-005 SPY 774.83, above the 50-day: no trigger. WATCH.
+- **PT-007 CBOE, Oct 2 read:** close 271.26 (< 288): not triggered; above the 262 invalidation. Oct 5 ~276.07 (+1.8%, quote time n/s). WATCH.
+- **PT-008 HWM, Oct 2 read:** close 231.27 (< 248): not triggered; above the 222 invalidation. Oct 5 UNMEASURED. WATCH.
+- PT-003 MU, PT-010 CLS (CLS.TO), PT-009 ITB: Oct 5 UNMEASURED. MU's Oct 2 close 1,074.89 (stockanalysis) confirms the 15:44 read. CLS (NYSE) 382.69 (−1.2%) is not the frozen TSX instrument; no pullback signal either way.
+- PT-006 TLT 77.11 (−0.5%, 15:24 ET); 52-week low 76.69 held. Regime review is weekly (next Oct 9).
+- **CBOE September volume (§3 review event):** index options ADV +22.3% y/y; record monthly SPX 0DTE ADV 3.4M; multi-listed options +0.7%; futures −7.6% (Cboe release via StockTitan, Oct 5). The thesis-breaker (options volume negative y/y for two quarters) is not in sight. Thesis intact; evidence supportive.
+- P8: Oct 5 does not qualify (WTI −1.8%). Tally stays 0 of 1.
+- C-009 test (long-end selloff day): Bund +5 bp, Gilt +4, JGB −1, Canada +1 (TradingEconomics; the Bund page's text is internally inconsistent). European and Tokyo sessions mostly closed before the 10:00 ET ISM release, so the timing confounds it. Not discriminating; stays OPEN.
+- Thesis-state changes today: **none.**
+
+**Dated decisions (next five sessions):** Oct 7 NFCI (C-003) · 10Y auction · FOMC minutes (per press) · Oct 8 30Y auction · Oct 9 PT-006/PT-009 weekly review · Oct 12 UNH pre-registration (scheduled separately).
+
+**Capital-moving:** no measured alarm tripped (OAS and SOFR − IORB unmeasured; HYG and BKLN flat; VIX 15.6). Live tactical capital: none. **Opportunity scan: NO ACTION.** The steepener sharpens the question the Oct 7–8 auctions answer. It does not move any setup or the duration watch, which needs yields falling.
+
 ### DAILY STATE — 2026-10-02 (close) · previous: 2026-10-01
 
 *Written by the unattended daily cycle; time: see commit. **Data coverage was partial.** Direct reads of FRED and Yahoo's chart API were blocked in this run, and so were many quote pages; only pages surfaced by web search could be read. Fields not read reliably are UNMEASURED. Several rates figures are **post-release intraday** readings, not closes, and are labelled that way. (STRUCTURAL GAP — REVIEW REQUIRED: see `ROUNDS.md`, Weekly review — week ending 2026-10-02.)*
@@ -139,70 +194,6 @@ CAPITAL-MOVING  alarms tripped · OPPORTUNITY SCAN: NO ACTION | <what, and where
 
 **Capital-moving:** no measured alarm tripped. HY OAS, IG OAS and SOFR − IORB are unmeasured today, but HYG and BKLN were flat and VIX was 15.6. Live tactical capital: none. **Opportunity scan: NO ACTION.** The jobs-driven repricing is the first step toward the DURATION TURN's up-condition, not the condition itself. Nothing triggered.
 
-### DAILY STATE — 2026-10-01 (close) · previous: none (first state)
-
-**Changed:** first state — this is the baseline.
-
-**Rates**
-- *Observed:*
-  - 2Y 4.88% (Sep 30); ≈ 4.78% on Oct 1 (DERIVED from FRED's 2s10s of 0.46, because the Oct 1 2Y print is not yet published);
-  - 10Y 5.24% · 30Y 5.60%;
-  - 10Y real 2.93% (Sep 30) · breakeven 2.36%;
-  - fed funds strip: Dec 4.08%, May '27 4.50%, against an effective rate of 3.88% (≈ 2½ more hikes);
-  - 2s10s 46 bp · MOVE 108.
-- *Interpretation:*
-  - POLICY-LED REAL-RATE REPRICING — ACTIVE. Term premium is a large minority (~45%, MODEL ESTIMATE).
-  - OIL → FED REACTION — FORMING (inferred: the Fed's statement does not name energy).
-  - DURATION TURN — DORMANT.
-- *Contradiction / alternative:* C-009 (the move is not global). Research note C-008 (oil hasn't reached breakevens). Benign alternative: growth sets the real rate.
-- *What changes the view:*
-  - W1: WTI below $80 without the 10Y falling;
-  - W4: breakevens above 2.60%;
-  - W5: the 2Y ignoring oil, plus a growth-based FOMC rationale;
-  - long-end auction tails of 2 bp or more (Oct 7–8).
-
-**Credit**
-- *Observed:* IG OAS 0.84% · HY 3.12% (+44 bp in the week) · CCC 11.79% · HYG 76.90 (52-week low) · BKLN 20.46 (price flat; +2.2% total return over 3 months).
-- *Interpretation:* repricing with a deteriorating tail. CCC TAIL REPRICING — ACTIVE; CREDIT STRESS (broad) — DORMANT.
-- *Contradiction / alternative:* C-003 (conditions looser, not tighter). Research note C-004 (loans fine while CCC widens).
-- *What changes the view:* IG ≥ 1.00% together with HY ≥ 3.75%; BKLN closing below 20.21.
-
-**Dollar / liquidity**
-- *Observed:* DXY 102.02 (52-week high) · broad dollar 120.33 (Sep 25; 120.92 on Jun 30) · USD/JPY 157.9 · USD/CAD 1.4222 · SOFR 3.90% = IORB · ON RRP ≈ 0.
-- *Interpretation:* euro weakness, not broad dollar strength. DOLLAR CHANNEL — FORMING. Funding alarm off.
-- *Contradiction / alternative:* C-001. Research note C-007 (yen).
-- *What changes the view:*
-  - the broad dollar more than 2% above its Jun 30 level, with rate spreads widening;
-  - SOFR − IORB above +5 bp outside month-end → daily watch;
-  - above +10 bp outside quarter-end → regime-break alarm.
-
-**Commodities**
-- *Observed:* WTI 93.00 (Dec '27 at 75.29: −19% backwardation) · Brent Dec 102.43 · gold 4,211.5 (−21% from the January high, +4% since Jun 30) · copper 6.58.
-- *Interpretation:* the oil shock is priced as temporary (LOOP-1's premise). Gold tracks the dollar more than real yields: GOLD AS A RATE CASUALTY — WEAKENING.
-- *Contradiction / alternative:* C-002.
-- *What changes the view:* WTI below $80 with the backwardation narrowing (P6); a month of gold falling with real yields while the dollar is flat.
-
-**Equities / breadth**
-- *Observed:* SPY 763.99 (on its 50-day, −1.8% from its high) · RSP −3.6% and IWM −3.7% over 1 month · 23% of the S&P above its 50-day · forward P/E 19.2 and Q3 EPS est. +29% (Sep 25).
-- *Interpretation:* BREADTH / RATE-SENSITIVE ROTATION — ACTIVE; INDEX EARNINGS OFFSET — ACTIVE.
-- *Contradiction / alternative:* C-005 (earnings, not just positioning, may be holding the index).
-- *What changes the view:* how broad the Q3 beats are; breadth above 50% with the 10Y ≥ 5% (W3).
-
-**Volatility / positioning**
-- *Observed:* VIX 16.39 (200-day 18.1 — ordinary) · MOVE 108.1 (March peak 115) · vol-control exposure at the 98th–100th percentile.
-- *Interpretation:* fuel without a trigger. SYSTEMATIC DELEVERAGING — FORMING.
-- *Contradiction / alternative:* research note C-006.
-- *What changes the view:* VIX above 20 with realised vol rising and SPY below its 50-day.
-
-**Active watches**
-- PT-006 TLT / PT-009 ITB: ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-01. M1 and M2 not met; the thesis is DORMANT.
-- PT-005 SPY: WATCH. 2 of 5 conditions met; the trigger needs a close below 750.
-- Thesis-state changes today: register opened; GOLD → WEAKENING; OIL → FED REACTION opened at FORMING.
-
-**Dated decisions (next five sessions):** Oct 2 weekly review · Oct 7 NFCI and 10Y auction · Oct 8 30Y auction.
-
-**Capital-moving:** no alarm tripped. Live tactical capital: none (no family has paper evidence). **Opportunity scan: NO ACTION.**
-
 ## 2. PERMANENT GAUGES (never expire while useful)
 
 These are gauges for understanding conditions, not trade candidates. They were tiered after the Round 11 instrument screen (`MARKET_MODEL.md` §4–§5). Values are Yahoo daily closes unless marked; FRED series carry their own date. A gauge is added only where it materially improves understanding, and one that adds nothing is dropped at a weekly review.
@@ -250,17 +241,17 @@ A business sits here only with a written thesis and counter-thesis. Roles descri
 
 Full plans and annotations are in `PAPER_TRADES.md`; frozen plans are never rewritten.
 
-| Record | Family | Watch type | Activation (frozen) | Invalidation | Expires / reviewed | Latest status (Oct 2 unless marked) | Thesis link (`MARKET_MODEL.md` §6) |
+| Record | Family | Watch type | Activation (frozen) | Invalidation | Expires / reviewed | Latest status (Oct 5 unless marked) | Thesis link (`MARKET_MODEL.md` §6) |
 |---|---|---|---|---|---|---|---|
-| PT-002 VRT | Broken-leader reclaim | Tactical setup | Weekly close > 262 on ≥ 1.5× volume | Close < 232 | **Oct 20 close** | 252.18 — first weekly test not triggered (needs > 262) | — |
-| PT-003 MU | Trend pullback | Tactical setup | Pullback ≥ 8% touching the 20/50-day, then a close above the prior high | Close below the pullback low | First close below the 50-day without a qualifying pullback, or Dec earnings | 1,075.64 (15:44 ET) — extended; 50-day 956 | — |
-| PT-004 FICO | Post-shock reversal | Tactical setup | 10 sessions without a close < 586.05 + reclaim of the 20-day + close above the base high | Close below the base low | Next earnings (est. Nov 4), or a close < 586.05 | 661.25 — session 3 of 10 | — |
-| PT-005 SPY | Index downside (G) | Regime-linked tactical | Close < 750 with ≥ 3 of 5 conditions | Close above the 50-day | Monthly (next **Nov 2**) and after FOMC (Oct 28) | 769.64 (above the 50-day); 2 of 5 met (Oct 1) | BREADTH ROTATION (ACTIVE) vs EARNINGS OFFSET (ACTIVE); C-005 |
-| PT-006 TLT | Duration turn (C) | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** | M1–M3 + 1 optional (weekly) | 10Y +40 bp / trigger-week low | Monthly; after CPI (Oct 14), FOMC (Oct 28), refunding (Nov 4) | ~77.4 (15:36 ET); M1, M2 not met (weekly review Oct 2) | DURATION TURN (DORMANT); route most likely LOOP-1 |
-| PT-007 CBOE | Tactical compounder entry | Tactical setup | Close > 288 on ≥ 1.5× volume | Close < 262 | **Oct 29 close** | Oct 1: 277.19 · Oct 2 UNMEASURED | — |
-| PT-008 HWM | Broken-leader reclaim | Tactical setup | Close > 248 on ≥ 1.5× volume, then a weekly close > 260 | Close < 222 | **Oct 28 close** | Oct 1: 228.38 · Oct 2 UNMEASURED | — |
-| PT-009 ITB | Duration turn (C) | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** | M1 + MND ≤ 7.35% + close above the 20-day | Close < 84.00 | With PT-006 | Oct 1: 87.37 · Oct 2 UNMEASURED; M1 not met | DURATION TURN (DORMANT); HOUSING TRANSMISSION (ACTIVE) |
-| PT-010 CLS | Trend pullback | Tactical setup | 8–12% pullback holding the 20-day, then a close above the prior high | Pullback low / 50-day | **Oct 26 close** | CLS.TO C$544.70 — extended, no pullback | — |
+| PT-002 VRT | Broken-leader reclaim | Tactical setup | Weekly close > 262 on ≥ 1.5× volume | Close < 232 | **Oct 20 close** | 253.62 · Oct 2 weekly test not triggered (252.18 vs > 262); next weekly test Oct 9 | — |
+| PT-003 MU | Trend pullback | Tactical setup | Pullback ≥ 8% touching the 20/50-day, then a close above the prior high | Close below the pullback low | First close below the 50-day without a qualifying pullback, or Dec earnings | Oct 2 close 1,074.89 — extended; 50-day 956 · Oct 5 UNMEASURED | — |
+| PT-004 FICO | Post-shock reversal | Tactical setup | 10 sessions without a close < 586.05 + reclaim of the 20-day + close above the base high | Close below the base low | Next earnings (est. Nov 4), or a close < 586.05 | 689.61 — session 4 of 10 | — |
+| PT-005 SPY | Index downside (G) | Regime-linked tactical | Close < 750 with ≥ 3 of 5 conditions | Close above the 50-day | Monthly (next **Nov 2**) and after FOMC (Oct 28) | 774.83 (above the 50-day); 2 of 5 met (Oct 1) | BREADTH ROTATION (ACTIVE) vs EARNINGS OFFSET (ACTIVE); C-005 |
+| PT-006 TLT | Duration turn (C) | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** | M1–M3 + 1 optional (weekly) | 10Y +40 bp / trigger-week low | Monthly; after CPI (Oct 14), FOMC (Oct 28), refunding (Nov 4) | 77.11 (15:24 ET); M1, M2 not met (weekly review Oct 2; next Oct 9) | DURATION TURN (DORMANT); route most likely LOOP-1 |
+| PT-007 CBOE | Tactical compounder entry | Tactical setup | Close > 288 on ≥ 1.5× volume | Close < 262 | **Oct 29 close** | Oct 2 close 271.26 (not triggered) · Oct 5 ~276.07 | — |
+| PT-008 HWM | Broken-leader reclaim | Tactical setup | Close > 248 on ≥ 1.5× volume, then a weekly close > 260 | Close < 222 | **Oct 28 close** | Oct 2 close 231.27 (not triggered) · Oct 5 UNMEASURED | — |
+| PT-009 ITB | Duration turn (C) | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** | M1 + MND ≤ 7.35% + close above the 20-day | Close < 84.00 | With PT-006 | Oct 1: 87.37 · Oct 2 and Oct 5 UNMEASURED; M1 not met | DURATION TURN (DORMANT); HOUSING TRANSMISSION (ACTIVE) |
+| PT-010 CLS | Trend pullback | Tactical setup | 8–12% pullback holding the 20-day, then a close above the prior high | Pullback low / 50-day | **Oct 26 close** | CLS.TO C$544.70 (Oct 2) — extended, no pullback · Oct 5 UNMEASURED | — |
 | Cohort E-01…E-10 | Earnings (A) | Event | Setup A / A-M per the mechanical rule | Completed day-1 RTH low | Each closes at its D+20 | First: UNH, Oct 13 (pre-registration Oct 12) | — |
 
 ## 5. RESEARCH CANDIDATES (interesting, not promoted)
@@ -284,7 +275,7 @@ A candidate is reviewed at its next evidence event and promoted only by a writte
 
 | Date | Event | Decides or tests | Record / rule |
 |---|---|---|---|
-| ~Oct 5 | Cboe September volume | Program D evidence (CBOE, CME) | §3 |
+| ~Oct 5 | Cboe September volume — **done Oct 5**: index options ADV +22.3% y/y, record SPX 0DTE; CME's UNMEASURED | Program D evidence (CBOE, CME) | §3 |
 | Oct 7 | NFCI (week to Oct 2) · 10Y auction | C-003 · LONG-RATE STRESS (tail ≥ 2 bp with indirect < 65%) | `MARKET_MODEL.md` §6–§7 |
 | Oct 8 | 30Y auction | LONG-RATE STRESS | `MARKET_MODEL.md` §6 |
 | Oct 12 (evening) | UNH pre-registration (scheduled) | Cohort mechanics | `RESEARCH_MAP.md` cohort |

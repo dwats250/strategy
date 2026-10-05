@@ -516,3 +516,17 @@ Written by the scheduled daily cycle; time: see commit. **No trigger, invalidati
 | PT-008 HWM | Oct 2 close and volume UNMEASURED (needs > 248 on ≥ 1.5× volume). Read at the next run | WATCH (pending read) |
 | PT-009 ITB | M1 not met (as PT-006). MND and ITB close UNMEASURED | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** |
 | PT-010 CLS | CLS.TO C$544.70 (Oct 2, last read; stockanalysis), extending. No pullback | WATCH |
+
+**2026-10-05 (Mon)**
+
+| Record | Evidence | Status |
+|---|---|---|
+| PT-002 VRT | 253.62 (+0.6%; stockanalysis). Not a weekly test day | WATCH — next weekly test Oct 9; expires at the Oct 20 close |
+| PT-003 MU | Oct 2 close 1,074.89 (stockanalysis), confirming the 15:44 ET read. Oct 5 UNMEASURED | WATCH |
+| PT-004 FICO | Close 689.61 (+4.3%); intraday low 648.95 (stockanalysis); no close < 586.05 | WATCH — **session 4 of 10** |
+| PT-005 SPY | Close 774.83 (stockanalysis), above the 50-day; no close < 750 | WATCH |
+| PT-006 TLT | 77.11 at 15:24 ET (stockanalysis); 52-week low 76.69 held. Regime review is weekly (next Oct 9) | ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02 |
+| PT-007 CBOE | **Oct 2 read (pending from last run):** close 271.26 (stockanalysis): below the > 288 trigger, so not triggered; above the 262 invalidation. Oct 5 ~276.07 (+1.8%; quote time not stated) | WATCH; expires at the Oct 29 close |
+| PT-008 HWM | **Oct 2 read (pending from last run):** close 231.27 (stockanalysis): below the > 248 trigger, so not triggered; above the 222 invalidation. Oct 5 UNMEASURED | WATCH; expires at the Oct 28 close |
+| PT-009 ITB | ITB and MND UNMEASURED; M1 not met (10Y 5.31–5.32%) | ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02 |
+| PT-010 CLS | CLS.TO UNMEASURED. NYSE CLS 382.69 (−1.2%) is not the frozen instrument and is not used | WATCH; expires at the Oct 26 close |
