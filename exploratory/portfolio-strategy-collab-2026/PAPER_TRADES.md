@@ -146,6 +146,7 @@ close below its 10-week average). If both fire they count **once** for thesis qu
 | PT-008 | 10-01 14:10 ET | HWM | E | BROKEN_LEADER_RECLAIM | Long | Shares: PAPER + MICRO-LIVE (2 sh normal) · Call: PAPER ONLY — size (expected) | WATCH | — | — | — | — |
 | PT-009 | 10-01 14:10 ET | ITB | Duration equity | MACRO_DURATION_TURN | Long | Shares: PAPER + MICRO-LIVE · Option: PAPER ONLY — liquidity | WATCH | — | — | — | — |
 | PT-010 | 10-01 14:10 ET | CLS (TSX) | B | TREND_PULLBACK | Long | Shares: PAPER + MICRO-LIVE (1 sh normal) · Option: PAPER ONLY — liquidity (TSX chain unverified) | WATCH | — | — | — | — |
+| PT-011 | 10-12 pre-event data (committed late — see record) | UNH | A | EARNINGS_CONTINUATION › RECOVERY | Long | Shares; option chosen at trigger under §3 (never reached) | **EXPIRED — NO TRIGGER** (not qualified at the Oct 12 close: 18.0% below the 52-week high, rule needs ≥ 25%) | — | never triggered | — | — |
 
 Status vocabulary: WATCH · TRIGGERED → PAPER TRADE · CLOSED · **EXPIRED — NO TRIGGER** (+ SHADOW).
 Completion columns: Thesis = confirmed / invalidated / unresolved · Timing = good / early / late /
@@ -392,6 +393,33 @@ September; WTI ~$90; gold −25% from January record.
 - **Status:** WATCH. CLS.TO C$531.15 (+3.2%), range 505.43–537.00 — extending, not pulling back. Oct 26 earnings/Investor Day re-arm clause unchanged.
 
 ---
+
+### PT-011 — UNH · post-earnings gap continuation (A, RECOVERY) · Long · by instruction — NOT QUALIFIED
+
+*Record of a scheduled pre-registration. The pre-event data was captured 2026-10-12 20:30–20:35 UTC, after the 16:00 ET close and before the Oct 13 pre-market release. **The commit is late:** see Provenance.*
+- **Instance of:** frozen Setup A (`ROUNDS.md` Round 4 §B), family EARNINGS_CONTINUATION › RECOVERY. Long only. Qualifiers unchanged.
+- **Qualification at the prior close (Oct 12):**
+  - close 378.52 against a 52-week high of 461.62 (Jul 16, intraday) → **18.0% below**; the rule needs ≥ 25% → **NOT MET**;
+  - cohort mechanical rule, A-M v2 structure: close above the 50-day? 378.52 < 388.46 → fails. 3-month return above SPY's? −11.0% vs +3.5% → fails;
+  - result: **neither family qualifies → event layer only (E-01).**
+- **Status: EXPIRED — NO TRIGGER (not qualified at the Oct 12 close).** Prior-close data alone determines this, so the report's outcome cannot change it.
+- **The frozen mechanics, recorded for completeness (never active):**
+  - qualify on a gap ≥ +8% on a beat with raised or maintained guidance;
+  - day-1 volume ≥ 3× the 3-month average (5.02M → ≥ 15.07M);
+  - day-1 close in the upper half of the range, with days 2–5 holding above the completed day-1 RTH low;
+  - the VWAP clause is `UNMEASURED`, so unevaluable;
+  - entry: the first close above the completed day-1 high on days 2–10;
+  - stop: the completed day-1 RTH low (a dynamic rule, filled after the Oct 13 close);
+  - hold until a close below the 20-day average, or 60 sessions;
+  - vehicle: shares; any option chosen at the trigger under §3.
+- **No shadow.** None was specified before the event, and designing one now would happen after the result is public.
+- **Provenance.**
+  - The deadline (06:00 ET Oct 13) was missed; the commit time is authoritative (see commit).
+  - The scheduled session captured the data on time, then stalled before writing, waiting on a website-permission prompt. It resumed after the release.
+  - No post-release UNH information was read before this record and E-01 were written and committed.
+  - The qualification rests only on objective prior-close prices, re-checkable from history (Yahoo, cross-checked against stockanalysis).
+  - The implied move (E-01) rests on one live read whose timing the repo cannot prove, so it carries a timing flag.
+
 
 ## 8. Completion records (templates)
 

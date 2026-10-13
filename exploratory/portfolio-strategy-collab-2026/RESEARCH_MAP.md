@@ -524,7 +524,7 @@ Dates confirmed by the company unless marked *est.* Prices and distances are Oct
 | # | Date | Ticker | Timing | Variation role | % below 52w high | Layer | Notes |
 |---|---|---|---|---|---|---|---|
 | E-00 | Oct 1 | ACN | Before open | Damaged former leader (pilot) | 37% (pre-gap) | Event (pilot) + PT-001 | Day 1: gap +17.8%, close +15.8%, close location 0.08, volume 4.6×. PT-001 EXPIRED — NO TRIGGER; SHADOW to Dec 11. Pre-event implied move was not captured (pilot) |
-| E-01 | Oct 13 | UNH | Before open (call 8:00 ET) | Damaged former leader / recovery | 21.1% | Event + **Setup A (RECOVERY) pre-registered Oct 12** | The ≥ 25% qualifier is currently not met. UNH fits the RECOVERY *profile* but fails its *threshold* — exactly the misclassification Round 8 flagged; the frozen rule decides |
+| E-01 | Oct 13 | UNH | Before open (call 8:00 ET) | Damaged former leader / recovery | 18.0% (Oct 12 close) | **Event only.** The mechanical rule at the Oct 12 close: neither RECOVERY (needs ≥ 25%) nor MOMENTUM (below its 50-day; 3-month return under SPY's) | PT-011 EXPIRED — NO TRIGGER at qualification. Pre-event fields below were captured before the release but **committed late** (PT-011 provenance) |
 | E-02 | Oct 15 | TSM | Before open | Strong secular leader at highs (held) | 4.3% | Event + Setup A-M (MOMENTUM) if qualified Oct 14 | First possible A-M record; also decides TSM tranche 2 (three-part confirmation) |
 | E-03 | Oct 20 | NFLX | After close | Damaged high-expectation growth | 45.4% | Event + Setup A (RECOVERY) | Also the underwritability case study (above) |
 | E-04 | Oct 21 *est.* | VRT | Before open *est.* | Broken high-expectation leader | 35.0% | Event + Setup A (rule) | Vendors disagree (Oct 21 vs Oct 28); PT-002 suspension clause applies |
@@ -534,6 +534,24 @@ Dates confirmed by the company unless marked *est.* Prices and distances are Oct
 | E-08 | Oct 27 | SPGI | Before open | Damaged quality compounder (Program D) | 29.5% | Event + Setup A (rule) | |
 | E-09 | Oct 29 | LNG | Before open | Contracted infrastructure (Program E) | 10.6% | Event | LNG-A/LNG-B evidence: contract and permit updates |
 | E-10 | Oct 30 | CBOE | Before open | Tollbooth (held) | 24.7% | Event; Setup A only if ≥ 25% on Oct 29 | |
+
+
+**E-01 UNH — pre-event fields (prior close Oct 12; captured 20:30–20:35 UTC, before the release; committed late — timing flag on the implied move)**
+
+| Field | Value |
+|---|---|
+| Close | **378.52** (Yahoo; stockanalysis agrees) |
+| Distance from 52-week high | **18.0%** below the 461.62 intraday high (Jul 16); 52-week low 255.97. The highest close was 436.35 (Jul 21) |
+| Moving averages | Below the 50-day (388.46, falling: 392.90 five sessions earlier); above the 200-day (357.79, rising) |
+| 3-month return (63 sessions, price) | UNH −11.0% · SPY +3.5% · XLV +8.7% |
+| 3-month average volume | 5,022,269 |
+| Q3 consensus | EPS $4.14 (23 analysts; range 3.90–4.56) · revenue $111.49B (18 analysts; 108.5–114.0B) (Yahoo, read 20:31 UTC) |
+| 2026 guidance | Adjusted EPS $19.50–20.00 (Q2 release, July). **Not re-verified before the event → UNMEASURED as of Oct 12.** FY2026 consensus $19.87 (25 analysts) sits inside the range |
+| YAHOO_EPS_TREND_V1 baseline | FY2027 EPS current 22.61 vs 7 days ago 22.61 (0.0%); up-revisions last 7 days: 2; down-revisions: field absent |
+| IMPLIED_EVENT_MOVE (STRADDLE_V1) | Oct 16 expiry, the first listed on or after day 1. ATM strike 377.5. Call and put quotes in the next row |
+| Straddle quotes | Call 12.70 / 13.40 (mid 13.05); put 12.00 / 12.85 (mid 12.425). Straddle 25.475 ÷ 378.52 = **6.73%**. IV ≈ 71% (call) / 73% (put). Read live 20:33:02 UTC; quotes last traded 19:59 UTC. **TIMING FLAG:** a single read whose timing the repo cannot prove. Vendor expected move: not recorded |
+| Family qualification | Neither (RECOVERY and MOMENTUM both fail) |
+| Day 1 | Oct 13 (before-open report). Day-1 fields are filled after the Oct 13 close |
 
 **Alternates** (substitute only if a cohort event is cancelled or its date moves out of the window):
 - ASML Oct 14

@@ -1704,3 +1704,24 @@ Dustin accepted Round 14's factual reconciliation and ruled on two epistemic gra
 Thesis states, predictions and the contradiction tally are unchanged. No architecture change.
 
 **Changed:** `MARKET_MODEL.md` §7 C-011 (claim grade; C-011 bearing; auction-selling grade) and §8 Next discriminators item 1 (the strip as the discriminator; term-premium estimate) · `WATCHLIST.md` §1 Oct 2 reconciliation (real-yield line) · this entry.
+
+
+---
+
+## Event note — UNH pre-registration committed late · 2026-10-13 · time: see commit
+
+**What happened.**
+- The scheduled UNH pre-registration fired at 20:30 UTC Oct 12, after the close, and captured every pre-event field by 20:35 UTC.
+- The session then stalled before writing, waiting on a website-permission prompt, and resumed only after UNH's pre-market release. The 06:00 ET deadline was missed.
+- E-01's pre-event fields and PT-011 were written from the captured data **without reading any post-release information** and committed late.
+
+**Effect on frozen results: none on the qualification.** PT-011 was not qualified at the Oct 12 close (18.0% below the 52-week high; the rule needs ≥ 25%). A-M v2's structure also failed. That result rests only on objective prior-close prices. The implied move (6.73%) carries a timing flag, because the repo cannot prove when the single live read was made. The cohort analysis may include or exclude it, and either way it will be stated.
+
+**Lessons (methodology, not new rules):**
+1. Commit captured pre-event data immediately, before any enrichment step.
+2. Never wait on a permission prompt. Skip the source and mark it UNMEASURED (owner instruction, Oct 13).
+
+**Needs interactive review.**
+- The scheduled task **"Strategy · daily market state" no longer exists** on the account; the last daily state is Oct 5.
+- Nothing is scheduled to pre-register **E-02 TSM** (Oct 15, before the open; due 06:00 ET Oct 15) or **E-03 NFLX** (Oct 20, after the close; due 16:00 ET Oct 20).
+- UNH's day-1 fields fall due after the Oct 13 close.

@@ -252,7 +252,7 @@ Full plans and annotations are in `PAPER_TRADES.md`; frozen plans are never rewr
 | PT-008 HWM | Broken-leader reclaim | Tactical setup | Close > 248 on ≥ 1.5× volume, then a weekly close > 260 | Close < 222 | **Oct 28 close** | Oct 2 close 231.27 (not triggered) · Oct 5 UNMEASURED | — |
 | PT-009 ITB | Duration turn (C) | **ACTIVE REGIME WATCH — LAST REVIEWED 2026-10-02** | M1 + MND ≤ 7.35% + close above the 20-day | Close < 84.00 | With PT-006 | Oct 1: 87.37 · Oct 2 and Oct 5 UNMEASURED; M1 not met | DURATION TURN (DORMANT); HOUSING TRANSMISSION (ACTIVE) |
 | PT-010 CLS | Trend pullback | Tactical setup | 8–12% pullback holding the 20-day, then a close above the prior high | Pullback low / 50-day | **Oct 26 close** | CLS.TO C$544.70 (Oct 2) — extended, no pullback · Oct 5 UNMEASURED | — |
-| Cohort E-01…E-10 | Earnings (A) | Event | Setup A / A-M per the mechanical rule | Completed day-1 RTH low | Each closes at its D+20 | First: UNH, Oct 13 (pre-registration Oct 12) | — |
+| Cohort E-01…E-10 | Earnings (A) | Event | Setup A / A-M per the mechanical rule | Completed day-1 RTH low | Each closes at its D+20 | First: UNH, Oct 13 (pre-registration Oct 12) | E-01 UNH: event layer only (not qualified at the Oct 12 close; PT-011 EXPIRED — NO TRIGGER; records committed late). Next: E-02 TSM Oct 15 (pre-registration due 06:00 ET Oct 15) · E-03 NFLX Oct 20 after close (due 16:00 ET Oct 20) |
 
 ## 5. RESEARCH CANDIDATES (interesting, not promoted)
 

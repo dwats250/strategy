@@ -58,7 +58,7 @@ A trading journal, a macro newsletter, a screener, a portfolio tracker, an archi
 | Item | Count at the weekly review, 2026-10-02 (Round 13 baseline 2026-10-01 in brackets where changed) |
 |---|---|
 | Frozen setups written · triggered · completed and graded | 10 · 0 · 0 |
-| Expired without trigger | 1 (PT-001 ACN; shadow open to Dec 11) |
+| Expired without trigger | 2 (PT-001 ACN, shadow open to Dec 11; PT-011 UNH, not qualified at the Oct 12 close) |
 | Frozen triggers tested and not met | 1 weekly test (PT-002 VRT, Oct 2) [0]; daily non-triggers are not counted |
 | Cohort events completed through D+20 | 0 of 10 (first: UNH, Oct 13) |
 | Post-earnings thesis reviews | 0 (first: TSM, Oct 15) |
