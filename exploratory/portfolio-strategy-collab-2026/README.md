@@ -37,6 +37,7 @@ A trading journal, a macro newsletter, a screener, a portfolio tracker, an archi
 - **Independent discovery.** Candidates may disappear when the evidence stops supporting them. They come back only with new evidence, never because they were mentioned before.
 - **Capital stewardship.** The C$5,000 is a realism anchor and the approximate current deployment budget, not the limit of the opportunity set. See `PROPOSAL.md` §8.
 - **Corrections are valuable.** Correct the error, preserve provenance, check whether any frozen result was affected, and extract the reusable lesson. Never hide a correction. Frozen records are never rewritten.
+- **Never stop for a permission prompt (owner instruction, Oct 13).** Use only sources that do not prompt: Yahoo Finance, FRED and stockanalysis (via Claude in Chrome), plus web search. If anything else asks for approval, skip it, mark the data UNMEASURED and keep working. Never wait for an answer.
 - **Build only what current use demands.** No ontologies, knowledge graphs, scoring systems, automated narratives, piles of derived indicators, giant watch universes, or architecture for hypothetical futures. Fix a gap that repeats; record a one-off and move on.
 
 ## Evidence maturity — two different things
