@@ -2,7 +2,7 @@
 
 Source: https://www.instagram.com/reel/Dd-ClqHtd-1/ by @austin.daytrades (shared with
 the lab by Marc; Marc is not the author). Source evidence and the rule table are in
-studies/vwap-ema9-2026-10/manifests/SOURCE_RULES_IG_AUSTIN_v0.1.md.
+studies/vwap-ema9-2026-10/manifests/SOURCE_RULES_IG_AUSTIN_v1.0.md (frozen).
 
 This is NOT an exact replication. The source states the chart settings and an entry
 idea; it does not state the instrument, stop, exit trigger, sizing or session rules,

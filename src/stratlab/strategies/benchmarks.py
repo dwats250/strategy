@@ -1,7 +1,9 @@
 """Benchmarks: simple reference strategies run through the same engine, capital and costs.
 
 SPY-SESSION-HOLD — every session: when the first 1-minute bar (09:30) completes, buy
-99.9% of equity notional; the fill is the 09:31 open. Hold with no stop and no target;
+99.9% of equity notional; the fill is the 09:31 open. Exception: Backtesting.py never
+decides on a run's first bar, so on the FIRST session of each run the decision is the
+09:31 bar and the fill is the 09:32 open. Hold with no stop and no target;
 the engine's calendar flatten sells at the 15:55 open (12:55 on early closes). Nothing is
 held overnight. Same per-share costs as every strategy. It measures what being long
 during the same regular-session hours earned, net of the same costs. It is not a

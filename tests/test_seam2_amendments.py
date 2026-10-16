@@ -76,3 +76,25 @@ def test_findings_parser_reads_bullets_under_findings_heading(tmp_path):
     p = tmp_path / "a.md"
     p.write_text("# T\n\n## Context\n- not this\n\n## Findings\n- one\n  continued\n- two\n\n## Other\n- no\n")
     assert _findings_from_md(p) == ["one continued", "two"]
+
+
+def test_equity_before_uses_prior_minute_equity_after_a_pnl_change(one_session):
+    """Second trade's account risk is measured against equity AFTER the first trade's P&L."""
+    b = flat_session_bars(one_session)
+    for hm in pd.date_range(f"{D} 09:51", f"{D} 15:59", freq="1min"):
+        set_bar(b, hm.strftime("%Y-%m-%d %H:%M"), 110, 110, 110, 110)
+    out = run_plan(b, one_session, {f"{D} 09:40": ("buy", 99.0), f"{D} 09:55": ("exit",),
+                                     f"{D} 10:00": ("sell", 111.0, 105.0)})
+    first, second = out.trades.iloc[0], out.trades.iloc[1]
+    assert first.pnl == pytest.approx(99 * 10.0)
+    assert second.equity_before == pytest.approx(10_000 + 99 * 10.0)
+    assert second["size"] == int(0.999 * 10_990 // 110)
+    assert second.initial_risk_pct_equity == pytest.approx(second["size"] * 1.0 / 10_990)
+    assert second.initial_reward_risk == pytest.approx(5.0)       # (110 - 105) / (111 - 110)
+
+
+def test_findings_parser_accepts_star_and_numbered_bullets(tmp_path):
+    from stratlab.cli import _findings_from_md
+    p = tmp_path / "b.md"
+    p.write_text("## Findings\n1. first\n   - detail\n* second\n")
+    assert _findings_from_md(p) == ["first; detail", "second"]

@@ -54,7 +54,7 @@ Execution is on 1-minute OHLC. Inside a minute the path is unknown, so:
 2. A stop is assumed fillable at its price unless the minute opens beyond it. Real fills in fast
    markets can be worse. The per-share slippage allowance is the only proxy.
 3. Isolated bad prints in the 1-minute data can trigger stops (see the integrity mask note in
-   `studies/vwap-ema9-2026-10/manifests/VWR_FAMILY_PROPOSAL_v0.1.md`).
+   `studies/vwap-ema9-2026-10/manifests/VWR_FAMILY_v1.0.md`, "Data note").
 
 ## NautilusTrader fallback — not triggered
 

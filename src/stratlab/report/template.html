@@ -106,7 +106,7 @@ div.dt-container .dt-input,div.dt-container .dt-search input{background:var(--su
     <h2>Metrics and deltas</h2>
     <p class="sub" id="metSub"></p>
     <div class="tablewrap"><table class="m" id="metTable"></table></div>
-    <p class="note">Portfolio rows use session-close account equity (Sharpe/Sortino annualized with √252 over all sessions, flat days included). Trade rows use per-trade R multiples and are never annualized. Δ = variant − baseline under the same window, capital and costs.</p>
+    <p class="note">Portfolio rows use session-close account equity (Sharpe/Sortino annualized with √252 over all sessions, flat days included). Trade rows use per-trade R multiples and are never annualized. Δ = variant − baseline under the same window, capital and costs. The independent strategy and the benchmark get no Δ: they are not variants of the baseline.</p>
   </section>
 
   <section id="risk">
@@ -314,14 +314,15 @@ function renderMetrics(){
   const w = W.find(x => x.id === state.win);
   $("#metSub").textContent = `${w.label}: ${w.start} → ${w.end} (${w.sessions} sessions). Same capital and costs for every variant.`;
   const base = V.find(v => v.id === BASE);
-  let h = "<thead><tr><th>Metric</th>" + V.map(v => `<th>${esc(v.label)}</th>` + (v.id===BASE ? "" : `<th>Δ</th>`)).join("") + "</tr></thead><tbody>";
+  const hasDelta = v => v.id !== BASE && v.role !== "benchmark" && v.role !== "independent";
+  let h = "<thead><tr><th>Metric</th>" + V.map(v => `<th>${esc(v.label)}</th>` + (hasDelta(v) ? `<th>Δ</th>` : "")).join("") + "</tr></thead><tbody>";
   MET.forEach(([name, get, fmt, higherBetter]) => {
     if (!get){ h += `<tr><td colspan="${2*V.length}" style="text-align:left;color:var(--ink2);font-weight:600;padding-top:12px">${name}</td></tr>`; return; }
     const b = base.results[state.win] ? get(base.results[state.win]) : null;
     h += `<tr><td>${name}</td>` + V.map(v => {
       const r = v.results[state.win]; const x = r && r.status === "ok" ? get(r) : null;
       let cell = `<td>${r && r.status !== "ok" ? "error" : fmt(x)}</td>`;
-      if (v.id !== BASE){
+      if (hasDelta(v)){
         let d = (typeof x === "number" && typeof b === "number") ? x - b : null;
         const zero = d == null || fmt(Math.abs(d)) === fmt(0);
         const cls = zero || higherBetter == null ? "" : ((d > 0) === higherBetter ? "pos" : "neg");
@@ -444,7 +445,7 @@ function renderDiffs(){
   $("#diffTable").innerHTML = h + "</tbody>";
   let c = "<thead><tr><th>Variant</th><th>Net P&L</th><th>Top-1 share</th><th>Top-5 share</th><th>Top-10 share</th><th>Excl. top 1</th><th>Excl. top 5</th><th>Excl. top 10</th></tr></thead><tbody>";
   const traces = [];
-  V.forEach(v => {
+  V.filter(v => v.role !== "benchmark").forEach(v => {
     const t = v.results[W[0].id]?.trade; if (!t) return;
     c += `<tr><td>${esc(v.label)}</td><td>${money(t.net_pnl_trades)}</td><td>${pct(t.top1_share_of_gross_profit,1)}</td><td>${pct(t.top5_share_of_gross_profit,1)}</td><td>${pct(t.top10_share_of_gross_profit,1)}</td><td>${money(t.net_pnl_ex_top1)}</td><td>${money(t.net_pnl_ex_top5)}</td><td>${money(t.net_pnl_ex_top10)}</td></tr>`;
     const p = v.trades.filter(x => x.exit).map(x => x.pnl).sort((a,b) => b-a); let s = 0;

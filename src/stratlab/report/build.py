@@ -139,9 +139,14 @@ def _keep_from_record(record: dict):
     variant's full-window features. Used when rebuilding a report from a run directory."""
     from ..experiment import prepare_market, resolve_strategy, signal_bars
     cfg = record["config"]
+    if record.get("synthetic"):
+        raise RuntimeError("synthetic run: generated prices are not stored")
     md = prepare_market(cfg["data"])
     if md.identity.get("sha256") != record["dataset"].get("sha256"):
         raise RuntimeError("dataset identity differs from the run record; refusing to rebuild charts")
+    from ..experiment import code_identity
+    if code_identity()["code_tree_sha256"] != record["code"]["code_tree_sha256"]:
+        raise RuntimeError("code tree differs from the run's; overlays could differ from what the run used")
     w = record["windows"][0]
     keep = {}
     for v in cfg["variants"]:
@@ -220,7 +225,11 @@ def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html
 
     bars, vmap = ({}, {})
     if (md is None or keep is None) and rebuild_charts:
-        md, keep = _keep_from_record(record)
+        try:
+            md, keep = _keep_from_record(record)
+        except Exception as e:  # synthetic run, dataset absent, or code changed since the run
+            print(f"note: price charts not embedded ({e})")
+            md = keep = None
     if md is not None and keep is not None:
         bars, vmap = _bars_payload(md, keep, variants, full_id)
 

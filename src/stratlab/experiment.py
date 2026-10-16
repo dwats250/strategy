@@ -290,7 +290,8 @@ def run_experiment(config_path: Path, out_root: Path | None = None, market: Mark
                      "first_session": str(md.coverage.index.min().date() if hasattr(md.coverage.index.min(), 'date') else md.coverage.index.min()),
                      "last_session": str(md.coverage.index.max().date() if hasattr(md.coverage.index.max(), 'date') else md.coverage.index.max()),
                      "warmup_sessions": int(cfg["data"].get("warmup_sessions", 5))},
-        "trials": {"planned": int(exp.get("trials_planned", len(variants))), "evaluated": len(variants),
+        "trials": {"planned": int(exp.get("trials_planned", len(variants))), "evaluated_in_this_run": sum(1 for v in variants if v.get("role") != "benchmark"),
+                   "benchmarks": [v["id"] for v in variants if v.get("role") == "benchmark"],
                    "dsr_threshold_implied": hurdle},
     }
     (run_dir / "run_record.json").write_text(json.dumps(_jsonable(record), indent=2, sort_keys=False))

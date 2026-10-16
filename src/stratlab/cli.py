@@ -6,14 +6,15 @@
   stratlab data verify <dataset_id>                          SHA-256 check of the local copy
   stratlab data validate <dataset_id> [--mask ID]            coverage / integrity summary (JSON)
 
-* `report` alone cannot embed the price-chart bars (they need the market data); `run`
-  builds the full report.
+* `report` writes report_rebuild_<UTC>.html and re-embeds price charts when the recorded
+  dataset is available locally and the code tree matches the run; otherwise it omits them.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -40,10 +41,14 @@ def _findings_from_md(path: Path) -> list[str]:
             continue
         if not on:
             continue
-        if line.startswith("- "):
-            out.append(line[2:].strip())
-        elif line.startswith("  ") and out and line.strip():
-            out[-1] += " " + line.strip()
+        m = re.match(r"^(?:[-*]|\d+[.)])\s+(.*)$", line)
+        if m:
+            out.append(m.group(1).strip())
+        elif line.startswith((" ", "\t")) and out and line.strip():
+            sub = re.match(r"^\s+(?:[-*]|\d+[.)])\s+(.*)$", line)
+            out[-1] += ("; " + sub.group(1).strip()) if sub else (" " + line.strip())
+    if not out:
+        print(f"warning: no '## Findings' bullets found in {path}", file=sys.stderr)
     return out
 
 
