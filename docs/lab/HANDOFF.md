@@ -17,7 +17,7 @@ conveniences. Direction: [`../research/ROADMAP.md`](../research/ROADMAP.md). Hyp
 | Item | Status | Canonical record |
 |---|---|---|
 | VWR family + IG-AUSTIN-P0 + benchmark | Completed, negative | `studies/vwap-ema9-2026-10/analysis/VWR0_EXP_FINDINGS_2026-10-16.md` |
-| Seam-2 report (presentation only) | Accepted; saved fields restored. Earlier report files in the run directory are superseded presentations of the same frozen run | `studies/vwap-ema9-2026-10/exports/runs/VWR0-EXP__20261016T211249Z/report_v2_20261016T231111Z.html` |
+| Seam-2 report (presentation only) | Accepted; saved fields restored. Earlier report files in the run directory are superseded presentations of the same frozen run | `studies/vwap-ema9-2026-10/exports/runs/VWR0-EXP__20261016T211249Z/report_v2_20261016T233149Z.html` |
 | VMR-L (mean reversion) | Proposed; synthetic tests pass; real data not run | `studies/vwap-mr-2026-10/` |
 | VWR fresh-data extension | Proposed (38 new sessions, 2026-08-24 → 2026-10-15) | `studies/vwap-ema9-2026-10/manifests/VWR0_FRESH_EXTENSION_v0.1.toml` |
 | Data quality (2025-04-23 and other extreme prints) | Unresolved, scope measured | `docs/lab/DATA_QUALITY_2026-10-16.md` |
