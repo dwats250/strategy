@@ -28,6 +28,20 @@ unmerged. Branch `lab/restart-2026-10` (worktree `~/Projects/strategy-lab`).
    data treatment plus a separately ledgered rerun. Nothing is done without your approval.
 3. Seam 3 (a structurally different strategy through the same workflow) when you are ready.
 
+## Report v2 (presentation only) — 2026-10-16
+
+- `exports/runs/VWR0-EXP__20261016T211249Z/report_v2_20261016T223632Z.html` has four views: Summary,
+  Compare, Inspect trades and Technical details. It was built by `stratlab report --from-report` from
+  the committed `report_rebuild_20261016T212214Z.html`.
+- How the data was verified: the payload was regenerated with the pinned `build_report`, after
+  asserting that 12 computation modules are byte-identical to `1f4af3a`. It matched in 942,917 values.
+  Nothing was recomputed for display.
+- `report.html` and `report_rebuild_…html` are unchanged. The presentation code is at `680aa26`.
+- Lane-2 review: 16 confirmed findings, all addressed (`docs/lab/reviews/REPORT_V2_LANE2_REVIEW_2026-10-16.json`).
+  Two of them dropped three previously saved but never-displayed fields (gross P&L, average R of
+  added/removed trades) to honour "no new metrics". Both remain in `metrics.json` and the findings note.
+- **Waiting on Dustin:** a quick visual review.
+
 ## Fresh data — captured 2026-10-16 (not yet used by any experiment)
 
 - Entitlement probed by behaviour. Minute data is available 2024-10-16 → 2026-10-15; 2024-10-15 and
