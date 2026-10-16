@@ -105,3 +105,19 @@ consumed validation window and the inspected sessions.
 Mask v1.0 drops 9 RTH minutes whose high or low sits about 0.6–2.3% from an unchanged body. Two caveats:
 2024-12-20 11:10 may be a real late-reported block (56× median volume), and at least one similar
 unmasked wick exists (2025-05-27 13:14). The raw rerun shows how much the choice matters.
+
+---
+
+### Amendment 2026-10-16 (before any real-data run) — runnable configs, rounding, exit evaluation
+
+1. **Runnable configs are v1.1.** The v1.0 TOMLs were committed with `code_tree_sha256 = "PENDING"`, so
+   they cannot run, and §b forbids editing them. `VWR0_EXPERIMENT_v1.1.toml` and
+   `VWR0_RAW_ROBUSTNESS_v1.1.toml` are identical to v1.0 except for their headers and
+   `code_tree_sha256 = 393e0ab99ff62733b1b50b2033a2368211bfb24a18ec1478cb767de9023f0550` (src/stratlab at
+   commit 6d25dd1, after the pre-freeze review corrections). Only v1.1 is run.
+2. **Rounding.** Initial stops are rounded to $0.01 after the formula is applied. The VWR3 target is
+   computed from the rounded stop and then rounded to $0.01. A hand check against the unrounded formula
+   can differ by up to half a cent.
+3. **Exit evaluation.** "A later completed bar closes back through EMA9" means any later signal bar,
+   **complete or not**. Only new entries skip bars with missing minutes; exits are still evaluated on them.
+

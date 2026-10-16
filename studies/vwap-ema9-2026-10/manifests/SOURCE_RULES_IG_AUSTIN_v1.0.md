@@ -72,3 +72,19 @@ what is visible but not stated. **—** = absent.
 
 Frozen code: `src/stratlab/strategies/instagram_austin_vwap_ema9.py`, class `InstagramAustinVwapEma9P0`,
 with the code-tree hash pinned in `VWR0_EXPERIMENT_v1.0.toml`.
+
+---
+
+### Amendment 2026-10-16 (before any real-data run) — runnable configs, rounding, exit evaluation
+
+1. **Runnable configs are v1.1.** The v1.0 TOMLs were committed with `code_tree_sha256 = "PENDING"`, so
+   they cannot run, and §b forbids editing them. `VWR0_EXPERIMENT_v1.1.toml` and
+   `VWR0_RAW_ROBUSTNESS_v1.1.toml` are identical to v1.0 except for their headers and
+   `code_tree_sha256 = 393e0ab99ff62733b1b50b2033a2368211bfb24a18ec1478cb767de9023f0550` (src/stratlab at
+   commit 6d25dd1, after the pre-freeze review corrections). Only v1.1 is run.
+2. **Rounding.** Initial stops are rounded to $0.01 after the formula is applied. The IG-AUSTIN-P0 has no
+   target. A hand check against the unrounded formula
+   can differ by up to half a cent.
+3. **Exit evaluation.** "A later completed bar closes back through EMA9" means any later signal bar,
+   **complete or not**. Only new entries skip bars with missing minutes; exits are still evaluated on them.
+
