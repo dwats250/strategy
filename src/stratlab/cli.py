@@ -9,6 +9,10 @@
   stratlab data probe --date YYYY-MM-DD [--ticker SPY]       one-day entitlement check (needs key)
   stratlab data capture --start D --end D [--ticker SPY]     new capture into the lab store (needs key)
 
+  stratlab report <run_dir> --from-report <committed report.html> [--presentation JSON]
+                  [--findings MD] [--related RUN_DIR ...]      presentation-only re-render -> report_v2_<UTC>.html:
+                  the source payload is regenerated with the pinned computation (modules byte-identical to
+                  the run's commit) and must match exactly; nothing is recomputed for display
 * `report` writes report_rebuild_<UTC>.html and re-embeds price charts when the recorded
   dataset is available locally and the code tree matches the run; otherwise it omits them.
 """
@@ -61,6 +65,9 @@ def main(argv=None):
     r = sub.add_parser("run"); r.add_argument("config"); r.add_argument("--out"); r.add_argument("--no-ledger", action="store_true")
     rp = sub.add_parser("report"); rp.add_argument("run_dir")
     rp.add_argument("--findings", help="markdown file; its '- ' bullets under a '## Findings' heading are embedded")
+    rp.add_argument("--from-report", help="re-present the verified data payload of this existing report (no recomputation)")
+    rp.add_argument("--presentation", help="JSON with title_short / eyebrow / headline / data_notice (with --from-report)")
+    rp.add_argument("--related", nargs="*", default=[], help="other run dirs whose headline rows are shown as separate runs")
     d = sub.add_parser("demo"); d.add_argument("--out")
     sub.add_parser("identity", help="print the code identity a FROZEN config must pin")
     dd = sub.add_parser("data"); dsub = dd.add_subparsers(dest="dcmd", required=True)
@@ -81,6 +88,14 @@ def main(argv=None):
         import datetime as _dt
         from .report.build import build_report
         stamp = _dt.datetime.now(_dt.UTC).strftime("%Y%m%dT%H%M%SZ")
+        if a.from_report:
+            from .report.present import build_presentation
+            pres = json.loads(Path(a.presentation).read_text()) if a.presentation else {}
+            fpath = Path(a.findings) if a.findings else None
+            print(build_presentation(Path(a.run_dir), Path(a.from_report), f"report_v2_{stamp}.html", pres,
+                                     [Path(x) for x in a.related],
+                                     findings=_findings_from_md(fpath) if fpath else None, findings_source=fpath))
+            return 0
         findings = _findings_from_md(Path(a.findings)) if a.findings else None
         print(build_report(Path(a.run_dir), out_name=f"report_rebuild_{stamp}.html",
                            findings=findings, rebuild_charts=True))
