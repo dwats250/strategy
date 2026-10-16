@@ -42,6 +42,10 @@ def _vendor_assets() -> tuple[str, str, str]:
     assign = ",".join(f"{(p[1] if len(p) > 1 else p[0])}:{p[0]}" for p in pairs)
     dt_js = (dt_js[: m.start()] + f"window.__DT={{{assign}}};window.dispatchEvent(new Event('dt-ready'));"
              + dt_js[m.end():])
+    # A literal U+FFFD inside a vendored regex is rewritten as its JS escape (same meaning),
+    # so the page survives tools that treat U+FFFD as a lost-character marker.
+    plotly_js = plotly_js.replace("�", "\\ufffd")
+    dt_js = dt_js.replace("�", "\\ufffd")
     if "</script" in dt_js.lower() or "</script" in plotly_js.lower():
         raise RuntimeError("vendored script contains a closing script tag")
     return plotly_js, dt_js, dt_css
