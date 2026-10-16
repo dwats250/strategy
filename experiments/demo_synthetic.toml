@@ -1,0 +1,74 @@
+# SYNTHETIC framework demonstration. Prices are a seeded random walk generated in-process
+# (stratlab.synthetic.random_walk_bars, seed 11). Nothing produced from this config is
+# evidence about any strategy. It exercises the full pipeline: data -> sessions ->
+# features -> Backtesting.py -> metrics -> windows -> report.
+
+limitations = [
+  "SYNTHETIC prices: no market evidence of any kind.",
+  "Shows that every section of the report renders and that the numbers reconcile.",
+]
+
+[experiment]
+id = "DEMO-SYNTH"
+title = "Framework demo on synthetic prices"
+study = "experiments"
+description = "End-to-end check of the lab pipeline on generated minute bars. Uses the proposed VWR family and the provisional IG-AUSTIN-P0 interpretation purely as code paths."
+trials_planned = 6
+
+[data]
+dataset = "synthetic"
+warmup_sessions = 5
+
+[execution]
+cash = 100000.0
+commission_per_share = 0.0035
+slippage_per_share = 0.01
+flatten_minutes = 5
+
+[windows]
+calendar_halves = true
+recent_months = 3
+
+[[variants]]
+id = "VWR0"
+role = "baseline"
+label = "VWR0 baseline"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = {}
+difference = "Baseline: 5m VWAP touch-and-reclaim, EMA9 confirmation, EMA9 close-through exit."
+
+[[variants]]
+id = "VWR1"
+label = "VWR1 no EMA confirm"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { ema_confirm = false }
+difference = "Drops the close-beyond-EMA9 confirmation."
+
+[[variants]]
+id = "VWR2"
+label = "VWR2 EMA/VWAP cross entry"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { trigger = "ema_vwap_cross" }
+difference = "Entry trigger is the EMA9/VWAP cross instead of the VWAP touch."
+
+[[variants]]
+id = "VWR3"
+label = "VWR3 fixed 2R target"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { exit_mode = "fixed_r", target_r = 2.0 }
+difference = "Exit at a 2R target or the stop; no EMA9 exit."
+
+[[variants]]
+id = "VWR4"
+label = "VWR4 morning entries"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { entry_end = "11:30" }
+difference = "Entries only for bars ending 09:45-11:30 ET."
+
+[[variants]]
+id = "IGP0"
+role = "independent"
+label = "IG-AUSTIN-P0 (provisional)"
+strategy = "stratlab.strategies.instagram_austin_vwap_ema9:InstagramAustinVwapEma9P0"
+params = {}
+difference = "Separate strategy: 3m EMA9/VWAP(OHLC4) cross, EMA9 exit. Provisional interpretation."

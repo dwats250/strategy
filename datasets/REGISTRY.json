@@ -1,0 +1,33 @@
+{
+  "_doc": "Content-addressed registry of local-only datasets. Vendor data is never committed. A dataset is identified by the SHA-256 of its canonical file; a new download is a new entry with a new id, never a replacement. See docs/lab/DATA_BACKUP_RECOVERY.md.",
+  "datasets": {
+    "spy-1m-polygon-20240901-20260822-a4afaa70": {
+      "filename": "SPY_1m_2024-09-01_2026-08-22.csv.gz",
+      "sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+      "rows": 422657,
+      "format": "august-canonical-v1",
+      "symbol": "SPY",
+      "interval": "1min",
+      "provider": "Massive/Polygon-compatible stocks aggregates, /v2/aggs/ticker/SPY/range/1/minute, adjusted=true",
+      "captured_utc": "2026-08-25T07:26:45.993217+00:00",
+      "query": {"start": "2024-09-01", "end": "2026-08-22"},
+      "first_bar_utc": "2024-09-03T08:00:00+00:00",
+      "last_bar_utc": "2026-08-21T23:59:00+00:00",
+      "includes_extended_hours": true,
+      "timestamp_semantics": "t_ms = bar START, epoch ms UTC (provider value preserved)",
+      "adjustment_semantics": "Requested adjusted=true (split-adjusted). Whether cash dividends are adjusted is NOT established; treat prices as split-adjusted, dividend-unadjusted until verified. No SPY splits occurred in range.",
+      "origin": "Captured by studies/vwap-lab-2026-08/data/fetch_spy_aggs.py; capture manifest and 9 raw pages preserved alongside the canonical file in the local store.",
+      "known_locations": [
+        "~/.local/share/stratlab/datasets/SPY_1m_2024-09-01_2026-08-22.csv.gz",
+        "studies/vwap-lab-2026-08/data/cache/canonical/SPY_1m_2024-09-01_2026-08-22.csv.gz"
+      ],
+      "masks": {
+        "integrity-mask-v1.0": {
+          "path": "studies/vwap-lab-2026-08/analysis/CORPUS_MASK_v1.0.json",
+          "sha256": "d1360f6f1d67463af0023db8a5e78dbd93293a4ca6bcda9e5d578194badd700a",
+          "note": "9 HIGH-confidence 1m bars flagged by the August trade-blind integrity screen (pre-registered). Evidence for 2024-12-20 11:10 is contested (vendor VWAP suggests a real block print). Applying it is a declared run option, not a default."
+        }
+      }
+    }
+  }
+}

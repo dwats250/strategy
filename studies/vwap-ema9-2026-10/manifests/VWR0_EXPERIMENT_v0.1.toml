@@ -1,0 +1,104 @@
+# VWR0 experiment — PROPOSED v0.1 (2026-10-16). NOT YET RUN.
+# Human-readable definition: VWR_FAMILY_PROPOSAL_v0.1.md and SOURCE_RULES_IG_AUSTIN_v0.1.md.
+# After seam-1 review this file is copied unchanged (or amended) to VWR0_EXPERIMENT_v1.0.toml and
+# frozen. Only the frozen v1.0 file may be run:  uv run stratlab run <v1.0 path>
+
+limitations = [
+  "Exploratory: this SPY corpus was already used for VWAP/EMA research in August 2026; no part of it is a holdout for VWAP/EMA ideas.",
+  "The latest-six-months window overlaps the full sample and the August validation window; it describes recent behaviour and is not out-of-sample.",
+  "Data ends 2026-08-21; an October-current window needs a new download (new dataset identity).",
+  "Single instrument (SPY), one execution model, costs fixed at $0.0135/share/side; no options modelling.",
+  "IG-AUSTIN-P0 is a provisional interpretation of an Instagram reel, not an exact replication.",
+  "1-minute bars: if a stop and a target are both reached within one minute, the stop is assumed first.",
+]
+
+[experiment]
+id = "VWR0-EXP"
+title = "VWAP touch-and-reclaim family + IG-AUSTIN-P0 reference (SPY 1m execution)"
+study = "studies/vwap-ema9-2026-10"
+description = "Baseline VWR0 and four one-factor variants, plus the independent provisional Instagram interpretation, on identical data, capital, costs and windows."
+trials_planned = 6
+status = "PROPOSED"
+
+[data]
+dataset = "spy-1m-polygon-20240901-20260822-a4afaa70"
+mask = "integrity-mask-v1.0"
+warmup_sessions = 5
+
+[execution]
+cash = 100000.0
+commission_per_share = 0.0035
+slippage_per_share = 0.01
+flatten_minutes = 5
+
+[windows]
+calendar_halves = true
+recent_months = 6
+
+[[variants]]
+id = "VWR0"
+role = "baseline"
+label = "VWR0 baseline"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = {}
+difference = "Baseline: 5m bars; close > VWAP(hlc3) and low <= VWAP (touch-and-reclaim); close > EMA9; entries 09:45-15:30 bar end; stop at signal-bar extreme (min 5 bps); exit on close back through EMA9."
+hypothesis = "A completed VWAP touch-and-reclaim bar with EMA9 confirmation precedes continuation in the reclaim direction."
+mechanism = "Intraday participants defend VWAP; a reclaim with momentum marks the defended side."
+primary_metric = "Expectancy R (net) with t-stat; daily-equity Sharpe as portfolio view"
+uninformative_if = "Fewer than 200 trades in the full window, or the result changes sign when the top 5 trades are removed."
+
+[[variants]]
+id = "VWR1"
+label = "VWR1 no EMA9 confirm"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { ema_confirm = false }
+difference = "Drops the close-beyond-EMA9 confirmation (rule 3)."
+hypothesis = "EMA9 confirmation adds nothing beyond VWAP context plus touch."
+mechanism = "Without confirmation, more reclaims are taken before momentum resumes; many exit on the next bar."
+primary_metric = "Delta expectancy R vs VWR0; expectancy of the added trades"
+uninformative_if = "Fewer than 100 trades differ, or |delta R| < 0.03 with both t-stats below 1."
+
+[[variants]]
+id = "VWR2"
+label = "VWR2 EMA/VWAP cross entry"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { trigger = "ema_vwap_cross" }
+difference = "Trigger is an EMA9/VWAP cross on the signal bar instead of a VWAP touch; context, confirmation, stop and exit unchanged."
+hypothesis = "The VWAP touch is a better entry event than the EMA/VWAP cross."
+mechanism = "The cross fires later in a move and less often."
+primary_metric = "Delta expectancy R; trade count; top-5 concentration"
+uninformative_if = "Either arm has fewer than 100 trades, or a sign reversal after removing the top 5 trades."
+
+[[variants]]
+id = "VWR3"
+label = "VWR3 fixed 2R target"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { exit_mode = "fixed_r", target_r = 2.0 }
+difference = "Exit at a 2R target from the signal close or the stop; no EMA9 exit."
+hypothesis = "With the same initial risk, the EMA9-managed exit beats a fixed 2R target."
+mechanism = "EMA exits cut losers early and can ride trends; 2R caps winners and lets losers reach the full stop."
+primary_metric = "Delta expectancy R; win rate; average winner/loser R"
+uninformative_if = "Same-minute stop/target ambiguity in more than 5% of exits, or most 2R trades end at the session flatten."
+
+[[variants]]
+id = "VWR4"
+label = "VWR4 morning entries"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { entry_end = "11:30" }
+difference = "Entries only for bars ending 09:45-11:30 ET."
+hypothesis = "Any VWAP-reclaim effect is concentrated in the morning."
+mechanism = "Morning range and volume; midday chop removed."
+primary_metric = "Delta expectancy R; Sharpe on the same capital"
+uninformative_if = "Fewer than 100 morning trades."
+
+[[variants]]
+id = "IGP0"
+role = "independent"
+label = "IG-AUSTIN-P0 (provisional)"
+strategy = "stratlab.strategies.instagram_austin_vwap_ema9:InstagramAustinVwapEma9P0"
+params = {}
+difference = "Separate strategy: 3m bars, VWAP(ohlc4) session, completed EMA9/VWAP cross entry, close-through-EMA9 exit, signal-bar stop. Provisional interpretation of @austin.daytrades' reel; not an exact replication."
+hypothesis = "The creator's stated chart setup, executed mechanically on SPY shares, is positive after costs."
+mechanism = "Momentum after EMA9 crosses VWAP."
+primary_metric = "Expectancy R (net); daily-equity Sharpe"
+uninformative_if = "Always partly uninformative about the creator's options P&L (underlying-only proxy, later entry)."

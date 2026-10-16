@@ -9,3 +9,9 @@ audits/cuttingboard-engine-strategy-audit/data/raw/
 # bar files are reproducible via studies/vwap-lab-2026-08/data/fetch_spy_aggs.py;
 # only the small metadata/checksum manifests get committed, never the datasets.
 studies/vwap-lab-2026-08/data/cache/
+local_runs/
+
+# Lab: local environment, caches and synthetic/local runs (real-data runs live in studies/*/exports/runs)
+.venv/
+__pycache__/
+.pytest_cache/

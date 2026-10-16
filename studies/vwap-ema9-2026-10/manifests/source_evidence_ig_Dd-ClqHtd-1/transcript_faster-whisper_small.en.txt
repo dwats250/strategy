@@ -1,0 +1,26 @@
+[  0.00-  6.40] I made $179,000 this past month using one strategy on the three-minute time frame,
+[  6.40-  8.80] and I'm going to explain it to you in the next 60 seconds.
+[  8.80- 12.72] All you need is two indicators, the VWAP indicator and the EMA indicator.
+[ 12.72- 14.08] Type in VWAP.
+[ 14.08- 14.88] Select this one.
+[ 14.88- 16.48] Type in EMA.
+[ 16.48- 17.28] Select this one.
+[ 17.28- 21.92] For VWAP settings, set the source to OHLC-4.
+[ 21.92- 23.76] Set the anchor period to session.
+[ 23.76- 26.48] For EMA, set the length to 9.
+[ 26.48- 28.24] Set the source to close.
+[ 28.32- 32.72] Our entry will be right before or right when the VWAP and the EMA cross.
+[ 32.72- 35.92] Right here, you can see VWAP and EMA 9 are about to cross.
+[ 35.92- 40.32] Right here, you can see VWAP and EMA 9 are about to cross to the upside by calls.
+[ 40.32- 42.72] Absolutely fucking insane.
+[ 42.72- 45.68] And as you can see, we were able to capture this monster play.
+[ 45.68- 50.16] Right here, you can see the VWAP and the EMA 9 are crossing to the downside by puts.
+[ 50.16- 53.12] Holy shit, this thing dropped.
+[ 53.12- 56.72] As you can see, we were able to catch this big sell-off right here.
+[ 56.72- 57.68] Two more things.
+[ 57.68- 64.08] If you want to receive a free strategy from me, like and comment in the video.
+[ 64.08- 65.60] Comment setup.
+[ 65.60- 66.48] Last thing.
+[ 66.48- 72.96] If you want to trade with me every single day live trading, click the link in bio.
+[ 72.96- 78.48] Sign up for the monthly membership with a seven-day free trial and trade live with me
+[ 78.48- 79.52] every single day.

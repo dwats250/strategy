@@ -1,0 +1,43 @@
+{
+  "rows": 422657,
+  "first_bar_utc": "2024-09-03T08:00:00+00:00",
+  "last_bar_utc": "2026-08-21T23:59:00+00:00",
+  "duplicate_timestamps": 0,
+  "monotonic_increasing": true,
+  "ohlc_violations": 0,
+  "negative_volume": 0,
+  "calendar_sessions_in_span": 494,
+  "sessions_with_data": 494,
+  "calendar_sessions_without_data": [],
+  "first_session": "2024-09-03",
+  "last_session": "2026-08-21",
+  "last_complete_session": "2026-08-21",
+  "early_close_sessions": [
+    "2024-11-29",
+    "2024-12-24",
+    "2025-07-03",
+    "2025-11-28",
+    "2025-12-24"
+  ],
+  "sessions_with_missing_minutes": {},
+  "rth_bars": 191760,
+  "extended_hours_bars": 230897,
+  "rth_zero_volume_bars": 0,
+  "sessions_not_starting_0930_et": [],
+  "session_open_utc_clock_counts": {
+    "13:30": 325,
+    "14:30": 169
+  },
+  "rth_1m_abs_return_gt_1pct": 9,
+  "freshness_days_since_last_session": 56,
+  "identity": {
+    "dataset_id": "spy-1m-polygon-20240901-20260822-a4afaa70",
+    "sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+    "rows": 422657,
+    "path_used": "/home/dustin/.local/share/stratlab/datasets/SPY_1m_2024-09-01_2026-08-22.csv.gz",
+    "mask": null
+  },
+  "registered_rows": 422657,
+  "adjustment_semantics": "Requested adjusted=true (split-adjusted). Whether cash dividends are adjusted is NOT established; treat prices as split-adjusted, dividend-unadjusted until verified. No SPY splits occurred in range.",
+  "timestamp_semantics": "t_ms = bar START, epoch ms UTC (provider value preserved)"
+}
