@@ -1,0 +1,43 @@
+dataset spy-1m-polygon-20240901-20260822-a4afaa70 mask integrity-mask-v1.0 | hours compared 2886 (2024-12-18 -> 2026-08-21)
+hourly closes identical to the cent: 85.0%
+hours where Massive's HIGH exceeds Yahoo's by > $0.5: 14; LOW below Yahoo's by > $0.5: 17
+  high 2025-01-06 13:30  Massive   598.70  Yahoo   597.43
+  high 2025-01-07 13:30  Massive   595.23  Yahoo   592.28
+  high 2025-03-03 13:30  Massive   594.22  Yahoo   590.23
+  high 2025-03-20 13:30  Massive   569.36  Yahoo   566.50
+  high 2025-04-23 11:30  Massive   545.16  Yahoo   539.51
+  high 2025-04-23 12:30  Massive   545.16  Yahoo   539.59
+  high 2025-04-23 13:30  Massive   545.13  Yahoo   538.99
+  high 2025-04-23 14:30  Massive   545.13  Yahoo   537.73
+  high 2025-04-23 15:30  Massive   544.54  Yahoo   537.17
+  high 2025-08-20 09:30  Massive   639.66  Yahoo   639.12
+  high 2025-12-15 10:30  Massive   684.61  Yahoo   683.06
+  high 2026-01-13 10:30  Massive   695.44  Yahoo   694.28
+  high 2026-07-15 15:30  Massive   754.80  Yahoo   754.21
+  high 2026-07-16 13:30  Massive   752.81  Yahoo   752.31
+  low  2024-12-19 10:30  Massive   586.61  Yahoo   587.79
+  low  2025-01-14 13:30  Massive   580.36  Yahoo   581.79
+  low  2025-01-21 13:30  Massive   601.26  Yahoo   601.90
+  low  2025-01-27 09:30  Massive   594.64  Yahoo   596.39
+  low  2025-02-05 11:30  Massive   600.42  Yahoo   601.12
+  low  2025-03-04 13:30  Massive   574.17  Yahoo   576.97
+  low  2025-03-07 13:30  Massive   568.16  Yahoo   572.29
+  low  2025-04-03 15:30  Massive   536.90  Yahoo   537.56
+  low  2025-04-07 13:30  Massive   498.27  Yahoo   502.16
+  low  2025-04-09 12:30  Massive   497.56  Yahoo   498.65
+  low  2025-06-11 10:30  Massive   603.46  Yahoo   604.10
+  low  2025-06-16 09:30  Massive   600.22  Yahoo   600.96
+  low  2025-12-19 09:30  Massive   676.47  Yahoo   677.00
+  low  2026-02-06 10:30  Massive   684.33  Yahoo   684.97
+  low  2026-02-26 14:30  Massive   687.07  Yahoo   688.47
+  low  2026-06-09 10:30  Massive   730.77  Yahoo   740.35
+  low  2026-07-01 14:30  Massive   744.44  Yahoo   746.45
+
+stop exits whose fill lies outside Yahoo's range for that hour (full-window trades):
+  VWR0   stop exits checkable   753 | outside Yahoo range  16 | their net P&L $   -13,260 | sessions ['2025-01-06', '2025-01-14', '2025-03-03', '2025-03-07', '2025-04-23', '2026-02-26']
+  VWR1   stop exits checkable   995 | outside Yahoo range  16 | their net P&L $   -12,638 | sessions ['2025-01-06', '2025-01-14', '2025-03-03', '2025-03-07', '2025-04-23', '2026-02-26']
+  VWR2   stop exits checkable   378 | outside Yahoo range   4 | their net P&L $      -988 | sessions ['2025-01-06', '2025-03-07', '2025-04-07', '2026-02-06']
+  VWR3   stop exits checkable   939 | outside Yahoo range   7 | their net P&L $    -6,753 | sessions ['2025-04-23', '2025-06-23']
+  VWR4   stop exits checkable   449 | outside Yahoo range   1 | their net P&L $      -876 | sessions ['2025-04-23']
+  IGP0   stop exits checkable   476 | outside Yahoo range   3 | their net P&L $      -468 | sessions ['2025-03-03', '2025-04-07', '2026-02-26']
+  BENCH  no stop exits

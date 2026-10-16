@@ -109,5 +109,53 @@ Legend — status: ACTIVE · TERMINAL (no edge) · PARKED · BLOCKED · DESIGN �
 
 ---
 
+## Lab restart entries (2026-10-16 onward)
+
+These entries use the research-card fields from [`ROADMAP.md`](ROADMAP.md). Each links to its frozen
+manifest and findings; it does not restate them. The per-run record is each study's `LEDGER.csv`.
+
+### VWR — VWAP touch-and-reclaim (lab-defined)
+
+- **Source / date:** lab hypothesis, 2026-10-16 (`studies/vwap-ema9-2026-10/manifests/VWR_FAMILY_v1.0.md`).
+- **Rules:** lab-defined. VWR0 is a **same-bar touch/reclaim proxy**: the bar's low against VWAP at the
+  bar's close, plus close beyond EMA9, with **no prior-trend requirement**. It is not the continuation
+  pattern (acceptance, pullback, continuation) described in the roadmap.
+- **Hypothesis / primary comparison:** VWR0 positive net R. One-factor variants VWR1–VWR4: EMA9
+  confirmation, cross entry, signal-close 2R exit, morning only. Compared by Δ expectancy R; daily-equity
+  Sharpe reported separately.
+- **Data / execution:** SPY 1m (August corpus, mask v1.0), 2024-09-10 → 2026-08-21; Backtesting.py;
+  $0.0135/share/side; 1× notional.
+- **Status:** COMPLETED (frozen v1.1, run once). **Result:** negative. Every trial lost after costs and
+  finished below a SPY session-hold benchmark. A post-run data defect inflates some losses without changing
+  any sign. Findings: `studies/vwap-ema9-2026-10/analysis/VWR0_EXP_FINDINGS_2026-10-16.md`; data note:
+  `docs/lab/DATA_QUALITY_2026-10-16.md`.
+- **Next question:** none within VWR (no rescue variants). The unchanged rules on newly acquired sessions
+  are proposed separately (`VWR0_FRESH_EXTENSION_v0.1.toml`). That would be fresh historical evidence, not
+  a forward test.
+
+### IG-AUSTIN-P0 — provisional reading of an Instagram VWAP + EMA9 reel
+
+- **Source / date:** @austin.daytrades reel (shared by Marc), retrieved 2026-10-16. Rule table:
+  `studies/vwap-ema9-2026-10/manifests/SOURCE_RULES_IG_AUSTIN_v1.0.md`.
+- **Stated vs assumed:** stated are the 3-minute chart, VWAP OHLC4 with session anchor, EMA9 on close, and
+  entry at the cross. Assumed are the SPY shares proxy (the creator trades options), completed-bar entry,
+  EMA9 exit, signal-bar stop, and skipping the first-bar cross.
+- **Status:** COMPLETED as an independent comparison in VWR0-EXP. **Result:** negative on SPY shares;
+  roughly flat before costs. Says nothing about the creator's options P&L.
+
+### VMR-L — VWAP mean reversion (lab-defined)
+
+- **Source / date:** lab hypothesis group, 2026-10-16. The parked August VMR design is the reference; its
+  metric is reused and its threshold is not revived.
+- **Observation / mechanism / competing explanation:** see
+  `studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md`. Exhaustion after a fast displacement,
+  set against trend days where VWAP lags.
+- **Hypothesis / comparison:** MR0 (failed extension after a ≥4 ATR displacement, exit at VWAP) has
+  positive net R. Variants: MR1 extension-only and MR2 K = 5.0 (entry); MR3 shock-only (context); MR4
+  half-way target (exit).
+- **Status:** PROPOSED, awaiting the strategy-definition review. No real-data run.
+
+---
+
 *Update this ledger whenever a family changes status, spends a config, or reaches a
 disposition. Link the canonical manifest; never restate its evidence here.*

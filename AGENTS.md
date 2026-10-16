@@ -22,3 +22,6 @@ a read-only evidence source and a forbidden mutation target. The complete rule i
 4.5 does bounded mechanical reads and never writes a repository file. Sol / GPT-5.6 is retired for
 new work. Sessions declare their lanes at preflight before delegating. The complete rule is
 `docs/conventions.md` §j.
+
+**Continuity (not authority).** Strategy-lab state: `docs/lab/HANDOFF.md`. Direction:
+`docs/research/ROADMAP.md`. Results: `docs/research/STRATEGY_RESEARCH_LEDGER.md`.

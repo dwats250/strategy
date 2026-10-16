@@ -3,11 +3,17 @@
 The pipeline this lab supports: **idea → explicit rules → baseline and named variants → repeatable
 runs → an interactive report.**
 
+## Continuity — read these first
+
+- **Current state, resume commands, blockers:** [`docs/lab/HANDOFF.md`](docs/lab/HANDOFF.md)
+- **Direction, VWAP hypothesis group, process, terms:** [`docs/research/ROADMAP.md`](docs/research/ROADMAP.md)
+- **Hypotheses, experiments, results (research cards):** [`docs/research/STRATEGY_RESEARCH_LEDGER.md`](docs/research/STRATEGY_RESEARCH_LEDGER.md)
+
 ## Run it
 
 ```bash
 uv sync                       # pinned environment (uv.lock); Python 3.13
-uv run pytest                 # 61 tests; all but one (August parity, needs the local corpus) run on synthetic fixtures
+uv run pytest                 # 98 tests; the two August-parity tests need the local corpus
 uv run stratlab demo          # SYNTHETIC end-to-end demo -> local_runs/<run>/report.html
 uv run stratlab identity      # code-tree SHA-256 that a FROZEN config must pin
 uv run stratlab run <experiment.toml>     # real data (FROZEN configs only) -> studies/<study>/exports/runs/<run>/

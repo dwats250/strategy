@@ -14,6 +14,13 @@ Every load re-verifies the SHA-256 and fails closed on a mismatch.
 
 Both data copies are **on the same disk**. That is not a backup.
 
+**Staged archive (2026-10-16):** `~/stratlab-backup/stratlab-store-2026-10-16.tgz` (50 MB) with its
+`.sha256`. It holds both datasets, their manifests, all 18 raw pages and the reel evidence. It was verified
+by extracting it and re-hashing both canonical files against `datasets/REGISTRY.json`. It is still on this
+disk. **The remaining action is to copy `~/stratlab-backup/` off the machine and run `sha256sum -c` there.**
+No off-device destination exists on this machine: no external drive, sync client or configured cloud
+target was found.
+
 ## Required backup (action for Dustin, about 5 minutes)
 
 1. Copy `~/.local/share/stratlab/` to storage that is not on this machine: an external drive, or a

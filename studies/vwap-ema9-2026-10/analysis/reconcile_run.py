@@ -120,7 +120,8 @@ def reconcile(run_dir: Path) -> dict:
     # ledger (real-data runs only; synthetic runs never write ledger rows)
     if rec.get("synthetic"):
         return summary
-    lp = Path(__file__).resolve().parents[1] / "LEDGER.csv"
+    from stratlab.data.store import REPO_ROOT
+    lp = REPO_ROOT / rec["config"]["experiment"]["study"] / "LEDGER.csv"   # the run's own study
     rows = [r for r in csv.DictReader(open(lp)) if r["run_id"] == rec["run_id"]]
     sha(lp)
     check(len(rows) == len(variants), f"ledger has {len(rows)} rows for {rec['run_id']}, expected {len(variants)}")

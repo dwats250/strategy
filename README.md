@@ -31,6 +31,8 @@ raw exports/analysis behind them.
   interpretation of an Instagram VWAP+EMA9 reel (IG-AUSTIN-P0). **Seam 2: frozen, run
   once, negative.** Every trial lost after costs and trailed a SPY session-hold benchmark on data to
   2026-08-21. See `analysis/VWR0_EXP_FINDINGS_2026-10-16.md`.
+- [`vwap-mr-2026-10`](studies/vwap-mr-2026-10/README.md) — VMR-L VWAP mean reversion, the
+  lab's second family and its reuse demonstration. **Proposed, not run.**
 - `vwap-lab-2026-08` — August VWAP lab (branch history): VDC continuation **no edge**,
   FPC worse, MIM/ODR **family dead**. Its corpus is reused by identity.
 

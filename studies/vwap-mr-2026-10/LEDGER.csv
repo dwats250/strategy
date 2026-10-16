@@ -1,0 +1,1 @@
+run_id,run_utc,experiment_id,variant_id,role,strategy,params_json,config_sha256,code_commit,code_dirty,code_tree_sha256,dataset_id,dataset_sha256,mask,window,window_start,window_end,sessions,trials_planned,dsr_threshold_implied,trades,net_pnl,total_return,sharpe_daily_ann,max_dd_session_close,expectancy_r,status,notes

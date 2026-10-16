@@ -68,3 +68,16 @@ Legend: **TERMINAL** = concluded no edge; **DESIGN** = chartered, not run; **BLO
   gross causal −0.63 bps, fails the cost stress).
 - One watchlist family remains: the **closing-auction / rebalance** one needs
   auction/imbalance data that OHLCV cannot supply.
+
+## Update 2026-10-16 — lab restart
+
+- The research direction is now kept in [`ROADMAP.md`](ROADMAP.md): purpose, the VWAP hypothesis group
+  (continuation, mean reversion, reversal), process, card format and terms. Current state is in
+  [`../lab/HANDOFF.md`](../lab/HANDOFF.md).
+- **VWR** (a lab-defined same-bar VWAP touch/reclaim proxy) and **IG-AUSTIN-P0** (a provisional reel
+  interpretation) were frozen and run once. Both are **negative**, and both trail a SPY session-hold
+  benchmark (`studies/vwap-ema9-2026-10/`).
+- **VMR-L** (lab mean reversion) is **PROPOSED** (`studies/vwap-mr-2026-10/`). The August VMR design stays
+  parked, as a reference.
+- The **reversal** family is not yet designed.
+
