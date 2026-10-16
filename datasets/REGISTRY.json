@@ -10,7 +10,10 @@
       "interval": "1min",
       "provider": "Massive/Polygon-compatible stocks aggregates, /v2/aggs/ticker/SPY/range/1/minute, adjusted=true",
       "captured_utc": "2026-08-25T07:26:45.993217+00:00",
-      "query": {"start": "2024-09-01", "end": "2026-08-22"},
+      "query": {
+        "start": "2024-09-01",
+        "end": "2026-08-22"
+      },
       "first_bar_utc": "2024-09-03T08:00:00+00:00",
       "last_bar_utc": "2026-08-21T23:59:00+00:00",
       "includes_extended_hours": true,
@@ -28,6 +31,32 @@
           "note": "9 HIGH-confidence 1m bars flagged by the August trade-blind integrity screen (pre-registered). Evidence for 2024-12-20 11:10 is contested (vendor VWAP suggests a real block print). Applying it is a declared run option, not a default."
         }
       }
+    },
+    "spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9": {
+      "filename": "SPY_1m_2024-10-16_2026-10-15_cap20261016T2141Z.csv.gz",
+      "sha256": "729dc4e9896f0f0657f2edfb7e1f769a1deccb4409de526134ba9b5b0ea067b5",
+      "rows": 431355,
+      "format": "august-canonical-v1",
+      "symbol": "SPY",
+      "interval": "1min",
+      "provider": "Massive/Polygon-compatible stocks aggregates, /v2/aggs/ticker/SPY/range/1/minute, adjusted=true",
+      "captured_utc": "2026-10-16T21:41:24.079335+00:00",
+      "query": {
+        "start": "2024-10-16",
+        "end": "2026-10-15"
+      },
+      "first_bar_utc": "2024-10-16T08:00:00+00:00",
+      "last_bar_utc": "2026-10-15T23:59:00+00:00",
+      "includes_extended_hours": true,
+      "timestamp_semantics": "t_ms = bar START, epoch ms UTC (provider value preserved)",
+      "adjustment_semantics": "Requested adjusted=true (split-adjusted). Dividend adjustment NOT established; no SPY splits in range.",
+      "entitlement": "Probed 2026-10-16: data available 2024-10-16..2026-10-15 (2024-10-15 and 2026-10-16 return HTTP 403: two-year history window, no same-day data).",
+      "origin": "stratlab.data.polygon.capture (src/stratlab/data/polygon.py); 9 raw pages hashed as received, manifest alongside in the local store.",
+      "relationship": "A NEW capture with its own identity. It is NOT the August corpus (spy-1m-polygon-20240901-20260822-a4afaa70), which is preserved unchanged. Overlapping history may differ where the vendor revised data.",
+      "known_locations": [
+        "~/.local/share/stratlab/datasets/SPY_1m_2024-10-16_2026-10-15_cap20261016T2141Z.csv.gz"
+      ],
+      "masks": {}
     }
   }
 }

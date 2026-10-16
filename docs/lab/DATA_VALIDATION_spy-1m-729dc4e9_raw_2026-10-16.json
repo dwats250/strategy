@@ -1,0 +1,43 @@
+{
+  "rows": 431355,
+  "first_bar_utc": "2024-10-16T08:00:00+00:00",
+  "last_bar_utc": "2026-10-15T23:59:00+00:00",
+  "duplicate_timestamps": 0,
+  "monotonic_increasing": true,
+  "ohlc_violations": 0,
+  "negative_volume": 0,
+  "calendar_sessions_in_span": 501,
+  "sessions_with_data": 501,
+  "calendar_sessions_without_data": [],
+  "first_session": "2024-10-16",
+  "last_session": "2026-10-15",
+  "last_complete_session": "2026-10-15",
+  "early_close_sessions": [
+    "2024-11-29",
+    "2024-12-24",
+    "2025-07-03",
+    "2025-11-28",
+    "2025-12-24"
+  ],
+  "sessions_with_missing_minutes": {},
+  "rth_bars": 194490,
+  "extended_hours_bars": 236865,
+  "rth_zero_volume_bars": 0,
+  "sessions_not_starting_0930_et": [],
+  "session_open_utc_clock_counts": {
+    "13:30": 332,
+    "14:30": 169
+  },
+  "rth_1m_abs_return_gt_1pct": 9,
+  "freshness_days_since_last_session": 1,
+  "identity": {
+    "dataset_id": "spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9",
+    "sha256": "729dc4e9896f0f0657f2edfb7e1f769a1deccb4409de526134ba9b5b0ea067b5",
+    "rows": 431355,
+    "path_used": "/home/dustin/.local/share/stratlab/datasets/SPY_1m_2024-10-16_2026-10-15_cap20261016T2141Z.csv.gz",
+    "mask": null
+  },
+  "registered_rows": 431355,
+  "adjustment_semantics": "Requested adjusted=true (split-adjusted). Dividend adjustment NOT established; no SPY splits in range.",
+  "timestamp_semantics": "t_ms = bar START, epoch ms UTC (provider value preserved)"
+}

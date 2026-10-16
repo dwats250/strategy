@@ -28,11 +28,27 @@ unmerged. Branch `lab/restart-2026-10` (worktree `~/Projects/strategy-lab`).
    data treatment plus a separately ledgered rerun. Nothing is done without your approval.
 3. Seam 3 (a structurally different strategy through the same workflow) when you are ready.
 
+## Fresh data — captured 2026-10-16 (not yet used by any experiment)
+
+- Entitlement probed by behaviour. Minute data is available 2024-10-16 → 2026-10-15; 2024-10-15 and
+  today (2026-10-16) return HTTP 403, so the plan has a two-year window and no same-day data.
+- New dataset `spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9`: 431,355 rows, SHA-256 `729dc4e9…`,
+  data through 2026-10-15, the latest completed session the plan serves. It validates clean: 501/501
+  sessions, no missing minutes, DST and early closes correct
+  (`docs/lab/DATA_VALIDATION_spy-1m-729dc4e9_raw_2026-10-16.json`).
+- **The original corpus is preserved** (`a4afaa70…`, unchanged). Over their overlap (2024-10-16 →
+  2026-08-21) the two captures are **identical in all 179,670 RTH minutes**, so the vendor revised nothing
+  and the 2025-04-23 off-market wick cluster is in the vendor's current data
+  (`docs/lab/DATA_COMPARE_a4afaa70_vs_729dc4e9_2026-10-16.json`). The new weeks (2026-08-24 → 2026-10-15)
+  show 2 flagged minutes on 2026-08-28.
+- Mask v1.0 is bound to the August corpus's SHA, so it cannot be applied to the new dataset as is.
+  Using the new data in an experiment needs a decision on its data treatment (it ties into the mask-v2
+  question) and a new frozen config.
+
 ## Outstanding (non-blocking)
 
-- **Fresh data:** set `MASSIVE_API_KEY` (or `POLYGON_API_KEY`). A download gets a new dataset id; the
-  August corpus stays as is.
-- **Off-device backup:** copy `~/.local/share/stratlab/` off this disk (`DATA_BACKUP_RECOVERY.md`).
+- **Off-device backup:** copy `~/.local/share/stratlab/` (now about 107 MB) off this disk
+  (`DATA_BACKUP_RECOVERY.md`).
 
 ---
 

@@ -60,3 +60,35 @@ def validate_dataset(ds_id: str, mask: str | None = None, today: dt.date | None 
     rep["adjustment_semantics"] = rec.meta.get("adjustment_semantics")
     rep["timestamp_semantics"] = rec.meta.get("timestamp_semantics")
     return rep
+
+
+def compare_datasets(a_id: str, b_id: str, tol: float = 1e-9) -> dict:
+    """Bar-by-bar comparison of two captures over their overlapping RTH sessions.
+
+    Reports matching and differing minutes, minutes present in only one capture, and
+    the sessions with the most price differences, so vendor revisions are visible
+    before a new capture is used in place of an older one."""
+    a, _ = load_dataset(a_id)
+    b, _ = load_dataset(b_id)
+    lo, hi = max(a.index.min(), b.index.min()), min(a.index.max(), b.index.max())
+    sess = session_table(lo, hi)
+    ra = assign_regular_sessions(a[(a.index >= lo) & (a.index <= hi)], sess)
+    rb = assign_regular_sessions(b[(b.index >= lo) & (b.index <= hi)], sess)
+    common = ra.index.intersection(rb.index)
+    cols = ["Open", "High", "Low", "Close", "Volume"]
+    d = (ra.loc[common, cols] - rb.loc[common, cols]).abs()
+    price_diff = (d[["Open", "High", "Low", "Close"]] > tol).any(axis=1)
+    vol_diff = d["Volume"] > tol
+    by_sess = price_diff.groupby(ra.loc[common, "session"]).sum()
+    big = (d[["High", "Low"]].max(axis=1) / ra.loc[common, "Close"])
+    return {
+        "a": a_id, "b": b_id,
+        "overlap_sessions": [str(pd.Timestamp(sess.index.min()).date()), str(pd.Timestamp(sess.index.max()).date())],
+        "rth_minutes_a": int(len(ra)), "rth_minutes_b": int(len(rb)), "common_minutes": int(len(common)),
+        "only_in_a": int(len(ra.index.difference(rb.index))), "only_in_b": int(len(rb.index.difference(ra.index))),
+        "minutes_identical_ohlcv": int((~price_diff & ~vol_diff).sum()),
+        "minutes_price_differs": int(price_diff.sum()), "minutes_volume_only_differs": int((vol_diff & ~price_diff).sum()),
+        "minutes_high_or_low_differs_over_0.5pct": int((big > 0.005).sum()),
+        "sessions_with_price_differences": int((by_sess > 0).sum()),
+        "top_sessions_by_price_differences": {str(pd.Timestamp(k).date()): int(v) for k, v in by_sess.sort_values(ascending=False).head(10).items() if v > 0},
+    }

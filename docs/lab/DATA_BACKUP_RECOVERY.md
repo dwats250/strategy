@@ -8,7 +8,7 @@ Every load re-verifies the SHA-256 and fails closed on a mismatch.
 
 | Copy | Path | Contents |
 |---|---|---|
-| Primary (lab store) | `~/.local/share/stratlab/datasets/` | `SPY_1m_2024-09-01_2026-08-22.csv.gz` (10.8 MB), its capture manifest, `raw/…/page0001-0009.json` (47 MB) |
+| Primary (lab store) | `~/.local/share/stratlab/datasets/` | The August corpus `SPY_1m_2024-09-01_2026-08-22.csv.gz` (`a4afaa70…`), its manifest and 9 raw pages. The 2026-10-16 capture `SPY_1m_2024-10-16_2026-10-15_cap20261016T2141Z.csv.gz` (`729dc4e9…`), its manifest and 9 raw pages (hashed as received). About 107 MB in total. |
 | Original | `~/Projects/strategy/studies/vwap-lab-2026-08/data/cache/` (main checkout, gitignored) | Same files and the August derived features |
 | Source evidence | `~/.local/share/stratlab/sources/instagram-Dd-ClqHtd-1/` | Reel video (SHA-256 `10c18b19…`), metadata, transcript |
 
@@ -32,8 +32,10 @@ Both data copies are **on the same disk**. That is not a backup.
 2. **Rebuild the canonical file from the raw pages.** The 9 raw pages reproduce the canonical CSV
    deterministically through `studies/vwap-lab-2026-08/data/fetch_spy_aggs.py`'s normalize step
    (gzip `mtime=0`). The result must hash to `a4afaa70…`; if it does not, it is not the original corpus.
-3. **Re-download.** `MASSIVE_API_KEY` / `POLYGON_API_KEY` is needed and is **not set** on this machine
-   today. A re-download is a **new dataset with a new id and SHA-256**, even for the same date range,
+3. **Re-download.** `uv run stratlab data capture --start … --end …` with the key sourced from
+   `~/.config/stratlab/credentials.env` in the same shell invocation (`set -a; . ~/.config/stratlab/credentials.env; set +a; uv run …`).
+   The key is never printed or written: every saved byte is checked for it. The plan as probed on
+   2026-10-16 serves a rolling two-year window and no same-day data. A re-download is a **new dataset with a new id and SHA-256**, even for the same date range,
    because vendors revise history. It is registered as a new entry and never presented as the original
    corpus. Runs record the dataset id they used, so the two can never be confused.
 

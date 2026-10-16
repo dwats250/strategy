@@ -13,6 +13,9 @@ uv run stratlab identity      # code-tree SHA-256 that a FROZEN config must pin
 uv run stratlab run <experiment.toml>     # real data (FROZEN configs only) -> studies/<study>/exports/runs/<run>/
 uv run stratlab data verify  spy-1m-polygon-20240901-20260822-a4afaa70
 uv run stratlab data validate spy-1m-polygon-20240901-20260822-a4afaa70 --mask integrity-mask-v1.0
+uv run stratlab data compare <dataset_a> <dataset_b>     # bar-by-bar overlap check between captures
+set -a; . ~/.config/stratlab/credentials.env; set +a; uv run stratlab data probe --date 2026-10-15   # entitlement
+set -a; . ~/.config/stratlab/credentials.env; set +a; uv run stratlab data capture --start … --end … # new dataset
 ```
 
 `report.html` is a single file. It opens offline on a phone or desktop, with no server and no network.

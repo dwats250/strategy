@@ -5,6 +5,9 @@
   stratlab demo [--out DIR]                                  synthetic end-to-end demo (labelled)
   stratlab data verify <dataset_id>                          SHA-256 check of the local copy
   stratlab data validate <dataset_id> [--mask ID]            coverage / integrity summary (JSON)
+  stratlab data compare <dataset_a> <dataset_b>              bar-by-bar overlap comparison (vendor revisions)
+  stratlab data probe --date YYYY-MM-DD [--ticker SPY]       one-day entitlement check (needs key)
+  stratlab data capture --start D --end D [--ticker SPY]     new capture into the lab store (needs key)
 
 * `report` writes report_rebuild_<UTC>.html and re-embeds price charts when the recorded
   dataset is available locally and the code tree matches the run; otherwise it omits them.
@@ -63,6 +66,11 @@ def main(argv=None):
     dd = sub.add_parser("data"); dsub = dd.add_subparsers(dest="dcmd", required=True)
     v = dsub.add_parser("verify"); v.add_argument("dataset_id")
     va = dsub.add_parser("validate"); va.add_argument("dataset_id"); va.add_argument("--mask")
+    cm = dsub.add_parser("compare"); cm.add_argument("a"); cm.add_argument("b")
+    pr = dsub.add_parser("probe"); pr.add_argument("--ticker", default="SPY"); pr.add_argument("--date", required=True)
+    ca = dsub.add_parser("capture"); ca.add_argument("--ticker", default="SPY")
+    ca.add_argument("--start", required=True); ca.add_argument("--end", required=True)
+    ca.add_argument("--out"); ca.add_argument("--sleep", type=float, default=13.0)
     a = ap.parse_args(argv)
 
     if a.cmd == "run":
@@ -83,6 +91,20 @@ def main(argv=None):
         print(json.dumps(code_identity(), indent=2))
     elif a.cmd == "data":
         from .data.store import resolve
+        if a.dcmd in ("probe", "capture"):
+            from . import data as _d  # noqa: F401
+            from .data import polygon
+            from .data.store import DEFAULT_STORE
+            if a.dcmd == "probe":
+                print(json.dumps(polygon.probe(a.ticker, a.date), indent=2))
+            else:
+                print(json.dumps(polygon.capture(a.ticker, a.start, a.end,
+                                                 Path(a.out) if a.out else DEFAULT_STORE, a.sleep), indent=2))
+            return 0
+        if a.dcmd == "compare":
+            from .data.validate import compare_datasets
+            print(json.dumps(compare_datasets(a.a, a.b), indent=2))
+            return 0
         if a.dcmd == "verify":
             rec, path = resolve(a.dataset_id)
             print(json.dumps({"dataset_id": rec.id, "sha256": rec.sha256, "path": str(path), "verified": True}))

@@ -1,0 +1,19 @@
+{
+  "a": "spy-1m-polygon-20240901-20260822-a4afaa70",
+  "b": "spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9",
+  "overlap_sessions": [
+    "2024-10-16",
+    "2026-08-21"
+  ],
+  "rth_minutes_a": 179670,
+  "rth_minutes_b": 179670,
+  "common_minutes": 179670,
+  "only_in_a": 0,
+  "only_in_b": 0,
+  "minutes_identical_ohlcv": 179670,
+  "minutes_price_differs": 0,
+  "minutes_volume_only_differs": 0,
+  "minutes_high_or_low_differs_over_0.5pct": 0,
+  "sessions_with_price_differences": 0,
+  "top_sessions_by_price_differences": {}
+}
