@@ -176,3 +176,52 @@ def test_runs_through_existing_runner_and_report(tmp_path):
     out = build_presentation(run, run / "report.html", "report_v2.html", {"title_short": "MR synthetic"},
                              require_tracked_source=False, regenerate_bars=False)
     assert extract_payload(out)["presentation"]["provenance"]["verification"]["mismatches"] == 0
+
+
+def _mirror(p):
+    """Reflect a price path through 100 (long scenario -> short scenario)."""
+    return {hm: (200 - o, 200 - l, 200 - h, 200 - c) for hm, (o, h, l, c) in p.items()}
+
+
+def test_short_mirror_entry_stop_exit_and_half_target():
+    s, b = _bars(_mirror(_shock_down()))
+    b["High"], b["Low"] = b[["High", "Low"]].max(axis=1), b[["High", "Low"]].min(axis=1)
+    out, f = _run(s, b, k=3.0)
+    t = out.trades[out.trades.entry_time.dt.tz_convert(ET).dt.strftime("%Y-%m-%d") == D].iloc[0]
+    assert t.side == "short" and et(t.entry_time) == f"{D} 10:40"
+    assert t.initial_stop == pytest.approx(102.06)                 # max(102.05, 102.00) + 0.01
+    assert t.exit_reason == "vwap_reached"
+    half, f2 = _run(s, b, k=3.0, exit_mode="half_target")
+    cur = f2.loc[pd.Timestamp(f"{D} 10:35", tz=ET).tz_convert("UTC")]
+    th = half.trades[half.trades.entry_time.dt.tz_convert(ET).dt.strftime("%Y-%m-%d") == D].iloc[0]
+    assert th.target == pytest.approx(round(cur.s_close + 0.5 * (cur.vwap - cur.s_close), 2)) and th.target < cur.s_close
+
+
+def test_stop_floor_applies_when_the_extreme_is_too_close():
+    # failed-extension bar whose low sits just under its close: the 5 bps floor sets the stop
+    p = _shock_down({hm.strftime("%H:%M"): (98.28, 98.3, 98.29, 98.3) for hm in pd.date_range(f"{D} 10:35", f"{D} 10:39", freq="1min")})
+    p.update({hm.strftime("%H:%M"): (98.3, 98.3, 98.27, 98.28) for hm in pd.date_range(f"{D} 10:30", f"{D} 10:34", freq="1min")})
+    s, b = _bars(p)
+    rth = assign_regular_sessions(b, s); sig = resample_session_bars(rth, 5, s); f = mr_features(sig)
+    k = float(-f.loc[pd.Timestamp(f"{D} 10:30", tz=ET).tz_convert("UTC")].E) * 0.9
+    out, _ = _run(s, b, k=k)
+    t = out.trades[out.trades.entry_time.dt.tz_convert(ET).dt.strftime("%Y-%m-%d") == D].iloc[0]
+    assert t.initial_stop == pytest.approx(round(98.3 * (1 - 5e-4), 2))   # 98.25: floor (4.9c) beats extreme-1c = 98.26
+
+
+def test_shock_filter_uses_available_bars_early_in_the_session():
+    """A plunge at 09:50 has only 4 in-session bars before it; the shock rule uses them."""
+    p = {}
+    for t in pd.date_range(f"{D} 09:50", f"{D} 09:54", freq="1min"):
+        p[t.strftime("%H:%M")] = (99.6, 99.6, 97.95, 98.0)
+    for t in pd.date_range(f"{D} 09:55", f"{D} 09:59", freq="1min"):
+        p[t.strftime("%H:%M")] = (98.05, 98.35, 98.0, 98.3)
+    for t in pd.date_range(f"{D} 10:00", f"{D} 15:59", freq="1min"):
+        p[t.strftime("%H:%M")] = (98.3, 98.35, 98.25, 98.3)
+    s, b = _bars(p)
+    rth = assign_regular_sessions(b, s); sig = resample_session_bars(rth, 5, s); f = mr_features(sig)
+    row = f.loc[pd.Timestamp(f"{D} 09:55", tz=ET).tz_convert("UTC")]
+    assert row.minabsE_before_prev < 1.0                              # 09:30-09:45 bars sat at VWAP
+    out, _ = _run(s, b, k=3.0, shock_filter=True)
+    hm = set(pd.to_datetime(out.trades.entry_time, utc=True).dt.tz_convert(ET).dt.strftime("%Y-%m-%d %H:%M")) if len(out.trades) else set()
+    assert f"{D} 10:00" in hm                                         # decision bar ends 10:00 (window start)

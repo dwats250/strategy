@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Post-run DIAGNOSTIC (not a frozen check, not a rerun): off-market wick clusters.
+"""Post-run DIAGNOSTIC (not a frozen check, not a rerun): suspicious wick clusters (unresolved).
 
 Found while reviewing VWR0-EXP__20261016T211249Z: on 2025-04-23, after ~11:28 ET, over a
 hundred RTH minutes print highs at $544-545 while their bodies trade at $534-539 and the
-vendor per-minute VWAP stays at the body. That pattern is most consistent with late-reported
-prints at the morning's price level. A resting stop could not have filled there at midday.
+vendor per-minute VWAP stays at the body. That pattern is consistent with late-reported prints at
+the morning's price level, but it is UNRESOLVED: no tick condition codes are available, and an
+independent hourly source (Yahoo) lacks these prints without proving they were unexecutable.
+See docs/lab/DATA_QUALITY_2026-10-16.md. (Docstring wording corrected 2026-10-16; logic unchanged.)
 The frozen integrity mask v1.0 (isolated-spike rule) does not catch clusters.
 
 Part 1 is trade-blind: it flags minutes with a wick more than 0.5% beyond the body while the

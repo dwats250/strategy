@@ -8,7 +8,8 @@
 
 limitations = [
   "Fresh historical evidence on 38 new sessions (2026-08-24 to 2026-10-15): small sample; a single look; not a forward test.",
-  "Same rules, costs and sizing as VWR0-EXP v1.1; dataset is the fresh capture (no mask: none of mask v1.0's bars fall in these dates).",
+  "Same rules, costs and sizing as VWR0-EXP v1.1. No mask is available for this dataset (mask v1.0 is bound to the August file); the scored dates 2026-08-24..2026-10-15 contain none of the flagged minutes, and warm-up sessions only seed indicators.",
+  "Gates are inherited unchanged from v1.1. Pro-rating VWR0-EXP's trade counts to 38 sessions gives about 189 VWR0, 258 VWR1, 72 VWR2, 136 VWR3, 107 VWR4 and 99 IGP0 trades, so the VWR0 gate (200) and the VWR2 and IGP0 gates (100) will probably not be met. This run can support DESCRIPTIVE fresh-historical evidence on the same rules, not a test of any hypothesis.",
   "The overlapping history 2024-10-16 to 2026-08-21 was studied in VWR0-EXP and is NOT re-scored here.",
 ]
 

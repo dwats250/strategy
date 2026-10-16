@@ -17,16 +17,17 @@ in August, and nothing here is a holdout.
 **Determinism:** a non-exported rerun of the frozen config (no ledger row; it is not a second scored run)
 matched all 99 output files byte for byte (`DETERMINISM_CHECK_VWR0-EXP_2026-10-16.txt`).
 
-## Data-integrity defect found after the run (read first)
+## Suspicious prints found after the run — unresolved (read first; amended 2026-10-16, see addendum)
 
 On **2025-04-23**, from about 11:28 ET onward, over a hundred RTH minutes carry highs at **$544–545**
 while their bodies trade at $534–539 and the vendor per-minute VWAP stays at the body. The pattern is
-most consistent with late-reported prints at the morning's price level. A resting stop could not have
-filled there at midday. The frozen mask v1.0 is an isolated-spike rule and does not catch a cluster.
+consistent with late-reported prints at the morning's price level. Whether a resting stop could have
+filled there is **unknown**: an independent hourly source lacks these prints, but no condition-coded tick
+data is available (`docs/lab/DATA_QUALITY_2026-10-16.md`). The frozen mask v1.0 is an isolated-spike rule and does not catch a cluster.
 A trade-blind scan (`diagnose_offmarket_wicks.py`) flags 122 such minutes in the corpus: 111 on
 2025-04-23 and 11 spread over 9 other sessions.
 
-Shorts entered that afternoon were stopped repeatedly at those prints. The signal-bar stops were also
+Shorts entered that afternoon were stopped repeatedly at those prices. The signal-bar stops were also
 widened by the same wicks. Exposure by configuration, from the run's own trade files, with nothing
 re-run (`DIAGNOSTIC_offmarket_wicks_VWR0-EXP_2026-10-16.txt`):
 
@@ -41,7 +42,7 @@ re-run (`DIAGNOSTIC_offmarket_wicks_VWR0-EXP_2026-10-16.txt`):
 | Session-hold benchmark | +$13,399 | −$626 | +$14,025 | — |
 
 **What it changes:** the **size** of the VWR0, VWR1 and VWR3 losses, which are roughly doubled, or
-inflated by about 40% for VWR3, by one defective session. **What it does not change:** every
+inflated by about 40% for VWR3, by one suspect session. **What it does not change:** every
 configuration's **sign**, and its standing below the benchmark. The frozen results stand as recorded.
 Excluding a session is a diagnostic here, not a replacement result. Any corrected treatment needs your
 decision; see the end.
@@ -64,14 +65,16 @@ play, because every trial's Sharpe is negative.
 
 ## Findings
 
-- **Data defect, found after the run:** on 2025-04-23, over a hundred minutes carry off-market highs at
-  $544–545 above $534–539 bodies, which mask v1.0 does not catch. Shorts were stopped at those prints. The
-  defect accounts for −$14.0k of VWR0's −$25.3k, −$13.4k of VWR1's and −$8.1k of VWR3's. Excluding that
-  session changes loss sizes, not signs. The frozen numbers stand; a corrected mask is your decision.
+- **Suspicious prints, unresolved (amended 2026-10-16):** on 2025-04-23, over a hundred minutes carry
+  highs at $544–545 above $534–539 bodies. An independent hourly source does not show them, and mask v1.0
+  does not catch them. Their executability is unknown. That session booked −$14.0k of VWR0's −$25.3k,
+  −$13.4k of VWR1's and −$8.1k of VWR3's. Stop fills not supported by the independent source total −$13.2k
+  for VWR0 (`docs/lab/DATA_QUALITY_2026-10-16.md`). Session P&L is not a corrected result; excluding the
+  session changes loss sizes, not signs. The frozen numbers stand; the data treatment is your decision.
 - None of the seven trials (the VWR family, the raw rerun, IG-AUSTIN-P0) made money on SPY from 2024-09-10
   to 2026-08-21 after costs. All of them finished below the SPY session-hold benchmark (+13.4%, Sharpe
   0.54) under identical capital, costs and session hours. This holds as frozen, and it also holds with the
-  defective session 2025-04-23 excluded. The results are negative and exploratory, and no rescue variant
+  suspect session 2025-04-23 excluded. The results are negative and exploratory, and no rescue variant
   has been run.
 - **VWR0** (hypothesis: a same-bar VWAP touch-proxy reclaim with EMA9 confirmation precedes continuation)
   is **not supported**: −0.038R per trade (t −1.10; −0.032R, t −0.92, excluding 2025-04-23), −25.3% account
@@ -108,14 +111,14 @@ play, because every trial's Sharpe is negative.
   issue is the unmasked cluster on 2025-04-23 described above.
 - **Portfolio and per-trade views, under 1× notional sizing.** Money at risk to the stop ranged from 0.05%
   (p10) to 0.26% (p90) of equity per trade (VWR0). As frozen, VWR0's dollar-weighted R (−0.083) was about
-  twice its per-trade mean (−0.038). **Most of that gap is the 2025-04-23 defect**: wick-widened stops put
+  twice its per-trade mean (−0.038). **Most of that gap comes from the suspect 2025-04-23 session**: wick-widened stops put
   more money at risk on exactly the trades that were stopped. Excluding that session, they are −0.039 and
   −0.032. The gap persists for VWR3 (−0.089 against −0.066) and VWR4 (−0.092 against −0.037). There, the
   widest-stop quartile of trades carries most of the dollar loss. This is a diagnostic of the approved
   sizing, not a reason to change it here.
 - **Time stability.** VWR0 was roughly flat to slightly positive in 2024H2 (+0.9%), 2025H2 (+0.4%) and
   the partial 2026H2 (+1.2%). It lost 20.2% in 2025H1, of which −17.5% came in April 2025: the tariff shock
-  plus the 2025-04-23 defect. It lost 8.8% in 2026H1. The latest six months (2026-02-23 → 2026-08-21;
+  plus the suspect 2025-04-23 session. It lost 8.8% in 2026H1. The latest six months (2026-02-23 → 2026-08-21;
   exploratory, overlapping) were negative at −5.6%, Sharpe −1.73, −0.029R. **No evidence that recent
   behaviour favours this family.** VWR4's positive recent expectancy (+0.059R, t 0.53) is a noise-level
   subset result and is not a finding.
@@ -148,3 +151,27 @@ hygiene, not a rescue. The frozen results above stand either way.
 
 - A fresh-data download. It needs `MASSIVE_API_KEY` and would get a new dataset id.
 - An off-device backup of `~/.local/share/stratlab/`.
+
+## Addendum — 2026-10-16 (closeout review)
+
+An independent review found that this note stated as fact what `docs/lab/DATA_QUALITY_2026-10-16.md`
+leaves unresolved. The wording above was corrected in place; no number changed. The original wording, kept
+for the record:
+
+> ## Data-integrity defect found after the run (read first)
+>
+> On **2025-04-23**, from about 11:28 ET onward, over a hundred RTH minutes carry highs at **$544–545** while their bodies trade at $534–539 and the vendor per-minute VWAP stays at the body. The pattern is most consistent with late-reported prints at the morning's price level. A resting stop could not have filled there at midday. The frozen mask v1.0 is an isolated-spike rule and does not catch a cluster. A trade-blind scan (`diagnose_offmarket_wicks.py`) flags 122 such minutes in the corpus: 111 on
+
+> - **Data defect, found after the run:** on 2025-04-23, over a hundred minutes carry off-market highs at $544–545 above $534–539 bodies, which mask v1.0 does not catch. Shorts were stopped at those prints. The defect accounts for −$14.0k of VWR0's −$25.3k, −$13.4k of VWR1's and −$8.1k of VWR3's. Excluding that session changes loss sizes, not signs. The frozen numbers stand; a corrected mask is your decision.
+
+Further evidence since this note was written:
+- Yahoo Finance hourly bars (an independent source) do not show the midday $545 prints. Their morning
+  highs match Massive's.
+- Tick condition codes are not available on the current plan.
+- Mask v1.0's own prints are only partly corroborated.
+- Stop fills outside Yahoo's hourly range by more than $0.50 number 15 for VWR0 (recorded net P&L
+  −$13,186) and 1–15 for the other configurations.
+
+None of this makes the prints provably unexecutable, and subtracting their P&L is not equivalent to a
+compounded rerun.
+

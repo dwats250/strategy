@@ -13,7 +13,7 @@ runs → an interactive report.**
 
 ```bash
 uv sync                       # pinned environment (uv.lock); Python 3.13
-uv run pytest                 # 98 tests; the two August-parity tests need the local corpus
+uv run pytest                 # 101 tests; the two August-parity tests need the local corpus
 uv run stratlab demo          # SYNTHETIC end-to-end demo -> local_runs/<run>/report.html
 uv run stratlab identity      # code-tree SHA-256 that a FROZEN config must pin
 uv run stratlab run <experiment.toml>     # real data (FROZEN configs only) -> studies/<study>/exports/runs/<run>/

@@ -27,8 +27,8 @@ frozen. Code: `src/stratlab/strategies/vwap_mean_reversion.py` and `src/stratlab
 |---|---|
 | **Distance from VWAP** | `E = (close − VWAP) / ATR14`, in units of the current 5-minute ATR. Price-scale free. |
 | **EMA separation / expansion** | Not used by VMR-L. Measuring EMA fan-out is a separate question (continuation and reversal families). VMR-L is deliberately defined without EMAs, so its results cannot be confused with EMA effects. |
-| **Persistence** | How long the displacement has lasted. MR3 measures it as the minimum \|E\| over the 6 bars before the extended bar. |
-| **Shock versus sustained structure** | A shock arrives quickly from near VWAP (some bar in the previous 30 minutes had \|E\| < 1). Sustained structure has been far from VWAP the whole time. |
+| **Persistence** | How long the displacement has lasted. MR3 measures it as the minimum \|E\| over the up-to-6 in-session bars before the extended bar (fewer early in the session). |
+| **Shock versus sustained structure** | A shock arrives quickly from near VWAP: some bar among the up-to-6 in-session bars before the extended bar had \|E\| < 1. Sustained structure has been far from VWAP the whole time. |
 
 ## Baseline MR0 (5-minute signal bars, 1-minute execution; shorts mirror longs)
 
@@ -41,15 +41,17 @@ Decided on completed bar *t*:
    (VWAP has little history) and the last hour.
 4. **Stop:** min(low_{t−1}, low_t) − $0.01, at least 5 bps below close_t. A new extreme refutes the
    failed-extension thesis.
-5. **Exit:** the first later completed bar that closes at or through VWAP (filled at the next minute's
-   open), or the stop, or the session flatten (5 minutes before the calendar close).
-6. Fills at the next 1-minute open. One position at a time. No new entry on a signal bar with missing
-   minutes.
+5. **Exit:** the first later signal bar (complete or not) that closes at or through VWAP, filled at the
+   next minute's open; or the stop; or the session flatten (5 minutes before the calendar close).
+6. Fills at the next 1-minute open. One position at a time, with **no cooldown**: after any exit, a new
+   entry may be taken on the next qualifying bar, including on the same displacement. No new entry on a
+   signal bar with missing minutes. Stops and targets are rounded to $0.01.
 
 **Where K = 4.0 comes from (trade-blind):** \|E\| over in-window 5-minute bars has a P90 of 3.93 (August
 corpus, masked) and 3.94 (fresh capture), and a P95 of 4.83 on both. About 9.5% of bars reach \|E\| ≥ 4.0
 (`analysis/EXCURSION_QUANTILES_2026-10-16.json.txt`; no strategy, no P&L). K is a round number near P90,
-fixed before any outcome. The August design's K = 4.09 was a P90 on its development window; it is noted
+fixed before any outcome. The quantiles were computed on the **same scored population** that the run
+will score, so K is trade-blind but not out-of-sample. The August design's K = 4.09 was a P90 on its development window; it is noted
 for reference, not adopted.
 
 ## Variants — one factor each, entry/context and exit kept separate
@@ -58,9 +60,16 @@ for reference, not adopted.
 |---|---|---|---|---|
 | **MR1** | entry | Enter on the extended bar itself (E_t ≤ −K); no failed-extension confirmation. Stop beyond that bar's extreme. | Does waiting for a failed extension improve outcomes, or does it just enter later? | Fewer than 100 trades differ from MR0 |
 | **MR2** | entry | **K = 5.0** (about P96) instead of 4.0 | Does a more extreme displacement revert more reliably? | MR2 has fewer than 100 closed trades |
-| **MR3** | context | Shock filter: some bar among the 6 before the extended bar had \|E\| < 1.0 | Does reversion work after a quick shock but not after sustained structure? (the competing explanation) | MR3 has fewer than 100 closed trades, or fewer than 100 trades differ from MR0 |
+| **MR3** | context | Shock filter: some bar among the up-to-6 in-session bars before the extended bar had \|E\| < 1.0 | Does reversion work after a quick shock but not after sustained structure? (the competing explanation) | MR3 has fewer than 100 closed trades, or fewer than 100 trades differ from MR0 |
 | **MR4** | exit | Fixed target halfway from close_t to VWAP_t, placed at entry; no VWAP-close exit | Is a partial-reversion target better than waiting for a full return to VWAP? | Same-minute stop/target exits exceed 5% of MR4 trades |
 | **BENCH** | benchmark | SPY session-hold (`stratlab.strategies.benchmarks:SessionHold`) | Reference only, not a trial | — |
+
+**What this batch cannot test.** Competing explanation (3), shock versus sustained structure, is tested
+by MR3. Explanation (1), trend days, is touched only indirectly by MR3. Explanation (2), ATR-denominator
+scaling, has **no variant**. The trade files do not store ATR or E at the signal, and adding them would
+mean an engine change, so (1) and (2) are **not tested** by this experiment. A post-run diagnostic
+(expectancy R by ATR-at-signal tercile, with features recomputed from each trade's signal bar) may be
+added after the run as **description only**, never as a rule change.
 
 No combinations, no threshold search, no time-of-day or long/short selection, and no rescue variants after
 the results. Trials planned: 5 (MR0–MR4).
@@ -69,7 +78,7 @@ the results. Trials planned: 5 (MR0–MR4).
 
 | Item | Proposal |
 |---|---|
-| Data | **Review decision.** (a) The fresh capture `spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9`, 2024-10-23 → 2026-10-15, unmasked. It is the most recent, and its bars are byte-identical to the August corpus over the overlap. Mask v1.0 is bound to the August file, and its prints are only partly corroborated by an independent source (`docs/lab/DATA_QUALITY_2026-10-16.md`). (b) The August corpus with mask v1.0, for consistency with VWR. **Recommended: (a).** The independent-hourly diagnostic would be pre-committed as a post-run check, and its affected-trade count reported. |
+| Data | **Review decision.** (a) The fresh capture `spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9`, 2024-10-16 → 2026-10-15 (scored from 2024-10-23 after 5 warm-up sessions), unmasked. It is the most recent, and its bars are byte-identical to the August corpus over the overlap. Mask v1.0 is bound to the August file, and its prints are only partly corroborated by an independent source (`docs/lab/DATA_QUALITY_2026-10-16.md`). (b) The August corpus with mask v1.0, for consistency with VWR. **Recommended: (a).** The independent-hourly diagnostic would be pre-committed as a post-run check, and its affected-trade count reported. |
 | Prior exposure | No mean-reversion configuration has ever been run on either dataset. The data was explored for VWAP/EMA continuation (August, and VWR in October), and the August VMR study profiled the \|E\| distribution trade-blind. So results are exploratory, and nothing here is a holdout. |
 | Execution | Backtesting.py 0.6.6 on 1-minute RTH bars, XNYS calendar, as for VWR (`docs/lab/ENGINE_BEHAVIOR.md`) |
 | Costs | $0.0035 commission + $0.01 slippage per share per side ($0.0135/share/side) |

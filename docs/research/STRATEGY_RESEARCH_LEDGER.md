@@ -126,7 +126,7 @@ manifest and findings; it does not restate them. The per-run record is each stud
 - **Data / execution:** SPY 1m (August corpus, mask v1.0), 2024-09-10 → 2026-08-21; Backtesting.py;
   $0.0135/share/side; 1× notional.
 - **Status:** COMPLETED (frozen v1.1, run once). **Result:** negative. Every trial lost after costs and
-  finished below a SPY session-hold benchmark. A post-run data defect inflates some losses without changing
+  finished below a SPY session-hold benchmark. Suspicious prints on one session (unresolved; see the data note) inflate some losses without changing
   any sign. Findings: `studies/vwap-ema9-2026-10/analysis/VWR0_EXP_FINDINGS_2026-10-16.md`; data note:
   `docs/lab/DATA_QUALITY_2026-10-16.md`.
 - **Next question:** none within VWR (no rescue variants). The unchanged rules on newly acquired sessions

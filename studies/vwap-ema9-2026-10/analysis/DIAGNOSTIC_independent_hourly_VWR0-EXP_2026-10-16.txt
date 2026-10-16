@@ -1,6 +1,9 @@
-dataset spy-1m-polygon-20240901-20260822-a4afaa70 mask integrity-mask-v1.0 | hours compared 2886 (2024-12-18 -> 2026-08-21)
-hourly closes identical to the cent: 85.0%
-hours where Massive's HIGH exceeds Yahoo's by > $0.5: 14; LOW below Yahoo's by > $0.5: 17
+dataset spy-1m-polygon-20240901-20260822-a4afaa70 mask integrity-mask-v1.0 | Massive hours in Yahoo span: 2921 (2024-12-18 -> 2026-08-21)
+uncheckable: 35 hours with no Yahoo bar; 6 Yahoo bars with < 50% of Massive volume
+  sessions: ['2024-12-24', '2025-07-03', '2025-11-28', '2025-12-24', '2026-01-30', '2026-02-02', '2026-06-08', '2026-06-09', '2026-06-23', '2026-07-10', '2026-07-13', '2026-07-14', '2026-07-28', '2026-08-03', '2026-08-07']
+checkable hours: 2880 | hourly closes identical to the cent: 89.9% | median |close diff| $0.00
+hours where Massive's BODY lies > $0.5 beyond Yahoo's range (likely missing Yahoo data): 3
+hours where Massive's HIGH exceeds Yahoo's by > $0.5: 14; LOW below Yahoo's by > $0.5: 16
   high 2025-01-06 13:30  Massive   598.70  Yahoo   597.43
   high 2025-01-07 13:30  Massive   595.23  Yahoo   592.28
   high 2025-03-03 13:30  Massive   594.22  Yahoo   590.23
@@ -30,14 +33,71 @@ hours where Massive's HIGH exceeds Yahoo's by > $0.5: 14; LOW below Yahoo's by >
   low  2025-12-19 09:30  Massive   676.47  Yahoo   677.00
   low  2026-02-06 10:30  Massive   684.33  Yahoo   684.97
   low  2026-02-26 14:30  Massive   687.07  Yahoo   688.47
-  low  2026-06-09 10:30  Massive   730.77  Yahoo   740.35
   low  2026-07-01 14:30  Massive   744.44  Yahoo   746.45
 
-stop exits whose fill lies outside Yahoo's range for that hour (full-window trades):
-  VWR0   stop exits checkable   753 | outside Yahoo range  16 | their net P&L $   -13,260 | sessions ['2025-01-06', '2025-01-14', '2025-03-03', '2025-03-07', '2025-04-23', '2026-02-26']
-  VWR1   stop exits checkable   995 | outside Yahoo range  16 | their net P&L $   -12,638 | sessions ['2025-01-06', '2025-01-14', '2025-03-03', '2025-03-07', '2025-04-23', '2026-02-26']
-  VWR2   stop exits checkable   378 | outside Yahoo range   4 | their net P&L $      -988 | sessions ['2025-01-06', '2025-03-07', '2025-04-07', '2026-02-06']
-  VWR3   stop exits checkable   939 | outside Yahoo range   7 | their net P&L $    -6,753 | sessions ['2025-04-23', '2025-06-23']
-  VWR4   stop exits checkable   449 | outside Yahoo range   1 | their net P&L $      -876 | sessions ['2025-04-23']
-  IGP0   stop exits checkable   476 | outside Yahoo range   3 | their net P&L $      -468 | sessions ['2025-03-03', '2025-04-07', '2026-02-26']
+stop exits whose fill lies outside Yahoo's range for that hour (checkable hours, full-window trades):
+  VWR0   checkable   751 | > $0.01:  16 fills, net P&L $   -13,260 | > $0.50:  15 fills, net P&L $   -13,186 | sessions (> $0.50) ['2025-01-06', '2025-03-03', '2025-03-07', '2025-04-23', '2026-02-26']
+         2025-01-06 13:58 fill 598.37 exceeds Yahoo range by $0.94
+         2025-01-14 13:51 fill 581.61 exceeds Yahoo range by $0.18
+         2025-03-03 13:50 fill 593.65 exceeds Yahoo range by $3.42
+         2025-03-07 13:54 fill 569.35 exceeds Yahoo range by $2.94
+         2025-04-23 11:32 fill 543.94 exceeds Yahoo range by $4.43
+         2025-04-23 11:37 fill 544.04 exceeds Yahoo range by $4.53
+         2025-04-23 11:40 fill 544.05 exceeds Yahoo range by $4.54
+         2025-04-23 11:46 fill 544.93 exceeds Yahoo range by $5.42
+         2025-04-23 12:04 fill 545.11 exceeds Yahoo range by $5.60
+         2025-04-23 12:19 fill 545.14 exceeds Yahoo range by $5.63
+         2025-04-23 12:51 fill 544.04 exceeds Yahoo range by $4.45
+         2025-04-23 13:50 fill 544.01 exceeds Yahoo range by $5.02
+         2025-04-23 14:33 fill 543.59 exceeds Yahoo range by $5.86
+         2025-04-23 14:35 fill 544.22 exceeds Yahoo range by $6.49
+         2025-04-23 15:01 fill 545.10 exceeds Yahoo range by $7.37
+         2026-02-26 14:48 fill 687.15 exceeds Yahoo range by $1.32
+  VWR1   checkable   991 | > $0.01:  16 fills, net P&L $   -12,638 | > $0.50:  15 fills, net P&L $   -12,562 | sessions (> $0.50) ['2025-01-06', '2025-03-03', '2025-03-07', '2025-04-23', '2026-02-26']
+         2025-01-06 13:58 fill 598.37 exceeds Yahoo range by $0.94
+         2025-01-14 13:51 fill 581.61 exceeds Yahoo range by $0.18
+         2025-03-03 13:50 fill 593.65 exceeds Yahoo range by $3.42
+         2025-03-07 13:54 fill 569.35 exceeds Yahoo range by $2.94
+         2025-04-23 11:32 fill 543.94 exceeds Yahoo range by $4.43
+         2025-04-23 11:37 fill 544.04 exceeds Yahoo range by $4.53
+         2025-04-23 11:40 fill 544.05 exceeds Yahoo range by $4.54
+         2025-04-23 11:46 fill 544.93 exceeds Yahoo range by $5.42
+         2025-04-23 12:04 fill 545.11 exceeds Yahoo range by $5.60
+         2025-04-23 12:19 fill 545.14 exceeds Yahoo range by $5.63
+         2025-04-23 12:43 fill 544.75 exceeds Yahoo range by $5.16
+         2025-04-23 13:11 fill 543.93 exceeds Yahoo range by $4.34
+         2025-04-23 14:33 fill 543.59 exceeds Yahoo range by $5.86
+         2025-04-23 14:35 fill 544.22 exceeds Yahoo range by $6.49
+         2025-04-23 15:01 fill 545.10 exceeds Yahoo range by $7.37
+         2026-02-26 14:48 fill 687.15 exceeds Yahoo range by $1.32
+  VWR2   checkable   377 | > $0.01:   4 fills, net P&L $      -988 | > $0.50:   1 fills, net P&L $      -469 | sessions (> $0.50) ['2025-03-07']
+         2025-01-06 13:58 fill 597.80 exceeds Yahoo range by $0.37
+         2025-03-07 13:54 fill 570.12 exceeds Yahoo range by $2.17
+         2025-04-07 13:59 fill 501.83 exceeds Yahoo range by $0.33
+         2026-02-06 10:52 fill 684.90 exceeds Yahoo range by $0.07
+  VWR3   checkable   937 | > $0.01:   7 fills, net P&L $    -6,753 | > $0.50:   6 fills, net P&L $    -6,636 | sessions (> $0.50) ['2025-04-23']
+         2025-04-23 11:32 fill 543.94 exceeds Yahoo range by $4.43
+         2025-04-23 11:37 fill 544.04 exceeds Yahoo range by $4.53
+         2025-04-23 11:40 fill 544.05 exceeds Yahoo range by $4.54
+         2025-04-23 11:46 fill 544.93 exceeds Yahoo range by $5.42
+         2025-04-23 12:04 fill 545.11 exceeds Yahoo range by $5.60
+         2025-04-23 12:19 fill 545.14 exceeds Yahoo range by $5.63
+         2025-06-23 11:29 fill 596.39 exceeds Yahoo range by $0.13
+  VWR4   checkable   449 | > $0.01:   1 fills, net P&L $      -876 | > $0.50:   1 fills, net P&L $      -876 | sessions (> $0.50) ['2025-04-23']
+         2025-04-23 11:32 fill 543.94 exceeds Yahoo range by $4.43
+  IGP0   checkable   476 | > $0.01:   3 fills, net P&L $      -468 | > $0.50:   1 fills, net P&L $      -139 | sessions (> $0.50) ['2025-03-03']
+         2025-03-03 13:50 fill 593.65 exceeds Yahoo range by $3.42
+         2025-04-07 13:59 fill 501.83 exceeds Yahoo range by $0.33
+         2026-02-26 14:48 fill 688.18 exceeds Yahoo range by $0.29
   BENCH  no stop exits
+
+mask calibration (raw minutes dropped by the mask vs Yahoo's hourly range):
+  2024-10-01 11:32: hour not checkable (outside Yahoo span or incomplete)
+  2024-12-20 11:10: minute H/L 590.64/581.52 | Yahoo hour 592.34/586.92 | Yahoo does NOT show it
+  2025-03-14 13:44: minute H/L 561.01/551.49 | Yahoo hour 561.95/560.23 | Yahoo does NOT show it
+  2025-04-16 14:31: minute H/L 537.89/525.57 | Yahoo hour 526.18/520.29 | Yahoo does NOT show it
+  2025-05-19 12:05: minute H/L 593.33/588.95 | Yahoo hour 594.14/588.51 | Yahoo SHOWS this extreme
+  2025-05-19 12:18: minute H/L 593.57/589.27 | Yahoo hour 594.14/588.51 | Yahoo SHOWS this extreme
+  2025-05-19 12:20: minute H/L 593.49/589.32 | Yahoo hour 594.14/588.51 | Yahoo SHOWS this extreme
+  2025-05-27 13:13: minute H/L 590.11/578.43 | Yahoo hour 590.67/578.43 | Yahoo SHOWS this extreme
+  2025-12-22 15:12: minute H/L 684.91/680.59 | Yahoo hour 685.04/684.66 | Yahoo does NOT show it

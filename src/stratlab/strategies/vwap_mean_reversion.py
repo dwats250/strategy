@@ -9,15 +9,17 @@ For a LONG decided on completed bar t (shorts mirror it):
                 (variant "extension_only": E_t <= -K on the decision bar itself)
   failed ext.   low_t > low_{t-1} and close_t > close_{t-1}
                 the bar did not extend further and closed back toward VWAP
-  shock filter  (variant only) min |E| over the 6 bars before the extended bar < 1.0
-                (same session): the displacement arrived quickly from near VWAP
+  shock filter  (variant only) min |E| over the up-to-6 in-session bars before the extended
+                bar < 1.0: the displacement arrived quickly from near VWAP
   stop          min(low_{t-1}, low_t) - 1 tick, at least 5 bps from close_t
                 (beyond the failed extreme: a new extreme refutes "failed extension")
   exit          vwap_close: a later completed bar closes at/through VWAP (fill next open)
                 half_target: a fixed target placed at entry halfway from close_t to VWAP_t
   window        entries for bars ending 10:00-15:00 ET; flat 5 min before the close
-One position at a time; no new entry on a bar with missing minutes; fills at the next
-minute's open. K is a pre-declared number, frozen in the experiment config.
+One position at a time, no cooldown: after any exit, a new entry may be taken on the next
+qualifying bar, including on the same displacement. No new entry on a bar with missing
+minutes; exits are evaluated on every later signal bar. Fills at the next minute's open.
+K is a pre-declared number, frozen in the experiment config.
 """
 
 from __future__ import annotations
@@ -48,11 +50,12 @@ def mr_features(sig: pd.DataFrame, vwap_source: str = "hlc3", atr_length: int = 
     f["close_prev"] = f["s_close"].groupby(g).shift(1)
     absE = f["E"].abs()
     # min |E| over the `shock_lookback` bars BEFORE the previous (extended) bar, same session
+    # (uses however many in-session bars exist, up to `shock_lookback`; NaN only when none do)
     f["minabsE_before_prev"] = absE.groupby(g).transform(
-        lambda s: s.shift(2).rolling(shock_lookback, min_periods=shock_lookback).min())
+        lambda s: s.shift(2).rolling(shock_lookback, min_periods=1).min())
     # ... and before the current bar (for the extension_only variant)
     f["minabsE_before_cur"] = absE.groupby(g).transform(
-        lambda s: s.shift(1).rolling(shock_lookback, min_periods=shock_lookback).min())
+        lambda s: s.shift(1).rolling(shock_lookback, min_periods=1).min())
     return f
 
 
