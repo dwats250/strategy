@@ -5,7 +5,7 @@ Checks, for every configuration x window:
   1. equity: net P&L from session-close equity == sum of trade P&L (to the cent), and the
      equity file's last value == cash + sum of trade P&L
   2. costs: each closed trade paid exactly 2 x shares x cost/share; gross - costs == net
-  3. sizing: notional at entry is 99.0-99.9% of equity before entry (1x, no leverage)
+  3. sizing: shares == floor(0.999 x equity before entry / (fill + cost/share)); never above 1x
   4. sessions: every trade enters and exits on the same ET date (nothing overnight) and
      exits no later than the calendar flatten minute
   5. windows: the calendar halves partition the full-window trades exactly, and the recent
@@ -80,8 +80,12 @@ def reconcile(run_dir: Path) -> dict:
             check(dev < 1e-6, f"{vid}/{wid}: cost per trade off by {dev}")
             check(((closed.gross_pnl - closed.costs - closed.pnl).abs() < 1e-6).all(), f"{vid}/{wid}: gross-costs != net")
             if len(t):
-                n = t.notional_pct_equity
-                check(n.between(0.99, 0.9991).all(), f"{vid}/{wid}: notional outside 99.0-99.9%: {n.min():.4f}-{n.max():.4f}")
+                # 1x sizing identity: shares == floor(0.999 x equity_before / (fill + cost/share)).
+                # (Integer shares: at ~$76k equity and SPY ~$740 one share is ~1% of equity.)
+                expect = (0.999 * t.equity_before / (t.entry_price + cps)).apply(lambda x: int(x // 1))
+                bad = (t["size"] != expect).sum()
+                check(bad == 0, f"{vid}/{wid}: {bad} trades violate the 1x sizing identity")
+                check((t.notional_pct_equity <= 0.999 + 1e-9).all(), f"{vid}/{wid}: notional above 99.9% (leverage)")
                 ed = t.entry_time.dt.tz_convert(ET).dt.date.astype(str)
                 xd = t.exit_time.dt.tz_convert(ET).dt.date.astype(str)
                 check((ed == xd).all(), f"{vid}/{wid}: {(ed != xd).sum()} trades held overnight")
