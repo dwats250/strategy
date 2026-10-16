@@ -43,3 +43,17 @@ def test_vwap_and_ema9_match_august_implementation(corpus):
     o = old["ema9"].astype(float).to_numpy()
     assert np.isnan(new_ema[:8]).all()
     np.testing.assert_allclose(new_ema[8:], o[8:], rtol=0, atol=1e-9)
+
+
+def test_atr14_matches_august_implementation(corpus):
+    spec = importlib.util.spec_from_file_location(
+        "pf2", REPO_ROOT / "studies/vwap-lab-2026-08/analysis/parity_foundation.py")
+    pf = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pf)
+    old_bars = [b for b in pf.build_5m_bars(pf.load_corpus_rth(str(corpus))) if not (b["hm"] == 1300 and b["constituent_count"] == 1)]
+    old = np.array([np.nan if x is None else x for x in pf.atr(old_bars)], dtype=float)
+    from stratlab.volatility import atr_wilder
+    df, _ = load_dataset(DS)
+    s = session_table(df.index[0], df.index[-1])
+    new = atr_wilder(resample_session_bars(assign_regular_sessions(df, s), 5, s)).to_numpy()
+    np.testing.assert_allclose(new[13:], old[13:], rtol=0, atol=1e-9)

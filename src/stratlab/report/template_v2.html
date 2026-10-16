@@ -341,7 +341,7 @@ const TRADE = [
   ["Average net R", r => r.trade?.expectancy_r, x => num(x,3)], ["Median R", r => r.trade?.median_r, x => num(x,3)],
   ["t-stat of mean R", r => r.trade?.t_stat_r, x => num(x,2)], ["Profit factor", r => r.trade?.profit_factor, x => num(x,2)],
   ["Average win", r => r.trade?.avg_win, money], ["Average loss", r => r.trade?.avg_loss, money],
-  ["Costs paid", r => r.trade?.costs, money],
+  ["Costs paid", r => r.trade?.costs, money], ["Gross P&L before costs", r => r.trade?.gross_pnl_trades, money],
   ["Average R, longs", r => r.trade?.expectancy_r_long, x => num(x,3)], ["Average R, shorts", r => r.trade?.expectancy_r_short, x => num(x,3)],
   ["Long / short trades", r => r.trade ? `${r.trade.long_trades ?? 0} / ${r.trade.short_trades ?? 0}` : null, x => x ?? "—"],
   ["Average minutes spanned", r => r.trade?.avg_minutes_spanned, x => num(x,1)],
@@ -442,9 +442,9 @@ function renderCompare(){
     $("#cmpOverlap").innerHTML = "";
     $("#cmpOverlapNote").textContent = `${sel.label} is ${roleTag(sel) === "benchmark" ? "the benchmark" : "an independent strategy"}: it is not diffed against the baseline.`;
   } else {
-    let h = "<thead><tr><th>Configuration</th><th>Same</th><th>Altered</th><th>Added</th><th>Removed</th><th>P&amp;L of added</th><th>P&amp;L of removed (baseline)</th><th>Altered: variant − baseline</th></tr></thead><tbody>";
+    let h = "<thead><tr><th>Configuration</th><th>Same</th><th>Altered</th><th>Added</th><th>Removed</th><th>P&amp;L of added</th><th>P&amp;L of removed (baseline)</th><th>Altered: variant − baseline</th><th>Avg R of added</th><th>Avg R of removed</th></tr></thead><tbody>";
     list.forEach(v => { const d = res(v, state.cmpWin)?.diff_vs_baseline; if (!d) return;
-      h += `<tr>${nameCell(v)}<td>${num(d.same,0)}</td><td>${num(d.altered,0)}</td><td>${num(d.added,0)}</td><td>${num(d.removed,0)}</td><td>${money(d.pnl_added)}</td><td>${money(d.pnl_removed_from_baseline)}</td><td>${money(d.pnl_altered_variant - d.pnl_altered_baseline)}</td></tr>`; });
+      h += `<tr>${nameCell(v)}<td>${num(d.same,0)}</td><td>${num(d.altered,0)}</td><td>${num(d.added,0)}</td><td>${num(d.removed,0)}</td><td>${money(d.pnl_added)}</td><td>${money(d.pnl_removed_from_baseline)}</td><td>${money(d.pnl_altered_variant - d.pnl_altered_baseline)}</td><td>${d.r_added == null ? "—" : num(d.r_added,3)}</td><td>${d.r_removed == null ? "—" : num(d.r_removed,3)}</td></tr>`; });
     $("#cmpOverlap").innerHTML = h + "</tbody>";
     $("#cmpOverlapNote").textContent = "Added and removed trades also reflect position occupancy: one position at a time means a changed rule can block or free later entries.";
   }
