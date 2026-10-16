@@ -1,7 +1,42 @@
 # Handoff — current state
 
-**As of 2026-10-16. Seam 1 (executable foundation) delivered and awaiting review.**
-Branch `lab/restart-2026-10` (worktree `~/Projects/strategy-lab`), based on `study/vwap-lab-2026-08@4780dbf`.
+**As of 2026-10-16. Seam 2 (first real experiment) delivered and awaiting review.** PR #20 is open and
+unmerged. Branch `lab/restart-2026-10` (worktree `~/Projects/strategy-lab`).
+
+## Seam 2 — done
+
+- Owner amendments 1–7 implemented and tested (68 tests; 67 in CI). They are recorded in
+  `studies/vwap-ema9-2026-10/manifests/VWR_FAMILY_v1.0.md`. The §j model-release amendment is committed to
+  `docs/conventions.md`.
+- Pre-freeze lane-2 review: 14 findings, 13 confirmed and fixed. Code pinned at `6d25dd1`, tree
+  `393e0ab9…`. Frozen in `1f4af3a`: `VWR0_EXPERIMENT_v1.1.toml` and `VWR0_RAW_ROBUSTNESS_v1.1.toml`. The
+  v1.0 TOMLs carry a placeholder hash and were never run (see the dated amendment).
+- Each config was run once: `VWR0-EXP__20261016T211249Z` and `VWR0-RAW__20261016T211405Z`. There are 8
+  ledger rows. Reconciliation passed 56/56, and the non-exported determinism rerun matched 99/99 files byte
+  for byte.
+- Findings: `studies/vwap-ema9-2026-10/analysis/VWR0_EXP_FINDINGS_2026-10-16.md`. All seven trials are
+  negative and below the SPY session-hold benchmark. A post-run data defect on 2025-04-23 (an unmasked
+  off-market wick cluster) inflates VWR0, VWR1 and VWR3 losses without changing any sign. A lane-2
+  fact-check confirmed 130 numeric claims; its 6 issues are fixed.
+- Annotated report: `exports/runs/VWR0-EXP__20261016T211249Z/report_rebuild_20261016T212214Z.html`. The
+  run's own `report.html` is the unannotated original.
+
+## Waiting on Dustin (seam-2 review)
+
+1. Accept the seam-2 findings, or ask for changes.
+2. Decide on a trade-blind integrity mask v2 (findings, "Decision for Dustin"). It would be a new frozen
+   data treatment plus a separately ledgered rerun. Nothing is done without your approval.
+3. Seam 3 (a structurally different strategy through the same workflow) when you are ready.
+
+## Outstanding (non-blocking)
+
+- **Fresh data:** set `MASSIVE_API_KEY` (or `POLYGON_API_KEY`). A download gets a new dataset id; the
+  August corpus stays as is.
+- **Off-device backup:** copy `~/.local/share/stratlab/` off this disk (`DATA_BACKUP_RECOVERY.md`).
+
+---
+
+# Seam 1 record (historical)
 
 ## Done
 

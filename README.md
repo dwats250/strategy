@@ -28,8 +28,9 @@ raw exports/analysis behind them.
 
 - [`vwap-ema9-2026-10`](studies/vwap-ema9-2026-10/README.md) — first study on the
   reusable lab: the lab-defined VWR (VWAP touch-and-reclaim) family and a provisional
-  interpretation of an Instagram VWAP+EMA9 reel (IG-AUSTIN-P0). **Seam 1: proposed,
-  not run.**
+  interpretation of an Instagram VWAP+EMA9 reel (IG-AUSTIN-P0). **Seam 2: frozen, run
+  once, negative.** Every trial lost after costs and trailed a SPY session-hold benchmark on data to
+  2026-08-21. See `analysis/VWR0_EXP_FINDINGS_2026-10-16.md`.
 - `vwap-lab-2026-08` — August VWAP lab (branch history): VDC continuation **no edge**,
   FPC worse, MIM/ODR **family dead**. Its corpus is reused by identity.
 
