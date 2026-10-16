@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>__TITLE__</title>
+<style>/*__DT_CSS__*/</style>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10); --good:#006300; --bad:#d03b3b;
+  --warnbg:#fff4d6; --warnink:#5c4100; --chip:#efeee9; --accent:#2a78d6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --good:#0ca30c; --bad:#e66767;
+    --warnbg:#3a2e0b; --warnink:#f5d98a; --chip:#262624; --accent:#3987e5;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --good:#0ca30c; --bad:#e66767;
+  --warnbg:#3a2e0b; --warnink:#f5d98a; --chip:#262624; --accent:#3987e5;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--page);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--page);border-bottom:1px solid var(--border)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--page)}
+header.top .bar{display:flex;gap:12px;align-items:center;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1200px;margin:0 auto}
+header.top h1{font-size:16px;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav.sec{display:flex;gap:6px;overflow-x:auto;padding-block:0 8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1200px;margin:0 auto;scrollbar-width:none}
+nav.sec a{flex:none;font-size:13px;color:var(--ink2);text-decoration:none;padding:4px 10px;border-radius:999px;background:var(--chip)}
+main{max-width:1200px;margin:0 auto;padding-block:12px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin:14px 0}
+section h2{font-size:17px;margin:0 0 4px}
+.sub{color:var(--ink2);font-size:13px;margin:0 0 12px}
+.banner{background:var(--warnbg);color:var(--warnink);border-radius:10px;padding:10px 12px;font-weight:600;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.card{border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.card h3{font-size:13px;color:var(--ink2);margin:0 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px}
+.kv b{font-weight:500;color:var(--ink2)}
+.kv span{overflow-wrap:anywhere}
+ul.tight{margin:4px 0 0;padding-left:18px} ul.tight li{margin:3px 0}
+.controls{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 10px}
+.controls label{font-size:13px;color:var(--ink2)}
+button.chip,select{font:inherit;font-size:13px;border:1px solid var(--border);background:var(--chip);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer;min-height:32px}
+button.chip[aria-pressed="true"]{background:var(--ink);color:var(--page)}
+button.vchip{display:inline-flex;gap:6px;align-items:center}
+button.vchip i{width:12px;height:3px;border-radius:2px;display:inline-block}
+button.vchip[aria-pressed="false"]{opacity:.45}
+.note{font-size:12px;color:var(--muted);margin:6px 0 0}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.m{border-collapse:collapse;font-size:13px;width:100%;font-variant-numeric:tabular-nums}
+table.m th,table.m td{padding:6px 8px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+table.m th:first-child,table.m td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+table.m thead th{color:var(--ink2);font-weight:600}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+.plot{width:100%;min-height:120px;overflow:hidden}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--ink2);margin-left:6px}
+details summary{cursor:pointer;color:var(--ink2);font-size:13px}
+pre{white-space:pre-wrap;font-size:12px;background:var(--chip);padding:10px;border-radius:8px;overflow-x:auto}
+table.dataTable{font-size:13px;font-variant-numeric:tabular-nums}
+table.dataTable tbody tr{cursor:pointer}
+div.dt-container{color:var(--ink)}
+div.dt-container .dt-input,div.dt-container .dt-search input{background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:8px}
+.vdesc{font-size:13px;border-left:3px solid var(--grid);padding:4px 10px;margin:8px 0}
+@media (max-width:600px){ section{padding:12px} .plot{min-height:280px} header.top h1{font-size:14px} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar"><h1 id="title"></h1><button class="chip" id="themeBtn" title="Toggle theme">◐</button></div>
+  <nav class="sec">
+    <a href="#overview">Overview</a><a href="#equity">Equity</a><a href="#metrics">Metrics</a>
+    <a href="#risk">Risk</a><a href="#windows">Windows</a><a href="#stability">Monthly</a><a href="#trades">Trades</a>
+    <a href="#diffs">Differences</a><a href="#downloads">Downloads</a><a href="#method">Method</a>
+  </nav>
+</header>
+<main>
+  <div id="synthBanner"></div>
+
+  <section id="overview">
+    <h2>Overview</h2>
+    <p class="sub" id="ovSub"></p>
+    <div class="grid" id="ovGrid"></div>
+    <div id="ovLists"></div>
+    <div id="variantDescs"></div>
+  </section>
+
+  <section id="equity">
+    <h2>Equity and drawdown</h2>
+    <p class="sub">Account equity at each session close. Click a variant to show or hide it.</p>
+    <div class="controls" id="winBtns"></div>
+    <div class="controls" id="varChips"></div>
+    <div id="eqPlot" class="plot" style="min-height:440px"></div>
+    <p class="note" id="eqNote"></p>
+  </section>
+
+  <section id="metrics">
+    <h2>Metrics and deltas</h2>
+    <p class="sub" id="metSub"></p>
+    <div class="tablewrap"><table class="m" id="metTable"></table></div>
+    <p class="note">Portfolio rows use session-close account equity (Sharpe/Sortino annualized with √252 over all sessions, flat days included). Trade rows use per-trade R multiples and are never annualized. Δ = variant − baseline under the same window, capital and costs. The independent strategy and the benchmark get no Δ: they are not variants of the baseline.</p>
+  </section>
+
+  <section id="risk">
+    <h2>Initial risk under notional sizing</h2>
+    <p class="sub">Every entry uses 99.9% of equity as notional, so the money at risk to the initial stop varies with the stop distance. These are exposure facts per trade, not performance. Portfolio returns (account equity) and per-trade R are separate measures.</p>
+    <div id="riskPlot" class="plot"></div>
+    <div class="tablewrap"><table class="m" id="riskTable"></table></div>
+    <p class="note">Initial risk = shares × |fill − initial stop|, as a share of account equity just before the entry minute. Actual reward/risk = side × (target − fill) / |fill − stop|. VWR3's target is placed from the signal close, so its actual multiple differs from the nominal 2R.</p>
+  </section>
+
+  <section id="windows">
+    <h2>Full history, subperiods and the recent window</h2>
+    <p class="sub">Each row is a separate backtest started with fresh capital on the window's first session; indicators are warmed on prior history. Same settings and costs in every window.</p>
+    <div class="controls"><label for="winMetric">Metric</label><select id="winMetric"></select></div>
+    <div class="tablewrap"><table class="m" id="winTable"></table></div>
+    <p class="note" id="winNote"></p>
+  </section>
+
+  <section id="stability">
+    <h2>Monthly returns and stability</h2>
+    <div class="controls"><label for="monVar">Variant</label><select id="monVar"></select></div>
+    <div id="monPlot" class="plot"></div>
+    <div id="rollPlot" class="plot" style="min-height:280px"></div>
+    <p class="note">Monthly returns and rolling 63-session Sharpe come from the full-history run (running equity, no reset).</p>
+  </section>
+
+  <section id="trades">
+    <h2>Trades and price inspection</h2>
+    <p class="sub">Full-history trades. Search, sort and filter change the VIEW only; no statistic is recalculated. Tap a trade to draw its session. "Min" counts the 1-minute bars a trade spans, entry and exit minutes included.</p>
+    <div class="controls"><label for="trVar">Variant</label><select id="trVar"></select>
+      <label for="trFrom">From</label><input type="date" id="trFrom" class="chip">
+      <label for="trTo">To</label><input type="date" id="trTo" class="chip"></div>
+    <div class="tablewrap"><table id="trTable" class="display compact" style="width:100%"></table></div>
+    <div class="controls" style="margin-top:12px"><label for="daySel">Session</label><select id="daySel"></select>
+      <label><input type="checkbox" id="dayBase"> overlay baseline trades</label></div>
+    <div id="dayPlot" class="plot" style="min-height:460px"></div>
+    <p class="note" id="dayNote"></p>
+  </section>
+
+  <section id="diffs">
+    <h2>What each variant changes</h2>
+    <p class="sub">Trades matched to the baseline by signal bar and side (full-history window). Independent strategies are not diffed against the baseline.</p>
+    <div class="tablewrap"><table class="m" id="diffTable"></table></div>
+    <h2 style="margin-top:16px">Fragility: dependence on large winners</h2>
+    <p class="sub">A diagnostic, not a validity rule. It shows how much each result leans on its biggest trades.</p>
+    <div class="tablewrap"><table class="m" id="concTable"></table></div>
+    <div id="lorenzPlot" class="plot"></div>
+    <p class="note">Curve: cumulative net P&amp;L with trades sorted from best to worst. A result that only exists because of a few trades rises steeply then falls for most of the curve.</p>
+  </section>
+
+  <section id="downloads">
+    <h2>Downloads</h2>
+    <div class="controls" id="dlBtns"></div>
+    <p class="note">Generated from the data embedded in this page: full-history trades for every variant, all metrics, the run record and the config. Per-window trade files are in the run directory. Downloads work when this HTML file is opened directly; some embedded viewers block them.</p>
+  </section>
+
+  <section id="method">
+    <h2>Method, identity and assumptions</h2>
+    <div id="methodBody"></div>
+  </section>
+</main>
+
+<script>/*__PLOTLY__*/</script>
+<script type="module">/*__DT_JS__*/</script>
+<script id="payload" type="application/octet-stream">/*__DATA__*/</script>
+<script>
+(async () => {
+// The run data is embedded gzip+base64 to keep the file small; it is inflated locally (no network).
+async function inflate(b64){
+  const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+  return JSON.parse(await new Response(stream).text());
+}
+const DATA = await inflate(document.getElementById("payload").textContent.trim());
+const R = DATA.record, V = DATA.variants, W = R.windows;
+const BASE = R.baseline;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const state = { win: W[0].id, on: new Set(V.map(v => v.id)), mon: V[0].id, tr: V[0].id, metric: "total_return" };
+
+function isDark(){ const t = document.documentElement.dataset.theme; if (t) return t === "dark"; return matchMedia("(prefers-color-scheme: dark)").matches; }
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function col(v){ return isDark() ? v.color_dark : v.color_light; }
+const pct = (x, d=2) => x == null ? "—" : (x*100).toFixed(d) + "%";
+const num = (x, d=2) => x == null ? "—" : Number(x).toLocaleString(undefined,{minimumFractionDigits:d, maximumFractionDigits:d});
+const money = x => x == null ? "—" : (x<0?"−$":"$") + Math.abs(x).toLocaleString(undefined,{maximumFractionDigits:0});
+function layoutBase(extra){
+  return Object.assign({ paper_bgcolor: css("--surface"), plot_bgcolor: css("--surface"),
+    font: {family: "system-ui,-apple-system,Segoe UI,sans-serif", size: 12, color: css("--ink2")},
+    margin: {l: 56, r: 12, t: 10, b: 36}, hovermode: "x unified",
+    legend: {orientation: "h", y: -0.18}, showlegend: true }, extra || {});
+}
+function axis(extra){ return Object.assign({gridcolor: css("--grid"), linecolor: css("--axis"), zerolinecolor: css("--axis"), tickfont:{color: css("--muted")}}, extra||{}); }
+const PCFG = {responsive: true, displaylogo: false, displayModeBar: "hover", modeBarButtonsToRemove: ["select2d","lasso2d","autoScale2d"]};
+const narrow = () => window.innerWidth < 600;
+function draw(id, traces, layout){
+  const el = document.getElementById(id);
+  layout.width = Math.max(260, el.clientWidth || el.parentElement.clientWidth);
+  layout.autosize = false;
+  return Plotly.react(el, traces, layout, PCFG);
+}
+let _rt; window.addEventListener("resize", () => { clearTimeout(_rt); _rt = setTimeout(() => { renderEquity(); renderMonthly(); renderDay(); renderDiffs(); renderRisk(); }, 200); });
+
+/* ---------------- metric catalogue ---------------- */
+const MET = [
+  ["Portfolio (session-close equity)", null],
+  ["Net P&L", r => r.equity?.net_pnl, money, true],
+  ["Total return", r => r.equity?.total_return, pct, true],
+  ["CAGR", r => r.equity?.cagr, pct, true],
+  ["Sharpe (daily, ann.)", r => r.equity?.sharpe_daily_ann, x => num(x,2), true],
+  ["Sortino (daily, ann.)", r => r.equity?.sortino_daily_ann, x => num(x,2), true],
+  ["Ann. volatility", r => r.equity?.ann_vol, pct, false],
+  ["Max DD (session close)", r => r.equity?.max_dd_session_close, pct, true],
+  ["Max DD (intraday, 1m)", r => r.equity?.max_dd_intraday, pct, true],
+  ["Calmar", r => r.equity?.calmar, x => num(x,2), true],
+  ["Exposure (time in market)", r => r.equity?.exposure_minutes_frac, pct, null],
+  ["Sessions", r => r.equity?.sessions, x => num(x,0), null],
+  ["Trades (per-trade, not annualized)", null],
+  ["Trades", r => r.trade?.trades, x => num(x,0), null],
+  ["Win rate", r => r.trade?.win_rate, pct, true],
+  ["Expectancy (R, net)", r => r.trade?.expectancy_r, x => num(x,3), true],
+  ["Median R", r => r.trade?.median_r, x => num(x,3), true],
+  ["t-stat of mean R", r => r.trade?.t_stat_r, x => num(x,2), true],
+  ["Profit factor", r => r.trade?.profit_factor, x => num(x,2), true],
+  ["Avg win", r => r.trade?.avg_win, money, true],
+  ["Avg loss", r => r.trade?.avg_loss, money, true],
+  ["Costs paid", r => r.trade?.costs, money, false],
+  ["Long / short trades", r => r.trade ? `${r.trade.long_trades ?? 0} / ${r.trade.short_trades ?? 0}` : null, x => x ?? "—", null],
+  ["Expectancy R long", r => r.trade?.expectancy_r_long, x => num(x,3), true],
+  ["Expectancy R short", r => r.trade?.expectancy_r_short, x => num(x,3), true],
+  ["Avg minutes spanned", r => r.trade?.avg_minutes_spanned, x => num(x,1), null],
+  ["Trades with undefined R", r => r.trade?.r_undefined, x => num(x,0), null],
+  ["Top-5 share of gross profit", r => r.trade?.top5_share_of_gross_profit, pct, false],
+  ["Net P&L excl. top 5", r => r.trade?.net_pnl_ex_top5, money, true],
+  ["Stop/target same-minute exits", r => r.trade?.ambiguous_stop_target_minutes, x => num(x,0), null],
+  ["Initial risk, % equity (median)", r => r.trade?.risk_pct_equity_median, x => pct(x,3), null],
+  ["Initial risk, % equity (p90)", r => r.trade?.risk_pct_equity_p90, x => pct(x,3), null],
+  ["Actual reward/risk at fill (median)", r => r.trade?.reward_risk_median, x => num(x,2), null],
+  ["Open at end", r => r.trade?.open_at_end, x => num(x,0), null],
+];
+
+/* ---------------- overview ---------------- */
+function renderOverview(){
+  $("#title").textContent = (R.synthetic ? "SYNTHETIC · " : "") + (R.experiment.title || R.experiment.id);
+  if (R.synthetic) $("#synthBanner").innerHTML = `<div class="banner">${esc(R.synthetic)}. Prices are generated, not market data. Nothing on this page is evidence about any strategy.</div>`;
+  const cov = R.coverage, ds = R.dataset || {}, ex = R.execution;
+  const last = cov.last_session, gen = R.run_utc.slice(0,4)+"-"+R.run_utc.slice(4,6)+"-"+R.run_utc.slice(6,8);
+  const stale = Math.round((new Date(gen) - new Date(last)) / 86400000);
+  $("#ovSub").textContent = R.experiment.description || "";
+  if (stale > 7) $("#synthBanner").insertAdjacentHTML("beforeend", `<div class="banner">Data ends ${esc(last)}, ${stale} days before this run (${esc(gen)}). Every result here describes history up to ${esc(last)}. Nothing on this page is current to the run date.</div>`);
+  const card = (h, rows) => `<div class="card"><h3>${h}</h3><div class="kv">${rows.map(([k,v]) => `<b>${k}</b><span>${v}</span>`).join("")}</div></div>`;
+  $("#ovGrid").innerHTML = [
+    card("What ran", [["Experiment", esc(R.experiment.id)], ["Run", esc(R.run_id)], ["Configurations", V.length + " (baseline " + esc(BASE) + ")"],
+      ["Trials planned", R.trials.planned], ["Chance-max Sharpe", num(R.trials.dsr_threshold_implied.sr_annualized,2) + " ann. at N=" + R.trials.planned + " (illustrative; see Method)"]]),
+    card("Data", [["Dataset", esc(ds.dataset_id || "—")], ["SHA-256", esc((ds.sha256||"").slice(0,16)) + "…"],
+      ["Sessions", `${cov.first_session} → ${cov.last_session} (${cov.sessions})`], ["Warm-up", cov.warmup_sessions + " sessions, never scored"],
+      ["Freshness", `last session ${last}; ${stale} days before this run`], ["Mask", ds.mask ? esc(ds.mask.id) + ` (${ds.mask.bars_dropped} bars)` : "none"],
+      ["Coverage", `${cov.early_close_sessions} early closes; ${cov.sessions_with_missing_minutes} sessions with missing minutes (${cov.missing_minutes_total} min)`]]),
+    card("Execution and costs", [["Capital", money(ex.cash)], ["Sizing", "99.9% of equity notional per trade, 1 position"],
+      ["Costs/share/side", "$" + num(ex.cost_per_share_per_side,4) + ` (commission ${ex.commission_per_share}, slippage ${ex.slippage_per_share})`],
+      ["Fills", "next 1-minute open after a completed signal bar"], ["Session", `flat ${ex.flatten_minutes} min before the calendar close`]]),
+    card("Windows", W.map(w => [esc(w.label), `${w.start} → ${w.end} (${w.sessions})${w.partial ? " · partial" : ""}${w.kind==="recent" ? " · exploratory" : ""}`])),
+  ].join("");
+  const lim = (DATA.limitations||[]).map(x => `<li>${esc(x)}</li>`).join("");
+  const fin = (DATA.findings||[]).map(x => `<li>${esc(x)}</li>`).join("");
+  $("#ovLists").innerHTML = `<div class="grid" style="margin-top:10px"><div class="card"><h3>Findings</h3>${fin ? `<ul class="tight">${fin}</ul>` : `<p class="note">No interpretation recorded for this run.</p>`}</div><div class="card"><h3>Limitations</h3><ul class="tight">${lim}</ul></div></div>`;
+  $("#variantDescs").innerHTML = "<h3 style='font-size:14px;margin:14px 0 4px'>Variants</h3>" + V.map(v => `<div class="vdesc" style="border-left-color:${col(v)}"><b>${esc(v.label)}</b><span class="tag">${esc(v.role)}</span><span class="tag">${esc(v.strategy.split(":").pop())}</span><br>
+    ${v.difference ? `<b>Rule difference:</b> ${esc(v.difference)}<br>` : ""}${v.hypothesis ? `<b>Hypothesis:</b> ${esc(v.hypothesis)}<br>` : ""}
+    ${v.mechanism ? `<b>Mechanism:</b> ${esc(v.mechanism)}<br>` : ""}${v.primary_metric ? `<b>Primary metric:</b> ${esc(v.primary_metric)}<br>` : ""}
+    ${v.uninformative_if ? `<b>Uninformative if:</b> ${esc(v.uninformative_if)}` : ""}</div>`).join("");
+}
+
+/* ---------------- equity ---------------- */
+function renderControls(){
+  $("#winBtns").innerHTML = "<label>Window</label>" + W.map(w => `<button class="chip" data-w="${w.id}" aria-pressed="${w.id===state.win}">${esc(w.label)}</button>`).join("");
+  $("#winBtns").querySelectorAll("button").forEach(b => b.onclick = () => { state.win = b.dataset.w; renderControls(); renderEquity(); renderMetrics(); });
+  $("#varChips").innerHTML = V.map(v => `<button class="chip vchip" data-v="${v.id}" aria-pressed="${state.on.has(v.id)}"><i style="background:${col(v)}"></i>${esc(v.label)}</button>`).join("");
+  $("#varChips").querySelectorAll("button").forEach(b => b.onclick = () => { const id=b.dataset.v; state.on.has(id) ? state.on.delete(id) : state.on.add(id); renderControls(); renderEquity(); });
+}
+function renderEquity(){
+  const w = W.find(x => x.id === state.win);
+  const traces = [];
+  V.forEach(v => {
+    const s = v.series[state.win]; if (!s) return;
+    const vis = state.on.has(v.id);
+    let peak = R.execution.cash; const dd = s.eq.map(e => { peak = Math.max(peak, e); return e/peak - 1; });  // same definition as Max DD (session close)
+    const dash = v.role === "benchmark" ? "dash" : "solid";
+    traces.push({x: s.d, y: s.eq, name: v.label, type: "scatter", mode: "lines", line: {color: col(v), width: 2, dash}, visible: vis, legendgroup: v.id, hovertemplate: "%{y:$,.0f}"});
+    traces.push({x: s.d, y: dd, name: v.label + " DD", type: "scatter", mode: "lines", line: {color: col(v), width: 1.5, dash}, xaxis: "x", yaxis: "y2", visible: vis, legendgroup: v.id, showlegend: false, hovertemplate: "%{y:.2%}"});
+  });
+  draw("eqPlot", traces, layoutBase({
+    grid: {rows: 2, columns: 1, roworder: "top to bottom"},
+    yaxis: axis({domain: [0.38, 1], tickprefix: "$", title: {text: "Equity", font: {size: 12}}}),
+    yaxis2: axis({domain: [0, 0.3], tickformat: ".0%", title: {text: "Drawdown", font: {size: 12}}}),
+    xaxis: axis({anchor: "y2", type: "date"}), showlegend: false, height: 440,
+  }));
+  $("#eqNote").textContent = `${w.label}: ${w.start} → ${w.end}, ${w.sessions} sessions. ` + (w.kind === "full"
+    ? "Running equity through the full history."
+    : "Separate backtest with fresh capital (" + money(R.execution.cash) + ") on the first session; statistics recalculated in Python for this window. Zoom/pan only changes the view.")
+    + (w.kind === "recent" ? " EXPLORATORY: overlaps the full sample and is not a holdout." : "");
+}
+
+/* ---------------- metrics ---------------- */
+function renderMetrics(){
+  const w = W.find(x => x.id === state.win);
+  $("#metSub").textContent = `${w.label}: ${w.start} → ${w.end} (${w.sessions} sessions). Same capital and costs for every variant.`;
+  const base = V.find(v => v.id === BASE);
+  const hasDelta = v => v.id !== BASE && v.role !== "benchmark" && v.role !== "independent";
+  let h = "<thead><tr><th>Metric</th>" + V.map(v => `<th>${esc(v.label)}</th>` + (hasDelta(v) ? `<th>Δ</th>` : "")).join("") + "</tr></thead><tbody>";
+  MET.forEach(([name, get, fmt, higherBetter]) => {
+    if (!get){ h += `<tr><td colspan="${2*V.length}" style="text-align:left;color:var(--ink2);font-weight:600;padding-top:12px">${name}</td></tr>`; return; }
+    const b = base.results[state.win] ? get(base.results[state.win]) : null;
+    h += `<tr><td>${name}</td>` + V.map(v => {
+      const r = v.results[state.win]; const x = r && r.status === "ok" ? get(r) : null;
+      let cell = `<td>${r && r.status !== "ok" ? "error" : fmt(x)}</td>`;
+      if (hasDelta(v)){
+        let d = (typeof x === "number" && typeof b === "number") ? x - b : null;
+        const zero = d == null || fmt(Math.abs(d)) === fmt(0);
+        const cls = zero || higherBetter == null ? "" : ((d > 0) === higherBetter ? "pos" : "neg");
+        cell += `<td class="${cls}">${d == null ? "" : zero ? "0" : (d > 0 ? "+" : "") + fmt(d)}</td>`;
+      }
+      return cell;
+    }).join("") + "</tr>";
+  });
+  $("#metTable").innerHTML = h + "</tbody>";
+}
+
+/* ---------------- windows ---------------- */
+function renderWindows(){
+  const sel = $("#winMetric");
+  if (!sel.options.length){
+    MET.forEach((m,i) => { if (!m[1]) return; const o = document.createElement("option"); o.value = i; o.textContent = m[0]; sel.appendChild(o); });
+    sel.value = MET.findIndex(m => m[0] === "Total return"); sel.onchange = renderWindows;
+  }
+  const [name, get, fmt] = MET[+sel.value];
+  let h = "<thead><tr><th>Window</th><th>Dates</th><th>Sessions</th>" + V.map(v => `<th>${esc(v.label)}</th>`).join("") + "</tr></thead><tbody>";
+  W.forEach(w => {
+    h += `<tr><td>${esc(w.label)}${w.kind==="recent" ? '<span class="tag">exploratory</span>' : ""}${w.partial ? '<span class="tag">partial</span>' : ""}</td><td>${w.start} → ${w.end}</td><td>${w.sessions}</td>`
+      + V.map(v => { const r = v.results[w.id]; return `<td>${r && r.status==="ok" ? fmt(get(r)) : (r ? "error" : "—")}</td>`; }).join("") + "</tr>";
+  });
+  $("#winTable").innerHTML = h + "</tbody>";
+  const rec = W.find(w => w.kind === "recent");
+  $("#winNote").textContent = rec ? `${rec.label} (${rec.start} → ${rec.end}) ends on the last complete session in the data (${R.coverage.last_session}). It overlaps the full-history row and the calendar halves; treat it as a description of recent behaviour, not as out-of-sample evidence.` : "";
+}
+
+/* ---------------- monthly & rolling ---------------- */
+function renderMonthly(){
+  const sel = $("#monVar");
+  if (!sel.options.length){ V.forEach(v => { const o = document.createElement("option"); o.value = v.id; o.textContent = v.label; sel.appendChild(o); }); sel.onchange = () => { state.mon = sel.value; renderMonthly(); }; }
+  const v = V.find(x => x.id === state.mon);
+  const keys = Object.keys(v.monthly);
+  const years = [...new Set(keys.map(k => k.slice(0,4)))];
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const z = years.map(y => months.map((_,i) => { const k = `${y}-${String(i+1).padStart(2,"0")}`; return k in v.monthly ? v.monthly[k] : null; }));
+  const m = Math.max(0.001, ...keys.map(k => Math.abs(v.monthly[k] || 0)));
+  const dark = isDark();
+  const scale = [[0, dark ? "#e66767" : "#d03b3b"], [0.5, dark ? "#383835" : "#f0efec"], [1, dark ? "#3987e5" : "#2a78d6"]];
+  const nm = narrow();
+  draw("monPlot", [{type: "heatmap", x: nm ? months.map(x => x[0]) : months, y: years, z, zmin: -m, zmax: m, colorscale: scale, xgap: 2, ygap: 2,
+    text: z.map(r => r.map(x => x == null ? "" : (x*100).toFixed(1) + "%")), texttemplate: nm ? "" : "%{text}", hovertemplate: "%{y} %{x}: %{text}<extra></extra>",
+    showscale: !nm, colorbar: {tickformat: ".1%", thickness: 10}}], layoutBase({height: 70 + 46*years.length, showlegend: false, yaxis: axis({autorange: "reversed", type: "category"}), xaxis: axis({side: "top", fixedrange: true}), margin: {l: 44, r: 12, t: 30, b: 10}}));
+  draw("rollPlot", [{x: v.rolling.d, y: v.rolling.v, type: "scatter", mode: "lines", line: {color: col(v), width: 2}, name: v.label, hovertemplate: "%{y:.2f}"}],
+    layoutBase({height: 280, showlegend: false, yaxis: axis({title: {text: "Rolling 63-session Sharpe", font: {size: 12}}, zeroline: true}), xaxis: axis({type: "date"})}));
+}
+
+/* ---------------- trades ---------------- */
+let dt = null;
+function tradeRows(){
+  const v = V.find(x => x.id === state.tr);
+  const f = $("#trFrom").value, t = $("#trTo").value;
+  return v.trades.filter(r => (!f || r.session >= f) && (!t || r.session <= t));
+}
+function renderTrades(){
+  if (!window.__DT) return;
+  const cols = [
+    {data: "session", title: "Session"}, {data: "side", title: "Side"}, {data: "entry", title: "Entry (ET)", render: d => d ? d.slice(11) : ""},
+    {data: "exit", title: "Exit (ET)", render: d => d ? d.slice(11) : "open"}, {data: "entry_px", title: "Entry"}, {data: "exit_px", title: "Exit"},
+    {data: "stop", title: "Stop"}, {data: "size", title: "Shares"}, {data: "pnl", title: "P&L $", render: d => `<span class="${d>0?"pos":d<0?"neg":""}">${num(d,2)}</span>`},
+    {data: "r", title: "R", render: d => d == null ? "—" : num(d,2)}, {data: "reason", title: "Exit reason", render: (d, _, row) => esc(d) + (row.amb ? " ⚠" : "")}, {data: "mins", title: "Min"},
+  ];
+  if (dt){ dt.clear(); dt.rows.add(tradeRows()); dt.draw(); return; }
+  const DataTable = window.__DT.default;
+  dt = new DataTable("#trTable", {data: tradeRows(), columns: cols, pageLength: 25, order: [[0, "desc"], [2, "desc"]], scrollX: true, deferRender: true,
+    language: {search: "Search:"}});
+  dt.on("click", "tbody tr", function(){ const d = dt.row(this).data(); if (d){ $("#daySel").value = d.session; renderDay(d.id); $("#dayPlot").scrollIntoView({behavior: "smooth", block: "center"}); } });
+}
+function renderTradeControls(){
+  const sel = $("#trVar");
+  if (!sel.options.length){ V.forEach(v => { const o = document.createElement("option"); o.value = v.id; o.textContent = v.label; sel.appendChild(o); });
+    sel.onchange = () => { state.tr = sel.value; fillDays(); renderTrades(); renderDay(); };
+    $("#trFrom").onchange = $("#trTo").onchange = () => renderTrades(); $("#dayBase").onchange = () => renderDay(); }
+  fillDays();
+}
+function fillDays(){
+  const key = DATA.bar_map[state.tr]; const fs = DATA.bars[key];
+  const sel = $("#daySel"); sel.innerHTML = "";
+  if (!fs){ $("#dayNote").textContent = "No bar data embedded for this variant."; return; }
+  const v = V.find(x => x.id === state.tr); const withTr = new Set(v.trades.map(t => t.session));
+  Object.keys(fs.days).sort().reverse().forEach(d => { const o = document.createElement("option"); o.value = d; o.textContent = d + (withTr.has(d) ? "  •" : ""); sel.appendChild(o); });
+  const first = v.trades.length ? v.trades[v.trades.length-1].session : sel.options[0]?.value; if (first) sel.value = first;
+  sel.onchange = () => renderDay();
+}
+function renderDay(highlightId){
+  const key = DATA.bar_map[state.tr]; const fs = DATA.bars[key]; if (!fs) return;
+  const day = $("#daySel").value; const b = fs.days[day]; if (!b) return;
+  const v = V.find(x => x.id === state.tr);
+  const x = b.t.map(t => `${day} ${t}`);
+  const tr = [
+    {type: "candlestick", x, open: b.o, high: b.h, low: b.l, close: b.c, name: `${fs.minutes}m bars`, increasing: {line: {color: css("--ink2"), width: 1}, fillcolor: css("--surface")}, decreasing: {line: {color: css("--ink2"), width: 1}, fillcolor: css("--ink2")}, showlegend: false},
+    {type: "scatter", mode: "lines", x, y: b.vwap, name: `VWAP (${fs.vwap_source})`, line: {color: isDark() ? "#c98500" : "#eda100", width: 2}},
+    {type: "scatter", mode: "lines", x, y: b.ema, name: `EMA${fs.ema_length}`, line: {color: isDark() ? "#9085e9" : "#6250d6", width: 2}},
+  ];
+  const addMarks = (vv, ghost) => {
+    const ts = vv.trades.filter(t => t.session === day);
+    const markerColor = ghost ? css("--muted") : col(vv);
+    tr.push({type: "scatter", mode: "markers", x: ts.map(t => t.entry), y: ts.map(t => t.entry_px), name: (ghost ? "baseline " : "") + "entry",
+      marker: {symbol: ts.map(t => t.side === "long" ? "triangle-up" : "triangle-down"), size: ts.map(t => t.id === highlightId && !ghost ? 15 : 11), color: markerColor, line: {width: 2, color: css("--surface")}},
+      text: ts.map(t => `${t.side} #${t.id}<br>stop ${t.stop}`), hovertemplate: "%{text}<br>%{y}<extra>entry</extra>"});
+    tr.push({type: "scatter", mode: "markers", x: ts.map(t => t.exit), y: ts.map(t => t.exit_px), name: (ghost ? "baseline " : "") + "exit",
+      marker: {symbol: "x", size: 10, color: markerColor, line: {width: 1, color: markerColor}},
+      text: ts.map(t => `${t.reason}<br>P&L ${num(t.pnl,2)} · R ${t.r == null ? "—" : num(t.r,2)}`), hovertemplate: "%{text}<extra>exit</extra>"});
+  };
+  if ($("#dayBase").checked && state.tr !== BASE) addMarks(V.find(x => x.id === BASE), true);
+  addMarks(v, false);
+  draw("dayPlot", tr, layoutBase({height: 460, margin: {l: 12, r: 58, t: 10, b: 36}, xaxis: axis({type: "date", rangeslider: {visible: false}}), yaxis: axis({side: "right"}), hovermode: "closest", legend: {orientation: "h", y: -0.12}}));
+  $("#dayNote").textContent = `${day}: ${fs.minutes}-minute signal bars (ET). Entries and exits are at 1-minute fills, so markers can sit inside a bar's span. Times are bar starts.`;
+}
+
+/* ---------------- differences ---------------- */
+function renderDiffs(){
+  let h = "<thead><tr><th>Variant vs baseline</th><th>Same</th><th>Altered</th><th>Added</th><th>Removed</th><th>P&L added</th><th>P&L removed</th><th>Altered: variant − baseline</th></tr></thead><tbody>";
+  V.filter(v => v.id !== BASE && v.role !== "independent").forEach(v => {
+    const d = v.results[W[0].id]?.diff_vs_baseline; if (!d) return;
+    h += `<tr><td>${esc(v.label)}</td><td>${d.same}</td><td>${d.altered}</td><td>${d.added}</td><td>${d.removed}</td><td>${money(d.pnl_added)}</td><td>${money(d.pnl_removed_from_baseline)}</td><td>${money(d.pnl_altered_variant - d.pnl_altered_baseline)}</td></tr>`;
+  });
+  $("#diffTable").innerHTML = h + "</tbody>";
+  let c = "<thead><tr><th>Variant</th><th>Net P&L</th><th>Top-1 share</th><th>Top-5 share</th><th>Top-10 share</th><th>Excl. top 1</th><th>Excl. top 5</th><th>Excl. top 10</th></tr></thead><tbody>";
+  const traces = [];
+  V.filter(v => v.role !== "benchmark").forEach(v => {
+    const t = v.results[W[0].id]?.trade; if (!t) return;
+    c += `<tr><td>${esc(v.label)}</td><td>${money(t.net_pnl_trades)}</td><td>${pct(t.top1_share_of_gross_profit,1)}</td><td>${pct(t.top5_share_of_gross_profit,1)}</td><td>${pct(t.top10_share_of_gross_profit,1)}</td><td>${money(t.net_pnl_ex_top1)}</td><td>${money(t.net_pnl_ex_top5)}</td><td>${money(t.net_pnl_ex_top10)}</td></tr>`;
+    const p = v.trades.filter(x => x.exit).map(x => x.pnl).sort((a,b) => b-a); let s = 0;
+    traces.push({x: p.map((_,i) => (i+1)/p.length), y: p.map(z => (s += z)), type: "scatter", mode: "lines", name: v.label, line: {color: col(v), width: 2}, hovertemplate: "%{y:$,.0f}"});
+  });
+  $("#concTable").innerHTML = c + "</tbody>";
+  draw("lorenzPlot", traces, layoutBase({height: 320, xaxis: axis({tickformat: ".0%", title: {text: "Share of trades, best first", font: {size: 12}}}), yaxis: axis({tickprefix: "$"}), hovermode: "closest"}));
+}
+
+/* ---------------- downloads ---------------- */
+function download(name, text, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+function toCSV(rows){ if (!rows.length) return ""; const k = Object.keys(rows[0]); return [k.join(","), ...rows.map(r => k.map(x => { const s = r[x] == null ? "" : String(r[x]); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }).join(","))].join("\n"); }
+function renderDownloads(){
+  const btns = [["Full-history trades (CSV)", () => download(R.run_id + "_trades.csv", toCSV(V.flatMap(v => v.trades.map(t => Object.assign({variant: v.id}, t)))), "text/csv")],
+    ["Metrics (JSON)", () => download(R.run_id + "_metrics.json", JSON.stringify(Object.fromEntries(V.map(v => [v.id, v.results])), null, 2), "application/json")],
+    ["Run record (JSON)", () => download(R.run_id + "_run_record.json", JSON.stringify(R, null, 2), "application/json")],
+    ["Experiment config (TOML)", () => download(R.experiment.id + ".toml", DATA.config_toml, "text/plain")]];
+  $("#dlBtns").innerHTML = ""; btns.forEach(([l, f]) => { const b = document.createElement("button"); b.className = "chip"; b.textContent = l; b.onclick = f; $("#dlBtns").appendChild(b); });
+}
+
+/* ---------------- method ---------------- */
+function renderMethod(){
+  const c = R.code, p = R.packages;
+  $("#methodBody").innerHTML = `<ul class="tight">
+    <li><b>Engine:</b> Backtesting.py ${esc(p.backtesting)} on 1-minute regular-session bars. Signals use completed ${[...new Set(V.map(v => v.results[W[0].id]?.minutes).filter(Boolean))].join("/")}-minute bars anchored at the session open; orders fill at the next 1-minute open. No new entry is taken on a signal bar with missing minutes.</li>
+    <li><b>Bar-resolution ambiguity:</b> if a stop and a target are both inside one minute's range, the stop is assumed to fill first, even when the minute opens beyond the target (pessimistic). Such exits are counted ("Stop/target same-minute exits"). An entry minute that opens beyond its stop exits at that open with no defined R ("Trades with undefined R").</li>
+    <li><b>Stops:</b> evaluated from the entry minute onward; a minute that opens beyond the stop fills at that (worse) open.</li>
+    <li><b>Costs:</b> a per-share amount per side, charged as cash; fill prices are not adjusted.</li>
+    <li><b>Sessions:</b> XNYS calendar (exchange_calendars ${esc(p.exchange_calendars)}): early closes, holidays and DST come from the calendar. The 13:00 closing-auction print on half days is outside the session.</li>
+    <li><b>Metrics:</b> portfolio statistics use session-close equity; trade statistics use R multiples from the initial stop and are not annualized. Backtesting.py's own Sharpe (a geometric-return formula) is stored in metrics.json but not shown.</li>
+    <li><b>Multiple testing (illustrative):</b> ${R.trials.planned} configurations were planned. If they were independent zero-skill trials, the expected best annualized Sharpe over ${R.trials.dsr_threshold_implied.n_obs} sessions would be about ${num(R.trials.dsr_threshold_implied.sr_annualized,2)}. This null approximation is not a significance threshold and not a complete deflated Sharpe ratio. The variants are strongly correlated (shared rules and trades), and this corpus was already explored in August, so the true selection effect is not captured by this number.</li>
+    <li><b>Benchmark:</b> a dashed line, where present. It is long SPY from the 09:31 open to the 15:55 open each session, with the same capital and costs. It is not buy-and-hold and has no R multiple.</li>
+  </ul>
+  <details><summary>Identity</summary><pre>${esc(JSON.stringify({run_id: R.run_id, config_sha256: R.config_sha256, code: c, packages: p, dataset: R.dataset}, null, 2))}</pre></details>
+  <details><summary>Experiment config</summary><pre>${esc(DATA.config_toml)}</pre></details>`;
+}
+
+function renderRisk(){
+  const vs = V.filter(v => v.role !== "benchmark");
+  const traces = vs.map(v => ({type: "box", name: v.label, y: v.trades.filter(t => t.riskp != null).map(t => t.riskp), marker: {color: col(v), size: 3}, line: {color: col(v), width: 1.5}, boxpoints: false, hovertemplate: "%{y:.3%}<extra>" + esc(v.label) + "</extra>"}));
+  draw("riskPlot", traces, layoutBase({height: 320, showlegend: false, yaxis: axis({tickformat: ".2%", title: {text: "Initial risk, % of equity", font: {size: 12}}, rangemode: "tozero"}), xaxis: axis({tickfont: {size: 10, color: css("--muted")}}), hovermode: "closest"}));
+  const cols = [["p10", "risk_pct_equity_p10", x => pct(x,3)], ["Median", "risk_pct_equity_median", x => pct(x,3)], ["p90", "risk_pct_equity_p90", x => pct(x,3)], ["Max", "risk_pct_equity_max", x => pct(x,3)],
+    ["Median $", "risk_usd_median", money], ["Notional (median)", "notional_pct_equity_median", x => pct(x,1)], ["Reward/risk p10", "reward_risk_p10", x => num(x,2)], ["Reward/risk median", "reward_risk_median", x => num(x,2)], ["Reward/risk p90", "reward_risk_p90", x => num(x,2)]];
+  let h = "<thead><tr><th>Configuration</th>" + cols.map(c => `<th>${c[0]}</th>`).join("") + "</tr></thead><tbody>";
+  vs.forEach(v => { const t = v.results[W[0].id]?.trade || {}; h += `<tr><td>${esc(v.label)}</td>` + cols.map(c => `<td>${c[2](t[c[1]] ?? null)}</td>`).join("") + "</tr>"; });
+  $("#riskTable").innerHTML = h + "</tbody>";
+}
+
+function renderAll(){ renderOverview(); renderControls(); renderEquity(); renderMetrics(); renderRisk(); renderWindows(); renderMonthly(); renderTradeControls(); renderTrades(); renderDay(); renderDiffs(); renderDownloads(); renderMethod(); }
+$("#themeBtn").onclick = () => { document.documentElement.dataset.theme = isDark() ? "light" : "dark"; renderAll(); };
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) renderAll(); });
+renderAll();
+if (window.__DT) renderTrades(); else window.addEventListener("dt-ready", renderTrades);
+})().catch(e => { document.querySelector("main").insertAdjacentHTML("afterbegin", `<div class="banner">This report could not load its data (${String(e).replace(/[<&]/g, "")}). Open it in a current browser.</div>`); });
+</script>
+</body>
+</html>

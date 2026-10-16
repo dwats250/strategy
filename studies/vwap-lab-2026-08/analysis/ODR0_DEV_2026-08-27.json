@@ -1,0 +1,135 @@
+{
+  "role": "ODR-0 baseline (development); dividend-neutral overnight_return; first_half_hour_return = a + b*overnight_return (b<0 preregistered); causal reversal sign strategy (enter 09:31 open, exit 09:59 close)",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "development_window": [
+    "2024-09-03",
+    "2025-12-31"
+  ],
+  "literature": "Liu & Tse (2017), Int. Rev. Econ. & Finance 48:440-451",
+  "n_obs_screened": 328,
+  "n_obs_raw": 328,
+  "screened_primary": {
+    "regression": {
+      "n": 328,
+      "beta": -0.03570647582088977,
+      "intercept": -4.6401955529565335e-05,
+      "se_hc1_primary": 0.04031390124009111,
+      "t_hc1": -0.8857112490363651,
+      "ci95_hc1": [
+        -0.11472027032777296,
+        0.04330731868599343
+      ],
+      "se_classical": 0.023609780037926135,
+      "t_classical": -1.5123595291244483,
+      "r_squared": 0.006967165113185736,
+      "se_convention": "HC1 (White heteroskedasticity-consistent, small-sample corrected) PRIMARY; classical OLS secondary; 95% CI via normal 1.96. Frozen before outcomes; no estimator shopping."
+    },
+    "sign_strategy": {
+      "n": 327,
+      "mean_bps": -0.6255,
+      "median_bps": -0.0,
+      "cumulative_bps": -204.5438,
+      "profit_factor": 0.93849,
+      "win_rate_pct": 49.8471,
+      "max_drawdown_bps": 475.0244,
+      "long": {
+        "n": 131,
+        "mean_bps": -0.975,
+        "profit_factor": 0.915243
+      },
+      "short": {
+        "n": 196,
+        "mean_bps": -0.3919,
+        "profit_factor": 0.957757
+      },
+      "bootstrap_mean_ci95_bps": [
+        -3.3431,
+        2.3944
+      ],
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 7
+      },
+      "outliers": {
+        "net_bps_excl_top10_abs": -311.7394,
+        "net_bps": -204.5438
+      }
+    },
+    "costs": {
+      "spy_price_ref": 610.1533,
+      "zero_cost_mean_bps": -0.6255,
+      "lab_slippage_mean_bps": -0.9533,
+      "lab_slippage_rt_bps": 0.3278,
+      "stress_mean_bps": -5.6255,
+      "stress_rt_bps": 5.0,
+      "note": "gross reported separately from executable economics; costs frozen, not optimized; entry 09:31 open, exit 09:59 close (2 fills)."
+    },
+    "classification": {
+      "verdict": "FAMILY DEAD",
+      "reason": "gross causal sign-strategy expectancy -0.6255 bps <= 0"
+    }
+  },
+  "raw_sensitivity": {
+    "regression": {
+      "n": 328,
+      "beta": -0.03570647582088977,
+      "intercept": -4.6401955529565335e-05,
+      "se_hc1_primary": 0.04031390124009111,
+      "t_hc1": -0.8857112490363651,
+      "ci95_hc1": [
+        -0.11472027032777296,
+        0.04330731868599343
+      ],
+      "se_classical": 0.023609780037926135,
+      "t_classical": -1.5123595291244483,
+      "r_squared": 0.006967165113185736,
+      "se_convention": "HC1 (White heteroskedasticity-consistent, small-sample corrected) PRIMARY; classical OLS secondary; 95% CI via normal 1.96. Frozen before outcomes; no estimator shopping."
+    },
+    "sign_strategy": {
+      "n": 327,
+      "mean_bps": -0.6255,
+      "median_bps": -0.0,
+      "cumulative_bps": -204.5438,
+      "profit_factor": 0.93849,
+      "win_rate_pct": 49.8471,
+      "max_drawdown_bps": 475.0244,
+      "long": {
+        "n": 131,
+        "mean_bps": -0.975,
+        "profit_factor": 0.915243
+      },
+      "short": {
+        "n": 196,
+        "mean_bps": -0.3919,
+        "profit_factor": 0.957757
+      },
+      "bootstrap_mean_ci95_bps": [
+        -3.3431,
+        2.3944
+      ],
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 7
+      },
+      "outliers": {
+        "net_bps_excl_top10_abs": -311.7394,
+        "net_bps": -204.5438
+      }
+    },
+    "costs": {
+      "spy_price_ref": 610.1533,
+      "zero_cost_mean_bps": -0.6255,
+      "lab_slippage_mean_bps": -0.9533,
+      "lab_slippage_rt_bps": 0.3278,
+      "stress_mean_bps": -5.6255,
+      "stress_rt_bps": 5.0,
+      "note": "gross reported separately from executable economics; costs frozen, not optimized; entry 09:31 open, exit 09:59 close (2 fills)."
+    },
+    "classification": {
+      "verdict": "FAMILY DEAD",
+      "reason": "gross causal sign-strategy expectancy -0.6255 bps <= 0"
+    }
+  },
+  "verdict": "FAMILY DEAD"
+}

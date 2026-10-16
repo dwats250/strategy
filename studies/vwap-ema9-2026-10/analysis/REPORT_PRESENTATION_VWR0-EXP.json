@@ -1,0 +1,6 @@
+{
+  "title_short": "VWAP reclaim family vs SPY session-hold",
+  "eyebrow": "VWR0-EXP · SPY 1-minute · frozen, run once · data to 2026-08-21",
+  "headline": "None of the seven trials made money after costs, and every one finished below a simple SPY session-hold benchmark (+13.4%). The VWR0 baseline lost 25.3%, averaging −0.038R per trade.",
+  "data_notice": "One session, 2025-04-23, contains suspicious prints (highs near $545 above $534–539 bodies) that the frozen mask does not remove and an independent hourly source does not show. Their executability is unknown. They inflate the VWR0, VWR1 and VWR3 losses but change no result's sign. All results are exploratory: this corpus was used for VWAP/EMA research before."
+}

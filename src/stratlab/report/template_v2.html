@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>__TITLE__</title>
+<style>/*__DT_CSS__*/</style>
+<style>
+/* Layout: one sticky bar (title + four view tabs) over a single reading column; each view is
+   a stack of cards. Colour is reserved for configuration identity and the active control. */
+:root{
+  color-scheme: light;
+  --page:#f7f7f5; --surface:#ffffff; --ink:#151515; --ink2:#55534f; --muted:#86847e;
+  --grid:#e6e5df; --axis:#c9c8c0; --border:rgba(20,20,20,.10); --chip:#efeee9;
+  --accent:#2a78d6; --accent-ink:#ffffff; --notice-bg:#fbf3df; --notice-ink:#4d3a06; --notice-edge:#e2b23b;
+  --sel:#eef4fc;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#111110; --surface:#1b1b1a; --ink:#f0efec; --ink2:#c3c2b7; --muted:#8f8d86;
+    --grid:#2d2d2b; --axis:#3a3a37; --border:rgba(255,255,255,.10); --chip:#262624;
+    --accent:#3987e5; --accent-ink:#ffffff; --notice-bg:#2c2410; --notice-ink:#f3dfa6; --notice-edge:#a8811f;
+    --sel:#1d2a3b;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#111110; --surface:#1b1b1a; --ink:#f0efec; --ink2:#c3c2b7; --muted:#8f8d86;
+  --grid:#2d2d2b; --axis:#3a3a37; --border:rgba(255,255,255,.10); --chip:#262624;
+  --accent:#3987e5; --accent-ink:#ffffff; --notice-bg:#2c2410; --notice-ink:#f3dfa6; --notice-edge:#a8811f;
+  --sel:#1d2a3b;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--page);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:var(--surface)}
+.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--surface);border-bottom:1px solid var(--border)}
+.topin{max-width:1120px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;padding-block:10px 4px}
+.brand .name{flex:1;min-width:0;font-weight:650;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand .sub{color:var(--muted);font-size:12px;white-space:nowrap}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:4px 0}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:none;font:inherit;font-size:14px;font-weight:550;color:var(--ink2);background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px 9px;cursor:pointer;min-height:40px}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs .narrow{display:none}
+@media (max-width:600px){ nav.tabs .wide{display:none} nav.tabs .narrow{display:inline} nav.tabs button{padding:8px 9px 9px} }
+nav.tabs button:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{max-width:1120px;margin:0 auto;padding-block:16px 72px}
+.view{display:flex;flex-direction:column;gap:14px}
+h1{font-size:23px;line-height:1.25;margin:4px 0 0;text-wrap:balance;font-weight:700}
+.lede{font-size:16.5px;line-height:1.5;margin:2px 0 0;color:var(--ink);max-width:68ch}
+.notice{border:1px solid var(--notice-edge);border-left-width:4px;background:var(--notice-bg);color:var(--notice-ink);border-radius:10px;padding:10px 14px;font-size:14px}
+.notice b{font-weight:650}
+.notice .dates{display:block;margin-top:4px;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card h2{font-size:16px;margin:0 0 2px;font-weight:650}
+.card .cap{color:var(--muted);font-size:13px;margin:0 0 10px}
+.eyebrow{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.ctl label{font-size:13px;color:var(--ink2);display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:100%;min-width:0}
+.ctl select{min-width:0;max-width:100%}
+select,input[type=date]{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--axis);border-radius:8px;padding:6px 8px;min-height:38px;max-width:100%}
+.chip{font:inherit;font-size:13px;border:1px solid var(--border);background:var(--chip);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer;min-height:34px;display:inline-flex;gap:7px;align-items:center}
+.chip[aria-pressed="false"]{color:var(--muted);background:transparent}
+.chip[aria-pressed="false"] i{opacity:.35}
+.sw{display:inline-block;width:14px;height:3px;border-radius:2px;flex:none}
+.sw.dash{background-image:linear-gradient(90deg,currentColor 60%,transparent 0)!important;background-size:5px 3px}
+.status{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink2);background:var(--chip);border-radius:8px;padding:8px 12px;font-variant-numeric:tabular-nums}
+.status b{color:var(--ink);font-weight:600}
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.t{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+table.t th,table.t td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+table.t th:first-child,table.t td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1}
+table.t thead th{color:var(--ink2);font-weight:600;font-size:12.5px;border-bottom:1px solid var(--axis);vertical-align:bottom}
+table.t tr.grp td{color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase;padding-top:14px;text-align:left}
+table.t td.nm{font-weight:550}
+table.t td.dim,table.t th.dim{color:var(--muted)}
+table.t.prov td{white-space:normal;overflow-wrap:anywhere;vertical-align:top}
+table.t.prov td:first-child{position:static;white-space:nowrap;color:var(--ink2);width:1%}
+.tag{display:inline-block;font-size:11px;font-weight:550;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--ink2);margin-left:6px;vertical-align:1px}
+.plot{width:100%;min-height:120px}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0;max-width:80ch}
+.rule dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.rule dt{font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.rule dd{margin:0;font-size:14px}
+.rule .who{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-weight:650;margin-bottom:8px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{border:1px solid var(--border);border-radius:10px;padding:8px 10px}
+.kpi .k{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:18px;font-weight:650;font-variant-numeric:tabular-nums}
+details.sec{background:var(--surface);border:1px solid var(--border);border-radius:12px}
+details.sec>summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;gap:10px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:"Show";font-weight:500;font-size:13px;color:var(--accent)}
+details.sec[open]>summary::after{content:"Hide"}
+details.sec>summary .hint{font-weight:400;color:var(--muted);font-size:13px;flex:1}
+details.sec>.body{padding:0 16px 16px}
+pre{white-space:pre-wrap;word-break:break-word;font-size:12px;background:var(--chip);padding:10px;border-radius:8px;overflow-x:auto}
+ul.tight{margin:4px 0;padding-left:18px} ul.tight li{margin:4px 0}
+a{color:var(--accent)}
+.link{background:none;border:0;padding:0;font:inherit;color:var(--accent);cursor:pointer;text-decoration:underline}
+table.dataTable{font-size:13px;font-variant-numeric:tabular-nums}
+table.dataTable tbody tr{cursor:pointer}
+table.dataTable tbody tr.picked td{background:var(--sel)!important}
+div.dt-container{color:var(--ink)}
+div.dt-container .dt-input,div.dt-container .dt-search input{background:var(--surface);color:var(--ink);border:1px solid var(--axis);border-radius:8px}
+@media (max-width:600px){ .ctl label{width:100%} .ctl select{flex:1 1 0;width:100%} .rule .who{flex-wrap:wrap} }
+@media (max-width:600px){ table.t td.nm{white-space:normal;min-width:8.5em;max-width:11em;line-height:1.3} table.t td.nm .tag, table.t th .tag{display:none} table.t th,table.t td{padding:7px 8px} }
+@media (max-width:600px){ h1{font-size:20px} .lede{font-size:15.5px} .card{padding:12px} .brand .sub{display:none} }
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="topin pad">
+    <div class="brand"><span class="name" id="brandName"></span><span class="sub" id="brandSub"></span>
+      <button class="chip" id="themeBtn" aria-label="Toggle light or dark theme">◐</button></div>
+    <nav class="tabs" role="tablist" aria-label="Report views">
+      <button role="tab" id="tab-summary" data-view="summary" aria-selected="true">Summary</button>
+      <button role="tab" id="tab-compare" data-view="compare" aria-selected="false">Compare</button>
+      <button role="tab" id="tab-trades" data-view="trades" aria-selected="false">Inspect trades</button>
+      <button role="tab" id="tab-details" data-view="details" aria-selected="false"><span class="wide">Technical details</span><span class="narrow">Details</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="pad">
+  <!-- ============================== SUMMARY ============================== -->
+  <section class="view" id="v-summary" role="tabpanel" aria-labelledby="tab-summary">
+    <div>
+      <p class="eyebrow" id="sumEyebrow"></p>
+      <h1 id="sumTitle"></h1>
+      <p class="lede" id="sumLede"></p>
+    </div>
+    <div class="notice" id="sumNotice"></div>
+    <div class="card">
+      <h2>Account equity and drawdown</h2>
+      <p class="cap" id="sumChartCap"></p>
+      <div class="row" id="sumChips"></div>
+      <div id="sumPlot" class="plot" style="min-height:420px"></div>
+    </div>
+    <div class="card">
+      <h2>All configurations at a glance</h2>
+      <p class="cap" id="sumTableCap"></p>
+      <div class="tw"><table class="t" id="sumTable"></table></div>
+      <p class="note" id="sumTableNote"></p>
+    </div>
+    <p class="note">Rule changes, hypotheses and trade overlap are in <button class="link" data-go="compare">Compare</button>. Every trade is in <button class="link" data-go="trades">Inspect trades</button>. Full metrics, risk, method and provenance are in <button class="link" data-go="details">Technical details</button>.</p>
+  </section>
+
+  <!-- ============================== COMPARE ============================== -->
+  <section class="view" id="v-compare" role="tabpanel" aria-labelledby="tab-compare" hidden>
+    <div class="card">
+      <div class="ctl">
+        <label for="cmpWin">Window <select id="cmpWin"></select></label>
+        <label for="cmpSel">Compare baseline with <select id="cmpSel"></select></label>
+        <label for="cmpAll"><input type="checkbox" id="cmpAll"> Show all configurations</label>
+      </div>
+    </div>
+    <div class="status" id="cmpStatus" aria-live="polite"></div>
+    <div class="grid2">
+      <div class="card">
+        <h2>Equity and drawdown</h2>
+        <p class="cap" id="cmpChartCap"></p>
+        <div id="cmpPlot" class="plot" style="min-height:400px"></div>
+      </div>
+      <div class="card rule" id="cmpRule"></div>
+    </div>
+    <div class="card">
+      <h2>Portfolio results</h2>
+      <p class="cap">Account equity sampled at each session close. Sharpe and Sortino are annualized with √252.</p>
+      <div class="tw"><table class="t" id="cmpPort"></table></div>
+    </div>
+    <div class="card">
+      <h2>Per-trade results</h2>
+      <p class="cap">R multiples from each trade's initial stop. Never annualized, and not mixed with the portfolio view.</p>
+      <div class="tw"><table class="t" id="cmpTrade"></table></div>
+    </div>
+    <div class="card" id="cmpOverlapCard">
+      <h2>Trade overlap with the baseline</h2>
+      <p class="cap">Trades matched by signal bar and side, in the selected window.</p>
+      <div class="tw"><table class="t" id="cmpOverlap"></table></div>
+      <p class="note" id="cmpOverlapNote"></p>
+    </div>
+    <div class="card">
+      <h2>By window</h2>
+      <p class="cap">Each row is a separate backtest started with fresh capital on the window's first session, with identical settings.</p>
+      <div class="ctl" style="margin-bottom:8px"><label for="cmpWinMetric">Metric <select id="cmpWinMetric"></select></label></div>
+      <div class="tw"><table class="t" id="cmpWindows"></table></div>
+      <p class="note" id="cmpWindowsNote"></p>
+    </div>
+  </section>
+
+  <!-- ============================== TRADES ============================== -->
+  <section class="view" id="v-trades" role="tabpanel" aria-labelledby="tab-trades" hidden>
+    <div class="card">
+      <div class="ctl">
+        <label for="trVar">Configuration <select id="trVar"></select></label>
+        <label for="trFrom">From <input type="date" id="trFrom"></label>
+        <label for="trTo">To <input type="date" id="trTo"></label>
+      </div>
+      <p class="note">Date filters, search and sorting only change which rows are shown. No statistic anywhere in this report is recalculated. The trades are the full-history run's.</p>
+    </div>
+    <div class="status" id="trStatus" aria-live="polite"></div>
+    <div class="card">
+      <div class="tw"><table id="trTable" class="display compact" style="width:100%"></table></div>
+    </div>
+    <div class="card">
+      <div class="ctl">
+        <label for="daySel">Session <select id="daySel"></select></label>
+        <label for="dayBase"><input type="checkbox" id="dayBase"> Overlay baseline trades</label>
+      </div>
+      <div id="dayPlot" class="plot" style="min-height:460px"></div>
+      <p class="note" id="dayNote"></p>
+    </div>
+  </section>
+
+  <!-- ============================== DETAILS ============================== -->
+  <section class="view" id="v-details" role="tabpanel" aria-labelledby="tab-details" hidden>
+    <details class="sec" id="d-metrics"><summary>Full metrics <span class="hint">every configuration, every metric</span></summary><div class="body">
+      <div class="ctl"><label for="detWin">Window <select id="detWin"></select></label></div>
+      <div class="status" id="detStatus" style="margin-top:10px"></div>
+      <div class="tw" style="margin-top:10px"><table class="t" id="detTable"></table></div>
+      <p class="note">Δ = variant − baseline, same window, capital and costs. The independent strategy and the benchmark have no Δ.</p>
+    </div></details>
+    <details class="sec" id="d-risk"><summary>Initial risk under notional sizing <span class="hint">money at risk to the stop</span></summary><div class="body">
+      <p class="cap"><b id="riskWin"></b> Each entry uses 99.9% of equity as notional, so the money at risk to the initial stop varies by trade. These are exposure facts, not performance.</p>
+      <div id="riskPlot" class="plot"></div>
+      <div class="tw"><table class="t" id="riskTable"></table></div>
+      <p class="note">Initial risk = shares × |fill − stop| ÷ equity before the entry minute. Actual reward/risk = side × (target − fill) ÷ |fill − stop|. The VWR3 target is placed from the signal close.</p>
+    </div></details>
+    <details class="sec" id="d-monthly"><summary>Monthly returns and stability <span class="hint">full-history run</span></summary><div class="body">
+      <div class="ctl"><label for="monVar">Configuration <select id="monVar"></select></label></div>
+      <p class="cap" id="monCap"></p>
+      <div id="monPlot" class="plot"></div>
+      <div id="rollPlot" class="plot"></div>
+      <p class="note">From the full-history run (running equity, no reset). The rolling Sharpe uses 63 sessions.</p>
+    </div></details>
+    <details class="sec" id="d-frag"><summary>Fragility: dependence on large winners <span class="hint">diagnostic only</span></summary><div class="body">
+      <p class="cap"><b id="fragWin"></b></p>
+      <div class="tw"><table class="t" id="fragTable"></table></div>
+      <div id="lorenzPlot" class="plot"></div>
+      <p class="note">A diagnostic, not a validity rule. The curve is cumulative net P&amp;L with trades sorted best first.</p>
+    </div></details>
+    <details class="sec" id="d-findings"><summary>Findings and limitations <span class="hint">as recorded with the run</span></summary><div class="body" id="findBody"></div></details>
+    <details class="sec" id="d-defs"><summary>Configuration definitions <span class="hint">rules, hypotheses, gates</span></summary><div class="body" id="defsBody"></div></details>
+    <details class="sec" id="d-method"><summary>Method and assumptions</summary><div class="body" id="methodBody"></div></details>
+    <details class="sec" id="d-prov"><summary>Provenance <span class="hint">run, code, data, packages</span></summary><div class="body" id="provBody"></div></details>
+    <details class="sec" id="d-dl"><summary>Downloads</summary><div class="body"><div class="row" id="dlBtns"></div>
+      <p class="note">Generated from the data embedded in this page. Downloads work when this HTML file is opened directly; some embedded viewers block them.</p></div></details>
+  </section>
+</main>
+
+<script>/*__PLOTLY__*/</script>
+<script type="module">/*__DT_JS__*/</script>
+<script id="payload" type="application/octet-stream">/*__DATA__*/</script>
+<script>
+(async () => {
+async function inflate(b64){
+  const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+  return JSON.parse(await new Response(stream).text());
+}
+const DATA = await inflate(document.getElementById("payload").textContent.trim());
+const R = DATA.record, V = DATA.variants, W = R.windows, P = DATA.presentation || {};
+const BASE = R.baseline, BY = Object.fromEntries(V.map(v => [v.id, v])), FULL = W[0].id;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+const MINUS = "−";
+const sgn = s => s.replace(/^-/, MINUS);
+const pct = (x, d=1) => x == null ? "—" : sgn((x*100).toFixed(d)) + "%";
+const num = (x, d=2) => x == null ? "—" : sgn(Number(x).toLocaleString("en-US", {minimumFractionDigits:d, maximumFractionDigits:d}));
+const money = x => x == null ? "—" : (x < 0 ? MINUS + "$" : "$") + Math.abs(x).toLocaleString("en-US", {maximumFractionDigits:0});
+const plus = (s, x) => (x > 0 ? "+" : "") + s;
+const isVariant = v => v.id !== BASE && v.role !== "independent" && v.role !== "benchmark";
+const roleTag = v => v.id === BASE ? "baseline" : v.role === "independent" ? "independent" : v.role === "benchmark" ? "benchmark" : "variant";
+const benchIds = V.filter(v => v.role === "benchmark").map(v => v.id);
+function isDark(){ const t = document.documentElement.dataset.theme; return t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; }
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const col = v => isDark() ? v.color_dark : v.color_light;
+const sw = v => `<i class="sw${v.role === "benchmark" ? " dash" : ""}" style="background:${col(v)};color:${col(v)}"></i>`;
+const nameCell = v => `<td class="nm">${sw(v)} ${esc(v.label)}<span class="tag">${roleTag(v)}</span></td>`;
+const winById = id => W.find(w => w.id === id);
+const winText = w => `${w.label} · ${w.start} → ${w.end} · ${w.sessions} sessions${w.kind === "full" ? "" : " · fresh capital"}${w.partial ? " · partial" : ""}${w.kind === "recent" ? " · exploratory, overlaps the full history" : ""}`;
+const res = (v, w) => v.results[w] && v.results[w].status === "ok" ? v.results[w] : null;
+const firstVariant = (V.find(isVariant) || V.find(v => v.id !== BASE) || V[0]).id;
+const state = { view: "summary", sumOn: new Set([BASE, ...benchIds]), cmpWin: FULL, cmpSel: firstVariant, cmpAll: false, trVar: BASE, detWin: FULL, monVar: BASE, picked: null };
+
+/* ---------- plotting ---------- */
+const PCFG = {responsive: true, displaylogo: false, displayModeBar: "hover", modeBarButtonsToRemove: ["select2d","lasso2d","autoScale2d","toImage"]};
+function base(extra){
+  return Object.assign({paper_bgcolor: css("--surface"), plot_bgcolor: css("--surface"),
+    font: {family: "system-ui,-apple-system,Segoe UI,Roboto,sans-serif", size: 12, color: css("--ink2")},
+    margin: {l: 58, r: 14, t: 8, b: 34}, hovermode: "x unified", showlegend: false,
+    hoverlabel: {bgcolor: css("--surface"), bordercolor: css("--axis"), font: {color: css("--ink")}}}, extra || {});
+}
+const ax = extra => Object.assign({gridcolor: css("--grid"), linecolor: css("--axis"), zerolinecolor: css("--axis"), tickfont: {color: css("--muted")}, automargin: true}, extra || {});
+function draw(id, traces, layout){
+  const el = document.getElementById(id);
+  if (!el || !el.offsetParent) return;            // hidden: render when its view/section opens
+  layout.width = Math.max(260, el.clientWidth); layout.autosize = false;
+  Plotly.react(el, traces, layout, PCFG);
+}
+function equityChart(id, winId, ids, height){
+  const tr = [];
+  ids.forEach(vid => {
+    const v = BY[vid], s = v.series[winId]; if (!s) return;
+    const dash = v.role === "benchmark" ? "dash" : "solid";
+    const w = v.id === BASE ? 2.4 : 1.8;
+    let peak = R.execution.cash; const dd = s.eq.map(e => { peak = Math.max(peak, e); return e / peak - 1; });
+    tr.push({x: s.d, y: s.eq, name: v.label, type: "scatter", mode: "lines", line: {color: col(v), width: w, dash}, hovertemplate: "%{y:$,.0f}<extra>" + esc(v.label) + "</extra>"});
+    tr.push({x: s.d, y: dd, name: v.label, type: "scatter", mode: "lines", line: {color: col(v), width: 1.4, dash}, yaxis: "y2", hovertemplate: "%{y:.1%}<extra>" + esc(v.label) + "</extra>"});
+  });
+  draw(id, tr, base({height: height || 420, hovermode: "closest",
+    yaxis: ax({domain: [0.36, 1], tickprefix: "$", tickformat: ",.0f", title: {text: "Equity", font: {size: 12}}}),
+    yaxis2: ax({domain: [0, 0.28], tickformat: ".0%", title: {text: "Drawdown", font: {size: 12}}}),
+    xaxis: ax({anchor: "y2", type: "date"}),
+    shapes: [{type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: R.execution.cash, y1: R.execution.cash, line: {color: css("--axis"), width: 1, dash: "dot"}}]}));
+}
+
+/* ---------- metric catalogue (unchanged definitions) ---------- */
+const PORT = [
+  ["Net P&L", r => r.equity?.net_pnl, money], ["Net return", r => r.equity?.total_return, x => pct(x,1)],
+  ["CAGR", r => r.equity?.cagr, x => pct(x,1)], ["Sharpe (daily, ann.)", r => r.equity?.sharpe_daily_ann, x => num(x,2)],
+  ["Sortino (daily, ann.)", r => r.equity?.sortino_daily_ann, x => num(x,2)], ["Ann. volatility", r => r.equity?.ann_vol, x => pct(x,1)],
+  ["Max drawdown (session close)", r => r.equity?.max_dd_session_close, x => pct(x,1)], ["Max drawdown (intraday, 1m)", r => r.equity?.max_dd_intraday, x => pct(x,1)],
+  ["Calmar", r => r.equity?.calmar, x => num(x,2)], ["Time in market", r => r.equity?.exposure_minutes_frac, x => pct(x,1)],
+  ["Sessions", r => r.equity?.sessions, x => num(x,0)],
+];
+const TRADE = [
+  ["Trades", r => r.trade?.trades, x => num(x,0)], ["Win rate", r => r.trade?.win_rate, x => pct(x,1)],
+  ["Average net R", r => r.trade?.expectancy_r, x => num(x,3)], ["Median R", r => r.trade?.median_r, x => num(x,3)],
+  ["t-stat of mean R", r => r.trade?.t_stat_r, x => num(x,2)], ["Profit factor", r => r.trade?.profit_factor, x => num(x,2)],
+  ["Average win", r => r.trade?.avg_win, money], ["Average loss", r => r.trade?.avg_loss, money],
+  ["Costs paid", r => r.trade?.costs, money], ["Gross P&L before costs", r => r.trade?.gross_pnl_trades, money],
+  ["Average R, longs", r => r.trade?.expectancy_r_long, x => num(x,3)], ["Average R, shorts", r => r.trade?.expectancy_r_short, x => num(x,3)],
+  ["Long / short trades", r => r.trade ? `${r.trade.long_trades ?? 0} / ${r.trade.short_trades ?? 0}` : null, x => x ?? "—"],
+  ["Average minutes spanned", r => r.trade?.avg_minutes_spanned, x => num(x,1)],
+];
+const EXTRA = [
+  ["Trades with undefined R", r => r.trade?.r_undefined, x => num(x,0)], ["Stop/target same-minute exits", r => r.trade?.ambiguous_stop_target_minutes, x => num(x,0)],
+  ["Open at end", r => r.trade?.open_at_end, x => num(x,0)], ["Initial risk, % equity (median)", r => r.trade?.risk_pct_equity_median, x => pct(x,3)],
+  ["Initial risk, % equity (p90)", r => r.trade?.risk_pct_equity_p90, x => pct(x,3)], ["Actual reward/risk at fill (median)", r => r.trade?.reward_risk_median, x => num(x,2)],
+  ["Top-5 share of gross profit", r => r.trade?.top5_share_of_gross_profit, x => pct(x,1)], ["Net P&L excluding top 5", r => r.trade?.net_pnl_ex_top5, money],
+];
+const ALLM = [...PORT, ...TRADE, ...EXTRA];
+function deltaFmt(fmt, x, b){
+  if (typeof x !== "number" || typeof b !== "number") return "";
+  const d = x - b; let s = fmt(Math.abs(d)); if (s === fmt(0)) return "0";
+  if (s.endsWith("%")) s = s.slice(0, -1) + " pp";        // difference of percentages: points
+  return (d > 0 ? "+" : MINUS) + s.replace(/^−/, "");
+}
+function metricTable(el, rows, ids, winId, withDelta){
+  const b = res(BY[BASE], winId);
+  let h = "<thead><tr><th>Metric</th>" + ids.map(id => `<th>${sw(BY[id])} ${esc(BY[id].label)}</th>` + (withDelta && isVariant(BY[id]) ? `<th class="dim">Δ vs baseline</th>` : "")).join("") + "</tr></thead><tbody>";
+  rows.forEach(([name, get, fmt]) => {
+    if (!get){ h += `<tr class="grp"><td colspan="${ids.length * 2 + 1}">${name}</td></tr>`; return; }
+    h += `<tr><td>${name}</td>` + ids.map(id => {
+      const r = res(BY[id], winId), x = r ? get(r) : null;
+      let c = `<td>${r ? fmt(x) : "—"}</td>`;
+      if (withDelta && isVariant(BY[id])) c += `<td class="dim">${b && r ? deltaFmt(fmt, x, get(b)) : ""}</td>`;
+      return c;
+    }).join("") + "</tr>";
+  });
+  $(el).innerHTML = h + "</tbody>";
+}
+
+/* ---------- SUMMARY ---------- */
+function renderSummaryText(){
+  const full = winById(FULL), cov = R.coverage;
+  const gen = R.run_utc.slice(0,4) + "-" + R.run_utc.slice(4,6) + "-" + R.run_utc.slice(6,8);
+  const stale = Math.round((new Date(gen) - new Date(cov.last_session)) / 86400000);
+  document.title = P.title_short || R.experiment.title || R.experiment.id;
+  $("#brandName").textContent = P.title_short || R.experiment.title;
+  $("#brandSub").textContent = `${full.start} → ${full.end}`;
+  $("#sumEyebrow").textContent = P.eyebrow || R.experiment.id;
+  $("#sumTitle").textContent = P.title_short || R.experiment.title;
+  $("#sumLede").textContent = P.headline || (DATA.findings || [])[0] || "";
+  $("#sumNotice").innerHTML = (P.data_notice ? `<b>Data quality.</b> ${md(P.data_notice)}` : "") +
+    `<span class="dates"><b>Scored:</b> ${full.start} → ${full.end} (${full.sessions} sessions). <b>Data ends ${esc(cov.last_session)}</b>, ${stale} days before this run (${gen}). ${R.synthetic ? "<b>SYNTHETIC prices.</b>" : ""}</span>`;
+  $("#sumChartCap").textContent = `Full scored history, ${full.start} → ${full.end}. Running equity from ${money(R.execution.cash)}; dotted line = starting capital. Tap a configuration to show or hide it.`;
+  $("#sumTableCap").textContent = `Full scored history, ${full.start} → ${full.end}. Same capital (${money(R.execution.cash)}), sizing and costs ($${R.execution.cost_per_share_per_side}/share/side) for every configuration.`;
+}
+function renderSumChips(){
+  $("#sumChips").innerHTML = V.map(v => `<button class="chip" data-v="${esc(v.id)}" aria-pressed="${state.sumOn.has(v.id)}">${sw(v)}${esc(v.label)}</button>`).join("");
+  $("#sumChips").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const id = b.dataset.v; state.sumOn.has(id) ? state.sumOn.delete(id) : state.sumOn.add(id); renderSumChips(); renderSumChart(); });
+}
+function renderSumChart(){ equityChart("sumPlot", FULL, V.map(v => v.id).filter(id => state.sumOn.has(id)), 420); }
+function renderSumTable(){
+  const b = res(BY[BASE], FULL);
+  let h = "<thead><tr><th>Configuration</th><th>Net return</th><th>Max drawdown</th><th>Trades</th><th>Average net R</th><th class='dim'>Δ return</th><th class='dim'>Δ avg R</th></tr></thead><tbody>";
+  V.forEach(v => {
+    const r = res(v, FULL); if (!r) return;
+    const ret = r.equity.total_return, mdd = r.equity.max_dd_session_close, n = r.trade.trades, er = r.trade.expectancy_r;
+    let d1 = "—", d2 = "—";
+    if (v.id === BASE){ d1 = d2 = ""; }
+    else if (isVariant(v)){ d1 = deltaFmt(x => (x*100).toFixed(1) + " pp", ret, b.equity.total_return); d2 = deltaFmt(x => num(x,3), er, b.trade.expectancy_r); }
+    h += `<tr>${nameCell(v)}<td>${pct(ret,1)}</td><td>${pct(mdd,1)}</td><td>${num(n,0)}</td><td>${v.role === "benchmark" ? "—" : num(er,3)}</td><td class="dim">${d1}</td><td class="dim">${d2}</td></tr>`;
+  });
+  (P.related || []).forEach(x => {
+    h += `<tr><td class="nm">${esc(x.label)}<span class="tag">separate run</span></td><td>${pct(x.total_return,1)}</td><td>${pct(x.max_dd,1)}</td><td>${num(x.trades,0)}</td><td>${num(x.expectancy_r,3)}</td><td class="dim">—</td><td class="dim">—</td></tr>`;
+  });
+  $("#sumTable").innerHTML = h + "</tbody>";
+  const rel = (P.related || []).map(x => `${esc(x.label)} is a separate run: ${esc(x.difference)}`).join(" ");
+  $("#sumTableNote").innerHTML = `Δ = configuration − baseline (return in percentage points). Average net R is per trade, from each trade's initial stop; the benchmark has no stop, so it has none. "—" in the Δ columns: independent strategies and the benchmark are not variants of the baseline. ${rel}`;
+}
+
+/* ---------- COMPARE ---------- */
+function fillSelect(el, opts, val){ const s = $(el); s.innerHTML = opts.map(([v, t]) => `<option value="${esc(v)}">${esc(t)}</option>`).join(""); s.value = val; }
+function cmpIds(){ return state.cmpAll ? V.map(v => v.id) : [BASE, state.cmpSel]; }
+function renderCompare(){
+  const w = winById(state.cmpWin), sel = BY[state.cmpSel];
+  $("#cmpSel").disabled = state.cmpAll;
+  $("#cmpStatus").innerHTML = `<span><b>Window:</b> ${esc(winText(w))}</span><span><b>Showing:</b> ${state.cmpAll ? "all configurations" : esc(BY[BASE].label) + " vs " + esc(sel.label)}</span>`;
+  $("#cmpChartCap").textContent = w.kind === "full" ? "Running equity through the full history." : "Fresh capital on this window's first session; statistics were computed for this window when the run was made.";
+  equityChart("cmpPlot", state.cmpWin, cmpIds(), 400);
+  const showRule = state.cmpAll ? BY[BASE] : sel;
+  const rule = v => `<div class="who">${sw(v)} ${esc(v.label)}<span class="tag">${roleTag(v)}</span></div><dl>
+     ${v.difference ? `<div><dt>${v.id === BASE ? "Baseline rules" : isVariant(v) ? "Rule change from baseline" : v.role === "benchmark" ? "Benchmark definition" : "Strategy rules (not a variant)"}</dt><dd>${esc(v.difference)}</dd></div>` : ""}
+     ${v.hypothesis ? `<div><dt>Hypothesis</dt><dd>${esc(v.hypothesis)}</dd></div>` : ""}
+     ${v.mechanism ? `<div><dt>Expected mechanism</dt><dd>${esc(v.mechanism)}</dd></div>` : ""}
+     ${v.primary_metric ? `<div><dt>Primary comparison</dt><dd>${esc(v.primary_metric)}</dd></div>` : ""}
+     ${v.uninformative_if ? `<div><dt>Uninformative if</dt><dd>${esc(v.uninformative_if)}</dd></div>` : ""}</dl>`;
+  $("#cmpRule").innerHTML = state.cmpAll
+    ? `<h2>Rule definitions</h2><p class="cap">With every configuration shown, the rule text lives in Technical details → Configuration definitions. Baseline:</p>${rule(BY[BASE])}`
+    : rule(showRule) + (sel.id !== BASE ? `<p class="note">Baseline: ${esc(BY[BASE].label)}. Full baseline rules are in Technical details → Configuration definitions.</p>` : "");
+  metricTable("#cmpPort", PORT, cmpIds(), state.cmpWin, true);
+  metricTable("#cmpTrade", TRADE, cmpIds(), state.cmpWin, true);
+  // overlap
+  const list = state.cmpAll ? V.filter(isVariant) : (isVariant(sel) ? [sel] : []);
+  if (!list.length){
+    $("#cmpOverlap").innerHTML = "";
+    $("#cmpOverlapNote").textContent = `${sel.label} is ${roleTag(sel) === "benchmark" ? "the benchmark" : "an independent strategy"}: it is not diffed against the baseline.`;
+  } else {
+    let h = "<thead><tr><th>Configuration</th><th>Same</th><th>Altered</th><th>Added</th><th>Removed</th><th>P&amp;L of added</th><th>P&amp;L of removed (baseline)</th><th>Altered: variant − baseline</th><th>Avg R of added</th><th>Avg R of removed</th></tr></thead><tbody>";
+    list.forEach(v => { const d = res(v, state.cmpWin)?.diff_vs_baseline; if (!d) return;
+      h += `<tr>${nameCell(v)}<td>${num(d.same,0)}</td><td>${num(d.altered,0)}</td><td>${num(d.added,0)}</td><td>${num(d.removed,0)}</td><td>${money(d.pnl_added)}</td><td>${money(d.pnl_removed_from_baseline)}</td><td>${money(d.pnl_altered_variant - d.pnl_altered_baseline)}</td><td>${d.r_added == null ? "—" : num(d.r_added,3)}</td><td>${d.r_removed == null ? "—" : num(d.r_removed,3)}</td></tr>`; });
+    $("#cmpOverlap").innerHTML = h + "</tbody>";
+    $("#cmpOverlapNote").textContent = "Added and removed trades also reflect position occupancy: one position at a time means a changed rule can block or free later entries.";
+  }
+  // by window: any catalogue metric, every window
+  const ids = cmpIds(), [mName, mGet, mFmt] = ALLM[+$("#cmpWinMetric").value];
+  let h = "<thead><tr><th>Window</th><th>Dates</th>" + ids.map(id => `<th>${sw(BY[id])} ${esc(BY[id].label)}</th>`).join("") + "</tr></thead><tbody>";
+  W.forEach(x => { h += `<tr${x.id === state.cmpWin ? ' style="background:var(--sel)"' : ""}><td>${esc(x.label)}${x.kind === "recent" ? '<span class="tag">exploratory</span>' : ""}${x.partial ? '<span class="tag">partial</span>' : ""}</td><td class="dim">${x.start} → ${x.end}</td>` +
+    ids.map(id => { const r = res(BY[id], x.id); return `<td>${r ? mFmt(mGet(r)) : "—"}</td>`; }).join("") + "</tr>"; });
+  $("#cmpWindows").innerHTML = h + "</tbody>";
+  const rec = W.find(x => x.kind === "recent");
+  $("#cmpWindowsNote").textContent = rec ? `${rec.label} ends on the last complete session (${R.coverage.last_session}) and overlaps the full history and the calendar halves. It describes recent behaviour; it is not out-of-sample evidence. The highlighted row is the selected window.` : "";
+}
+
+/* ---------- TRADES ---------- */
+let dt = null;
+function tradeRows(){ const v = BY[state.trVar], f = $("#trFrom").value, t = $("#trTo").value; return v.trades.filter(r => (!f || r.session >= f) && (!t || r.session <= t)); }
+function trStatus(){
+  const v = BY[state.trVar], day = $("#daySel").value, p = state.picked && v.trades.find(t => t.id === state.picked);
+  const f = $("#trFrom").value, t = $("#trTo").value;
+  $("#trStatus").innerHTML = `<span><b>Configuration:</b> ${sw(v)} ${esc(v.label)}</span><span><b>Session:</b> ${esc(day || "—")}</span>` +
+    `<span><b>Selected trade:</b> ${p ? `#${p.id} · ${p.side} · ${p.entry.slice(11)} → ${p.exit ? p.exit.slice(11) : "open"} · ${num(p.pnl,2)} USD · ${p.r == null ? "—" : num(p.r,2) + "R"} · ${esc(p.reason)}` : "none (tap a row)"}</span>` +
+    `<span><b>Rows shown:</b> ${(dt ? dt.rows({search: "applied"}).count() : tradeRows().length).toLocaleString("en-US")} of ${v.trades.length.toLocaleString("en-US")}${f || t || (dt && dt.search()) ? " (view filter on)" : ""}</span>`;
+}
+function renderTrades(){
+  if (!window.__DT) return;
+  const cols = [
+    {data: "id", title: "#"}, {data: "session", title: "Session"}, {data: "side", title: "Side"},
+    {data: "entry", title: "Entry (ET)", render: d => d ? d.slice(11) : ""}, {data: "exit", title: "Exit (ET)", render: d => d ? d.slice(11) : "open"},
+    {data: "entry_px", title: "Entry $"}, {data: "exit_px", title: "Exit $"}, {data: "stop", title: "Stop $"}, {data: "size", title: "Shares"},
+    {data: "pnl", title: "Net P&L $", render: d => num(d,2)}, {data: "r", title: "R", render: d => d == null ? "—" : num(d,2)},
+    {data: "reason", title: "Exit reason", render: (d, _, row) => esc(d) + (row.amb ? " ⚠" : "")}, {data: "mins", title: "Min"},
+  ];
+  if (dt){ dt.clear(); dt.rows.add(tradeRows()); dt.draw(); trStatus(); return; }
+  dt = new window.__DT.default("#trTable", {data: tradeRows(), columns: cols, pageLength: 25, order: [[1, "desc"], [3, "desc"]], scrollX: true, deferRender: true,
+    rowCallback: (row, d) => row.classList.toggle("picked", d.id === state.picked)});
+  dt.on("search.dt", () => setTimeout(trStatus, 0));
+  dt.on("click", "tbody tr", function(){ const d = dt.row(this).data(); if (!d) return; state.picked = d.id; $("#daySel").value = d.session; dt.rows().invalidate("data").draw(false); renderDay(); trStatus();
+    $("#dayPlot").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center"}); });
+  trStatus();
+}
+function fillDays(){
+  const fs = DATA.bars[DATA.bar_map[state.trVar]], v = BY[state.trVar], sel = $("#daySel");
+  const days = fs ? Object.keys(fs.days).sort().reverse() : [...new Set(v.trades.map(t => t.session))].sort().reverse();
+  const withTr = new Set(v.trades.map(t => t.session));
+  sel.innerHTML = days.map(d => `<option value="${d}">${d}${withTr.has(d) ? " •" : ""}</option>`).join("");
+  const last = v.trades.length ? v.trades[v.trades.length - 1].session : days[0];
+  if (last) sel.value = last;
+}
+function renderDay(){
+  const v = BY[state.trVar], fs = DATA.bars[DATA.bar_map[state.trVar]], day = $("#daySel").value;
+  if (!fs){ $("#dayPlot").innerHTML = ""; $("#dayNote").textContent = `${v.label} has no price-chart overlay (no VWAP/EMA signals). Its trades are listed above.`; trStatus(); return; }
+  const b = fs.days[day];
+  if (!b){ Plotly.purge("dayPlot"); $("#dayNote").textContent = `${v.label} · ${day}: no bars for this session.`; trStatus(); return; }
+  const x = b.t.map(t => `${day} ${t}`);
+  const tr = [
+    {type: "candlestick", x, open: b.o, high: b.h, low: b.l, close: b.c, name: `${fs.minutes}m bars`, increasing: {line: {color: css("--ink2"), width: 1}, fillcolor: css("--surface")}, decreasing: {line: {color: css("--ink2"), width: 1}, fillcolor: css("--ink2")}},
+    {type: "scatter", mode: "lines", x, y: b.vwap, name: `VWAP (${fs.vwap_source})`, line: {color: isDark() ? "#c98500" : "#b97d00", width: 2}},
+    {type: "scatter", mode: "lines", x, y: b.ema, name: `EMA${fs.ema_length}`, line: {color: isDark() ? "#9085e9" : "#6250d6", width: 2}},
+  ];
+  const marks = (vv, ghost) => { const ts = vv.trades.filter(t => t.session === day), c = ghost ? css("--muted") : col(vv);
+    tr.push({type: "scatter", mode: "markers", x: ts.map(t => t.entry), y: ts.map(t => t.entry_px), name: (ghost ? "baseline " : "") + "entries",
+      marker: {symbol: ts.map(t => t.side === "long" ? "triangle-up" : "triangle-down"), size: ts.map(t => t.id === state.picked && !ghost ? 16 : 10), color: c, line: {width: ts.map(t => t.id === state.picked && !ghost ? 3 : 1), color: css("--ink")}},
+      text: ts.map(t => `#${t.id} ${t.side} · stop ${t.stop}`), hovertemplate: "%{text}<br>entry %{y}<extra></extra>"});
+    tr.push({type: "scatter", mode: "markers", x: ts.map(t => t.exit), y: ts.map(t => t.exit_px), name: (ghost ? "baseline " : "") + "exits",
+      marker: {symbol: "x", size: 9, color: c}, text: ts.map(t => `#${t.id} ${t.reason} · ${num(t.pnl,2)} USD · ${t.r == null ? "—" : num(t.r,2) + "R"}`), hovertemplate: "%{text}<br>exit %{y}<extra></extra>"}); };
+  if ($("#dayBase").checked && state.trVar !== BASE && DATA.bar_map[BASE] === DATA.bar_map[state.trVar]) marks(BY[BASE], true);
+  marks(v, false);
+  draw("dayPlot", tr, base({height: 470, margin: {l: 12, r: 60, t: 34, b: 40}, showlegend: true, legend: {orientation: "h", y: -0.14}, hovermode: "closest",
+    xaxis: ax({type: "date", rangeslider: {visible: false}}), yaxis: ax({side: "right", tickformat: ",.2f"})}));
+  $("#dayNote").textContent = `${v.label} · ${day} · ${fs.minutes}-minute signal bars in ET (bar starts). Entries and exits are 1-minute fills, so markers can sit inside a bar. The selected trade is drawn larger.` + ($("#dayBase").checked && DATA.bar_map[BASE] !== DATA.bar_map[state.trVar] ? " The baseline uses a different bar size, so its trades are not overlaid." : "");
+  trStatus();
+}
+
+/* ---------- DETAILS ---------- */
+function renderDetMetrics(){
+  const w = winById(state.detWin);
+  $("#detStatus").innerHTML = `<span><b>Window:</b> ${esc(winText(w))}</span>`;
+  metricTable("#detTable", [["Portfolio (session-close equity)"], ...PORT, ["Per trade (R, not annualized)"], ...TRADE, ["Diagnostics"], ...EXTRA], V.map(v => v.id), state.detWin, true);
+}
+function fullWinCap(){ const w = winById(FULL); return `Window: ${w.label}, ${w.start} → ${w.end}.`; }
+function renderRisk(){
+  $("#riskWin").textContent = fullWinCap();
+  const vs = V.filter(v => v.role !== "benchmark");
+  draw("riskPlot", vs.map(v => ({type: "box", name: v.label, y: v.trades.filter(t => t.riskp != null).map(t => t.riskp), marker: {color: col(v), size: 3}, line: {color: col(v), width: 1.5}, boxpoints: false, hovertemplate: "%{y:.3%}<extra>" + esc(v.label) + "</extra>"})),
+    base({height: 320, hovermode: "closest", yaxis: ax({tickformat: ".2%", title: {text: "Initial risk, % of equity", font: {size: 12}}, rangemode: "tozero"}), xaxis: ax({tickfont: {size: 10, color: css("--muted")}})}));
+  const cols = [["p10","risk_pct_equity_p10",x=>pct(x,3)],["Median","risk_pct_equity_median",x=>pct(x,3)],["p90","risk_pct_equity_p90",x=>pct(x,3)],["Max","risk_pct_equity_max",x=>pct(x,3)],["Median $","risk_usd_median",money],["Notional (median)","notional_pct_equity_median",x=>pct(x,1)],["Reward/risk p10","reward_risk_p10",x=>num(x,2)],["Reward/risk median","reward_risk_median",x=>num(x,2)],["Reward/risk p90","reward_risk_p90",x=>num(x,2)]];
+  let h = "<thead><tr><th>Configuration</th>" + cols.map(c => `<th>${c[0]}</th>`).join("") + "</tr></thead><tbody>";
+  vs.forEach(v => { const t = res(v, FULL)?.trade || {}; h += `<tr>${nameCell(v)}` + cols.map(c => `<td>${c[2](t[c[1]] ?? null)}</td>`).join("") + "</tr>"; });
+  $("#riskTable").innerHTML = h + "</tbody>";
+}
+function renderMonthly(){
+  const v = BY[state.monVar], keys = Object.keys(v.monthly), years = [...new Set(keys.map(k => k.slice(0,4)))];
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], narrow = innerWidth < 600;
+  const z = years.map(y => months.map((_, i) => { const k = `${y}-${String(i+1).padStart(2,"0")}`; return k in v.monthly ? v.monthly[k] : null; }));
+  const m = Math.max(0.001, ...keys.map(k => Math.abs(v.monthly[k] || 0))), dk = isDark();
+  draw("monPlot", [{type: "heatmap", x: narrow ? months.map(x => x[0]) : months, y: years, z, zmin: -m, zmax: m, xgap: 2, ygap: 2,
+    colorscale: [[0, dk ? "#e66767" : "#c84b4b"], [0.5, dk ? "#383835" : "#efeeea"], [1, dk ? "#3987e5" : "#2a78d6"]],
+    text: z.map(r => r.map(x => x == null ? "" : (x*100).toFixed(1) + "%")), texttemplate: narrow ? "" : "%{text}", hovertemplate: "%{y} %{x}: %{text}<extra></extra>",
+    showscale: !narrow, colorbar: {tickformat: ".0%", thickness: 10, len: 0.9}}],
+    base({height: 70 + 46 * years.length, yaxis: ax({autorange: "reversed", type: "category"}), xaxis: ax({side: "top", fixedrange: true}), margin: {l: 44, r: 12, t: 30, b: 8}}));
+  $("#monCap").textContent = `${v.label}. Colour runs from red (−${(m*100).toFixed(1)}%) through grey (0) to blue (+${(m*100).toFixed(1)}%), the largest monthly move in either direction.${narrow ? " Tap a cell for its value." : ""}`;
+  draw("rollPlot", [{x: v.rolling.d, y: v.rolling.v, type: "scatter", mode: "lines", line: {color: col(v), width: 2}, hovertemplate: "%{y:.2f}<extra></extra>"}],
+    base({height: 260, yaxis: ax({title: {text: "Rolling 63-session Sharpe", font: {size: 12}}, zeroline: true}), xaxis: ax({type: "date"})}));
+}
+function renderFrag(){
+  $("#fragWin").textContent = fullWinCap();
+  const vs = V.filter(v => v.role !== "benchmark");
+  let h = "<thead><tr><th>Configuration</th><th>Net P&amp;L</th><th>Top-1 share</th><th>Top-5 share</th><th>Top-10 share</th><th>Excl. top 1</th><th>Excl. top 5</th><th>Excl. top 10</th></tr></thead><tbody>";
+  const traces = [];
+  vs.forEach(v => { const t = res(v, FULL)?.trade; if (!t) return;
+    h += `<tr>${nameCell(v)}<td>${money(t.net_pnl_trades)}</td><td>${pct(t.top1_share_of_gross_profit,1)}</td><td>${pct(t.top5_share_of_gross_profit,1)}</td><td>${pct(t.top10_share_of_gross_profit,1)}</td><td>${money(t.net_pnl_ex_top1)}</td><td>${money(t.net_pnl_ex_top5)}</td><td>${money(t.net_pnl_ex_top10)}</td></tr>`;
+    const p = v.trades.filter(x => x.exit).map(x => x.pnl).sort((a, b) => b - a); let s = 0;
+    traces.push({x: p.map((_, i) => (i + 1) / p.length), y: p.map(z => (s += z)), type: "scatter", mode: "lines", name: v.label, line: {color: col(v), width: 1.8}, hovertemplate: "%{y:$,.0f}<extra>" + esc(v.label) + "</extra>"}); });
+  $("#fragTable").innerHTML = h + "</tbody>";
+  draw("lorenzPlot", traces, base({height: 300, hovermode: "closest", xaxis: ax({tickformat: ".0%", title: {text: "Share of trades, best first", font: {size: 12}}}), yaxis: ax({tickprefix: "$", tickformat: ",.0f"})}));
+}
+function renderStatic(){
+  $("#findBody").innerHTML = `<h3 style="font-size:14px;margin:4px 0">Findings</h3><ul class="tight">${(DATA.findings || []).map(x => `<li>${md(x)}</li>`).join("")}</ul>
+    <h3 style="font-size:14px;margin:12px 0 4px">Limitations</h3><ul class="tight">${(DATA.limitations || []).map(x => `<li>${md(x)}</li>`).join("")}</ul>`;
+  $("#defsBody").innerHTML = V.map(v => `<div class="card rule" style="margin-bottom:10px"><div class="who">${sw(v)} ${esc(v.label)}<span class="tag">${roleTag(v)}</span><span class="tag">${esc(v.strategy.split(":").pop())}</span></div><dl>
+    ${v.difference ? `<div><dt>Rule</dt><dd>${esc(v.difference)}</dd></div>` : ""}${v.hypothesis ? `<div><dt>Hypothesis</dt><dd>${esc(v.hypothesis)}</dd></div>` : ""}
+    ${v.mechanism ? `<div><dt>Mechanism</dt><dd>${esc(v.mechanism)}</dd></div>` : ""}${v.primary_metric ? `<div><dt>Primary comparison</dt><dd>${esc(v.primary_metric)}</dd></div>` : ""}
+    ${v.uninformative_if ? `<div><dt>Uninformative if</dt><dd>${esc(v.uninformative_if)}</dd></div>` : ""}<div><dt>Parameters</dt><dd><code>${esc(JSON.stringify(v.params))}</code></dd></div></dl></div>`).join("");
+  const p = R.packages, mins = [...new Set(V.map(v => res(v, FULL)?.minutes).filter(Boolean))].join("/");
+  $("#methodBody").innerHTML = `<ul class="tight">
+    <li><b>Engine:</b> Backtesting.py ${esc(p.backtesting)} on 1-minute regular-session bars. Signals use completed ${mins}-minute bars anchored at the session open, and orders fill at the next 1-minute open. No new entry is taken on a signal bar with missing minutes.</li>
+    <li><b>Bar-resolution ambiguity:</b> a stop and a target inside one minute resolve as the stop, even when the minute opens beyond the target (pessimistic). These exits are counted. An entry minute that opens beyond its stop gets no defined R.</li>
+    <li><b>Stops:</b> evaluated from the entry minute onward. A minute that opens beyond the stop fills at that (worse) open.</li>
+    <li><b>Costs:</b> ${money(R.execution.cash)} capital; $${R.execution.commission_per_share} commission + $${R.execution.slippage_per_share} slippage per share per side, charged as cash. Sizing is 99.9% of equity notional, one position at a time.</li>
+    <li><b>Sessions:</b> XNYS calendar (exchange_calendars ${esc(p.exchange_calendars)}). Flat ${R.execution.flatten_minutes} minutes before the calendar close; early closes, holidays and DST come from the calendar.</li>
+    <li><b>Half days:</b> the 13:00 closing-auction print on early-close days is outside the session, as on an RTH chart.</li>
+    <li><b>Metrics:</b> portfolio statistics use session-close equity; per-trade statistics use R from the initial stop and are not annualized. Backtesting.py's own Sharpe (a geometric-return formula) is stored in metrics.json but not shown.</li>
+    ${V.some(v => v.role === "benchmark") ? `<li><b>Benchmark:</b> long SPY from the 09:31 open to the calendar flatten each session (09:32 on a run's first session), with the same capital and costs. It is not buy-and-hold and has no R multiple.</li>` : ""}
+    <li><b>Windows:</b> ${W.map(w => esc(w.label) + " " + w.start + " → " + w.end).join("; ")}. Each window is a separate fresh-capital backtest, except the full history (running equity). The first ${R.coverage.warmup_sessions} sessions are warm-up and never scored.</li>
+    <li><b>Chance-max Sharpe (illustrative):</b> about ${num(R.trials.dsr_threshold_implied.sr_annualized,2)} annualized, the expected best Sharpe of ${R.trials.planned} independent zero-skill trials over ${R.trials.dsr_threshold_implied.n_obs} sessions. It is not a significance threshold and not a complete deflated Sharpe: the variants are correlated, and the corpus was explored before.</li>
+  </ul>`;
+  const prov = P.provenance || {}, ver = prov.verification || {}, src = prov.payload_source || {}, pc = prov.presentation_code || {}, cov = R.coverage;
+  const row = (k, v) => `<tr><td>${k}</td><td style="text-align:left">${v}</td></tr>`;
+  $("#provBody").innerHTML = `<div class="tw"><table class="t prov"><tbody>
+    ${row("Run", esc(R.run_id) + " (" + esc(R.run_utc) + ")")}
+    ${row("Experiment config", "SHA-256 " + esc(R.config_sha256))}
+    ${row("Computation code", "commit " + esc(R.code.git_commit) + " · tree " + esc(R.code.code_tree_sha256) + (R.code.git_dirty_paths?.length ? " · DIRTY" : " · clean"))}
+    ${row("Dataset", esc(R.dataset.dataset_id) + " · SHA-256 " + esc(R.dataset.sha256) + " · " + (R.dataset.rows ?? "—").toLocaleString("en-US") + " rows" + (R.dataset.mask ? " · mask " + esc(R.dataset.mask.id) + " (" + R.dataset.mask.bars_dropped + " bars dropped)" : " · no mask"))}
+    ${row("Data coverage", `${esc(cov.first_session)} → ${esc(cov.last_session)}, ${cov.sessions} sessions; ${cov.early_close_sessions} early closes; ${cov.sessions_with_missing_minutes} sessions with missing minutes (${cov.missing_minutes_total} minutes); first ${cov.warmup_sessions} sessions are warm-up`)}
+    ${row("Packages", esc(Object.entries(R.packages).map(([k, v]) => k + " " + v).join(", ")))}
+    ${src.path ? row("Data payload", `reused from ${esc(src.path)} (committed in ${esc((src.added_in_commit || "").slice(0, 12)) || "—"}, SHA-256 ${esc(src.sha256)}), computed under tree ${esc(prov.payload_computed_under_code_tree)}`) : ""}
+    ${ver.method ? row("Verification", `${esc(ver.method)}: ${(ver.values_compared || 0).toLocaleString("en-US")} values in ${esc((ver.sections_compared || []).join(", "))}; ${ver.mismatches} mismatches. Regenerated at commit ${esc((ver.pinned_commit || "").slice(0, 12))} with ${ver.pinned_modules?.length} computation modules byte-identical to it${ver.bars_regenerated ? "" : "; price bars NOT regenerated"}.`) : ""}
+    ${prov.findings_source ? row("Findings text", typeof prov.findings_source === "string" ? esc(prov.findings_source) : esc(prov.findings_source.path) + " (SHA-256 " + esc(prov.findings_source.sha256) + ")") : ""}
+    ${(P.related || []).map(x => row("Separate run", `${esc(x.label)}: ${esc(x.run_id)} · tree ${esc(x.code_tree_sha256)} · config ${esc(x.config_sha256)} · dataset ${esc(x.dataset_sha256)} · ${x.mask ? "mask " + esc(x.mask) : "no mask"}`)).join("")}
+    ${pc.code_tree_sha256 ? row("Presentation code", `${esc(prov.template)} · commit ${esc(pc.git_commit)} · tree ${esc(pc.code_tree_sha256)}${pc.git_dirty_paths?.length ? " · UNCOMMITTED: " + esc(pc.git_dirty_paths.join(", ")) : " · clean"}`) : ""}
+    ${row("Chance-max Sharpe (illustrative)", `${num(R.trials.dsr_threshold_implied.sr_annualized, 3)} annualized at N=${R.trials.planned}, T=${R.trials.dsr_threshold_implied.n_obs} sessions. Not a significance threshold.`)}
+  </tbody></table></div><details style="margin-top:10px"><summary>Experiment config (TOML)</summary><pre>${esc(DATA.config_toml)}</pre></details>`;
+}
+function download(name, text, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+function toCSV(rows){ if (!rows.length) return ""; const k = Object.keys(rows[0]); return [k.join(","), ...rows.map(r => k.map(x => { const s = r[x] == null ? "" : String(r[x]); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }).join(","))].join("\n"); }
+function renderDownloads(){
+  const b = [["Full-history trades (CSV)", () => download(R.run_id + "_trades.csv", toCSV(V.flatMap(v => v.trades.map(t => Object.assign({configuration: v.id}, t)))), "text/csv")],
+    ["Metrics (JSON)", () => download(R.run_id + "_metrics.json", JSON.stringify(Object.fromEntries(V.map(v => [v.id, v.results])), null, 2), "application/json")],
+    ["Run record (JSON)", () => download(R.run_id + "_run_record.json", JSON.stringify(R, null, 2), "application/json")],
+    ["Experiment config (TOML)", () => download(R.experiment.id + ".toml", DATA.config_toml, "text/plain")]];
+  $("#dlBtns").innerHTML = ""; b.forEach(([l, f]) => { const x = document.createElement("button"); x.className = "chip"; x.textContent = l; x.onclick = f; $("#dlBtns").appendChild(x); });
+}
+const DETAIL_RENDER = {"d-metrics": renderDetMetrics, "d-risk": renderRisk, "d-monthly": renderMonthly, "d-frag": renderFrag};
+
+/* ---------- views ---------- */
+const VIEWS = ["summary", "compare", "trades", "details"];
+function renderView(name){
+  if (name === "summary"){ renderSumChart(); }
+  if (name === "compare"){ renderCompare(); }
+  if (name === "trades"){ if (window.__DT) renderTrades(); renderDay(); }
+  if (name === "details"){ Object.entries(DETAIL_RENDER).forEach(([id, f]) => { if ($("#" + id).open) f(); }); }
+}
+function show(name, push){
+  if (!VIEWS.includes(name)) name = "summary";
+  state.view = name;
+  VIEWS.forEach(v => { $("#v-" + v).hidden = v !== name; $("#tab-" + v).setAttribute("aria-selected", String(v === name)); });
+  if (push && location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+  renderView(name);
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => show(b.dataset.view, true));
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go, true));
+addEventListener("hashchange", () => show(location.hash.slice(1), false));
+Object.keys(DETAIL_RENDER).forEach(id => $("#" + id).addEventListener("toggle", e => { if (e.target.open) DETAIL_RENDER[id](); }));
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => renderView(state.view), 200); });
+$("#themeBtn").onclick = () => { document.documentElement.dataset.theme = isDark() ? "light" : "dark"; renderAllStatic(); renderView(state.view); };
+
+/* ---------- controls ---------- */
+const winOpts = W.map(w => [w.id, `${w.label} (${w.start} → ${w.end})`]);
+fillSelect("#cmpWin", winOpts, state.cmpWin); fillSelect("#detWin", winOpts, state.detWin);
+fillSelect("#cmpSel", V.filter(v => v.id !== BASE).map(v => [v.id, `${v.label}${v.role === "independent" ? " (independent)" : v.role === "benchmark" ? " (benchmark)" : ""}`]), state.cmpSel);
+fillSelect("#trVar", V.map(v => [v.id, v.label]), state.trVar); fillSelect("#monVar", V.map(v => [v.id, v.label]), state.monVar);
+fillSelect("#cmpWinMetric", ALLM.map((m, i) => [String(i), m[0]]), String(ALLM.findIndex(m => m[0] === "Net return")));
+$("#cmpWinMetric").onchange = () => renderCompare();
+$("#cmpWin").onchange = e => { state.cmpWin = e.target.value; renderCompare(); };
+$("#cmpSel").onchange = e => { state.cmpSel = e.target.value; renderCompare(); };
+$("#cmpAll").onchange = e => { state.cmpAll = e.target.checked; renderCompare(); };
+$("#detWin").onchange = e => { state.detWin = e.target.value; renderDetMetrics(); };
+$("#monVar").onchange = e => { state.monVar = e.target.value; renderMonthly(); };
+$("#trVar").onchange = e => { state.trVar = e.target.value; state.picked = null; fillDays(); renderTrades(); renderDay(); };
+$("#trFrom").onchange = $("#trTo").onchange = () => { renderTrades(); };
+$("#daySel").onchange = () => { const p = state.picked && BY[state.trVar].trades.find(t => t.id === state.picked);
+  if (p && p.session !== $("#daySel").value) { state.picked = null; if (dt) dt.rows().invalidate("data").draw(false); } renderDay(); };
+$("#dayBase").onchange = () => renderDay();
+
+function renderAllStatic(){ renderSummaryText(); renderSumChips(); renderSumTable(); renderStatic(); renderDownloads(); }
+renderAllStatic(); fillDays();
+show(VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "summary", false);
+if (!window.__DT) addEventListener("dt-ready", () => { if (state.view === "trades") renderTrades(); });
+window.__REPORT_READY = true;
+})().catch(e => { document.querySelector("main").insertAdjacentHTML("afterbegin", `<div class="notice">This report could not load its data (${String(e).replace(/[<&]/g, "")}). Open it in a current browser.</div>`); });
+</script>
+</body>
+</html>

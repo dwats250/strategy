@@ -17,6 +17,9 @@ reconnaissance, the writing, and the committing.
   scope, paths, outputs, completion criteria, and stop conditions. **If no phase is explicitly
   authorized, none is active.** Chat history and git history are not authority.
 
+**Continuity for the strategy lab (not authority):** current state in `docs/lab/HANDOFF.md`, direction in
+`docs/research/ROADMAP.md`, results in `docs/research/STRATEGY_RESEARCH_LEDGER.md`; operations in `START_HERE.md`.
+
 Neither this file nor `AGENTS.md` is a workflow authority. They point; they do not govern.
 
 ## Scope discipline

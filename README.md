@@ -1,7 +1,11 @@
 # strategy
 
-A quantitative trading research lab: Pine Script indicators/strategies,
-pre-registered studies, and the raw exports/analysis behind them.
+A quantitative trading research lab: a reusable Python backtesting and reporting
+package (`src/stratlab`), pre-registered studies, Pine Script indicators, and the
+raw exports/analysis behind them.
+
+**New here? Read [`START_HERE.md`](START_HERE.md).** Current state:
+[`docs/lab/HANDOFF.md`](docs/lab/HANDOFF.md).
 
 ## Layout
 
@@ -21,6 +25,16 @@ pre-registered studies, and the raw exports/analysis behind them.
   as of the initial reorganization into this layout, for audit purposes.
 
 ## Studies
+
+- [`vwap-ema9-2026-10`](studies/vwap-ema9-2026-10/README.md) — first study on the
+  reusable lab: the lab-defined VWR (VWAP touch-and-reclaim) family and a provisional
+  interpretation of an Instagram VWAP+EMA9 reel (IG-AUSTIN-P0). **Seam 2: frozen, run
+  once, negative.** Every trial lost after costs and trailed a SPY session-hold benchmark on data to
+  2026-08-21. See `analysis/VWR0_EXP_FINDINGS_2026-10-16.md`.
+- [`vwap-mr-2026-10`](studies/vwap-mr-2026-10/README.md) — VMR-L VWAP mean reversion, the
+  lab's second family and its reuse demonstration. **Proposed, not run.**
+- `vwap-lab-2026-08` — August VWAP lab (branch history): VDC continuation **no edge**,
+  FPC worse, MIM/ODR **family dead**. Its corpus is reused by identity.
 
 - [`spy-orb-first-break`](studies/spy-orb-first-break/README.md) — SPY
   opening-range first-break event study. **Closed**: no demonstrated edge.

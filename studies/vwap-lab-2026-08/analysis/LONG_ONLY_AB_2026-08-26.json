@@ -1,0 +1,258 @@
+{
+  "role": "Long-only VDC path-dependent A/B (control symmetric V0 vs long-only V0); screened primary, raw sensitivity",
+  "python": "3.13.5",
+  "budget": "one new interpreted VDC-development config; 7/18 -> 8/18",
+  "views": {
+    "screened": {
+      "control_symmetric": {
+        "n": 1354,
+        "net_usd": -86.6386,
+        "cumulative_r": 12.186614,
+        "expectancy_usd": -0.063987,
+        "expectancy_r": 0.009,
+        "median_r": -0.841052,
+        "profit_factor": 0.88548,
+        "win_rate_pct": 21.7134,
+        "avg_winner_r": 2.986633,
+        "avg_loser_r": -0.818415,
+        "max_dd_usd": 131.9844,
+        "max_dd_r": 75.717825,
+        "avg_bars_held": 12.6152,
+        "median_bars_held": 5.0,
+        "long": {
+          "n": 701,
+          "net_pnl": 31.0515,
+          "expectancy": 0.044296,
+          "profit_factor": 1.092522
+        },
+        "short": {
+          "n": 653,
+          "net_pnl": -117.6901,
+          "expectancy": -0.18023,
+          "profit_factor": 0.720403
+        },
+        "bootstrap_mean_expectancy_usd": {
+          "mean": -0.063987,
+          "iid_ci95": [
+            -0.176498,
+            0.056218
+          ],
+          "block_ci95": [
+            -0.210546,
+            0.071518
+          ]
+        },
+        "bootstrap_mean_expectancy_r_iid_ci95": [
+          -0.098035,
+          0.11356
+        ],
+        "outliers": {
+          "gross_profit": 669.9,
+          "best_10_pct_of_gross": 21.9528,
+          "net_excl_best_1": -131.4486,
+          "net_excl_best_5": -189.5736,
+          "net_excl_best_10": -233.7004
+        },
+        "pct_profitable_months": 31.25,
+        "max_consecutive_losses": 28
+      },
+      "variant_long_only": {
+        "n": 701,
+        "net_usd": 31.0515,
+        "cumulative_r": 33.108094,
+        "expectancy_usd": 0.044296,
+        "expectancy_r": 0.04723,
+        "median_r": -0.848,
+        "profit_factor": 1.092522,
+        "win_rate_pct": 23.3951,
+        "avg_winner_r": 2.910641,
+        "avg_loser_r": -0.8288,
+        "max_dd_usd": 42.3908,
+        "max_dd_r": 29.773876,
+        "avg_bars_held": 14.0884,
+        "median_bars_held": 5,
+        "long": {
+          "n": 701,
+          "net_pnl": 31.0515,
+          "expectancy": 0.044296,
+          "profit_factor": 1.092522
+        },
+        "short": {
+          "n": 0,
+          "net_pnl": 0,
+          "expectancy": null,
+          "profit_factor": null
+        },
+        "bootstrap_mean_expectancy_usd": {
+          "mean": 0.044296,
+          "iid_ci95": [
+            -0.096956,
+            0.241907
+          ],
+          "block_ci95": [
+            -0.085727,
+            0.199472
+          ]
+        },
+        "bootstrap_mean_expectancy_r_iid_ci95": [
+          -0.095652,
+          0.207832
+        ],
+        "outliers": {
+          "gross_profit": 366.6629,
+          "best_10_pct_of_gross": 28.7081,
+          "net_excl_best_1": -13.7585,
+          "net_excl_best_5": -45.7653,
+          "net_excl_best_10": -74.2103
+        },
+        "pct_profitable_months": 62.5,
+        "max_consecutive_losses": 18
+      },
+      "path_difference": {
+        "symmetric_long_entries": 701,
+        "long_only_entries": 701,
+        "retained_same_entry": 701,
+        "retained_identical_exit": 701,
+        "changed_exit_same_entry": 0,
+        "path_created_long_entries": 0,
+        "path_created_pnl": 0,
+        "lost_symmetric_long_entries": 0,
+        "lost_pnl": 0,
+        "long_entry_jaccard": 1.0,
+        "verified_by_rerun": true,
+        "interpretation": "path-created=lost=changed=0 means the rerun found NO path divergence: long-only coincides with symmetric's long book here \u2014 a VERIFIED result (V0 longs and shorts occupy mutually-exclusive VWAP regimes and shorts exit via the thesis rule at the regime boundary before a long could enter), NOT an assumed 'V0 minus shorts'."
+      }
+    },
+    "raw": {
+      "control_symmetric": {
+        "n": 1363,
+        "net_usd": -111.6136,
+        "cumulative_r": -12.402952,
+        "expectancy_usd": -0.081888,
+        "expectancy_r": -0.0091,
+        "median_r": -0.863636,
+        "profit_factor": 0.855134,
+        "win_rate_pct": 21.35,
+        "avg_winner_r": 2.97207,
+        "avg_loser_r": -0.819883,
+        "max_dd_usd": 143.9365,
+        "max_dd_r": 89.003386,
+        "avg_bars_held": 12.5018,
+        "median_bars_held": 5,
+        "long": {
+          "n": 708,
+          "net_pnl": 17.1765,
+          "expectancy": 0.024261,
+          "profit_factor": 1.049743
+        },
+        "short": {
+          "n": 655,
+          "net_pnl": -128.7901,
+          "expectancy": -0.196626,
+          "profit_factor": 0.697077
+        },
+        "bootstrap_mean_expectancy_usd": {
+          "mean": -0.081888,
+          "iid_ci95": [
+            -0.189816,
+            0.032025
+          ],
+          "block_ci95": [
+            -0.230928,
+            0.048333
+          ]
+        },
+        "bootstrap_mean_expectancy_r_iid_ci95": [
+          -0.106747,
+          0.096433
+        ],
+        "outliers": {
+          "gross_profit": 658.845,
+          "best_10_pct_of_gross": 22.3212,
+          "net_excl_best_1": -156.4236,
+          "net_excl_best_5": -214.5486,
+          "net_excl_best_10": -258.6754
+        },
+        "pct_profitable_months": 31.25,
+        "max_consecutive_losses": 28
+      },
+      "variant_long_only": {
+        "n": 708,
+        "net_usd": 17.1765,
+        "cumulative_r": 18.87787,
+        "expectancy_usd": 0.024261,
+        "expectancy_r": 0.026664,
+        "median_r": -0.901245,
+        "profit_factor": 1.049743,
+        "win_rate_pct": 23.0226,
+        "avg_winner_r": 2.890328,
+        "avg_loser_r": -0.831334,
+        "max_dd_usd": 44.3208,
+        "max_dd_r": 31.783935,
+        "avg_bars_held": 13.9054,
+        "median_bars_held": 5.0,
+        "long": {
+          "n": 708,
+          "net_pnl": 17.1765,
+          "expectancy": 0.024261,
+          "profit_factor": 1.049743
+        },
+        "short": {
+          "n": 0,
+          "net_pnl": 0,
+          "expectancy": null,
+          "profit_factor": null
+        },
+        "bootstrap_mean_expectancy_usd": {
+          "mean": 0.024261,
+          "iid_ci95": [
+            -0.124195,
+            0.207877
+          ],
+          "block_ci95": [
+            -0.104436,
+            0.16958
+          ]
+        },
+        "bootstrap_mean_expectancy_r_iid_ci95": [
+          -0.119609,
+          0.181581
+        ],
+        "outliers": {
+          "gross_profit": 362.4779,
+          "best_10_pct_of_gross": 29.0395,
+          "net_excl_best_1": -27.6335,
+          "net_excl_best_5": -59.6403,
+          "net_excl_best_10": -88.0853
+        },
+        "pct_profitable_months": 56.25,
+        "max_consecutive_losses": 18
+      },
+      "path_difference": {
+        "symmetric_long_entries": 708,
+        "long_only_entries": 708,
+        "retained_same_entry": 708,
+        "retained_identical_exit": 708,
+        "changed_exit_same_entry": 0,
+        "path_created_long_entries": 0,
+        "path_created_pnl": 0,
+        "lost_symmetric_long_entries": 0,
+        "lost_pnl": 0,
+        "long_entry_jaccard": 1.0,
+        "verified_by_rerun": true,
+        "interpretation": "path-created=lost=changed=0 means the rerun found NO path divergence: long-only coincides with symmetric's long book here \u2014 a VERIFIED result (V0 longs and shorts occupy mutually-exclusive VWAP regimes and shorts exit via the thesis rule at the regime boundary before a long could enter), NOT an assumed 'V0 minus shorts'."
+      }
+    }
+  },
+  "classification": {
+    "favorable_screened": true,
+    "favorable_raw": true,
+    "raw_screened_qualitative_agreement": true,
+    "bootstrap_r_ci_excludes_zero_both_views": false,
+    "survives_best10_removal_both_views": false,
+    "disposition": "LONG-ONLY DEVELOPMENT EFFECT MODEST / UNCERTAIN",
+    "development_generated": true,
+    "note": "hypothesis was generated from development analyses (long R+ / short R- across every ATR-stop arm); a favorable development effect is NOT independent confirmation."
+  },
+  "validation_recommendation": "A separately PRE-REGISTERED validation look appears plausibly warranted: the long-only effect is directionally favorable and consistent across raw and screened (removes the demonstrated short-side R-drag). BUT it is development-generated and statistically MODEST \u2014 the mean-expectancy bootstrap CI straddles zero in both $ and R, and the positive net does NOT survive removing the best 10 trades \u2014 so any validation must be strict, pre-registered, single-look, with a realistic (small) expected effect. Validation is NOT inspected in this packet."
+}

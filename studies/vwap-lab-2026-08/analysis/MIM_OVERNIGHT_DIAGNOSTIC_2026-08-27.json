@@ -1,0 +1,105 @@
+{
+  "role": "TRADE-BLIND overnight-gap / corporate-action diagnostic for MIM-0; no MIM predictor, no late window, no regression, no P/L",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "corpus_adjustment": "split-adjusted, DIVIDEND-UNADJUSTED (Polygon adjusted=true = splits only; data/CORPUS_SPY_1m_2024-09-01_2026-08-22.md; R0 ledger 'split-only ... NOT ADJ')",
+  "development_window": [
+    "2024-09-03",
+    "2025-12-31"
+  ],
+  "n_overnight_gaps": 333,
+  "abs_gap_bps_quantiles": {
+    "p50": 27.61,
+    "p90": 99.4,
+    "p95": 120.92,
+    "p99": 304.45,
+    "max": 346.06
+  },
+  "twelve_most_negative_overnight_gaps": [
+    {
+      "date": "2025-04-03",
+      "prev_date": "2025-04-02",
+      "gap_bps": -346.06,
+      "prev_close": 564.65,
+      "open": 545.11
+    },
+    {
+      "date": "2025-04-07",
+      "prev_date": "2025-04-04",
+      "gap_bps": -322.65,
+      "prev_close": 505.5,
+      "open": 489.19
+    },
+    {
+      "date": "2025-04-04",
+      "prev_date": "2025-04-03",
+      "gap_bps": -259.84,
+      "prev_close": 537.64,
+      "open": 523.67
+    },
+    {
+      "date": "2025-01-27",
+      "prev_date": "2025-01-24",
+      "gap_bps": -216.14,
+      "prev_close": 607.95,
+      "open": 594.81
+    },
+    {
+      "date": "2025-04-10",
+      "prev_date": "2025-04-09",
+      "gap_bps": -206.12,
+      "prev_close": 543.37,
+      "open": 532.17
+    },
+    {
+      "date": "2025-02-03",
+      "prev_date": "2025-01-31",
+      "gap_bps": -151.71,
+      "prev_close": 601.8,
+      "open": 592.67
+    },
+    {
+      "date": "2025-03-10",
+      "prev_date": "2025-03-07",
+      "gap_bps": -143.44,
+      "prev_close": 575.85,
+      "open": 567.59
+    },
+    {
+      "date": "2025-03-06",
+      "prev_date": "2025-03-05",
+      "gap_bps": -129.83,
+      "prev_close": 583.05,
+      "open": 575.48
+    },
+    {
+      "date": "2025-05-23",
+      "prev_date": "2025-05-22",
+      "gap_bps": -120.92,
+      "prev_close": 583.03,
+      "open": 575.98
+    },
+    {
+      "date": "2024-12-30",
+      "prev_date": "2024-12-27",
+      "gap_bps": -119.33,
+      "prev_close": 594.99,
+      "open": 587.89
+    },
+    {
+      "date": "2025-04-30",
+      "prev_date": "2025-04-29",
+      "gap_bps": -118.56,
+      "prev_close": 554.14,
+      "open": 547.57
+    },
+    {
+      "date": "2025-09-02",
+      "prev_date": "2025-08-29",
+      "gap_bps": -116.89,
+      "prev_close": 645.04,
+      "open": 637.5
+    }
+  ],
+  "note": "Distinguishing a dividend ex-date drop from a genuine overnight news gap using OHLCV alone requires a threshold heuristic (a guess) that would also drop real momentum gaps. Clean ex-dividend identification needs an external SPY corporate-action calendar, which is not in the repository and is not fetched in this packet."
+}

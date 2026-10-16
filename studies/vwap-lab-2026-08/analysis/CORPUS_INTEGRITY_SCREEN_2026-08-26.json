@@ -1,0 +1,6828 @@
+{
+  "role": "TRADE-BLIND SPY corpus integrity screen (data properties only)",
+  "corpus": "data/cache/canonical/SPY_1m_2024-09-01_2026-08-22.csv.gz",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "frozen_thresholds": {
+    "K_ISO": 15.0,
+    "PCT_FLOOR": 0.003,
+    "REV_FRAC": 0.5,
+    "VOL_OUTLIER_MULT": 40.0
+  },
+  "total_1m_bars": 422657,
+  "structural": {
+    "timestamp_duplicates": 0,
+    "timestamp_monotonic": true,
+    "ohlc_impossible_count": 0
+  },
+  "counts": {
+    "flagged_1m_total": 166,
+    "high_confidence": 9,
+    "high_confidence_RTH": 9,
+    "high_confidence_EXT": 0,
+    "plausible_extreme_print": 157,
+    "plausible_RTH": 0,
+    "plausible_EXT": 157
+  },
+  "sessions_affected": 123,
+  "date_clusters_multi_flag": {
+    "2024-09-06": [
+      "08:00",
+      "08:30",
+      "16:01"
+    ],
+    "2024-11-01": [
+      "08:35",
+      "09:11"
+    ],
+    "2024-12-19": [
+      "08:00",
+      "08:09"
+    ],
+    "2024-12-20": [
+      "08:00",
+      "11:10"
+    ],
+    "2025-01-27": [
+      "08:00",
+      "08:27"
+    ],
+    "2025-02-26": [
+      "16:20",
+      "16:21"
+    ],
+    "2025-03-06": [
+      "08:00",
+      "18:12"
+    ],
+    "2025-03-12": [
+      "08:00",
+      "08:14",
+      "16:27"
+    ],
+    "2025-03-14": [
+      "08:00",
+      "13:44"
+    ],
+    "2025-04-01": [
+      "08:00",
+      "08:38"
+    ],
+    "2025-04-04": [
+      "08:00",
+      "16:06"
+    ],
+    "2025-04-16": [
+      "16:01",
+      "14:31"
+    ],
+    "2025-04-24": [
+      "07:39",
+      "08:00"
+    ],
+    "2025-04-30": [
+      "16:26",
+      "16:32"
+    ],
+    "2025-05-13": [
+      "08:00",
+      "08:30",
+      "09:11"
+    ],
+    "2025-05-16": [
+      "08:00",
+      "08:42"
+    ],
+    "2025-05-19": [
+      "12:05",
+      "12:18",
+      "12:20"
+    ],
+    "2025-05-22": [
+      "08:00",
+      "08:12"
+    ],
+    "2025-06-16": [
+      "08:00",
+      "08:51"
+    ],
+    "2025-07-09": [
+      "08:00",
+      "16:45"
+    ],
+    "2025-08-04": [
+      "16:00",
+      "16:08"
+    ],
+    "2025-08-07": [
+      "08:00",
+      "09:24"
+    ],
+    "2025-08-08": [
+      "09:24",
+      "16:21"
+    ],
+    "2025-11-19": [
+      "08:01",
+      "18:00"
+    ],
+    "2025-11-24": [
+      "08:00",
+      "08:53"
+    ],
+    "2026-01-14": [
+      "08:59",
+      "16:11"
+    ],
+    "2026-03-20": [
+      "08:04",
+      "16:37"
+    ],
+    "2026-03-23": [
+      "08:00",
+      "08:02"
+    ],
+    "2026-03-30": [
+      "08:00",
+      "08:25"
+    ],
+    "2026-04-01": [
+      "07:16",
+      "08:00",
+      "08:39"
+    ],
+    "2026-04-13": [
+      "07:50",
+      "08:31"
+    ],
+    "2026-06-10": [
+      "08:30",
+      "16:01"
+    ],
+    "2026-06-26": [
+      "04:01",
+      "08:19"
+    ],
+    "2026-07-29": [
+      "04:08",
+      "16:00",
+      "17:07",
+      "17:09"
+    ],
+    "2026-08-20": [
+      "08:17",
+      "08:30",
+      "08:48"
+    ]
+  },
+  "known_examples_rediscovered": [
+    "2024-12-20T11:10",
+    "2025-03-14T13:44",
+    "2025-04-16T14:31",
+    "2025-05-27T13:13"
+  ],
+  "known_examples_all_rediscovered": true,
+  "high_confidence_flags": [
+    {
+      "key": "2024-10-01T11:32",
+      "t_ms": 1727796720000,
+      "et_iso": "2024-10-01T11:32:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 568.16,
+      "h": 574.0622,
+      "l": 567.72,
+      "c": 568.1,
+      "v": 714949.0,
+      "vw": 572.2341,
+      "n": 2477,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 5.5822,
+        "excursion_over_scale": 16.92,
+        "excursion_pct_of_price": 0.9826,
+        "session_median_range": 0.33,
+        "reverting_wick_pts": 5.9022,
+        "volume": 714949.0,
+        "session_median_volume": 124220.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 568.04,
+          "h": 568.2,
+          "l": 567.96,
+          "c": 568.19,
+          "v": 134758.0
+        },
+        "next": {
+          "o": 568.1,
+          "h": 568.48,
+          "l": 568.0006,
+          "c": 568.36,
+          "v": 180277.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-20T11:10",
+      "t_ms": 1734711000000,
+      "et_iso": "2024-12-20T11:10:00-05:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 590.46,
+      "h": 590.64,
+      "l": 581.5183,
+      "c": 590.59,
+      "v": 7877215.0,
+      "vw": 581.646,
+      "n": 1529,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 8.7617,
+        "excursion_over_scale": 25.03,
+        "excursion_pct_of_price": 1.4837,
+        "session_median_range": 0.35,
+        "reverting_wick_pts": 8.9417,
+        "volume": 7877215.0,
+        "session_median_volume": 140692.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 590.7,
+          "h": 590.77,
+          "l": 590.28,
+          "c": 590.435,
+          "v": 224449.0
+        },
+        "next": {
+          "o": 590.5821,
+          "h": 591.0,
+          "l": 590.55,
+          "c": 590.84,
+          "v": 153252.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-14T13:44",
+      "t_ms": 1741974240000,
+      "et_iso": "2025-03-14T13:44:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 560.97,
+      "h": 561.01,
+      "l": 551.4917,
+      "c": 560.8,
+      "v": 152674.0,
+      "vw": 555.1829,
+      "n": 1075,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 9.1883,
+        "excursion_over_scale": 28.71,
+        "excursion_pct_of_price": 1.6382,
+        "session_median_range": 0.32,
+        "reverting_wick_pts": 9.3083,
+        "volume": 152674.0,
+        "session_median_volume": 92960.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 560.98,
+          "h": 561.061,
+          "l": 560.9,
+          "c": 560.975,
+          "v": 39306.0
+        },
+        "next": {
+          "o": 560.76,
+          "h": 560.93,
+          "l": 560.68,
+          "c": 560.7054,
+          "v": 81728.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-16T14:31",
+      "t_ms": 1744828260000,
+      "et_iso": "2025-04-16T14:31:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 525.6289,
+      "h": 537.8854,
+      "l": 525.57,
+      "c": 525.7,
+      "v": 166941.0,
+      "vw": 533.0928,
+      "n": 1121,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 11.7057,
+        "excursion_over_scale": 25.17,
+        "excursion_pct_of_price": 2.2268,
+        "session_median_range": 0.465,
+        "reverting_wick_pts": 12.1854,
+        "volume": 166941.0,
+        "session_median_volume": 120895.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 526.0,
+          "h": 526.1797,
+          "l": 525.54,
+          "c": 525.615,
+          "v": 150314.0
+        },
+        "next": {
+          "o": 525.715,
+          "h": 525.83,
+          "l": 525.3204,
+          "c": 525.69,
+          "v": 100303.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-19T12:05",
+      "t_ms": 1747670700000,
+      "et_iso": "2025-05-19T12:05:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 593.33,
+      "h": 593.33,
+      "l": 588.9495,
+      "c": 593.135,
+      "v": 82332.0,
+      "vw": 593.1851,
+      "n": 1064,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.1305,
+        "excursion_over_scale": 19.4,
+        "excursion_pct_of_price": 0.6963,
+        "session_median_range": 0.2129,
+        "reverting_wick_pts": 4.1855,
+        "volume": 82332.0,
+        "session_median_volume": 100824.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 593.1999,
+          "h": 593.37,
+          "l": 593.19,
+          "c": 593.34,
+          "v": 63124.0
+        },
+        "next": {
+          "o": 593.11,
+          "h": 593.26,
+          "l": 593.08,
+          "c": 593.13,
+          "v": 57416.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-19T12:18",
+      "t_ms": 1747671480000,
+      "et_iso": "2025-05-19T12:18:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 593.54,
+      "h": 593.565,
+      "l": 589.27,
+      "c": 593.4,
+      "v": 96262.0,
+      "vw": 593.4464,
+      "n": 1193,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.88,
+        "excursion_over_scale": 18.22,
+        "excursion_pct_of_price": 0.6538,
+        "session_median_range": 0.2129,
+        "reverting_wick_pts": 4.13,
+        "volume": 96262.0,
+        "session_median_volume": 100824.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 593.46,
+          "h": 593.62,
+          "l": 593.44,
+          "c": 593.55,
+          "v": 79019.0
+        },
+        "next": {
+          "o": 593.4,
+          "h": 593.4051,
+          "l": 593.15,
+          "c": 593.17,
+          "v": 48866.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-19T12:20",
+      "t_ms": 1747671600000,
+      "et_iso": "2025-05-19T12:20:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 593.16,
+      "h": 593.49,
+      "l": 589.32,
+      "c": 593.345,
+      "v": 85064.0,
+      "vw": 593.313,
+      "n": 1201,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.83,
+        "excursion_over_scale": 17.99,
+        "excursion_pct_of_price": 0.6456,
+        "session_median_range": 0.2129,
+        "reverting_wick_pts": 3.84,
+        "volume": 85064.0,
+        "session_median_volume": 100824.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 593.4,
+          "h": 593.4051,
+          "l": 593.15,
+          "c": 593.17,
+          "v": 48866.0
+        },
+        "next": {
+          "o": 593.35,
+          "h": 593.43,
+          "l": 593.285,
+          "c": 593.38,
+          "v": 35631.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-27T13:13",
+      "t_ms": 1748365980000,
+      "et_iso": "2025-05-27T13:13:00-04:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 589.98,
+      "h": 590.11,
+      "l": 578.43,
+      "c": 590.1,
+      "v": 124287.0,
+      "vw": 589.7828,
+      "n": 1461,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 6.9564,
+        "excursion_over_scale": 42.2,
+        "excursion_pct_of_price": 1.179,
+        "session_median_range": 0.1649,
+        "reverting_wick_pts": 11.55,
+        "volume": 124287.0,
+        "session_median_volume": 125200.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 589.92,
+          "h": 589.98,
+          "l": 589.9,
+          "c": 589.97,
+          "v": 98770.0
+        },
+        "next": {
+          "o": 590.1,
+          "h": 590.19,
+          "l": 585.3864,
+          "c": 590.05,
+          "v": 98629.0
+        }
+      }
+    },
+    {
+      "key": "2025-12-22T15:12",
+      "t_ms": 1766434320000,
+      "et_iso": "2025-12-22T15:12:00-05:00",
+      "session": "RTH",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "HIGH-CONFIDENCE DATA ANOMALY",
+      "o": 684.8744,
+      "h": 684.91,
+      "l": 680.5868,
+      "c": 684.7962,
+      "v": 676757.0,
+      "vw": 681.1337,
+      "n": 1370,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.1132,
+        "excursion_over_scale": 31.64,
+        "excursion_pct_of_price": 0.6006,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 4.2094,
+        "volume": 676757.0,
+        "session_median_volume": 104520.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 684.805,
+          "h": 684.89,
+          "l": 684.78,
+          "c": 684.88,
+          "v": 120095.0
+        },
+        "next": {
+          "o": 684.79,
+          "h": 684.855,
+          "l": 684.7,
+          "c": 684.825,
+          "v": 170028.0
+        }
+      }
+    }
+  ],
+  "plausible_flags": [
+    {
+      "key": "2024-09-06T08:00",
+      "t_ms": 1725624000000,
+      "et_iso": "2024-09-06T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 546.05,
+      "h": 549.06,
+      "l": 545.55,
+      "c": 546.78,
+      "v": 65197.0,
+      "vw": 546.7297,
+      "n": 946,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.16,
+        "excursion_over_scale": 43.2,
+        "excursion_pct_of_price": 0.3953,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.28,
+        "volume": 65197.0,
+        "session_median_volume": 2018.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 546.75,
+          "h": 546.79,
+          "l": 546.75,
+          "c": 546.79,
+          "v": 3655.0
+        },
+        "next": {
+          "o": 546.87,
+          "h": 546.9,
+          "l": 545.68,
+          "c": 546.9,
+          "v": 4693.0
+        }
+      }
+    },
+    {
+      "key": "2024-09-06T08:30",
+      "t_ms": 1725625800000,
+      "et_iso": "2024-09-06T08:30:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 545.7,
+      "h": 549.76,
+      "l": 545.47,
+      "c": 547.79,
+      "v": 140629.0,
+      "vw": 548.1867,
+      "n": 904,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.97,
+        "excursion_over_scale": 39.4,
+        "excursion_pct_of_price": 0.3603,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 1.97,
+        "volume": 140629.0,
+        "session_median_volume": 2018.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 547.0,
+          "h": 547.13,
+          "l": 545.71,
+          "c": 546.16,
+          "v": 11076.0
+        },
+        "next": {
+          "o": 547.46,
+          "h": 547.79,
+          "l": 546.54,
+          "c": 547.29,
+          "v": 109806.0
+        }
+      }
+    },
+    {
+      "key": "2024-09-06T16:01",
+      "t_ms": 1725652860000,
+      "et_iso": "2024-09-06T16:01:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 539.81,
+      "h": 542.91,
+      "l": 539.8,
+      "c": 539.97,
+      "v": 395386.0,
+      "vw": 546.0496,
+      "n": 539,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.43,
+        "excursion_over_scale": 48.6,
+        "excursion_pct_of_price": 0.4501,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.94,
+        "volume": 395386.0,
+        "session_median_volume": 2018.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 540.42,
+          "h": 540.48,
+          "l": 539.74,
+          "c": 539.87,
+          "v": 468027.0
+        },
+        "next": {
+          "o": 539.97,
+          "h": 540.16,
+          "l": 539.93,
+          "c": 540.135,
+          "v": 335117.0
+        }
+      }
+    },
+    {
+      "key": "2024-10-31T09:14",
+      "t_ms": 1730380440000,
+      "et_iso": "2024-10-31T09:14:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 576.33,
+      "h": 580.01,
+      "l": 576.289,
+      "c": 576.29,
+      "v": 71093.0,
+      "vw": 579.8429,
+      "n": 65,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.66,
+        "excursion_over_scale": 61.0,
+        "excursion_pct_of_price": 0.6351,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 3.68,
+        "volume": 71093.0,
+        "session_median_volume": 2611.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 576.3,
+          "h": 576.33,
+          "l": 576.3,
+          "c": 576.33,
+          "v": 2641.0
+        },
+        "next": {
+          "o": 576.29,
+          "h": 576.35,
+          "l": 576.29,
+          "c": 576.34,
+          "v": 6144.0
+        }
+      }
+    },
+    {
+      "key": "2024-11-01T08:35",
+      "t_ms": 1730464500000,
+      "et_iso": "2024-11-01T08:35:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 571.67,
+      "h": 571.92,
+      "l": 569.8,
+      "c": 571.85,
+      "v": 9727.0,
+      "vw": 571.6294,
+      "n": 172,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.86,
+        "excursion_over_scale": 60.88,
+        "excursion_pct_of_price": 0.3253,
+        "session_median_range": 0.0306,
+        "reverting_wick_pts": 1.87,
+        "volume": 9727.0,
+        "session_median_volume": 1633.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 571.75,
+          "h": 571.86,
+          "l": 571.66,
+          "c": 571.75,
+          "v": 18038.0
+        },
+        "next": {
+          "o": 571.9,
+          "h": 572.05,
+          "l": 571.9,
+          "c": 571.95,
+          "v": 36513.0
+        }
+      }
+    },
+    {
+      "key": "2024-11-01T09:11",
+      "t_ms": 1730466660000,
+      "et_iso": "2024-11-01T09:11:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 571.32,
+      "h": 571.39,
+      "l": 568.64,
+      "c": 571.35,
+      "v": 647048.0,
+      "vw": 568.6852,
+      "n": 159,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.7,
+        "excursion_over_scale": 88.38,
+        "excursion_pct_of_price": 0.4726,
+        "session_median_range": 0.0306,
+        "reverting_wick_pts": 2.68,
+        "volume": 647048.0,
+        "session_median_volume": 1633.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 571.55,
+          "h": 571.61,
+          "l": 571.34,
+          "c": 571.34,
+          "v": 17120.0
+        },
+        "next": {
+          "o": 571.37,
+          "h": 571.46,
+          "l": 571.37,
+          "c": 571.46,
+          "v": 1237.0
+        }
+      }
+    },
+    {
+      "key": "2024-11-19T08:00",
+      "t_ms": 1732021200000,
+      "et_iso": "2024-11-19T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 587.0,
+      "h": 589.35,
+      "l": 584.6396,
+      "c": 587.01,
+      "v": 45834.0,
+      "vw": 587.7996,
+      "n": 726,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.3304,
+        "excursion_over_scale": 51.84,
+        "excursion_pct_of_price": 0.397,
+        "session_median_range": 0.045,
+        "reverting_wick_pts": 2.3604,
+        "volume": 45834.0,
+        "session_median_volume": 1297.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 587.04,
+          "h": 587.04,
+          "l": 587.04,
+          "c": 587.04,
+          "v": 635.0
+        },
+        "next": {
+          "o": 586.98,
+          "h": 586.98,
+          "l": 586.97,
+          "c": 586.97,
+          "v": 2379.0
+        }
+      }
+    },
+    {
+      "key": "2024-11-20T16:39",
+      "t_ms": 1732138740000,
+      "et_iso": "2024-11-20T16:39:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 589.78,
+      "h": 589.82,
+      "l": 587.2893,
+      "c": 589.62,
+      "v": 4263.0,
+      "vw": 589.0983,
+      "n": 54,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.3007,
+        "excursion_over_scale": 46.01,
+        "excursion_pct_of_price": 0.3901,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.3307,
+        "volume": 4263.0,
+        "session_median_volume": 1445.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 589.59,
+          "h": 589.7799,
+          "l": 589.59,
+          "c": 589.75,
+          "v": 2817.0
+        },
+        "next": {
+          "o": 589.62,
+          "h": 589.77,
+          "l": 589.5901,
+          "c": 589.74,
+          "v": 2773.0
+        }
+      }
+    },
+    {
+      "key": "2024-11-21T08:00",
+      "t_ms": 1732194000000,
+      "et_iso": "2024-11-21T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 591.18,
+      "h": 592.65,
+      "l": 588.0,
+      "c": 591.82,
+      "v": 68840.0,
+      "vw": 590.8971,
+      "n": 938,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.57,
+        "excursion_over_scale": 71.4,
+        "excursion_pct_of_price": 0.6036,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 3.18,
+        "volume": 68840.0,
+        "session_median_volume": 1469.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 591.6,
+          "h": 591.6,
+          "l": 591.57,
+          "c": 591.6,
+          "v": 1859.0
+        },
+        "next": {
+          "o": 591.81,
+          "h": 591.81,
+          "l": 591.64,
+          "c": 591.64,
+          "v": 15519.0
+        }
+      }
+    },
+    {
+      "key": "2024-11-26T08:00",
+      "t_ms": 1732626000000,
+      "et_iso": "2024-11-26T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 599.2,
+      "h": 599.2,
+      "l": 596.73,
+      "c": 599.16,
+      "v": 44087.0,
+      "vw": 598.6472,
+      "n": 638,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.13,
+        "excursion_over_scale": 106.5,
+        "excursion_pct_of_price": 0.3555,
+        "session_median_range": 0.02,
+        "reverting_wick_pts": 2.43,
+        "volume": 44087.0,
+        "session_median_volume": 1170.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 599.15,
+          "h": 599.15,
+          "l": 599.15,
+          "c": 599.15,
+          "v": 450.0
+        },
+        "next": {
+          "o": 599.18,
+          "h": 599.26,
+          "l": 598.86,
+          "c": 599.22,
+          "v": 14817.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-04T08:17",
+      "t_ms": 1733318220000,
+      "et_iso": "2024-12-04T08:17:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 605.76,
+      "h": 605.76,
+      "l": 603.91,
+      "c": 605.7,
+      "v": 1249.0,
+      "vw": 605.0018,
+      "n": 42,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.83,
+        "excursion_over_scale": 183.0,
+        "excursion_pct_of_price": 0.3021,
+        "session_median_range": 0.01,
+        "reverting_wick_pts": 1.79,
+        "volume": 1249.0,
+        "session_median_volume": 1097.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 605.75,
+          "h": 605.75,
+          "l": 605.74,
+          "c": 605.74,
+          "v": 1521.0
+        },
+        "next": {
+          "o": 605.77,
+          "h": 605.81,
+          "l": 605.77,
+          "c": 605.81,
+          "v": 624.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-11T16:12",
+      "t_ms": 1733951520000,
+      "et_iso": "2024-12-11T16:12:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 607.12,
+      "h": 607.16,
+      "l": 602.8,
+      "c": 607.1,
+      "v": 67456.0,
+      "vw": 606.9533,
+      "n": 183,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.26,
+        "excursion_over_scale": 213.0,
+        "excursion_pct_of_price": 0.7017,
+        "session_median_range": 0.02,
+        "reverting_wick_pts": 4.3,
+        "volume": 67456.0,
+        "session_median_volume": 991.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 607.14,
+          "h": 607.15,
+          "l": 607.1,
+          "c": 607.13,
+          "v": 1955885.0
+        },
+        "next": {
+          "o": 607.1,
+          "h": 607.15,
+          "l": 607.06,
+          "c": 607.11,
+          "v": 3840.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-13T08:00",
+      "t_ms": 1734094800000,
+      "et_iso": "2024-12-13T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 606.82,
+      "h": 607.0,
+      "l": 605.1,
+      "c": 606.99,
+      "v": 27209.0,
+      "vw": 606.479,
+      "n": 629,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.83,
+        "excursion_over_scale": 94.82,
+        "excursion_pct_of_price": 0.3015,
+        "session_median_range": 0.0193,
+        "reverting_wick_pts": 1.72,
+        "volume": 27209.0,
+        "session_median_volume": 1007.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 606.93,
+          "h": 606.93,
+          "l": 606.93,
+          "c": 606.93,
+          "v": 279.0
+        },
+        "next": {
+          "o": 607.0,
+          "h": 607.15,
+          "l": 607.0,
+          "c": 607.14,
+          "v": 9597.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-19T08:00",
+      "t_ms": 1734613200000,
+      "et_iso": "2024-12-19T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 589.09,
+      "h": 591.31,
+      "l": 586.31,
+      "c": 588.93,
+      "v": 103927.0,
+      "vw": 589.1552,
+      "n": 2385,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.91,
+        "excursion_over_scale": 70.14,
+        "excursion_pct_of_price": 0.8336,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.62,
+        "volume": 103927.0,
+        "session_median_volume": 2401.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 591.28,
+          "h": 591.37,
+          "l": 591.28,
+          "c": 591.29,
+          "v": 70393.0
+        },
+        "next": {
+          "o": 591.25,
+          "h": 591.42,
+          "l": 591.22,
+          "c": 591.42,
+          "v": 10853.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-19T08:09",
+      "t_ms": 1734613740000,
+      "et_iso": "2024-12-19T08:09:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 590.891,
+      "h": 590.931,
+      "l": 586.33,
+      "c": 590.89,
+      "v": 177325.0,
+      "vw": 586.5242,
+      "n": 87,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.53,
+        "excursion_over_scale": 64.71,
+        "excursion_pct_of_price": 0.7666,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 4.56,
+        "volume": 177325.0,
+        "session_median_volume": 2401.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 590.99,
+          "h": 590.99,
+          "l": 590.86,
+          "c": 590.86,
+          "v": 3965.0
+        },
+        "next": {
+          "o": 591.0,
+          "h": 591.13,
+          "l": 590.99,
+          "c": 591.13,
+          "v": 3084.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-20T08:00",
+      "t_ms": 1734699600000,
+      "et_iso": "2024-12-20T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 579.36,
+      "h": 583.82,
+      "l": 577.7493,
+      "c": 579.62,
+      "v": 119282.0,
+      "vw": 580.0359,
+      "n": 2364,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.7507,
+        "excursion_over_scale": 19.45,
+        "excursion_pct_of_price": 0.3021,
+        "session_median_range": 0.09,
+        "reverting_wick_pts": 1.6107,
+        "volume": 119282.0,
+        "session_median_volume": 3012.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 579.67,
+          "h": 579.67,
+          "l": 579.579,
+          "c": 579.59,
+          "v": 1119.0
+        },
+        "next": {
+          "o": 579.6,
+          "h": 579.69,
+          "l": 579.5,
+          "c": 579.5,
+          "v": 20361.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-23T08:00",
+      "t_ms": 1734958800000,
+      "et_iso": "2024-12-23T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 590.68,
+      "h": 594.0,
+      "l": 590.56,
+      "c": 591.77,
+      "v": 53291.0,
+      "vw": 592.075,
+      "n": 997,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.2,
+        "excursion_over_scale": 55.0,
+        "excursion_pct_of_price": 0.3721,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 2.23,
+        "volume": 53291.0,
+        "session_median_volume": 1335.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 591.8,
+          "h": 591.8,
+          "l": 591.78,
+          "c": 591.78,
+          "v": 2002.0
+        },
+        "next": {
+          "o": 591.73,
+          "h": 591.73,
+          "l": 591.57,
+          "c": 591.57,
+          "v": 13925.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-26T08:00",
+      "t_ms": 1735218000000,
+      "et_iso": "2024-12-26T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 599.39,
+      "h": 601.69,
+      "l": 598.8096,
+      "c": 599.31,
+      "v": 37093.0,
+      "vw": 600.1859,
+      "n": 758,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.36,
+        "excursion_over_scale": 236.0,
+        "excursion_pct_of_price": 0.3938,
+        "session_median_range": 0.01,
+        "reverting_wick_pts": 2.3,
+        "volume": 37093.0,
+        "session_median_volume": 872.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 599.33,
+          "h": 599.33,
+          "l": 599.33,
+          "c": 599.33,
+          "v": 317.0
+        },
+        "next": {
+          "o": 599.3,
+          "h": 599.3,
+          "l": 599.26,
+          "c": 599.26,
+          "v": 851.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-30T08:00",
+      "t_ms": 1735563600000,
+      "et_iso": "2024-12-30T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 589.41,
+      "h": 593.95,
+      "l": 588.81,
+      "c": 589.71,
+      "v": 49785.0,
+      "vw": 591.1148,
+      "n": 1099,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 4.24,
+        "excursion_over_scale": 60.57,
+        "excursion_pct_of_price": 0.7192,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 4.24,
+        "volume": 49785.0,
+        "session_median_volume": 2324.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 589.42,
+          "h": 589.44,
+          "l": 589.41,
+          "c": 589.42,
+          "v": 3754.0
+        },
+        "next": {
+          "o": 589.69,
+          "h": 589.71,
+          "l": 589.55,
+          "c": 589.61,
+          "v": 8034.0
+        }
+      }
+    },
+    {
+      "key": "2024-12-31T08:00",
+      "t_ms": 1735650000000,
+      "et_iso": "2024-12-31T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 590.4916,
+      "h": 590.94,
+      "l": 587.6,
+      "c": 589.8001,
+      "v": 25461.0,
+      "vw": 589.6283,
+      "n": 640,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.18,
+        "excursion_over_scale": 72.67,
+        "excursion_pct_of_price": 0.3694,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.2001,
+        "volume": 25461.0,
+        "session_median_volume": 1281.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 589.91,
+          "h": 589.91,
+          "l": 589.91,
+          "c": 589.91,
+          "v": 453.0
+        },
+        "next": {
+          "o": 589.78,
+          "h": 589.78,
+          "l": 589.78,
+          "c": 589.78,
+          "v": 635.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-02T08:00",
+      "t_ms": 1735822800000,
+      "et_iso": "2025-01-02T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 591.01,
+      "h": 592.0113,
+      "l": 588.49,
+      "c": 590.95,
+      "v": 59646.0,
+      "vw": 589.9167,
+      "n": 1187,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.37,
+        "excursion_over_scale": 47.4,
+        "excursion_pct_of_price": 0.401,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.46,
+        "volume": 59646.0,
+        "session_median_volume": 1701.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 590.94,
+          "h": 590.94,
+          "l": 590.94,
+          "c": 590.94,
+          "v": 443.0
+        },
+        "next": {
+          "o": 590.95,
+          "h": 590.95,
+          "l": 590.86,
+          "c": 590.9,
+          "v": 29817.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-06T08:00",
+      "t_ms": 1736168400000,
+      "et_iso": "2025-01-06T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 596.23,
+      "h": 596.88,
+      "l": 591.89,
+      "c": 596.45,
+      "v": 71405.0,
+      "vw": 595.3657,
+      "n": 1110,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.48,
+        "excursion_over_scale": 140.0,
+        "excursion_pct_of_price": 0.7512,
+        "session_median_range": 0.032,
+        "reverting_wick_pts": 4.34,
+        "volume": 71405.0,
+        "session_median_volume": 1451.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 596.47,
+          "h": 596.5,
+          "l": 596.47,
+          "c": 596.5,
+          "v": 1275.0
+        },
+        "next": {
+          "o": 596.45,
+          "h": 596.46,
+          "l": 596.37,
+          "c": 596.37,
+          "v": 13920.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-07T16:03",
+      "t_ms": 1736283780000,
+      "et_iso": "2025-01-07T16:03:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 588.88,
+      "h": 591.273,
+      "l": 588.71,
+      "c": 588.85,
+      "v": 515152.0,
+      "vw": 588.7574,
+      "n": 450,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.343,
+        "excursion_over_scale": 78.1,
+        "excursion_pct_of_price": 0.3979,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.393,
+        "volume": 515152.0,
+        "session_median_volume": 1220.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 588.92,
+          "h": 588.93,
+          "l": 588.8,
+          "c": 588.88,
+          "v": 225588.0
+        },
+        "next": {
+          "o": 588.87,
+          "h": 588.9,
+          "l": 588.75,
+          "c": 588.81,
+          "v": 38877.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-08T08:00",
+      "t_ms": 1736341200000,
+      "et_iso": "2025-01-08T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 587.77,
+      "h": 590.6,
+      "l": 586.1999,
+      "c": 587.86,
+      "v": 96013.0,
+      "vw": 587.5615,
+      "n": 1129,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.97,
+        "excursion_over_scale": 28.14,
+        "excursion_pct_of_price": 0.3351,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.74,
+        "volume": 96013.0,
+        "session_median_volume": 2277.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 586.74,
+          "h": 586.75,
+          "l": 586.72,
+          "c": 586.75,
+          "v": 2543.0
+        },
+        "next": {
+          "o": 587.95,
+          "h": 588.63,
+          "l": 587.95,
+          "c": 588.46,
+          "v": 46587.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-10T08:30",
+      "t_ms": 1736515800000,
+      "et_iso": "2025-01-10T08:30:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 588.0,
+      "h": 588.0,
+      "l": 582.52,
+      "c": 584.69,
+      "v": 323186.0,
+      "vw": 584.2867,
+      "n": 2749,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.94,
+        "excursion_over_scale": 38.8,
+        "excursion_pct_of_price": 0.3309,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.17,
+        "volume": 323186.0,
+        "session_median_volume": 1642.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 588.42,
+          "h": 588.42,
+          "l": 588.3,
+          "c": 588.3,
+          "v": 7549.0
+        },
+        "next": {
+          "o": 585.07,
+          "h": 585.61,
+          "l": 584.46,
+          "c": 585.18,
+          "v": 179048.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-14T08:00",
+      "t_ms": 1736859600000,
+      "et_iso": "2025-01-14T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 583.55,
+      "h": 584.88,
+      "l": 582.361,
+      "c": 582.71,
+      "v": 66501.0,
+      "vw": 583.0892,
+      "n": 834,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.93,
+        "excursion_over_scale": 48.25,
+        "excursion_pct_of_price": 0.331,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 1.33,
+        "volume": 66501.0,
+        "session_median_volume": 2014.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 582.83,
+          "h": 582.95,
+          "l": 582.83,
+          "c": 582.95,
+          "v": 536.0
+        },
+        "next": {
+          "o": 582.74,
+          "h": 582.83,
+          "l": 582.49,
+          "c": 582.529,
+          "v": 31664.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-17T08:00",
+      "t_ms": 1737118800000,
+      "et_iso": "2025-01-17T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 593.6816,
+      "h": 594.2,
+      "l": 592.2,
+      "c": 594.2,
+      "v": 35625.0,
+      "vw": 593.4813,
+      "n": 657,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.83,
+        "excursion_over_scale": 91.5,
+        "excursion_pct_of_price": 0.3081,
+        "session_median_range": 0.02,
+        "reverting_wick_pts": 1.4816,
+        "volume": 35625.0,
+        "session_median_volume": 1519.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 594.03,
+          "h": 594.03,
+          "l": 594.03,
+          "c": 594.03,
+          "v": 254.0
+        },
+        "next": {
+          "o": 594.23,
+          "h": 594.28,
+          "l": 594.21,
+          "c": 594.25,
+          "v": 9986.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-21T08:00",
+      "t_ms": 1737464400000,
+      "et_iso": "2025-01-21T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 599.74,
+      "h": 600.7104,
+      "l": 597.98,
+      "c": 599.81,
+      "v": 45513.0,
+      "vw": 599.2766,
+      "n": 823,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.81,
+        "excursion_over_scale": 45.25,
+        "excursion_pct_of_price": 0.3018,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 1.76,
+        "volume": 45513.0,
+        "session_median_volume": 1393.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 599.95,
+          "h": 600.01,
+          "l": 599.95,
+          "c": 599.969,
+          "v": 3064.0
+        },
+        "next": {
+          "o": 599.81,
+          "h": 599.89,
+          "l": 599.79,
+          "c": 599.88,
+          "v": 3776.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-27T08:00",
+      "t_ms": 1737982800000,
+      "et_iso": "2025-01-27T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 593.69,
+      "h": 595.64,
+      "l": 592.2104,
+      "c": 594.81,
+      "v": 95682.0,
+      "vw": 594.5821,
+      "n": 1742,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.3596,
+        "excursion_over_scale": 18.15,
+        "excursion_pct_of_price": 0.3971,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 1.4796,
+        "volume": 95682.0,
+        "session_median_volume": 5408.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 595.0,
+          "h": 595.05,
+          "l": 594.99,
+          "c": 595.05,
+          "v": 5146.0
+        },
+        "next": {
+          "o": 602.25,
+          "h": 602.3,
+          "l": 594.57,
+          "c": 594.6799,
+          "v": 94545.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-27T08:27",
+      "t_ms": 1737984420000,
+      "et_iso": "2025-01-27T08:27:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 595.97,
+      "h": 596.22,
+      "l": 590.5251,
+      "c": 596.22,
+      "v": 13896.0,
+      "vw": 594.1026,
+      "n": 147,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 5.2049,
+        "excursion_over_scale": 40.04,
+        "excursion_pct_of_price": 0.8732,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 5.4449,
+        "volume": 13896.0,
+        "session_median_volume": 5408.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 595.82,
+          "h": 596.02,
+          "l": 595.73,
+          "c": 595.92,
+          "v": 10413.0
+        },
+        "next": {
+          "o": 596.22,
+          "h": 596.34,
+          "l": 596.1601,
+          "c": 596.34,
+          "v": 22064.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-29T16:32",
+      "t_ms": 1738186320000,
+      "et_iso": "2025-01-29T16:32:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 602.32,
+      "h": 604.7041,
+      "l": 602.07,
+      "c": 602.46,
+      "v": 55309.0,
+      "vw": 604.3709,
+      "n": 77,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.1941,
+        "excursion_over_scale": 43.88,
+        "excursion_pct_of_price": 0.3642,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.2441,
+        "volume": 55309.0,
+        "session_median_volume": 1280.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 602.25,
+          "h": 602.37,
+          "l": 602.25,
+          "c": 602.2632,
+          "v": 5187.0
+        },
+        "next": {
+          "o": 602.51,
+          "h": 602.51,
+          "l": 602.37,
+          "c": 602.49,
+          "v": 947.0
+        }
+      }
+    },
+    {
+      "key": "2025-01-30T08:00",
+      "t_ms": 1738242000000,
+      "et_iso": "2025-01-30T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 603.24,
+      "h": 605.16,
+      "l": 602.5,
+      "c": 603.01,
+      "v": 30055.0,
+      "vw": 603.3912,
+      "n": 716,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.84,
+        "excursion_over_scale": 36.8,
+        "excursion_pct_of_price": 0.3051,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 1.92,
+        "volume": 30055.0,
+        "session_median_volume": 1631.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 603.3,
+          "h": 603.32,
+          "l": 603.3,
+          "c": 603.32,
+          "v": 603.0
+        },
+        "next": {
+          "o": 603.0499,
+          "h": 603.09,
+          "l": 603.01,
+          "c": 603.01,
+          "v": 14534.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-04T08:00",
+      "t_ms": 1738674000000,
+      "et_iso": "2025-02-04T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 597.21,
+      "h": 598.52,
+      "l": 594.49,
+      "c": 597.89,
+      "v": 86729.0,
+      "vw": 596.8977,
+      "n": 1472,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.18,
+        "excursion_over_scale": 63.6,
+        "excursion_pct_of_price": 0.5322,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.72,
+        "volume": 86729.0,
+        "session_median_volume": 1587.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 598.46,
+          "h": 598.52,
+          "l": 598.19,
+          "c": 598.19,
+          "v": 4192.0
+        },
+        "next": {
+          "o": 597.89,
+          "h": 597.91,
+          "l": 597.67,
+          "c": 597.67,
+          "v": 25666.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-05T16:32",
+      "t_ms": 1738791120000,
+      "et_iso": "2025-02-05T16:32:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 604.34,
+      "h": 604.34,
+      "l": 602.0031,
+      "c": 604.34,
+      "v": 26470.0,
+      "vw": 602.966,
+      "n": 70,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.3069,
+        "excursion_over_scale": 76.9,
+        "excursion_pct_of_price": 0.3817,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.3369,
+        "volume": 26470.0,
+        "session_median_volume": 1233.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 604.3401,
+          "h": 604.35,
+          "l": 604.31,
+          "c": 604.35,
+          "v": 3960.0
+        },
+        "next": {
+          "o": 604.33,
+          "h": 604.38,
+          "l": 604.31,
+          "c": 604.36,
+          "v": 4542.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-07T16:08",
+      "t_ms": 1738962480000,
+      "et_iso": "2025-02-07T16:08:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 600.99,
+      "h": 606.4184,
+      "l": 600.95,
+      "c": 601.0,
+      "v": 95800.0,
+      "vw": 604.4862,
+      "n": 156,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 5.3184,
+        "excursion_over_scale": 265.92,
+        "excursion_pct_of_price": 0.8849,
+        "session_median_range": 0.02,
+        "reverting_wick_pts": 5.4184,
+        "volume": 95800.0,
+        "session_median_volume": 1557.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 601.05,
+          "h": 601.1,
+          "l": 600.96,
+          "c": 600.98,
+          "v": 541775.0
+        },
+        "next": {
+          "o": 601.02,
+          "h": 601.03,
+          "l": 601.0,
+          "c": 601.0,
+          "v": 24070.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-12T08:46",
+      "t_ms": 1739367960000,
+      "et_iso": "2025-02-12T08:46:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 599.56,
+      "h": 603.7,
+      "l": 599.4,
+      "c": 599.82,
+      "v": 213566.0,
+      "vw": 602.8075,
+      "n": 358,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.7,
+        "excursion_over_scale": 113.85,
+        "excursion_pct_of_price": 0.617,
+        "session_median_range": 0.0325,
+        "reverting_wick_pts": 3.88,
+        "volume": 213566.0,
+        "session_median_volume": 1613.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 599.15,
+          "h": 599.61,
+          "l": 599.0,
+          "c": 599.57,
+          "v": 40142.0
+        },
+        "next": {
+          "o": 599.9097,
+          "h": 600.0,
+          "l": 599.81,
+          "c": 599.96,
+          "v": 25228.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-13T08:00",
+      "t_ms": 1739451600000,
+      "et_iso": "2025-02-13T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 603.28,
+      "h": 604.99,
+      "l": 602.0,
+      "c": 603.09,
+      "v": 35340.0,
+      "vw": 603.2189,
+      "n": 764,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.82,
+        "excursion_over_scale": 60.67,
+        "excursion_pct_of_price": 0.3017,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 1.71,
+        "volume": 35340.0,
+        "session_median_volume": 1314.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 603.16,
+          "h": 603.17,
+          "l": 603.16,
+          "c": 603.17,
+          "v": 3278.0
+        },
+        "next": {
+          "o": 603.07,
+          "h": 603.07,
+          "l": 603.03,
+          "c": 603.03,
+          "v": 1965.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-26T16:20",
+      "t_ms": 1740604800000,
+      "et_iso": "2025-02-26T16:20:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 594.84,
+      "h": 596.78,
+      "l": 592.23,
+      "c": 596.47,
+      "v": 319441.0,
+      "vw": 594.7709,
+      "n": 1144,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.82,
+        "excursion_over_scale": 26.0,
+        "excursion_pct_of_price": 0.3055,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.61,
+        "volume": 319441.0,
+        "session_median_volume": 2075.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 594.83,
+          "h": 594.96,
+          "l": 594.76,
+          "c": 594.87,
+          "v": 15276.0
+        },
+        "next": {
+          "o": 596.45,
+          "h": 600.0,
+          "l": 594.05,
+          "c": 594.39,
+          "v": 301628.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-26T16:21",
+      "t_ms": 1740604860000,
+      "et_iso": "2025-02-26T16:21:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 596.45,
+      "h": 600.0,
+      "l": 594.05,
+      "c": 594.39,
+      "v": 301628.0,
+      "vw": 596.3729,
+      "n": 1812,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.22,
+        "excursion_over_scale": 46.0,
+        "excursion_pct_of_price": 0.5408,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 3.55,
+        "volume": 301628.0,
+        "session_median_volume": 2075.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 594.84,
+          "h": 596.78,
+          "l": 592.23,
+          "c": 596.47,
+          "v": 319441.0
+        },
+        "next": {
+          "o": 594.34,
+          "h": 595.8,
+          "l": 593.48,
+          "c": 595.61,
+          "v": 137466.0
+        }
+      }
+    },
+    {
+      "key": "2025-02-27T08:00",
+      "t_ms": 1740661200000,
+      "et_iso": "2025-02-27T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 598.5,
+      "h": 598.63,
+      "l": 594.79,
+      "c": 598.0,
+      "v": 80641.0,
+      "vw": 597.8433,
+      "n": 1007,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.19,
+        "excursion_over_scale": 53.17,
+        "excursion_pct_of_price": 0.5332,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 3.21,
+        "volume": 80641.0,
+        "session_median_volume": 1902.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 597.98,
+          "h": 597.98,
+          "l": 597.98,
+          "c": 597.98,
+          "v": 437.0
+        },
+        "next": {
+          "o": 598.01,
+          "h": 598.05,
+          "l": 598.01,
+          "c": 598.01,
+          "v": 8531.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-03T16:10",
+      "t_ms": 1741036200000,
+      "et_iso": "2025-03-03T16:10:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 584.54,
+      "h": 587.9613,
+      "l": 584.54,
+      "c": 584.83,
+      "v": 2939047.0,
+      "vw": 583.8001,
+      "n": 383,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.1513,
+        "excursion_over_scale": 45.15,
+        "excursion_pct_of_price": 0.539,
+        "session_median_range": 0.0698,
+        "reverting_wick_pts": 3.1313,
+        "volume": 2939047.0,
+        "session_median_volume": 2284.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 584.51,
+          "h": 584.66,
+          "l": 584.51,
+          "c": 584.6,
+          "v": 29266.0
+        },
+        "next": {
+          "o": 584.7993,
+          "h": 584.81,
+          "l": 584.68,
+          "c": 584.75,
+          "v": 24573.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-04T08:00",
+      "t_ms": 1741093200000,
+      "et_iso": "2025-03-04T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 582.47,
+      "h": 586.0,
+      "l": 580.0481,
+      "c": 580.21,
+      "v": 154913.0,
+      "vw": 582.485,
+      "n": 1953,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 5.55,
+        "excursion_over_scale": 42.69,
+        "excursion_pct_of_price": 0.9547,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 3.53,
+        "volume": 154913.0,
+        "session_median_volume": 3388.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 580.18,
+          "h": 580.24,
+          "l": 580.11,
+          "c": 580.2,
+          "v": 3239.0
+        },
+        "next": {
+          "o": 580.39,
+          "h": 580.45,
+          "l": 580.31,
+          "c": 580.4,
+          "v": 6477.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-06T08:00",
+      "t_ms": 1741266000000,
+      "et_iso": "2025-03-06T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 577.8,
+      "h": 583.05,
+      "l": 576.17,
+      "c": 576.63,
+      "v": 87250.0,
+      "vw": 578.2375,
+      "n": 1527,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 6.24,
+        "excursion_over_scale": 56.73,
+        "excursion_pct_of_price": 1.0811,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 5.25,
+        "volume": 87250.0,
+        "session_median_volume": 3247.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 576.8,
+          "h": 576.81,
+          "l": 576.55,
+          "c": 576.55,
+          "v": 7347.0
+        },
+        "next": {
+          "o": 576.6,
+          "h": 576.64,
+          "l": 576.5,
+          "c": 576.5,
+          "v": 9539.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-06T18:12",
+      "t_ms": 1741302720000,
+      "et_iso": "2025-03-06T18:12:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 574.69,
+      "h": 574.8,
+      "l": 572.7506,
+      "c": 574.8,
+      "v": 350363.0,
+      "vw": 572.7527,
+      "n": 31,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.9394,
+        "excursion_over_scale": 17.63,
+        "excursion_pct_of_price": 0.3374,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 1.9394,
+        "volume": 350363.0,
+        "session_median_volume": 3247.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 574.73,
+          "h": 574.79,
+          "l": 574.69,
+          "c": 574.69,
+          "v": 4777.0
+        },
+        "next": {
+          "o": 574.92,
+          "h": 574.97,
+          "l": 574.92,
+          "c": 574.97,
+          "v": 2550.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-10T08:00",
+      "t_ms": 1741608000000,
+      "et_iso": "2025-03-10T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 569.13,
+      "h": 574.12,
+      "l": 568.69,
+      "c": 568.97,
+      "v": 64809.0,
+      "vw": 570.0354,
+      "n": 1241,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 4.89,
+        "excursion_over_scale": 40.75,
+        "excursion_pct_of_price": 0.8593,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 4.99,
+        "volume": 64809.0,
+        "session_median_volume": 2912.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 569.23,
+          "h": 569.23,
+          "l": 569.06,
+          "c": 569.06,
+          "v": 6433.0
+        },
+        "next": {
+          "o": 569.01,
+          "h": 569.11,
+          "l": 569.01,
+          "c": 569.03,
+          "v": 10727.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-12T08:00",
+      "t_ms": 1741780800000,
+      "et_iso": "2025-03-12T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 560.43,
+      "h": 561.2483,
+      "l": 556.058,
+      "c": 560.34,
+      "v": 151758.0,
+      "vw": 557.5489,
+      "n": 1503,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.302,
+        "excursion_over_scale": 61.46,
+        "excursion_pct_of_price": 0.7677,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 4.282,
+        "volume": 151758.0,
+        "session_median_volume": 1854.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 560.84,
+          "h": 560.84,
+          "l": 560.84,
+          "c": 560.84,
+          "v": 948.0
+        },
+        "next": {
+          "o": 560.36,
+          "h": 560.48,
+          "l": 560.36,
+          "c": 560.4204,
+          "v": 15159.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-12T08:14",
+      "t_ms": 1741781640000,
+      "et_iso": "2025-03-12T08:14:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 560.4,
+      "h": 560.54,
+      "l": 555.92,
+      "c": 560.5001,
+      "v": 9196.0,
+      "vw": 560.4182,
+      "n": 108,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.5,
+        "excursion_over_scale": 64.29,
+        "excursion_pct_of_price": 0.8029,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 4.48,
+        "volume": 9196.0,
+        "session_median_volume": 1854.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 560.4504,
+          "h": 560.4504,
+          "l": 560.42,
+          "c": 560.42,
+          "v": 3263.0
+        },
+        "next": {
+          "o": 560.5,
+          "h": 560.65,
+          "l": 560.5,
+          "c": 560.62,
+          "v": 8951.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-12T16:27",
+      "t_ms": 1741811220000,
+      "et_iso": "2025-03-12T16:27:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 558.5,
+      "h": 558.55,
+      "l": 556.3729,
+      "c": 558.55,
+      "v": 860975.0,
+      "vw": 556.3884,
+      "n": 67,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.1471,
+        "excursion_over_scale": 30.67,
+        "excursion_pct_of_price": 0.3844,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.1271,
+        "volume": 860975.0,
+        "session_median_volume": 1854.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 558.55,
+          "h": 559.0844,
+          "l": 558.54,
+          "c": 558.57,
+          "v": 222170.0
+        },
+        "next": {
+          "o": 558.53,
+          "h": 558.65,
+          "l": 558.52,
+          "c": 558.56,
+          "v": 58528.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-13T16:02",
+      "t_ms": 1741896120000,
+      "et_iso": "2025-03-13T16:02:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 552.11,
+      "h": 559.1292,
+      "l": 552.06,
+      "c": 552.16,
+      "v": 143243.0,
+      "vw": 556.6394,
+      "n": 395,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 6.7792,
+        "excursion_over_scale": 75.32,
+        "excursion_pct_of_price": 1.2278,
+        "session_median_range": 0.09,
+        "reverting_wick_pts": 6.9692,
+        "volume": 143243.0,
+        "session_median_volume": 1933.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 551.9,
+          "h": 552.13,
+          "l": 551.71,
+          "c": 552.12,
+          "v": 224361.0
+        },
+        "next": {
+          "o": 552.17,
+          "h": 552.35,
+          "l": 551.93,
+          "c": 552.34,
+          "v": 351565.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-14T08:00",
+      "t_ms": 1741953600000,
+      "et_iso": "2025-03-14T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 556.16,
+      "h": 556.8,
+      "l": 554.35,
+      "c": 556.39,
+      "v": 66815.0,
+      "vw": 555.9224,
+      "n": 5064,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.1,
+        "excursion_over_scale": 35.0,
+        "excursion_pct_of_price": 0.3775,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 1.81,
+        "volume": 66815.0,
+        "session_median_volume": 1566.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 556.56,
+          "h": 556.58,
+          "l": 556.51,
+          "c": 556.51,
+          "v": 1520.0
+        },
+        "next": {
+          "o": 556.4514,
+          "h": 556.6204,
+          "l": 556.45,
+          "c": 556.6204,
+          "v": 11464.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-19T08:00",
+      "t_ms": 1742385600000,
+      "et_iso": "2025-03-19T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 562.3255,
+      "h": 562.8685,
+      "l": 560.26,
+      "c": 562.6,
+      "v": 128959.0,
+      "vw": 561.2731,
+      "n": 847,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.14,
+        "excursion_over_scale": 71.33,
+        "excursion_pct_of_price": 0.3805,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.0655,
+        "volume": 128959.0,
+        "session_median_volume": 1363.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 562.62,
+          "h": 562.62,
+          "l": 562.55,
+          "c": 562.55,
+          "v": 3504.0
+        },
+        "next": {
+          "o": 562.6,
+          "h": 562.6,
+          "l": 562.4,
+          "c": 562.4,
+          "v": 5476.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-20T08:00",
+      "t_ms": 1742472000000,
+      "et_iso": "2025-03-20T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 564.14,
+      "h": 569.84,
+      "l": 563.7625,
+      "c": 565.23,
+      "v": 84373.0,
+      "vw": 565.1985,
+      "n": 881,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 4.44,
+        "excursion_over_scale": 63.43,
+        "excursion_pct_of_price": 0.7863,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 4.61,
+        "volume": 84373.0,
+        "session_median_volume": 1965.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 565.08,
+          "h": 565.4,
+          "l": 565.08,
+          "c": 565.37,
+          "v": 3920.0
+        },
+        "next": {
+          "o": 565.25,
+          "h": 565.3496,
+          "l": 565.14,
+          "c": 565.15,
+          "v": 9888.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-21T08:00",
+      "t_ms": 1742558400000,
+      "et_iso": "2025-03-21T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 562.25,
+      "h": 564.35,
+      "l": 561.5796,
+      "c": 562.46,
+      "v": 46778.0,
+      "vw": 562.7552,
+      "n": 877,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.78,
+        "excursion_over_scale": 35.6,
+        "excursion_pct_of_price": 0.3165,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 1.89,
+        "volume": 46778.0,
+        "session_median_volume": 1522.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 562.36,
+          "h": 562.42,
+          "l": 562.27,
+          "c": 562.3,
+          "v": 4563.0
+        },
+        "next": {
+          "o": 562.53,
+          "h": 562.57,
+          "l": 562.4,
+          "c": 562.5399,
+          "v": 10513.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-24T08:00",
+      "t_ms": 1742817600000,
+      "et_iso": "2025-03-24T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 570.74,
+      "h": 571.2,
+      "l": 567.9,
+      "c": 571.0,
+      "v": 140407.0,
+      "vw": 570.7935,
+      "n": 1301,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.08,
+        "excursion_over_scale": 77.0,
+        "excursion_pct_of_price": 0.5395,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 2.84,
+        "volume": 140407.0,
+        "session_median_volume": 1716.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 571.17,
+          "h": 571.17,
+          "l": 570.98,
+          "c": 570.98,
+          "v": 5074.0
+        },
+        "next": {
+          "o": 571.04,
+          "h": 571.04,
+          "l": 570.9884,
+          "c": 570.9884,
+          "v": 9401.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-25T08:00",
+      "t_ms": 1742904000000,
+      "et_iso": "2025-03-25T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 574.65,
+      "h": 575.64,
+      "l": 573.29,
+      "c": 575.62,
+      "v": 38155.0,
+      "vw": 574.5389,
+      "n": 798,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.24,
+        "excursion_over_scale": 112.0,
+        "excursion_pct_of_price": 0.3895,
+        "session_median_range": 0.02,
+        "reverting_wick_pts": 1.36,
+        "volume": 38155.0,
+        "session_median_volume": 1234.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 575.53,
+          "h": 575.56,
+          "l": 575.53,
+          "c": 575.56,
+          "v": 1137.0
+        },
+        "next": {
+          "o": 575.64,
+          "h": 575.64,
+          "l": 575.59,
+          "c": 575.59,
+          "v": 3475.0
+        }
+      }
+    },
+    {
+      "key": "2025-03-28T08:37",
+      "t_ms": 1743165420000,
+      "et_iso": "2025-03-28T08:37:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 565.29,
+      "h": 567.15,
+      "l": 564.78,
+      "c": 564.83,
+      "v": 20463.0,
+      "vw": 565.4062,
+      "n": 278,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.71,
+        "excursion_over_scale": 34.2,
+        "excursion_pct_of_price": 0.3026,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 1.86,
+        "volume": 20463.0,
+        "session_median_volume": 1511.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 565.44,
+          "h": 565.44,
+          "l": 565.13,
+          "c": 565.13,
+          "v": 57851.0
+        },
+        "next": {
+          "o": 564.85,
+          "h": 565.04,
+          "l": 564.84,
+          "c": 564.87,
+          "v": 21384.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-01T08:00",
+      "t_ms": 1743508800000,
+      "et_iso": "2025-04-01T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 557.34,
+      "h": 559.63,
+      "l": 555.51,
+      "c": 556.3,
+      "v": 96457.0,
+      "vw": 556.7916,
+      "n": 1053,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.98,
+        "excursion_over_scale": 24.75,
+        "excursion_pct_of_price": 0.3556,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 2.29,
+        "volume": 96457.0,
+        "session_median_volume": 2103.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 556.33,
+          "h": 556.38,
+          "l": 556.23,
+          "c": 556.24,
+          "v": 4634.0
+        },
+        "next": {
+          "o": 556.39,
+          "h": 557.65,
+          "l": 556.15,
+          "c": 556.39,
+          "v": 15434.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-01T08:38",
+      "t_ms": 1743511080000,
+      "et_iso": "2025-04-01T08:38:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 556.45,
+      "h": 559.39,
+      "l": 556.45,
+      "c": 556.69,
+      "v": 3827.0,
+      "vw": 558.2268,
+      "n": 56,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.76,
+        "excursion_over_scale": 34.5,
+        "excursion_pct_of_price": 0.4959,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 2.7,
+        "volume": 3827.0,
+        "session_median_volume": 2103.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 556.5,
+          "h": 556.5,
+          "l": 556.44,
+          "c": 556.44,
+          "v": 1660.0
+        },
+        "next": {
+          "o": 556.63,
+          "h": 556.63,
+          "l": 556.58,
+          "c": 556.62,
+          "v": 5495.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-04T08:00",
+      "t_ms": 1743768000000,
+      "et_iso": "2025-04-04T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 523.01,
+      "h": 536.17,
+      "l": 516.0,
+      "c": 536.01,
+      "v": 609270.0,
+      "vw": 521.7993,
+      "n": 6672,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 6.47,
+        "excursion_over_scale": 20.88,
+        "excursion_pct_of_price": 1.2219,
+        "session_median_range": 0.3098,
+        "reverting_wick_pts": 7.01,
+        "volume": 609270.0,
+        "session_median_volume": 11696.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 522.94,
+          "h": 523.24,
+          "l": 522.8,
+          "c": 523.01,
+          "v": 100984.0
+        },
+        "next": {
+          "o": 522.61,
+          "h": 537.0,
+          "l": 522.47,
+          "c": 522.8,
+          "v": 80548.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-04T16:06",
+      "t_ms": 1743797160000,
+      "et_iso": "2025-04-04T16:06:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 505.5,
+      "h": 514.4198,
+      "l": 505.16,
+      "c": 505.41,
+      "v": 209371.0,
+      "vw": 505.6627,
+      "n": 1225,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 8.6698,
+        "excursion_over_scale": 27.99,
+        "excursion_pct_of_price": 1.7152,
+        "session_median_range": 0.3098,
+        "reverting_wick_pts": 8.9198,
+        "volume": 209371.0,
+        "session_median_volume": 11696.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 504.57,
+          "h": 505.71,
+          "l": 504.56,
+          "c": 505.5,
+          "v": 520181.0
+        },
+        "next": {
+          "o": 505.4,
+          "h": 505.75,
+          "l": 505.08,
+          "c": 505.13,
+          "v": 982918.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-08T16:01",
+      "t_ms": 1744142460000,
+      "et_iso": "2025-04-08T16:01:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 496.66,
+      "h": 496.92,
+      "l": 486.2007,
+      "c": 496.92,
+      "v": 344525.0,
+      "vw": 493.5152,
+      "n": 1372,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 9.3793,
+        "excursion_over_scale": 29.31,
+        "excursion_pct_of_price": 1.888,
+        "session_median_range": 0.32,
+        "reverting_wick_pts": 10.4593,
+        "volume": 344525.0,
+        "session_median_volume": 8246.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 496.81,
+          "h": 496.81,
+          "l": 495.58,
+          "c": 496.53,
+          "v": 650156.0
+        },
+        "next": {
+          "o": 496.86,
+          "h": 497.49,
+          "l": 496.6,
+          "c": 497.0699,
+          "v": 143369.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-15T08:00",
+      "t_ms": 1744718400000,
+      "et_iso": "2025-04-15T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 539.66,
+      "h": 541.0,
+      "l": 536.85,
+      "c": 537.32,
+      "v": 134199.0,
+      "vw": 538.7944,
+      "n": 1334,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.5,
+        "excursion_over_scale": 20.83,
+        "excursion_pct_of_price": 0.4643,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 1.34,
+        "volume": 134199.0,
+        "session_median_volume": 2830.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 537.3,
+          "h": 537.38,
+          "l": 537.16,
+          "c": 537.38,
+          "v": 2779.0
+        },
+        "next": {
+          "o": 537.34,
+          "h": 538.5,
+          "l": 537.2,
+          "c": 538.5,
+          "v": 7026.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-16T16:01",
+      "t_ms": 1744833660000,
+      "et_iso": "2025-04-16T16:01:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 525.59,
+      "h": 528.773,
+      "l": 525.37,
+      "c": 526.0,
+      "v": 134267.0,
+      "vw": 525.6747,
+      "n": 555,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.343,
+        "excursion_over_scale": 18.02,
+        "excursion_pct_of_price": 0.4456,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 2.773,
+        "volume": 134267.0,
+        "session_median_volume": 3344.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 525.75,
+          "h": 525.9,
+          "l": 525.28,
+          "c": 525.57,
+          "v": 304604.0
+        },
+        "next": {
+          "o": 526.04,
+          "h": 526.43,
+          "l": 526.0,
+          "c": 526.36,
+          "v": 323296.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-21T16:14",
+      "t_ms": 1745266440000,
+      "et_iso": "2025-04-21T16:14:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 513.52,
+      "h": 513.65,
+      "l": 510.05,
+      "c": 513.5999,
+      "v": 102984.0,
+      "vw": 513.359,
+      "n": 355,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.4,
+        "excursion_over_scale": 42.5,
+        "excursion_pct_of_price": 0.662,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 3.47,
+        "volume": 102984.0,
+        "session_median_volume": 2205.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 513.59,
+          "h": 513.59,
+          "l": 513.48,
+          "c": 513.56,
+          "v": 46053.0
+        },
+        "next": {
+          "o": 513.55,
+          "h": 513.6,
+          "l": 513.45,
+          "c": 513.49,
+          "v": 17728.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-22T08:00",
+      "t_ms": 1745323200000,
+      "et_iso": "2025-04-22T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 518.83,
+      "h": 520.86,
+      "l": 515.9,
+      "c": 517.82,
+      "v": 106686.0,
+      "vw": 518.3844,
+      "n": 1399,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.9,
+        "excursion_over_scale": 22.31,
+        "excursion_pct_of_price": 0.5595,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 2.03,
+        "volume": 106686.0,
+        "session_median_volume": 3859.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 517.59,
+          "h": 517.75,
+          "l": 517.59,
+          "c": 517.67,
+          "v": 25993.0
+        },
+        "next": {
+          "o": 517.81,
+          "h": 517.96,
+          "l": 517.54,
+          "c": 517.61,
+          "v": 13090.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-23T08:00",
+      "t_ms": 1745409600000,
+      "et_iso": "2025-04-23T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 540.17,
+      "h": 540.66,
+      "l": 534.37,
+      "c": 536.82,
+      "v": 181595.0,
+      "vw": 538.0827,
+      "n": 1995,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.19,
+        "excursion_over_scale": 38.09,
+        "excursion_pct_of_price": 0.7781,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 2.45,
+        "volume": 181595.0,
+        "session_median_volume": 3672.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 538.84,
+          "h": 538.84,
+          "l": 538.56,
+          "c": 538.57,
+          "v": 13025.0
+        },
+        "next": {
+          "o": 538.82,
+          "h": 538.89,
+          "l": 538.75,
+          "c": 538.81,
+          "v": 4076.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-24T07:39",
+      "t_ms": 1745494740000,
+      "et_iso": "2025-04-24T07:39:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 533.8,
+      "h": 535.8,
+      "l": 533.6,
+      "c": 534.01,
+      "v": 68557.0,
+      "vw": 534.4541,
+      "n": 812,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.72,
+        "excursion_over_scale": 16.73,
+        "excursion_pct_of_price": 0.3222,
+        "session_median_range": 0.1028,
+        "reverting_wick_pts": 1.79,
+        "volume": 68557.0,
+        "session_median_volume": 3077.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 533.9,
+          "h": 533.96,
+          "l": 533.8,
+          "c": 533.8,
+          "v": 1835.0
+        },
+        "next": {
+          "o": 534.06,
+          "h": 534.08,
+          "l": 533.68,
+          "c": 533.73,
+          "v": 8767.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-24T08:00",
+      "t_ms": 1745496000000,
+      "et_iso": "2025-04-24T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 535.86,
+      "h": 535.9102,
+      "l": 532.51,
+      "c": 534.37,
+      "v": 133620.0,
+      "vw": 534.4118,
+      "n": 1291,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.74,
+        "excursion_over_scale": 16.93,
+        "excursion_pct_of_price": 0.3252,
+        "session_median_range": 0.1028,
+        "reverting_wick_pts": 1.86,
+        "volume": 133620.0,
+        "session_median_volume": 3077.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 534.34,
+          "h": 534.36,
+          "l": 534.25,
+          "c": 534.36,
+          "v": 1425.0
+        },
+        "next": {
+          "o": 534.41,
+          "h": 534.47,
+          "l": 534.38,
+          "c": 534.39,
+          "v": 18152.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-29T08:00",
+      "t_ms": 1745928000000,
+      "et_iso": "2025-04-29T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 550.89,
+      "h": 553.0,
+      "l": 550.51,
+      "c": 550.84,
+      "v": 70957.0,
+      "vw": 551.198,
+      "n": 803,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.12,
+        "excursion_over_scale": 30.29,
+        "excursion_pct_of_price": 0.3848,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.11,
+        "volume": 70957.0,
+        "session_median_volume": 2086.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 550.81,
+          "h": 550.88,
+          "l": 550.8,
+          "c": 550.88,
+          "v": 1420.0
+        },
+        "next": {
+          "o": 550.85,
+          "h": 550.87,
+          "l": 550.82,
+          "c": 550.8599,
+          "v": 16141.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-30T16:26",
+      "t_ms": 1746044760000,
+      "et_iso": "2025-04-30T16:26:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 557.65,
+      "h": 557.66,
+      "l": 555.1488,
+      "c": 557.48,
+      "v": 391008.0,
+      "vw": 555.308,
+      "n": 222,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.2712,
+        "excursion_over_scale": 17.47,
+        "excursion_pct_of_price": 0.4073,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 2.3312,
+        "volume": 391008.0,
+        "session_median_volume": 3843.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 557.78,
+          "h": 557.89,
+          "l": 557.42,
+          "c": 557.59,
+          "v": 56802.0
+        },
+        "next": {
+          "o": 557.48,
+          "h": 557.77,
+          "l": 557.43,
+          "c": 557.44,
+          "v": 153097.0
+        }
+      }
+    },
+    {
+      "key": "2025-04-30T16:32",
+      "t_ms": 1746045120000,
+      "et_iso": "2025-04-30T16:32:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 557.8,
+      "h": 557.87,
+      "l": 555.1913,
+      "c": 557.75,
+      "v": 58365.0,
+      "vw": 555.4062,
+      "n": 80,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.5187,
+        "excursion_over_scale": 19.37,
+        "excursion_pct_of_price": 0.4516,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 2.5587,
+        "volume": 58365.0,
+        "session_median_volume": 3843.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 557.71,
+          "h": 557.89,
+          "l": 557.71,
+          "c": 557.83,
+          "v": 23697.0
+        },
+        "next": {
+          "o": 557.75,
+          "h": 558.13,
+          "l": 557.7401,
+          "c": 558.05,
+          "v": 36558.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-01T08:05",
+      "t_ms": 1746101100000,
+      "et_iso": "2025-05-01T08:05:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 561.27,
+      "h": 561.46,
+      "l": 554.125,
+      "c": 561.39,
+      "v": 6490.0,
+      "vw": 560.5764,
+      "n": 113,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 7.025,
+        "excursion_over_scale": 70.25,
+        "excursion_pct_of_price": 1.2515,
+        "session_median_range": 0.1,
+        "reverting_wick_pts": 7.145,
+        "volume": 6490.0,
+        "session_median_volume": 2685.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 561.15,
+          "h": 561.17,
+          "l": 561.15,
+          "c": 561.17,
+          "v": 581.0
+        },
+        "next": {
+          "o": 561.3604,
+          "h": 561.38,
+          "l": 561.2,
+          "c": 561.38,
+          "v": 27316.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-02T08:00",
+      "t_ms": 1746187200000,
+      "et_iso": "2025-05-02T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 561.04,
+      "h": 563.25,
+      "l": 560.2,
+      "c": 560.97,
+      "v": 75913.0,
+      "vw": 561.5136,
+      "n": 1102,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.67,
+        "excursion_over_scale": 44.5,
+        "excursion_pct_of_price": 0.4759,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 2.21,
+        "volume": 75913.0,
+        "session_median_volume": 1979.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 560.43,
+          "h": 560.43,
+          "l": 560.4,
+          "c": 560.43,
+          "v": 9498.0
+        },
+        "next": {
+          "o": 560.28,
+          "h": 560.58,
+          "l": 560.28,
+          "c": 560.58,
+          "v": 7568.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-06T08:00",
+      "t_ms": 1746532800000,
+      "et_iso": "2025-05-06T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 560.54,
+      "h": 562.41,
+      "l": 558.0,
+      "c": 559.03,
+      "v": 68896.0,
+      "vw": 559.654,
+      "n": 1061,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.29,
+        "excursion_over_scale": 32.9,
+        "excursion_pct_of_price": 0.5877,
+        "session_median_range": 0.1,
+        "reverting_wick_pts": 1.87,
+        "volume": 68896.0,
+        "session_median_volume": 2933.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 558.63,
+          "h": 558.86,
+          "l": 558.63,
+          "c": 558.79,
+          "v": 1811.0
+        },
+        "next": {
+          "o": 559.04,
+          "h": 559.12,
+          "l": 559.02,
+          "c": 559.05,
+          "v": 7294.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-09T08:00",
+      "t_ms": 1746792000000,
+      "et_iso": "2025-05-09T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 566.13,
+      "h": 567.63,
+      "l": 564.2,
+      "c": 566.31,
+      "v": 146810.0,
+      "vw": 566.0041,
+      "n": 1289,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.92,
+        "excursion_over_scale": 32.0,
+        "excursion_pct_of_price": 0.3391,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 1.93,
+        "volume": 146810.0,
+        "session_median_volume": 1729.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 566.3,
+          "h": 566.3,
+          "l": 566.12,
+          "c": 566.22,
+          "v": 1550.0
+        },
+        "next": {
+          "o": 566.29,
+          "h": 566.5,
+          "l": 566.29,
+          "c": 566.29,
+          "v": 5474.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-12T16:23",
+      "t_ms": 1747081380000,
+      "et_iso": "2025-05-12T16:23:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 582.96,
+      "h": 583.09,
+      "l": 564.4344,
+      "c": 583.06,
+      "v": 1540754.0,
+      "vw": 564.6849,
+      "n": 137,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 18.5056,
+        "excursion_over_scale": 205.62,
+        "excursion_pct_of_price": 3.1741,
+        "session_median_range": 0.09,
+        "reverting_wick_pts": 18.5256,
+        "volume": 1540754.0,
+        "session_median_volume": 3102.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 582.95,
+          "h": 582.96,
+          "l": 582.94,
+          "c": 582.94,
+          "v": 17135.0
+        },
+        "next": {
+          "o": 583.06,
+          "h": 583.09,
+          "l": 583.06,
+          "c": 583.09,
+          "v": 2223.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-13T08:00",
+      "t_ms": 1747137600000,
+      "et_iso": "2025-05-13T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 581.55,
+      "h": 582.28,
+      "l": 580.22,
+      "c": 582.09,
+      "v": 52675.0,
+      "vw": 581.4077,
+      "n": 958,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.75,
+        "excursion_over_scale": 43.75,
+        "excursion_pct_of_price": 0.3008,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 1.33,
+        "volume": 52675.0,
+        "session_median_volume": 1595.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 582.12,
+          "h": 582.2,
+          "l": 582.12,
+          "c": 582.19,
+          "v": 2329.0
+        },
+        "next": {
+          "o": 582.01,
+          "h": 582.09,
+          "l": 581.97,
+          "c": 582.07,
+          "v": 8897.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-13T08:30",
+      "t_ms": 1747139400000,
+      "et_iso": "2025-05-13T08:30:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 583.23,
+      "h": 587.4,
+      "l": 582.5,
+      "c": 584.22,
+      "v": 400326.0,
+      "vw": 584.1303,
+      "n": 2473,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.31,
+        "excursion_over_scale": 82.75,
+        "excursion_pct_of_price": 0.567,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 3.18,
+        "volume": 400326.0,
+        "session_median_volume": 1595.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 582.68,
+          "h": 583.83,
+          "l": 582.68,
+          "c": 582.92,
+          "v": 32798.0
+        },
+        "next": {
+          "o": 584.09,
+          "h": 584.09,
+          "l": 583.37,
+          "c": 583.37,
+          "v": 71417.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-13T09:11",
+      "t_ms": 1747141860000,
+      "et_iso": "2025-05-13T09:11:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 583.45,
+      "h": 583.55,
+      "l": 564.61,
+      "c": 583.55,
+      "v": 3036.0,
+      "vw": 577.4193,
+      "n": 58,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 18.83,
+        "excursion_over_scale": 470.75,
+        "excursion_pct_of_price": 3.2271,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 18.84,
+        "volume": 3036.0,
+        "session_median_volume": 1595.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 583.49,
+          "h": 583.49,
+          "l": 583.44,
+          "c": 583.44,
+          "v": 892.0
+        },
+        "next": {
+          "o": 583.52,
+          "h": 583.52,
+          "l": 583.48,
+          "c": 583.48,
+          "v": 1353.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-16T08:00",
+      "t_ms": 1747396800000,
+      "et_iso": "2025-05-16T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 591.97,
+      "h": 592.31,
+      "l": 589.57,
+      "c": 592.08,
+      "v": 54857.0,
+      "vw": 591.4741,
+      "n": 911,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.46,
+        "excursion_over_scale": 35.14,
+        "excursion_pct_of_price": 0.4155,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.4,
+        "volume": 54857.0,
+        "session_median_volume": 3005.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 592.19,
+          "h": 592.24,
+          "l": 592.18,
+          "c": 592.23,
+          "v": 6450.0
+        },
+        "next": {
+          "o": 592.1,
+          "h": 592.1,
+          "l": 592.03,
+          "c": 592.03,
+          "v": 8298.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-16T08:42",
+      "t_ms": 1747399320000,
+      "et_iso": "2025-05-16T08:42:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 591.77,
+      "h": 591.77,
+      "l": 589.42,
+      "c": 591.67,
+      "v": 26133.0,
+      "vw": 589.9799,
+      "n": 136,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.23,
+        "excursion_over_scale": 31.86,
+        "excursion_pct_of_price": 0.3769,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.25,
+        "volume": 26133.0,
+        "session_median_volume": 3005.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 591.89,
+          "h": 591.91,
+          "l": 591.75,
+          "c": 591.79,
+          "v": 2797.0
+        },
+        "next": {
+          "o": 591.66,
+          "h": 591.74,
+          "l": 591.65,
+          "c": 591.74,
+          "v": 7961.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-21T08:00",
+      "t_ms": 1747828800000,
+      "et_iso": "2025-05-21T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 589.08,
+      "h": 591.25,
+      "l": 587.7896,
+      "c": 590.01,
+      "v": 76524.0,
+      "vw": 590.0202,
+      "n": 1463,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.0904,
+        "excursion_over_scale": 34.84,
+        "excursion_pct_of_price": 0.3546,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 1.2904,
+        "volume": 76524.0,
+        "session_median_volume": 2014.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 590.15,
+          "h": 590.159,
+          "l": 590.15,
+          "c": 590.159,
+          "v": 687.0
+        },
+        "next": {
+          "o": 589.95,
+          "h": 589.95,
+          "l": 589.88,
+          "c": 589.9,
+          "v": 10461.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-22T08:00",
+      "t_ms": 1747915200000,
+      "et_iso": "2025-05-22T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 581.02,
+      "h": 584.6488,
+      "l": 581.02,
+      "c": 581.06,
+      "v": 114863.0,
+      "vw": 583.0861,
+      "n": 1404,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.0788,
+        "excursion_over_scale": 43.98,
+        "excursion_pct_of_price": 0.5299,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 3.5888,
+        "volume": 114863.0,
+        "session_median_volume": 1937.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 581.53,
+          "h": 581.57,
+          "l": 580.98,
+          "c": 581.02,
+          "v": 46778.0
+        },
+        "next": {
+          "o": 581.07,
+          "h": 581.41,
+          "l": 580.8,
+          "c": 581.41,
+          "v": 33320.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-22T08:12",
+      "t_ms": 1747915920000,
+      "et_iso": "2025-05-22T08:12:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 581.13,
+      "h": 591.9255,
+      "l": 580.85,
+      "c": 580.85,
+      "v": 6200.0,
+      "vw": 585.7734,
+      "n": 105,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 10.7255,
+        "excursion_over_scale": 153.22,
+        "excursion_pct_of_price": 1.8461,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 10.7955,
+        "volume": 6200.0,
+        "session_median_volume": 1937.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 581.18,
+          "h": 581.2,
+          "l": 581.0,
+          "c": 581.13,
+          "v": 34421.0
+        },
+        "next": {
+          "o": 580.85,
+          "h": 580.9498,
+          "l": 580.7,
+          "c": 580.7011,
+          "v": 17242.0
+        }
+      }
+    },
+    {
+      "key": "2025-05-23T08:00",
+      "t_ms": 1748001600000,
+      "et_iso": "2025-05-23T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 575.13,
+      "h": 584.4,
+      "l": 574.25,
+      "c": 574.34,
+      "v": 290951.0,
+      "vw": 577.9111,
+      "n": 2839,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 9.05,
+        "excursion_over_scale": 113.12,
+        "excursion_pct_of_price": 1.5746,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 9.27,
+        "volume": 290951.0,
+        "session_median_volume": 2089.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 574.9,
+          "h": 575.09,
+          "l": 574.33,
+          "c": 575.09,
+          "v": 51614.0
+        },
+        "next": {
+          "o": 574.27,
+          "h": 575.35,
+          "l": 573.78,
+          "c": 575.0,
+          "v": 114548.0
+        }
+      }
+    },
+    {
+      "key": "2025-06-13T08:03",
+      "t_ms": 1749816180000,
+      "et_iso": "2025-06-13T08:03:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 598.22,
+      "h": 598.27,
+      "l": 593.79,
+      "c": 598.18,
+      "v": 83589.0,
+      "vw": 595.4962,
+      "n": 1240,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.31,
+        "excursion_over_scale": 43.1,
+        "excursion_pct_of_price": 0.7205,
+        "session_median_range": 0.1,
+        "reverting_wick_pts": 4.39,
+        "volume": 83589.0,
+        "session_median_volume": 3925.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 598.15,
+          "h": 598.3099,
+          "l": 598.1,
+          "c": 598.26,
+          "v": 11761.0
+        },
+        "next": {
+          "o": 598.17,
+          "h": 598.25,
+          "l": 598.14,
+          "c": 598.15,
+          "v": 11632.0
+        }
+      }
+    },
+    {
+      "key": "2025-06-16T08:00",
+      "t_ms": 1750075200000,
+      "et_iso": "2025-06-16T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 599.67,
+      "h": 600.88,
+      "l": 597.5,
+      "c": 600.2,
+      "v": 91981.0,
+      "vw": 599.8903,
+      "n": 1543,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.17,
+        "excursion_over_scale": 52.83,
+        "excursion_pct_of_price": 0.5284,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 2.17,
+        "volume": 91981.0,
+        "session_median_volume": 2872.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 600.77,
+          "h": 600.77,
+          "l": 600.75,
+          "c": 600.75,
+          "v": 2237.0
+        },
+        "next": {
+          "o": 600.81,
+          "h": 600.82,
+          "l": 600.67,
+          "c": 600.68,
+          "v": 9940.0
+        }
+      }
+    },
+    {
+      "key": "2025-06-16T08:51",
+      "t_ms": 1750078260000,
+      "et_iso": "2025-06-16T08:51:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 600.84,
+      "h": 600.84,
+      "l": 596.9301,
+      "c": 600.79,
+      "v": 89593.0,
+      "vw": 597.2018,
+      "n": 103,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.8799,
+        "excursion_over_scale": 64.66,
+        "excursion_pct_of_price": 0.6458,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 3.8599,
+        "volume": 89593.0,
+        "session_median_volume": 2872.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 600.86,
+          "h": 600.86,
+          "l": 600.82,
+          "c": 600.86,
+          "v": 1418.0
+        },
+        "next": {
+          "o": 600.81,
+          "h": 600.82,
+          "l": 600.81,
+          "c": 600.82,
+          "v": 1510.0
+        }
+      }
+    },
+    {
+      "key": "2025-06-17T08:00",
+      "t_ms": 1750161600000,
+      "et_iso": "2025-06-17T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 599.29,
+      "h": 602.6181,
+      "l": 598.4696,
+      "c": 600.3,
+      "v": 152098.0,
+      "vw": 601.3952,
+      "n": 1470,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.1181,
+        "excursion_over_scale": 26.48,
+        "excursion_pct_of_price": 0.3531,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 2.3181,
+        "volume": 152098.0,
+        "session_median_volume": 2735.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 600.39,
+          "h": 600.43,
+          "l": 600.39,
+          "c": 600.41,
+          "v": 4961.0
+        },
+        "next": {
+          "o": 600.37,
+          "h": 600.5,
+          "l": 600.3,
+          "c": 600.5,
+          "v": 11177.0
+        }
+      }
+    },
+    {
+      "key": "2025-07-02T08:00",
+      "t_ms": 1751457600000,
+      "et_iso": "2025-07-02T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 617.7325,
+      "h": 619.68,
+      "l": 617.41,
+      "c": 617.55,
+      "v": 73854.0,
+      "vw": 618.3865,
+      "n": 1808,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.9,
+        "excursion_over_scale": 63.33,
+        "excursion_pct_of_price": 0.3076,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 1.9475,
+        "volume": 73854.0,
+        "session_median_volume": 1285.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 617.78,
+          "h": 617.78,
+          "l": 617.78,
+          "c": 617.78,
+          "v": 446.0
+        },
+        "next": {
+          "o": 617.53,
+          "h": 617.62,
+          "l": 617.51,
+          "c": 617.5388,
+          "v": 20507.0
+        }
+      }
+    },
+    {
+      "key": "2025-07-09T08:00",
+      "t_ms": 1752062400000,
+      "et_iso": "2025-07-09T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 621.53,
+      "h": 621.95,
+      "l": 619.49,
+      "c": 621.6,
+      "v": 44556.0,
+      "vw": 621.3888,
+      "n": 1512,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.05,
+        "excursion_over_scale": 68.33,
+        "excursion_pct_of_price": 0.3298,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.04,
+        "volume": 44556.0,
+        "session_median_volume": 1471.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 621.73,
+          "h": 621.73,
+          "l": 621.73,
+          "c": 621.73,
+          "v": 550.0
+        },
+        "next": {
+          "o": 621.62,
+          "h": 621.62,
+          "l": 621.54,
+          "c": 621.56,
+          "v": 8590.0
+        }
+      }
+    },
+    {
+      "key": "2025-07-09T16:45",
+      "t_ms": 1752093900000,
+      "et_iso": "2025-07-09T16:45:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 623.82,
+      "h": 625.8642,
+      "l": 623.79,
+      "c": 623.82,
+      "v": 17616.0,
+      "vw": 625.56,
+      "n": 49,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.9942,
+        "excursion_over_scale": 66.47,
+        "excursion_pct_of_price": 0.3197,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.0442,
+        "volume": 17616.0,
+        "session_median_volume": 1471.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 623.85,
+          "h": 623.87,
+          "l": 623.8,
+          "c": 623.81,
+          "v": 23278.0
+        },
+        "next": {
+          "o": 623.84,
+          "h": 623.8495,
+          "l": 623.81,
+          "c": 623.84,
+          "v": 1945.0
+        }
+      }
+    },
+    {
+      "key": "2025-07-30T17:56",
+      "t_ms": 1753912560000,
+      "et_iso": "2025-07-30T17:56:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 638.2,
+      "h": 638.44,
+      "l": 634.27,
+      "c": 638.28,
+      "v": 403735.0,
+      "vw": 634.3567,
+      "n": 121,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.7,
+        "excursion_over_scale": 61.67,
+        "excursion_pct_of_price": 0.5797,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 3.93,
+        "volume": 403735.0,
+        "session_median_volume": 2786.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 637.99,
+          "h": 638.2,
+          "l": 637.97,
+          "c": 638.03,
+          "v": 49409.0
+        },
+        "next": {
+          "o": 638.31,
+          "h": 638.42,
+          "l": 638.3,
+          "c": 638.4,
+          "v": 10260.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-01T08:00",
+      "t_ms": 1754049600000,
+      "et_iso": "2025-08-01T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 625.38,
+      "h": 631.64,
+      "l": 624.8696,
+      "c": 627.59,
+      "v": 135901.0,
+      "vw": 627.2102,
+      "n": 4571,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 1.97,
+        "excursion_over_scale": 24.63,
+        "excursion_pct_of_price": 0.3145,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 4.05,
+        "volume": 135901.0,
+        "session_median_volume": 3025.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 626.91,
+          "h": 626.95,
+          "l": 626.85,
+          "c": 626.87,
+          "v": 11956.0
+        },
+        "next": {
+          "o": 629.67,
+          "h": 629.67,
+          "l": 626.62,
+          "c": 626.66,
+          "v": 11198.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-04T16:00",
+      "t_ms": 1754337600000,
+      "et_iso": "2025-08-04T16:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 631.07,
+      "h": 631.36,
+      "l": 621.72,
+      "c": 630.95,
+      "v": 427839.0,
+      "vw": 630.9306,
+      "n": 2466,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.83,
+        "excursion_over_scale": 76.6,
+        "excursion_pct_of_price": 0.607,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 9.23,
+        "volume": 427839.0,
+        "session_median_volume": 1599.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 625.58,
+          "h": 625.75,
+          "l": 625.55,
+          "c": 625.7,
+          "v": 45603.0
+        },
+        "next": {
+          "o": 630.95,
+          "h": 631.12,
+          "l": 630.91,
+          "c": 631.12,
+          "v": 112229.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-04T16:08",
+      "t_ms": 1754338080000,
+      "et_iso": "2025-08-04T16:08:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 631.59,
+      "h": 631.8599,
+      "l": 629.1081,
+      "c": 631.74,
+      "v": 97717.0,
+      "vw": 631.2653,
+      "n": 422,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.2419,
+        "excursion_over_scale": 44.84,
+        "excursion_pct_of_price": 0.3549,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.4819,
+        "volume": 97717.0,
+        "session_median_volume": 1599.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 631.38,
+          "h": 631.6,
+          "l": 631.35,
+          "c": 631.6,
+          "v": 52220.0
+        },
+        "next": {
+          "o": 631.72,
+          "h": 631.79,
+          "l": 631.7,
+          "c": 631.73,
+          "v": 35475.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-07T08:00",
+      "t_ms": 1754568000000,
+      "et_iso": "2025-08-07T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 636.75,
+      "h": 638.14,
+      "l": 633.92,
+      "c": 636.2,
+      "v": 64680.0,
+      "vw": 636.2381,
+      "n": 2846,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.34,
+        "excursion_over_scale": 46.8,
+        "excursion_pct_of_price": 0.3676,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 2.28,
+        "volume": 64680.0,
+        "session_median_volume": 1895.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 636.32,
+          "h": 636.34,
+          "l": 636.26,
+          "c": 636.29,
+          "v": 12353.0
+        },
+        "next": {
+          "o": 636.3,
+          "h": 636.32,
+          "l": 636.27,
+          "c": 636.27,
+          "v": 11793.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-07T09:24",
+      "t_ms": 1754573040000,
+      "et_iso": "2025-08-07T09:24:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 636.57,
+      "h": 636.63,
+      "l": 632.93,
+      "c": 636.63,
+      "v": 18737.0,
+      "vw": 636.3746,
+      "n": 210,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.42,
+        "excursion_over_scale": 68.4,
+        "excursion_pct_of_price": 0.5372,
+        "session_median_range": 0.05,
+        "reverting_wick_pts": 3.64,
+        "volume": 18737.0,
+        "session_median_volume": 1895.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 636.58,
+          "h": 636.59,
+          "l": 636.5301,
+          "c": 636.55,
+          "v": 4552.0
+        },
+        "next": {
+          "o": 636.54,
+          "h": 636.61,
+          "l": 636.35,
+          "c": 636.37,
+          "v": 13645.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-08T09:24",
+      "t_ms": 1754659440000,
+      "et_iso": "2025-08-08T09:24:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 633.8784,
+      "h": 633.8999,
+      "l": 631.3,
+      "c": 633.89,
+      "v": 7504.0,
+      "vw": 633.165,
+      "n": 87,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.57,
+        "excursion_over_scale": 85.67,
+        "excursion_pct_of_price": 0.4054,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 2.5784,
+        "volume": 7504.0,
+        "session_median_volume": 1319.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 633.97,
+          "h": 634.0,
+          "l": 633.87,
+          "c": 633.87,
+          "v": 2560.0
+        },
+        "next": {
+          "o": 633.97,
+          "h": 634.03,
+          "l": 633.97,
+          "c": 634.01,
+          "v": 17117.0
+        }
+      }
+    },
+    {
+      "key": "2025-08-08T16:21",
+      "t_ms": 1754684460000,
+      "et_iso": "2025-08-08T16:21:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 638.15,
+      "h": 638.17,
+      "l": 632.1468,
+      "c": 638.05,
+      "v": 1558132.0,
+      "vw": 632.2501,
+      "n": 150,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 5.9232,
+        "excursion_over_scale": 197.44,
+        "excursion_pct_of_price": 0.9283,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 5.9032,
+        "volume": 1558132.0,
+        "session_median_volume": 1319.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 638.09,
+          "h": 638.18,
+          "l": 638.07,
+          "c": 638.18,
+          "v": 39639.0
+        },
+        "next": {
+          "o": 638.1,
+          "h": 638.17,
+          "l": 638.09,
+          "c": 638.15,
+          "v": 6274.0
+        }
+      }
+    },
+    {
+      "key": "2025-09-18T08:59",
+      "t_ms": 1758200340000,
+      "et_iso": "2025-09-18T08:59:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 662.73,
+      "h": 662.74,
+      "l": 659.2174,
+      "c": 662.47,
+      "v": 102191.0,
+      "vw": 659.89,
+      "n": 380,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.0526,
+        "excursion_over_scale": 76.31,
+        "excursion_pct_of_price": 0.4607,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 3.2526,
+        "volume": 102191.0,
+        "session_median_volume": 2385.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 662.84,
+          "h": 662.84,
+          "l": 662.71,
+          "c": 662.7499,
+          "v": 15737.0
+        },
+        "next": {
+          "o": 662.49,
+          "h": 662.53,
+          "l": 662.27,
+          "c": 662.35,
+          "v": 23867.0
+        }
+      }
+    },
+    {
+      "key": "2025-10-01T08:06",
+      "t_ms": 1759320360000,
+      "et_iso": "2025-10-01T08:06:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 663.57,
+      "h": 666.18,
+      "l": 663.5,
+      "c": 663.54,
+      "v": 15782.0,
+      "vw": 663.901,
+      "n": 94,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.44,
+        "excursion_over_scale": 61.0,
+        "excursion_pct_of_price": 0.3677,
+        "session_median_range": 0.04,
+        "reverting_wick_pts": 2.61,
+        "volume": 15782.0,
+        "session_median_volume": 1542.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 663.74,
+          "h": 663.74,
+          "l": 663.59,
+          "c": 663.59,
+          "v": 1798.0
+        },
+        "next": {
+          "o": 663.58,
+          "h": 663.64,
+          "l": 663.55,
+          "c": 663.55,
+          "v": 7709.0
+        }
+      }
+    },
+    {
+      "key": "2025-10-14T08:00",
+      "t_ms": 1760443200000,
+      "et_iso": "2025-10-14T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 655.655,
+      "h": 662.96,
+      "l": 654.61,
+      "c": 657.4,
+      "v": 114710.0,
+      "vw": 657.9809,
+      "n": 6622,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.46,
+        "excursion_over_scale": 31.45,
+        "excursion_pct_of_price": 0.527,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 5.56,
+        "volume": 114710.0,
+        "session_median_volume": 2910.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 657.68,
+          "h": 657.77,
+          "l": 657.68,
+          "c": 657.7,
+          "v": 3539.0
+        },
+        "next": {
+          "o": 657.0,
+          "h": 659.5,
+          "l": 656.41,
+          "c": 657.31,
+          "v": 69616.0
+        }
+      }
+    },
+    {
+      "key": "2025-10-24T09:14",
+      "t_ms": 1761311640000,
+      "et_iso": "2025-10-24T09:14:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 676.0839,
+      "h": 676.12,
+      "l": 671.76,
+      "c": 676.09,
+      "v": 4321.0,
+      "vw": 674.9993,
+      "n": 115,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.17,
+        "excursion_over_scale": 139.0,
+        "excursion_pct_of_price": 0.6168,
+        "session_median_range": 0.03,
+        "reverting_wick_pts": 4.3239,
+        "volume": 4321.0,
+        "session_median_volume": 1669.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 676.07,
+          "h": 676.07,
+          "l": 675.93,
+          "c": 676.06,
+          "v": 9687.0
+        },
+        "next": {
+          "o": 676.09,
+          "h": 676.22,
+          "l": 676.07,
+          "c": 676.07,
+          "v": 9752.0
+        }
+      }
+    },
+    {
+      "key": "2025-10-30T16:58",
+      "t_ms": 1761857880000,
+      "et_iso": "2025-10-30T16:58:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 683.85,
+      "h": 683.94,
+      "l": 680.02,
+      "c": 683.86,
+      "v": 684291.0,
+      "vw": 680.1571,
+      "n": 128,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.75,
+        "excursion_over_scale": 46.88,
+        "excursion_pct_of_price": 0.5484,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 3.83,
+        "volume": 684291.0,
+        "session_median_volume": 2093.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 683.94,
+          "h": 684.01,
+          "l": 683.9,
+          "c": 683.93,
+          "v": 15445.0
+        },
+        "next": {
+          "o": 683.83,
+          "h": 683.98,
+          "l": 683.77,
+          "c": 683.98,
+          "v": 30324.0
+        }
+      }
+    },
+    {
+      "key": "2025-11-13T08:31",
+      "t_ms": 1763040660000,
+      "et_iso": "2025-11-13T08:31:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 682.0,
+      "h": 684.11,
+      "l": 681.8,
+      "c": 681.8,
+      "v": 12756.0,
+      "vw": 683.0834,
+      "n": 137,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.06,
+        "excursion_over_scale": 20.6,
+        "excursion_pct_of_price": 0.3021,
+        "session_median_range": 0.1,
+        "reverting_wick_pts": 2.11,
+        "volume": 12756.0,
+        "session_median_volume": 1625.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 681.96,
+          "h": 682.05,
+          "l": 681.86,
+          "c": 682.0,
+          "v": 2009.0
+        },
+        "next": {
+          "o": 681.78,
+          "h": 681.82,
+          "l": 681.61,
+          "c": 681.62,
+          "v": 15121.0
+        }
+      }
+    },
+    {
+      "key": "2025-11-19T08:01",
+      "t_ms": 1763557260000,
+      "et_iso": "2025-11-19T08:01:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 662.81,
+      "h": 662.84,
+      "l": 658.01,
+      "c": 662.49,
+      "v": 91207.0,
+      "vw": 660.4255,
+      "n": 1500,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 1.99,
+        "excursion_over_scale": 15.31,
+        "excursion_pct_of_price": 0.3003,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 4.48,
+        "volume": 91207.0,
+        "session_median_volume": 2582.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 662.72,
+          "h": 663.23,
+          "l": 660.0,
+          "c": 662.81,
+          "v": 48473.0
+        },
+        "next": {
+          "o": 661.56,
+          "h": 662.52,
+          "l": 661.56,
+          "c": 662.44,
+          "v": 7553.0
+        }
+      }
+    },
+    {
+      "key": "2025-11-19T18:00",
+      "t_ms": 1763593200000,
+      "et_iso": "2025-11-19T18:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 665.89,
+      "h": 666.75,
+      "l": 662.62,
+      "c": 666.65,
+      "v": 209342.0,
+      "vw": 664.1801,
+      "n": 580,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.27,
+        "excursion_over_scale": 25.15,
+        "excursion_pct_of_price": 0.4908,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 3.27,
+        "volume": 209342.0,
+        "session_median_volume": 2582.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 665.9,
+          "h": 665.9,
+          "l": 665.89,
+          "c": 665.9,
+          "v": 2470.0
+        },
+        "next": {
+          "o": 666.51,
+          "h": 667.54,
+          "l": 666.51,
+          "c": 667.28,
+          "v": 34334.0
+        }
+      }
+    },
+    {
+      "key": "2025-11-21T08:00",
+      "t_ms": 1763730000000,
+      "et_iso": "2025-11-21T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 652.17,
+      "h": 656.4,
+      "l": 649.47,
+      "c": 655.71,
+      "v": 225418.0,
+      "vw": 653.5493,
+      "n": 11203,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.38,
+        "excursion_over_scale": 17.79,
+        "excursion_pct_of_price": 0.5169,
+        "session_median_range": 0.19,
+        "reverting_wick_pts": 2.7,
+        "volume": 225418.0,
+        "session_median_volume": 3939.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 655.41,
+          "h": 655.62,
+          "l": 655.34,
+          "c": 655.44,
+          "v": 15895.0
+        },
+        "next": {
+          "o": 655.87,
+          "h": 655.97,
+          "l": 652.85,
+          "c": 655.42,
+          "v": 19459.0
+        }
+      }
+    },
+    {
+      "key": "2025-11-24T08:00",
+      "t_ms": 1763989200000,
+      "et_iso": "2025-11-24T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 661.12,
+      "h": 663.72,
+      "l": 659.61,
+      "c": 662.65,
+      "v": 65976.0,
+      "vw": 661.6367,
+      "n": 1936,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.2,
+        "excursion_over_scale": 20.0,
+        "excursion_pct_of_price": 0.3324,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 1.51,
+        "volume": 65976.0,
+        "session_median_volume": 2118.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 662.75,
+          "h": 662.75,
+          "l": 662.62,
+          "c": 662.62,
+          "v": 3932.0
+        },
+        "next": {
+          "o": 663.5,
+          "h": 663.5,
+          "l": 661.81,
+          "c": 662.69,
+          "v": 6587.0
+        }
+      }
+    },
+    {
+      "key": "2025-11-24T08:53",
+      "t_ms": 1763992380000,
+      "et_iso": "2025-11-24T08:53:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 662.82,
+      "h": 662.82,
+      "l": 659.03,
+      "c": 662.7091,
+      "v": 13789.0,
+      "vw": 660.095,
+      "n": 134,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.5823,
+        "excursion_over_scale": 32.57,
+        "excursion_pct_of_price": 0.5405,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 3.6791,
+        "volume": 13789.0,
+        "session_median_volume": 2118.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 662.77,
+          "h": 662.89,
+          "l": 662.76,
+          "c": 662.76,
+          "v": 1945.0
+        },
+        "next": {
+          "o": 662.62,
+          "h": 662.7,
+          "l": 662.6123,
+          "c": 662.65,
+          "v": 6833.0
+        }
+      }
+    },
+    {
+      "key": "2025-12-15T08:48",
+      "t_ms": 1765806480000,
+      "et_iso": "2025-12-15T08:48:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 685.26,
+      "h": 685.36,
+      "l": 681.73,
+      "c": 685.29,
+      "v": 25754.0,
+      "vw": 682.8308,
+      "n": 125,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.47,
+        "excursion_over_scale": 69.12,
+        "excursion_pct_of_price": 0.5064,
+        "session_median_range": 0.0502,
+        "reverting_wick_pts": 3.53,
+        "volume": 25754.0,
+        "session_median_volume": 1180.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 685.3,
+          "h": 685.31,
+          "l": 685.2,
+          "c": 685.23,
+          "v": 5568.0
+        },
+        "next": {
+          "o": 685.33,
+          "h": 685.46,
+          "l": 685.29,
+          "c": 685.37,
+          "v": 24968.0
+        }
+      }
+    },
+    {
+      "key": "2026-01-14T08:59",
+      "t_ms": 1768399140000,
+      "et_iso": "2026-01-14T08:59:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 690.88,
+      "h": 693.65,
+      "l": 690.84,
+      "c": 690.88,
+      "v": 20578.0,
+      "vw": 691.2311,
+      "n": 200,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.65,
+        "excursion_over_scale": 37.86,
+        "excursion_pct_of_price": 0.3836,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 2.77,
+        "volume": 20578.0,
+        "session_median_volume": 1330.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 690.91,
+          "h": 690.91,
+          "l": 690.83,
+          "c": 690.84,
+          "v": 2084.0
+        },
+        "next": {
+          "o": 690.91,
+          "h": 691.0,
+          "l": 690.88,
+          "c": 690.99,
+          "v": 10060.0
+        }
+      }
+    },
+    {
+      "key": "2026-01-14T16:11",
+      "t_ms": 1768425060000,
+      "et_iso": "2026-01-14T16:11:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 689.93,
+      "h": 693.8932,
+      "l": 689.8,
+      "c": 689.801,
+      "v": 160918.0,
+      "vw": 693.4957,
+      "n": 143,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.9132,
+        "excursion_over_scale": 55.9,
+        "excursion_pct_of_price": 0.5672,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 3.9632,
+        "volume": 160918.0,
+        "session_median_volume": 1330.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 689.85,
+          "h": 689.97,
+          "l": 689.77,
+          "c": 689.92,
+          "v": 18507.0
+        },
+        "next": {
+          "o": 689.86,
+          "h": 689.98,
+          "l": 689.86,
+          "c": 689.92,
+          "v": 7953.0
+        }
+      }
+    },
+    {
+      "key": "2026-01-20T08:01",
+      "t_ms": 1768914060000,
+      "et_iso": "2026-01-20T08:01:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 680.85,
+      "h": 685.1,
+      "l": 680.36,
+      "c": 682.7194,
+      "v": 28351.0,
+      "vw": 682.8522,
+      "n": 1434,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.08,
+        "excursion_over_scale": 18.91,
+        "excursion_pct_of_price": 0.3051,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 2.3806,
+        "volume": 28351.0,
+        "session_median_volume": 3052.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 681.39,
+          "h": 683.02,
+          "l": 679.0595,
+          "c": 682.66,
+          "v": 192205.0
+        },
+        "next": {
+          "o": 681.2597,
+          "h": 682.7,
+          "l": 679.4,
+          "c": 682.5194,
+          "v": 16283.0
+        }
+      }
+    },
+    {
+      "key": "2026-01-21T08:03",
+      "t_ms": 1769000580000,
+      "et_iso": "2026-01-21T08:03:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 676.74,
+      "h": 679.62,
+      "l": 676.6,
+      "c": 676.7,
+      "v": 4451.0,
+      "vw": 676.8853,
+      "n": 144,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.7,
+        "excursion_over_scale": 30.0,
+        "excursion_pct_of_price": 0.399,
+        "session_median_range": 0.09,
+        "reverting_wick_pts": 2.88,
+        "volume": 4451.0,
+        "session_median_volume": 1474.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 676.92,
+          "h": 676.92,
+          "l": 676.6741,
+          "c": 676.72,
+          "v": 9471.0
+        },
+        "next": {
+          "o": 676.71,
+          "h": 676.74,
+          "l": 676.67,
+          "c": 676.67,
+          "v": 1311.0
+        }
+      }
+    },
+    {
+      "key": "2026-02-02T08:01",
+      "t_ms": 1770037260000,
+      "et_iso": "2026-02-02T08:01:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 688.65,
+      "h": 688.71,
+      "l": 681.94,
+      "c": 688.53,
+      "v": 24049.0,
+      "vw": 685.0168,
+      "n": 1034,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.41,
+        "excursion_over_scale": 44.1,
+        "excursion_pct_of_price": 0.6404,
+        "session_median_range": 0.1,
+        "reverting_wick_pts": 6.59,
+        "volume": 24049.0,
+        "session_median_volume": 1476.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 688.9,
+          "h": 689.6912,
+          "l": 686.35,
+          "c": 688.65,
+          "v": 92454.0
+        },
+        "next": {
+          "o": 687.13,
+          "h": 688.61,
+          "l": 686.98,
+          "c": 688.56,
+          "v": 3646.0
+        }
+      }
+    },
+    {
+      "key": "2026-02-09T08:00",
+      "t_ms": 1770642000000,
+      "et_iso": "2026-02-09T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 689.44,
+      "h": 691.8,
+      "l": 688.0,
+      "c": 690.6,
+      "v": 75889.0,
+      "vw": 689.8828,
+      "n": 5492,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.27,
+        "excursion_over_scale": 20.64,
+        "excursion_pct_of_price": 0.329,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 1.44,
+        "volume": 75889.0,
+        "session_median_volume": 2445.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 690.27,
+          "h": 690.46,
+          "l": 690.27,
+          "c": 690.46,
+          "v": 4509.0
+        },
+        "next": {
+          "o": 691.69,
+          "h": 692.41,
+          "l": 690.52,
+          "c": 690.56,
+          "v": 3496.0
+        }
+      }
+    },
+    {
+      "key": "2026-02-12T16:01",
+      "t_ms": 1770930060000,
+      "et_iso": "2026-02-12T16:01:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 681.07,
+      "h": 686.211,
+      "l": 680.88,
+      "c": 681.1799,
+      "v": 269222.0,
+      "vw": 681.0828,
+      "n": 1808,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 4.841,
+        "excursion_over_scale": 53.79,
+        "excursion_pct_of_price": 0.7107,
+        "session_median_range": 0.09,
+        "reverting_wick_pts": 5.0311,
+        "volume": 269222.0,
+        "session_median_volume": 2580.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 681.23,
+          "h": 681.37,
+          "l": 680.74,
+          "c": 681.03,
+          "v": 324248.0
+        },
+        "next": {
+          "o": 681.14,
+          "h": 681.32,
+          "l": 681.12,
+          "c": 681.22,
+          "v": 110826.0
+        }
+      }
+    },
+    {
+      "key": "2026-02-23T08:00",
+      "t_ms": 1771851600000,
+      "et_iso": "2026-02-23T08:00:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 686.49,
+      "h": 688.1691,
+      "l": 685.67,
+      "c": 686.07,
+      "v": 88305.015766,
+      "vw": 686.3297,
+      "n": 3968,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.0991,
+        "excursion_over_scale": 29.99,
+        "excursion_pct_of_price": 0.3059,
+        "session_median_range": 0.07,
+        "reverting_wick_pts": 1.6791,
+        "volume": 88305.015766,
+        "session_median_volume": 1442.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 685.97,
+          "h": 685.97,
+          "l": 685.9,
+          "c": 685.95,
+          "v": 970.0
+        },
+        "next": {
+          "o": 686.07,
+          "h": 686.07,
+          "l": 684.03,
+          "c": 685.95,
+          "v": 5654.91958
+        }
+      }
+    },
+    {
+      "key": "2026-03-02T09:19",
+      "t_ms": 1772461140000,
+      "et_iso": "2026-03-02T09:19:00-05:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 678.05,
+      "h": 685.99,
+      "l": 678.04,
+      "c": 678.19,
+      "v": 18551.65317,
+      "vw": 682.8179,
+      "n": 226,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 7.74,
+        "excursion_over_scale": 51.6,
+        "excursion_pct_of_price": 1.1414,
+        "session_median_range": 0.15,
+        "reverting_wick_pts": 7.8,
+        "volume": 18551.65317,
+        "session_median_volume": 2974.1,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 678.14,
+          "h": 678.15,
+          "l": 678.0,
+          "c": 678.09,
+          "v": 18249.751494
+        },
+        "next": {
+          "o": 678.23,
+          "h": 678.25,
+          "l": 678.0,
+          "c": 678.1,
+          "v": 23767.874427
+        }
+      }
+    },
+    {
+      "key": "2026-03-16T09:04",
+      "t_ms": 1773666240000,
+      "et_iso": "2026-03-16T09:04:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 668.41,
+      "h": 668.44,
+      "l": 662.3043,
+      "c": 668.4,
+      "v": 28909.761488,
+      "vw": 663.2609,
+      "n": 132,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 6.1057,
+        "excursion_over_scale": 50.88,
+        "excursion_pct_of_price": 0.9135,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 6.0957,
+        "volume": 28909.761488,
+        "session_median_volume": 2332.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 668.62,
+          "h": 668.6899,
+          "l": 668.42,
+          "c": 668.46,
+          "v": 13947.07398
+        },
+        "next": {
+          "o": 668.41,
+          "h": 668.57,
+          "l": 668.41,
+          "c": 668.52,
+          "v": 3684.505623
+        }
+      }
+    },
+    {
+      "key": "2026-03-20T08:04",
+      "t_ms": 1774008240000,
+      "et_iso": "2026-03-20T08:04:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 655.7,
+      "h": 658.56,
+      "l": 655.22,
+      "c": 655.44,
+      "v": 12325.47729,
+      "vw": 655.5457,
+      "n": 259,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.56,
+        "excursion_over_scale": 15.06,
+        "excursion_pct_of_price": 0.3905,
+        "session_median_range": 0.17,
+        "reverting_wick_pts": 2.86,
+        "volume": 12325.47729,
+        "session_median_volume": 5799.1,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 655.77,
+          "h": 656.0,
+          "l": 655.75,
+          "c": 655.75,
+          "v": 9154.062482
+        },
+        "next": {
+          "o": 655.39,
+          "h": 655.94,
+          "l": 655.39,
+          "c": 655.8291,
+          "v": 15966.17989
+        }
+      }
+    },
+    {
+      "key": "2026-03-20T16:37",
+      "t_ms": 1774039020000,
+      "et_iso": "2026-03-20T16:37:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 649.68,
+      "h": 656.8393,
+      "l": 649.58,
+      "c": 649.72,
+      "v": 134950.737275,
+      "vw": 654.3409,
+      "n": 215,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 6.6893,
+        "excursion_over_scale": 39.35,
+        "excursion_pct_of_price": 1.0296,
+        "session_median_range": 0.17,
+        "reverting_wick_pts": 7.1193,
+        "volume": 134950.737275,
+        "session_median_volume": 5799.1,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 649.74,
+          "h": 649.75,
+          "l": 649.67,
+          "c": 649.72,
+          "v": 5555.974547
+        },
+        "next": {
+          "o": 649.7,
+          "h": 650.15,
+          "l": 649.69,
+          "c": 650.03,
+          "v": 26907.107551
+        }
+      }
+    },
+    {
+      "key": "2026-03-23T08:00",
+      "t_ms": 1774267200000,
+      "et_iso": "2026-03-23T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 656.1,
+      "h": 666.8,
+      "l": 641.92,
+      "c": 655.54,
+      "v": 548799.735691,
+      "vw": 658.0425,
+      "n": 15195,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 10.46,
+        "excursion_over_scale": 47.55,
+        "excursion_pct_of_price": 1.5949,
+        "session_median_range": 0.22,
+        "reverting_wick_pts": 10.7,
+        "volume": 548799.735691,
+        "session_median_volume": 4489.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 656.06,
+          "h": 656.34,
+          "l": 655.67,
+          "c": 656.08,
+          "v": 33956.0
+        },
+        "next": {
+          "o": 655.46,
+          "h": 655.81,
+          "l": 641.45,
+          "c": 655.7,
+          "v": 79136.282142
+        }
+      }
+    },
+    {
+      "key": "2026-03-23T08:02",
+      "t_ms": 1774267320000,
+      "et_iso": "2026-03-23T08:02:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 652.9903,
+      "h": 664.1403,
+      "l": 642.15,
+      "c": 655.5396,
+      "v": 51628.757856,
+      "vw": 657.4634,
+      "n": 703,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 7.1203,
+        "excursion_over_scale": 32.37,
+        "excursion_pct_of_price": 1.0883,
+        "session_median_range": 0.22,
+        "reverting_wick_pts": 8.6007,
+        "volume": 51628.757856,
+        "session_median_volume": 4489.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 655.46,
+          "h": 655.81,
+          "l": 641.45,
+          "c": 655.7,
+          "v": 79136.282142
+        },
+        "next": {
+          "o": 655.55,
+          "h": 657.02,
+          "l": 655.55,
+          "c": 656.5,
+          "v": 151348.088839
+        }
+      }
+    },
+    {
+      "key": "2026-03-26T08:05",
+      "t_ms": 1774526700000,
+      "et_iso": "2026-03-26T08:05:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 650.61,
+      "h": 654.25,
+      "l": 650.59,
+      "c": 650.68,
+      "v": 5712.494438,
+      "vw": 651.431,
+      "n": 165,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.26,
+        "excursion_over_scale": 23.29,
+        "excursion_pct_of_price": 0.501,
+        "session_median_range": 0.14,
+        "reverting_wick_pts": 3.57,
+        "volume": 5712.494438,
+        "session_median_volume": 2100.2,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 650.43,
+          "h": 650.67,
+          "l": 650.43,
+          "c": 650.62,
+          "v": 4105.921803
+        },
+        "next": {
+          "o": 650.71,
+          "h": 650.99,
+          "l": 650.69,
+          "c": 650.98,
+          "v": 49608.097199
+        }
+      }
+    },
+    {
+      "key": "2026-03-30T08:00",
+      "t_ms": 1774872000000,
+      "et_iso": "2026-03-30T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 638.37,
+      "h": 641.095,
+      "l": 636.855,
+      "c": 637.97,
+      "v": 11682.4503,
+      "vw": 638.1882,
+      "n": 179,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.785,
+        "excursion_over_scale": 21.42,
+        "excursion_pct_of_price": 0.4364,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 2.725,
+        "volume": 11682.4503,
+        "session_median_volume": 2374.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 638.2,
+          "h": 638.31,
+          "l": 638.2,
+          "c": 638.24,
+          "v": 2503.057432
+        },
+        "next": {
+          "o": 637.97,
+          "h": 638.23,
+          "l": 637.91,
+          "c": 637.98,
+          "v": 6163.026552
+        }
+      }
+    },
+    {
+      "key": "2026-03-30T08:25",
+      "t_ms": 1774873500000,
+      "et_iso": "2026-03-30T08:25:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 639.3,
+      "h": 639.37,
+      "l": 634.16,
+      "c": 639.36,
+      "v": 37986.174729,
+      "vw": 638.5341,
+      "n": 390,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.93,
+        "excursion_over_scale": 37.92,
+        "excursion_pct_of_price": 0.7711,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 5.14,
+        "volume": 37986.174729,
+        "session_median_volume": 2374.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 639.09,
+          "h": 639.41,
+          "l": 639.09,
+          "c": 639.26,
+          "v": 6880.801183
+        },
+        "next": {
+          "o": 639.34,
+          "h": 639.6,
+          "l": 639.29,
+          "c": 639.53,
+          "v": 20017.80466
+        }
+      }
+    },
+    {
+      "key": "2026-03-31T08:00",
+      "t_ms": 1774958400000,
+      "et_iso": "2026-03-31T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 638.65,
+      "h": 638.97,
+      "l": 635.85,
+      "c": 638.83,
+      "v": 10922.50654,
+      "vw": 638.3851,
+      "n": 172,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.68,
+        "excursion_over_scale": 16.75,
+        "excursion_pct_of_price": 0.4196,
+        "session_median_range": 0.16,
+        "reverting_wick_pts": 2.8,
+        "volume": 10922.50654,
+        "session_median_volume": 3436.3,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 638.61,
+          "h": 638.652,
+          "l": 638.53,
+          "c": 638.58,
+          "v": 1135.005292
+        },
+        "next": {
+          "o": 638.85,
+          "h": 638.95,
+          "l": 638.74,
+          "c": 638.94,
+          "v": 11485.40472
+        }
+      }
+    },
+    {
+      "key": "2026-04-01T07:16",
+      "t_ms": 1775042160000,
+      "et_iso": "2026-04-01T07:16:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 655.36,
+      "h": 655.45,
+      "l": 650.34,
+      "c": 655.35,
+      "v": 8519.055768,
+      "vw": 655.0595,
+      "n": 125,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.91,
+        "excursion_over_scale": 40.92,
+        "excursion_pct_of_price": 0.7492,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 5.01,
+        "volume": 8519.055768,
+        "session_median_volume": 2612.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 655.34,
+          "h": 655.57,
+          "l": 655.33,
+          "c": 655.48,
+          "v": 20433.058697
+        },
+        "next": {
+          "o": 655.28,
+          "h": 655.32,
+          "l": 655.25,
+          "c": 655.29,
+          "v": 2652.010071
+        }
+      }
+    },
+    {
+      "key": "2026-04-01T08:00",
+      "t_ms": 1775044800000,
+      "et_iso": "2026-04-01T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 655.99,
+      "h": 656.155,
+      "l": 652.04,
+      "c": 655.97,
+      "v": 9270.077819,
+      "vw": 655.0265,
+      "n": 168,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.8337,
+        "excursion_over_scale": 31.95,
+        "excursion_pct_of_price": 0.5844,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 3.93,
+        "volume": 9270.077819,
+        "session_median_volume": 2612.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 656.12,
+          "h": 656.1296,
+          "l": 655.99,
+          "c": 656.04,
+          "v": 4880.045085
+        },
+        "next": {
+          "o": 656.0014,
+          "h": 656.05,
+          "l": 655.8737,
+          "c": 656.05,
+          "v": 5040.977861
+        }
+      }
+    },
+    {
+      "key": "2026-04-01T08:39",
+      "t_ms": 1775047140000,
+      "et_iso": "2026-04-01T08:39:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 653.92,
+      "h": 654.11,
+      "l": 650.34,
+      "c": 653.97,
+      "v": 21919.525562,
+      "vw": 653.9649,
+      "n": 198,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.33,
+        "excursion_over_scale": 27.75,
+        "excursion_pct_of_price": 0.5092,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 3.58,
+        "volume": 21919.525562,
+        "session_median_volume": 2612.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 653.79,
+          "h": 654.0,
+          "l": 653.67,
+          "c": 653.93,
+          "v": 44396.94769
+        },
+        "next": {
+          "o": 653.91,
+          "h": 654.4,
+          "l": 653.86,
+          "c": 654.37,
+          "v": 21186.836981
+        }
+      }
+    },
+    {
+      "key": "2026-04-02T08:00",
+      "t_ms": 1775131200000,
+      "et_iso": "2026-04-02T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 644.6,
+      "h": 648.4,
+      "l": 644.47,
+      "c": 644.4904,
+      "v": 29612.359955,
+      "vw": 645.2954,
+      "n": 285,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.5,
+        "excursion_over_scale": 35.0,
+        "excursion_pct_of_price": 0.543,
+        "session_median_range": 0.1,
+        "reverting_wick_pts": 3.8,
+        "volume": 29612.359955,
+        "session_median_volume": 2307.6,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 644.9,
+          "h": 644.9,
+          "l": 644.59,
+          "c": 644.59,
+          "v": 39995.048927
+        },
+        "next": {
+          "o": 644.52,
+          "h": 644.56,
+          "l": 644.4,
+          "c": 644.46,
+          "v": 20665.682856
+        }
+      }
+    },
+    {
+      "key": "2026-04-06T08:00",
+      "t_ms": 1775476800000,
+      "et_iso": "2026-04-06T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 656.36,
+      "h": 658.5,
+      "l": 656.34,
+      "c": 656.4,
+      "v": 4837.078155,
+      "vw": 656.6855,
+      "n": 83,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.11,
+        "excursion_over_scale": 26.37,
+        "excursion_pct_of_price": 0.3215,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 2.1,
+        "volume": 4837.078155,
+        "session_median_volume": 1095.2,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 656.39,
+          "h": 656.39,
+          "l": 656.3,
+          "c": 656.35,
+          "v": 1857.404723
+        },
+        "next": {
+          "o": 656.36,
+          "h": 656.38,
+          "l": 656.34,
+          "c": 656.38,
+          "v": 409.52902
+        }
+      }
+    },
+    {
+      "key": "2026-04-07T08:00",
+      "t_ms": 1775563200000,
+      "et_iso": "2026-04-07T08:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 655.69,
+      "h": 659.995,
+      "l": 655.135,
+      "c": 655.4252,
+      "v": 23208.514091,
+      "vw": 656.2139,
+      "n": 202,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 4.155,
+        "excursion_over_scale": 17.31,
+        "excursion_pct_of_price": 0.6338,
+        "session_median_range": 0.24,
+        "reverting_wick_pts": 4.305,
+        "volume": 23208.514091,
+        "session_median_volume": 7405.2,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 655.75,
+          "h": 655.84,
+          "l": 655.57,
+          "c": 655.68,
+          "v": 6837.413188
+        },
+        "next": {
+          "o": 655.49,
+          "h": 655.51,
+          "l": 655.3,
+          "c": 655.41,
+          "v": 3851.702209
+        }
+      }
+    },
+    {
+      "key": "2026-04-13T07:50",
+      "t_ms": 1776081000000,
+      "et_iso": "2026-04-13T07:50:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 674.83,
+      "h": 674.84,
+      "l": 670.533,
+      "c": 674.7,
+      "v": 204579.906058,
+      "vw": 671.0515,
+      "n": 314,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.017,
+        "excursion_over_scale": 50.21,
+        "excursion_pct_of_price": 0.5953,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 4.167,
+        "volume": 204579.906058,
+        "session_median_volume": 3109.0,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 674.97,
+          "h": 675.01,
+          "l": 674.8,
+          "c": 674.83,
+          "v": 2745.571389
+        },
+        "next": {
+          "o": 674.74,
+          "h": 674.79,
+          "l": 674.55,
+          "c": 674.75,
+          "v": 4588.460874
+        }
+      }
+    },
+    {
+      "key": "2026-04-13T08:31",
+      "t_ms": 1776083460000,
+      "et_iso": "2026-04-13T08:31:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 675.32,
+      "h": 675.32,
+      "l": 670.7,
+      "c": 675.16,
+      "v": 56650.36543,
+      "vw": 671.2317,
+      "n": 89,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 4.44,
+        "excursion_over_scale": 55.5,
+        "excursion_pct_of_price": 0.6575,
+        "session_median_range": 0.08,
+        "reverting_wick_pts": 4.46,
+        "volume": 56650.36543,
+        "session_median_volume": 3109.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 675.24,
+          "h": 675.45,
+          "l": 675.22,
+          "c": 675.29,
+          "v": 5574.947182
+        },
+        "next": {
+          "o": 675.16,
+          "h": 675.19,
+          "l": 675.14,
+          "c": 675.18,
+          "v": 3898.049854
+        }
+      }
+    },
+    {
+      "key": "2026-04-22T16:08",
+      "t_ms": 1776888480000,
+      "et_iso": "2026-04-22T16:08:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 711.21,
+      "h": 711.26,
+      "l": 704.0421,
+      "c": 711.19,
+      "v": 1671595.5496,
+      "vw": 708.8969,
+      "n": 527,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 7.0079,
+        "excursion_over_scale": 116.8,
+        "excursion_pct_of_price": 0.9854,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 7.1479,
+        "volume": 1671595.5496,
+        "session_median_volume": 1094.3,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 711.2,
+          "h": 711.37,
+          "l": 711.15,
+          "c": 711.21,
+          "v": 383852.290492
+        },
+        "next": {
+          "o": 711.16,
+          "h": 711.19,
+          "l": 711.05,
+          "c": 711.07,
+          "v": 31273.328337
+        }
+      }
+    },
+    {
+      "key": "2026-04-30T08:15",
+      "t_ms": 1777551300000,
+      "et_iso": "2026-04-30T08:15:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 714.81,
+      "h": 715.31,
+      "l": 711.58,
+      "c": 715.0,
+      "v": 31147.086609,
+      "vw": 714.7447,
+      "n": 444,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.18,
+        "excursion_over_scale": 30.72,
+        "excursion_pct_of_price": 0.4448,
+        "session_median_range": 0.1035,
+        "reverting_wick_pts": 3.23,
+        "volume": 31147.086609,
+        "session_median_volume": 2199.5,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 714.85,
+          "h": 714.85,
+          "l": 714.76,
+          "c": 714.771,
+          "v": 7448.576291
+        },
+        "next": {
+          "o": 715.09,
+          "h": 715.23,
+          "l": 714.94,
+          "c": 715.23,
+          "v": 10173.393706
+        }
+      }
+    },
+    {
+      "key": "2026-06-03T17:23",
+      "t_ms": 1780521780000,
+      "et_iso": "2026-06-03T17:23:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 751.11,
+      "h": 753.74,
+      "l": 751.07,
+      "c": 751.07,
+      "v": 138574.466441,
+      "vw": 753.6176,
+      "n": 60,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.545,
+        "excursion_over_scale": 28.28,
+        "excursion_pct_of_price": 0.3388,
+        "session_median_range": 0.09,
+        "reverting_wick_pts": 2.63,
+        "volume": 138574.466441,
+        "session_median_volume": 1453.4,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 751.185,
+          "h": 751.195,
+          "l": 751.08,
+          "c": 751.095,
+          "v": 4742.842179
+        },
+        "next": {
+          "o": 751.09,
+          "h": 751.135,
+          "l": 751.06,
+          "c": 751.06,
+          "v": 4876.662501
+        }
+      }
+    },
+    {
+      "key": "2026-06-05T16:03",
+      "t_ms": 1780689780000,
+      "et_iso": "2026-06-05T16:03:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 735.57,
+      "h": 740.4489,
+      "l": 734.9,
+      "c": 735.19,
+      "v": 258597.485677,
+      "vw": 735.8654,
+      "n": 1553,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.0289,
+        "excursion_over_scale": 23.3,
+        "excursion_pct_of_price": 0.4119,
+        "session_median_range": 0.13,
+        "reverting_wick_pts": 4.8789,
+        "volume": 258597.485677,
+        "session_median_volume": 2360.1,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 735.82,
+          "h": 736.0,
+          "l": 735.27,
+          "c": 735.56,
+          "v": 257731.840306
+        },
+        "next": {
+          "o": 735.16,
+          "h": 737.42,
+          "l": 735.05,
+          "c": 735.33,
+          "v": 79299.670465
+        }
+      }
+    },
+    {
+      "key": "2026-06-10T08:30",
+      "t_ms": 1781094600000,
+      "et_iso": "2026-06-10T08:30:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 731.71,
+      "h": 736.8,
+      "l": 730.74,
+      "c": 732.63,
+      "v": 236818.706343,
+      "vw": 733.4422,
+      "n": 2938,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.47,
+        "excursion_over_scale": 16.52,
+        "excursion_pct_of_price": 0.4739,
+        "session_median_range": 0.21,
+        "reverting_wick_pts": 4.17,
+        "volume": 236818.706343,
+        "session_median_volume": 3008.3,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 731.65,
+          "h": 731.75,
+          "l": 731.56,
+          "c": 731.56,
+          "v": 22118.721148
+        },
+        "next": {
+          "o": 732.84,
+          "h": 733.33,
+          "l": 731.49,
+          "c": 731.84,
+          "v": 148673.578999
+        }
+      }
+    },
+    {
+      "key": "2026-06-10T16:01",
+      "t_ms": 1781121660000,
+      "et_iso": "2026-06-10T16:01:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 724.96,
+      "h": 730.974,
+      "l": 724.66,
+      "c": 724.66,
+      "v": 134401.123533,
+      "vw": 724.8626,
+      "n": 830,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 5.294,
+        "excursion_over_scale": 25.21,
+        "excursion_pct_of_price": 0.7304,
+        "session_median_range": 0.21,
+        "reverting_wick_pts": 6.014,
+        "volume": 134401.123533,
+        "session_median_volume": 3008.3,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 725.44,
+          "h": 725.68,
+          "l": 724.83,
+          "c": 724.96,
+          "v": 492969.530923
+        },
+        "next": {
+          "o": 724.68,
+          "h": 725.02,
+          "l": 724.61,
+          "c": 724.97,
+          "v": 192094.152814
+        }
+      }
+    },
+    {
+      "key": "2026-06-11T16:19",
+      "t_ms": 1781209140000,
+      "et_iso": "2026-06-11T16:19:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 738.64,
+      "h": 738.756,
+      "l": 735.8833,
+      "c": 738.5,
+      "v": 62925.817956,
+      "vw": 737.9015,
+      "n": 92,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.5167,
+        "excursion_over_scale": 20.97,
+        "excursion_pct_of_price": 0.3408,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 2.6167,
+        "volume": 62925.817956,
+        "session_median_volume": 1809.6,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 738.9,
+          "h": 738.9,
+          "l": 738.5865,
+          "c": 738.65,
+          "v": 3057.611759
+        },
+        "next": {
+          "o": 738.52,
+          "h": 738.63,
+          "l": 738.4,
+          "c": 738.54,
+          "v": 2916871.584791
+        }
+      }
+    },
+    {
+      "key": "2026-06-22T08:27",
+      "t_ms": 1782131220000,
+      "et_iso": "2026-06-22T08:27:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 747.66,
+      "h": 747.74,
+      "l": 744.06,
+      "c": 747.74,
+      "v": 67855.454447,
+      "vw": 744.3213,
+      "n": 94,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.57,
+        "excursion_over_scale": 59.5,
+        "excursion_pct_of_price": 0.4775,
+        "session_median_range": 0.06,
+        "reverting_wick_pts": 3.6,
+        "volume": 67855.454447,
+        "session_median_volume": 1130.4,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 747.63,
+          "h": 747.65,
+          "l": 747.63,
+          "c": 747.65,
+          "v": 321.036247
+        },
+        "next": {
+          "o": 747.71,
+          "h": 747.75,
+          "l": 747.67,
+          "c": 747.67,
+          "v": 3086.31281
+        }
+      }
+    },
+    {
+      "key": "2026-06-23T04:01",
+      "t_ms": 1782201660000,
+      "et_iso": "2026-06-23T04:01:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 733.4066,
+      "h": 741.51,
+      "l": 733.4066,
+      "c": 733.63,
+      "v": 29799.0,
+      "vw": 737.1526,
+      "n": 784,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.59,
+        "excursion_over_scale": 25.77,
+        "excursion_pct_of_price": 0.4894,
+        "session_median_range": 0.1393,
+        "reverting_wick_pts": 7.88,
+        "volume": 29799.0,
+        "session_median_volume": 2213.2,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 733.97,
+          "h": 737.92,
+          "l": 733.0,
+          "c": 733.4,
+          "v": 14043.814286
+        },
+        "next": {
+          "o": 733.82,
+          "h": 733.86,
+          "l": 733.66,
+          "c": 733.7,
+          "v": 11063.292721
+        }
+      }
+    },
+    {
+      "key": "2026-06-24T16:20",
+      "t_ms": 1782332400000,
+      "et_iso": "2026-06-24T16:20:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 736.47,
+      "h": 736.81,
+      "l": 732.9677,
+      "c": 736.8,
+      "v": 2010464.008393,
+      "vw": 732.9869,
+      "n": 241,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.4623,
+        "excursion_over_scale": 31.48,
+        "excursion_pct_of_price": 0.47,
+        "session_median_range": 0.11,
+        "reverting_wick_pts": 3.5023,
+        "volume": 2010464.008393,
+        "session_median_volume": 1557.5,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 736.5,
+          "h": 736.6,
+          "l": 736.43,
+          "c": 736.48,
+          "v": 20450.431443
+        },
+        "next": {
+          "o": 736.71,
+          "h": 737.18,
+          "l": 736.71,
+          "c": 737.15,
+          "v": 18319.647055
+        }
+      }
+    },
+    {
+      "key": "2026-06-26T04:01",
+      "t_ms": 1782460860000,
+      "et_iso": "2026-06-26T04:01:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 731.81,
+      "h": 732.0,
+      "l": 727.5,
+      "c": 731.5,
+      "v": 6353.15185,
+      "vw": 729.947,
+      "n": 236,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.45,
+        "excursion_over_scale": 28.75,
+        "excursion_pct_of_price": 0.4715,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 4.0,
+        "volume": 6353.15185,
+        "session_median_volume": 1250.2,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 732.62,
+          "h": 732.62,
+          "l": 730.95,
+          "c": 731.92,
+          "v": 8119.046214
+        },
+        "next": {
+          "o": 731.49,
+          "h": 731.57,
+          "l": 731.38,
+          "c": 731.5,
+          "v": 2688.110861
+        }
+      }
+    },
+    {
+      "key": "2026-06-26T08:19",
+      "t_ms": 1782476340000,
+      "et_iso": "2026-06-26T08:19:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 730.78,
+      "h": 730.78,
+      "l": 727.75,
+      "c": 730.553,
+      "v": 4710.947371,
+      "vw": 728.9531,
+      "n": 63,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.75,
+        "excursion_over_scale": 22.92,
+        "excursion_pct_of_price": 0.3764,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 2.803,
+        "volume": 4710.947371,
+        "session_median_volume": 1250.2,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 731.09,
+          "h": 731.16,
+          "l": 730.82,
+          "c": 730.83,
+          "v": 1826.008211
+        },
+        "next": {
+          "o": 730.6,
+          "h": 730.63,
+          "l": 730.5,
+          "c": 730.5435,
+          "v": 9575.061472
+        }
+      }
+    },
+    {
+      "key": "2026-07-29T04:08",
+      "t_ms": 1785312480000,
+      "et_iso": "2026-07-29T04:08:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 742.19,
+      "h": 742.4,
+      "l": 738.94,
+      "c": 742.39,
+      "v": 1053.0,
+      "vw": 741.989,
+      "n": 28,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 3.14,
+        "excursion_over_scale": 26.17,
+        "excursion_pct_of_price": 0.423,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 3.25,
+        "volume": 1053.0,
+        "session_median_volume": 1677.7,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 742.2616,
+          "h": 742.31,
+          "l": 742.21,
+          "c": 742.21,
+          "v": 511.0
+        },
+        "next": {
+          "o": 742.08,
+          "h": 742.08,
+          "l": 742.08,
+          "c": 742.08,
+          "v": 121.0
+        }
+      }
+    },
+    {
+      "key": "2026-07-29T16:00",
+      "t_ms": 1785355200000,
+      "et_iso": "2026-07-29T16:00:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 729.53,
+      "h": 729.85,
+      "l": 725.98,
+      "c": 729.46,
+      "v": 480305.42524,
+      "vw": 735.1781,
+      "n": 1414,
+      "evidence": {
+        "direction": "down",
+        "excursion_pts": 2.47,
+        "excursion_over_scale": 20.58,
+        "excursion_pct_of_price": 0.3386,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 3.48,
+        "volume": 480305.42524,
+        "session_median_volume": 1677.7,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 740.47,
+          "h": 740.52,
+          "l": 739.9,
+          "c": 739.97,
+          "v": 42224.098169
+        },
+        "next": {
+          "o": 729.35,
+          "h": 730.2,
+          "l": 728.45,
+          "c": 728.53,
+          "v": 328636.460447
+        }
+      }
+    },
+    {
+      "key": "2026-07-29T17:07",
+      "t_ms": 1785359220000,
+      "et_iso": "2026-07-29T17:07:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 728.0136,
+      "h": 737.2756,
+      "l": 728.0,
+      "c": 728.01,
+      "v": 129323.822244,
+      "vw": 736.8254,
+      "n": 60,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 8.8256,
+        "excursion_over_scale": 73.55,
+        "excursion_pct_of_price": 1.2123,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 9.262,
+        "volume": 129323.822244,
+        "session_median_volume": 1677.7,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 728.01,
+          "h": 728.45,
+          "l": 728.0,
+          "c": 728.13,
+          "v": 5144.760451
+        },
+        "next": {
+          "o": 728.01,
+          "h": 728.05,
+          "l": 727.95,
+          "c": 728.0499,
+          "v": 12669.936955
+        }
+      }
+    },
+    {
+      "key": "2026-07-29T17:09",
+      "t_ms": 1785359340000,
+      "et_iso": "2026-07-29T17:09:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 727.93,
+      "h": 733.3769,
+      "l": 727.9,
+      "c": 727.98,
+      "v": 252891.92473,
+      "vw": 733.3089,
+      "n": 50,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 5.3269,
+        "excursion_over_scale": 44.39,
+        "excursion_pct_of_price": 0.7318,
+        "session_median_range": 0.12,
+        "reverting_wick_pts": 5.3969,
+        "volume": 252891.92473,
+        "session_median_volume": 1677.7,
+        "volume_outlier_corroborates": true,
+        "prev": {
+          "o": 728.01,
+          "h": 728.05,
+          "l": 727.95,
+          "c": 728.0499,
+          "v": 12669.936955
+        },
+        "next": {
+          "o": 728.0,
+          "h": 728.0,
+          "l": 727.89,
+          "c": 728.0,
+          "v": 11472.314832
+        }
+      }
+    },
+    {
+      "key": "2026-08-20T08:17",
+      "t_ms": 1787228220000,
+      "et_iso": "2026-08-20T08:17:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 764.949,
+      "h": 768.484,
+      "l": 764.77,
+      "c": 764.85,
+      "v": 1851.811753,
+      "vw": 765.3432,
+      "n": 97,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 3.384,
+        "excursion_over_scale": 53.8,
+        "excursion_pct_of_price": 0.4424,
+        "session_median_range": 0.0629,
+        "reverting_wick_pts": 3.535,
+        "volume": 1851.811753,
+        "session_median_volume": 964.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 764.89,
+          "h": 765.1,
+          "l": 764.85,
+          "c": 765.03,
+          "v": 21568.234182
+        },
+        "next": {
+          "o": 764.9,
+          "h": 764.9723,
+          "l": 764.7,
+          "c": 764.75,
+          "v": 2673.229481
+        }
+      }
+    },
+    {
+      "key": "2026-08-20T08:30",
+      "t_ms": 1787229000000,
+      "et_iso": "2026-08-20T08:30:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 764.93,
+      "h": 767.945,
+      "l": 764.59,
+      "c": 764.9,
+      "v": 9167.120718,
+      "vw": 764.8375,
+      "n": 167,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 2.995,
+        "excursion_over_scale": 47.62,
+        "excursion_pct_of_price": 0.3915,
+        "session_median_range": 0.0629,
+        "reverting_wick_pts": 3.015,
+        "volume": 9167.120718,
+        "session_median_volume": 964.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 764.95,
+          "h": 764.95,
+          "l": 764.78,
+          "c": 764.84,
+          "v": 4966.489746
+        },
+        "next": {
+          "o": 764.8923,
+          "h": 764.8923,
+          "l": 764.63,
+          "c": 764.63,
+          "v": 2683.890239
+        }
+      }
+    },
+    {
+      "key": "2026-08-20T08:48",
+      "t_ms": 1787230080000,
+      "et_iso": "2026-08-20T08:48:00-04:00",
+      "session": "EXT",
+      "rule": "B_isolated_reverting_excursion",
+      "confidence": "PLAUSIBLE EXTREME MARKET PRINT",
+      "o": 765.21,
+      "h": 769.94,
+      "l": 765.17,
+      "c": 765.26,
+      "v": 14126.60823,
+      "vw": 769.3395,
+      "n": 57,
+      "evidence": {
+        "direction": "up",
+        "excursion_pts": 4.52,
+        "excursion_over_scale": 71.86,
+        "excursion_pct_of_price": 0.5907,
+        "session_median_range": 0.0629,
+        "reverting_wick_pts": 4.68,
+        "volume": 14126.60823,
+        "session_median_volume": 964.0,
+        "volume_outlier_corroborates": false,
+        "prev": {
+          "o": 765.15,
+          "h": 765.23,
+          "l": 765.12,
+          "c": 765.2,
+          "v": 5879.361382
+        },
+        "next": {
+          "o": 765.28,
+          "h": 765.42,
+          "l": 765.25,
+          "c": 765.41,
+          "v": 4345.022571
+        }
+      }
+    }
+  ]
+}

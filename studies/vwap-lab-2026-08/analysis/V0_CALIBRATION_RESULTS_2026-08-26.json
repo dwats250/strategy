@@ -1,0 +1,71 @@
+{
+  "role": "V0 offline-engine calibration vs preserved TradingView R0",
+  "python": "3.13.5",
+  "tradelist_sha256": "8d2db8dc78bec56594dd26d8a3020eb3c73c2a9dc976cdd421191f8827751241",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "engine": {
+    "mintick": 0.01,
+    "slippage_ticks": 1,
+    "spike_wick_pts": 2.0
+  },
+  "counts": {
+    "r0": 1331,
+    "local": 1363,
+    "matched": 1196,
+    "r0_only": 135,
+    "local_only": 167
+  },
+  "matched_structure": {
+    "entry_side_matched": 1196,
+    "exit_bar_agree": 1080,
+    "exit_reason_agree": 1124,
+    "fully_identical_entry_exit_bar_and_reason": 1060
+  },
+  "pct_reproduced": {
+    "by_entry_side": 89.86,
+    "by_entry_exit_reason_and_bar": 79.64
+  },
+  "feed_scale_on_path_agreeing_matched": {
+    "n": 1124,
+    "dpnl_local_minus_tv_sum": -3.9,
+    "dpnl_p50": -0.01,
+    "ratio_local_over_tv_p50": 1.0198,
+    "ratio_p05": 0.913,
+    "ratio_p95": 1.1409,
+    "interpretation": "~1-2% ratio = dividend-adjustment feed scale (local split-only prices are higher than TV ADJ); confirms fills/slippage/mintick are correct"
+  },
+  "exit_path_flips_intrabar_class": {
+    "matched_flips": 72,
+    "local_stop_tv_hold": 35,
+    "of_which_on_corpus_spike_bars": 12,
+    "flip_dpnl_sum": -62.58,
+    "spike_flip_dpnl_sum": -52.87,
+    "interpretation": "the local net's disagreement with R0 is dominated by phantom ATR stop-outs on corpus bad-tick bars (single-minute price spikes absent from TV's feed)"
+  },
+  "entry_set_attribution": {
+    "r0_only_total": 135,
+    "r0_only_feed_flip_no_local_candidate": 53,
+    "r0_only_path_drift_local_candidate_but_not_flat": 82,
+    "r0_only_no_local_bar": 0,
+    "local_only_total": 167,
+    "half_day_sessions_involved_in_diffs": 0,
+    "interpretation": "entry-set drift = near-threshold candidate flips (split-only vs ADJ feed) amplified by the flat gate: one flipped signal changes downstream position state"
+  },
+  "spike_attribution_of_local_net": {
+    "corpus_spike_bars_dev_window": 141,
+    "local_net_pnl": -111.61,
+    "phantom_stop_trades_on_spike_bars": 39,
+    "their_net_pnl": -129.19,
+    "local_net_excl_spike_phantom_stops": 17.58,
+    "r0_net_pnl": 25.69,
+    "interpretation": "removing phantom stops on corpus spike bars brings the local net back into the R0 ballpark, isolating the divergence to input-data quality, not execution"
+  },
+  "classification": {
+    "feed_adjustment": "matched path-agreeing trades reconcile at the ~1% dividend scale; entry-set feed flips = 53 R0-only",
+    "signal_boundary": "near-threshold candidate flips + flat-gate path drift (82 R0-only path, 167 local-only)",
+    "intrabar_execution": "35 matched stop/hold flips, 12 on corpus spike bars (bad ticks) \u2014 input-data, not logic",
+    "early_close_session": "0 entry-set diffs touch half-day sessions; no separate defect observed",
+    "implementation_defect": "NONE demonstrated \u2014 execution logic validated by matched path-agreeing reconciliation at the feed scale",
+    "unresolved": "residual small-magnitude entry-set drift inherent to a path-dependent strategy on a near-identical but not identical feed"
+  }
+}

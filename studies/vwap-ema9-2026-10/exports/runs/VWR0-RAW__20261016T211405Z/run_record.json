@@ -1,0 +1,182 @@
+{
+  "run_id": "VWR0-RAW__20261016T211405Z",
+  "run_utc": "20261016T211405Z",
+  "experiment": {
+    "id": "VWR0-RAW",
+    "title": "VWR0 on the unmasked corpus (robustness, data to 2026-08-21)",
+    "study": "studies/vwap-ema9-2026-10",
+    "description": "VWR0 baseline rerun without integrity mask v1.0, to show how much the 9 masked wick prints matter at 1-minute stop resolution.",
+    "trials_planned": 7,
+    "dsr_threshold_implied": "illustrative independent-trials null approximation: 0.997 annualized Sharpe (N=7, T=489); not a significance threshold or complete DSR",
+    "status": "FROZEN",
+    "code_tree_sha256": "393e0ab99ff62733b1b50b2033a2368211bfb24a18ec1478cb767de9023f0550"
+  },
+  "config_path": "studies/vwap-ema9-2026-10/manifests/VWR0_RAW_ROBUSTNESS_v1.1.toml",
+  "config_sha256": "f720d391355dbc28a58fe7504194ceb2aec618d46e4b3441c84bfd8c8d71d7b1",
+  "config": {
+    "limitations": [
+      "DATA ENDS 2026-08-21. Nothing here is October-current.",
+      "Robustness check of the data treatment only; not a strategy variant. Same exploratory status and prior-exposure caveats as VWR0-EXP."
+    ],
+    "experiment": {
+      "id": "VWR0-RAW",
+      "title": "VWR0 on the unmasked corpus (robustness, data to 2026-08-21)",
+      "study": "studies/vwap-ema9-2026-10",
+      "description": "VWR0 baseline rerun without integrity mask v1.0, to show how much the 9 masked wick prints matter at 1-minute stop resolution.",
+      "trials_planned": 7,
+      "dsr_threshold_implied": "illustrative independent-trials null approximation: 0.997 annualized Sharpe (N=7, T=489); not a significance threshold or complete DSR",
+      "status": "FROZEN",
+      "code_tree_sha256": "393e0ab99ff62733b1b50b2033a2368211bfb24a18ec1478cb767de9023f0550"
+    },
+    "data": {
+      "dataset": "spy-1m-polygon-20240901-20260822-a4afaa70",
+      "warmup_sessions": 5
+    },
+    "execution": {
+      "cash": 100000.0,
+      "commission_per_share": 0.0035,
+      "slippage_per_share": 0.01,
+      "flatten_minutes": 5
+    },
+    "windows": {
+      "calendar_halves": true,
+      "recent_months": 6
+    },
+    "variants": [
+      {
+        "id": "VWR0-RAW",
+        "role": "baseline",
+        "label": "VWR0 on raw corpus",
+        "strategy": "stratlab.strategies.vwap_reclaim:VwapReclaim",
+        "params": {},
+        "difference": "VWR0 rules unchanged; integrity mask NOT applied.",
+        "hypothesis": "Masked wick prints change VWR0's stop outcomes only marginally.",
+        "primary_metric": "Delta expectancy R and delta stop-exit count vs masked VWR0",
+        "uninformative_if": "Descriptive only; never selected between."
+      }
+    ]
+  },
+  "baseline": "VWR0-RAW",
+  "synthetic": null,
+  "code": {
+    "git_commit": "1f4af3a4756e8c2526d0b56520153a8df3c80a4c",
+    "git_dirty_paths": [],
+    "code_tree_sha256": "393e0ab99ff62733b1b50b2033a2368211bfb24a18ec1478cb767de9023f0550",
+    "files_hashed": 20
+  },
+  "packages": {
+    "python": "3.13.5",
+    "backtesting": "0.6.6",
+    "pandas": "3.0.6",
+    "numpy": "2.5.4",
+    "exchange_calendars": "4.13.2",
+    "plotly": "7.1.0"
+  },
+  "dataset": {
+    "dataset_id": "spy-1m-polygon-20240901-20260822-a4afaa70",
+    "sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+    "rows": 422657,
+    "path_used": "/home/dustin/.local/share/stratlab/datasets/SPY_1m_2024-09-01_2026-08-22.csv.gz",
+    "mask": null
+  },
+  "execution": {
+    "cash": 100000.0,
+    "commission_per_share": 0.0035,
+    "slippage_per_share": 0.01,
+    "margin": 1.0,
+    "flatten_minutes": 5,
+    "cost_per_share_per_side": 0.0135
+  },
+  "windows": [
+    {
+      "id": "full",
+      "label": "Full scored history",
+      "start": "2024-09-10",
+      "end": "2026-08-21",
+      "sessions": 489,
+      "kind": "full",
+      "partial": false,
+      "note": ""
+    },
+    {
+      "id": "2024H2",
+      "label": "2024 H2",
+      "start": "2024-09-10",
+      "end": "2024-12-31",
+      "sessions": 79,
+      "kind": "calendar_half",
+      "partial": true,
+      "note": "clipped to available data"
+    },
+    {
+      "id": "2025H1",
+      "label": "2025 H1",
+      "start": "2025-01-02",
+      "end": "2025-06-30",
+      "sessions": 122,
+      "kind": "calendar_half",
+      "partial": false,
+      "note": ""
+    },
+    {
+      "id": "2025H2",
+      "label": "2025 H2",
+      "start": "2025-07-01",
+      "end": "2025-12-31",
+      "sessions": 128,
+      "kind": "calendar_half",
+      "partial": false,
+      "note": ""
+    },
+    {
+      "id": "2026H1",
+      "label": "2026 H1",
+      "start": "2026-01-02",
+      "end": "2026-06-30",
+      "sessions": 123,
+      "kind": "calendar_half",
+      "partial": false,
+      "note": ""
+    },
+    {
+      "id": "2026H2",
+      "label": "2026 H2",
+      "start": "2026-07-01",
+      "end": "2026-08-21",
+      "sessions": 37,
+      "kind": "calendar_half",
+      "partial": true,
+      "note": "clipped to available data"
+    },
+    {
+      "id": "recent_6m",
+      "label": "Latest 6 months",
+      "start": "2026-02-23",
+      "end": "2026-08-21",
+      "sessions": 126,
+      "kind": "recent",
+      "partial": false,
+      "note": "EXPLORATORY \u2014 overlaps the full sample; not a holdout"
+    }
+  ],
+  "coverage": {
+    "sessions": 494,
+    "early_close_sessions": 5,
+    "sessions_with_missing_minutes": 0,
+    "missing_minutes_total": 0,
+    "first_session": "2024-09-03",
+    "last_session": "2026-08-21",
+    "warmup_sessions": 5
+  },
+  "trials": {
+    "planned": 7,
+    "evaluated_in_this_run": 1,
+    "benchmarks": [],
+    "dsr_threshold_implied": {
+      "n_trials": 7,
+      "n_obs": 489,
+      "sr_per_session": 0.06277633022566696,
+      "sr_annualized": 0.9965433479902923
+    }
+  }
+}

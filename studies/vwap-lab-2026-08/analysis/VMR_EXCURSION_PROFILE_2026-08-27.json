@@ -1,0 +1,66 @@
+{
+  "role": "TRADE-BLIND VMR-0 extension-threshold derivation; NO strategy run, no P/L; distribution-derived K frozen before outcomes",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "metric": "vwap_excursion_atr = (close - session_vwap)/ATR14 (charter \u00a75/\u00a7A1.3)",
+  "development_window": [
+    "2024-09-03",
+    "2025-12-31"
+  ],
+  "frozen_quantile": 0.9,
+  "K_screened_primary": 4.091616,
+  "K_raw_sensitivity": 4.068081,
+  "screened": {
+    "n_bars": 25864,
+    "abs_quantiles": {
+      "0.5": 1.536653,
+      "0.75": 2.766274,
+      "0.8": 3.108904,
+      "0.85": 3.523055,
+      "0.9": 4.091616,
+      "0.95": 4.976839,
+      "0.99": 6.787455
+    },
+    "frac_above_canonical_k": {
+      "1.0": 0.65191,
+      "1.5": 0.50901,
+      "2.0": 0.39302,
+      "2.5": 0.29261
+    },
+    "count_above_canonical_k": {
+      "1.0": 16861,
+      "1.5": 13165,
+      "2.0": 10165,
+      "2.5": 7568
+    },
+    "n_above_vwap": 14469,
+    "n_below_vwap": 11393
+  },
+  "raw": {
+    "n_bars": 25864,
+    "abs_quantiles": {
+      "0.5": 1.532185,
+      "0.75": 2.76027,
+      "0.8": 3.098559,
+      "0.85": 3.512006,
+      "0.9": 4.068081,
+      "0.95": 4.951204,
+      "0.99": 6.757004
+    },
+    "frac_above_canonical_k": {
+      "1.0": 0.65156,
+      "1.5": 0.50796,
+      "2.0": 0.39186,
+      "2.5": 0.29102
+    },
+    "count_above_canonical_k": {
+      "1.0": 16852,
+      "1.5": 13138,
+      "2.0": 10135,
+      "2.5": 7527
+    },
+    "n_above_vwap": 14470,
+    "n_below_vwap": 11392
+  },
+  "note": "K = |excursion| P90 (screened primary). Pre-declared quantile; a magnitude choice, not tuned on strategy outcomes. HELM may instead adopt a canonical ATR magnitude (see frac_above_canonical_k) before the first VMR run."
+}

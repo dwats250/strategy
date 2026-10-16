@@ -1,0 +1,44 @@
+# VWR0 raw-corpus robustness rerun — PROPOSED v0.1 (2026-10-16). NOT YET RUN.
+# Pre-committed alongside VWR0_EXPERIMENT_v0.1.toml and counted in its N=7. Identical to the VWR0
+# variant except that NO integrity mask is applied. Reported as a difference against masked VWR0;
+# never used to choose between masked and raw results.
+
+limitations = [
+  "Robustness check of the data treatment only; not a strategy variant.",
+  "Same exploratory status and prior-exposure caveats as VWR0_EXPERIMENT.",
+]
+
+[experiment]
+id = "VWR0-RAW"
+title = "VWR0 on the unmasked corpus (robustness)"
+study = "studies/vwap-ema9-2026-10"
+description = "VWR0 baseline rerun without integrity mask v1.0, to show how much the 9 masked wick prints matter at 1-minute stop resolution."
+trials_planned = 7   # shared family count, see VWR0_EXPERIMENT
+dsr_threshold_implied = "0.997 annualized Sharpe (expected max of N=7 zero-skill trials, T=489 sessions)"
+status = "PROPOSED"
+# At freeze: status = "FROZEN" and code_tree_sha256 = <output of `uv run stratlab identity`>
+
+[data]
+dataset = "spy-1m-polygon-20240901-20260822-a4afaa70"
+warmup_sessions = 5
+
+[execution]
+cash = 100000.0
+commission_per_share = 0.0035
+slippage_per_share = 0.01
+flatten_minutes = 5
+
+[windows]
+calendar_halves = true
+recent_months = 6
+
+[[variants]]
+id = "VWR0-RAW"
+role = "baseline"
+label = "VWR0 on raw corpus"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = {}
+difference = "VWR0 rules unchanged; integrity mask NOT applied."
+hypothesis = "Masked wick prints change VWR0's stop outcomes only marginally."
+primary_metric = "Delta expectancy R and delta stop-exit count vs masked VWR0"
+uninformative_if = "Never selected between; descriptive only."

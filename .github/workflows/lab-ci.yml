@@ -1,0 +1,25 @@
+name: lab-ci
+
+on:
+  push:
+    branches: [main, "lab/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.3"
+      - name: Install (locked)
+        run: uv sync --locked
+      - name: Tests (synthetic fixtures only; no vendor data, no credentials)
+        run: uv run pytest -q
+      - name: Synthetic demo report builds
+        run: uv run stratlab demo --out /tmp/demo && test -s /tmp/demo/*/report.html

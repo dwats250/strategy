@@ -1,0 +1,228 @@
+[
+ {
+  "key": "presentation",
+  "findings": [
+   {
+    "title": "Run ID leaks into the opening (Summary) view via the separate-run footnote",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:408-409 (renderSumTable note); visible in Summary 'All configurations at a glance' footnote",
+    "evidence": "Summary innerText contains \"VWR0 on raw corpus is from run VWR0-RAW__20261016T211405Z (VWR0 rules unchanged; integrity mask NOT applied.)\". Probe regex /[A-Z0-9-]+__\\d{8}T\\d{6}Z/ on #v-summary returns [\"VWR0-RAW__20261016T211405Z\"]. The owner's driver only tested includes(\"VWR0-EXP__\") so it passed. Brief: \"Keep run IDs, hashes, package versions and chance-max Sharpe out of the opening view.\"",
+    "fix": "In the footnote print only the label and `difference` text (\"VWR0 on raw corpus: VWR0 rules unchanged; integrity mask NOT applied\"), and list the related run's run_id in Technical details → Provenance (add a 'Related runs' row from P.related)."
+   },
+   {
+    "title": "Compare rule panel labels an independent strategy's and the benchmark's definition as 'Rule change from baseline'",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:423 (`v.id === BASE ? \"Rules\" : \"Rule change from baseline\"`)",
+    "evidence": "With cmpSel=IGP0 the panel reads \"IG-AUSTIN-P0 … independent / RULE CHANGE FROM BASELINE / Separate strategy: 3m bars…\"; with cmpSel=BENCH it reads \"SPY session-hold (benchmark) / RULE CHANGE FROM BASELINE / Benchmark, not a trial: …\". Neither is a change from the baseline; the overlap note below correctly says they are not diffed, so the two labels contradict each other.",
+    "fix": "Use `isVariant(v) ? \"Rule change from baseline\" : \"Rules\"` (or \"Strategy\" / \"Benchmark definition\" by roleTag) at line 423."
+   },
+   {
+    "title": "Risk and Fragility sections do not state which window their numbers come from",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:231-236 (d-risk markup), 243-247 (d-frag markup), 520-525 and 544 (`res(v, FULL)`)",
+    "evidence": "Both tables and the box/Lorenz plots are computed from the full-history results only, but neither summary, caption nor table header mentions the window (Monthly, by contrast, says \"full-history run\"). Probe text of #d-risk: \"Initial risk under notional sizing / money at risk to the stop / Each entry uses 99.9% of equity…\" with no window. Brief: \"Keep active window/configuration labels visible and unambiguous.\"",
+    "fix": "Add the window to the captions, e.g. `Full scored history, ${full.start} → ${full.end}` in the .cap of d-risk and a .cap for d-frag, or a .status line like detStatus."
+   },
+   {
+    "title": "Coverage and method facts exposed by the old report are no longer shown anywhere",
+    "severity": "minor",
+    "where": "New: /home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:559-577 (methodBody/provBody). Old: /home/dustin/Projects/strategy-lab/src/stratlab/report/template.html:265-267, 475-482",
+    "evidence": "grep of template_v2.html for early_close|missing_minutes|first_session|rows|path_used returns no renderer hits. Dropped: data first session 2024-09-03 and 494 data sessions, 5 early-close sessions, 7 sessions with missing minutes (9 minutes), dataset rows 422,657 and path_used (old Identity <pre> dumped R.dataset), and four Method bullets (stops evaluated from the entry minute / worse-open fill; half-day 13:00 closing-auction print outside the session; Backtesting.py's own Sharpe stored but not shown; benchmark bullet 09:31→15:55 with same capital and costs). The Run-record download still contains the numbers, but the page itself no longer displays them.",
+    "fix": "Add a 'Data coverage' row to the Provenance table from R.coverage (first/last session, sessions, early closes, missing-minute sessions/minutes, warm-up) plus dataset rows, and restore the four Method bullets in methodBody."
+   },
+   {
+    "title": "Cross-window view is reduced to return · avg R; the old any-metric-by-window table is gone",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:446-450 (By window table) vs old template.html renderWindows (#winMetric select, lines ~123 and 190-210)",
+    "evidence": "Old report let the reader choose any catalogue metric (Sharpe, max DD, t-stat, win rate, …) and see it for every window × every configuration in one table. New 'By window' shows only `pct(total_return) · num(expectancy_r)` for the compared ids; to see e.g. Sharpe by window a reader must switch the Full-metrics window selector seven times and transcribe. Information is still in the payload (v.results[w]) so this is a presentation loss, not a data loss.",
+    "fix": "Add a small metric <select> to the By-window card driving the cell formatter from PORT/TRADE (presentation only, no new data), or state explicitly in the handoff that this view was intentionally dropped."
+   },
+   {
+    "title": "Monthly heatmap has no colour scale, and on phones no cell text either",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:533-536 (`showscale: false`, `texttemplate: narrow ? \"\" : \"%{text}\"`)",
+    "evidence": "Old template (template.html:370) showed a colorbar (`showscale: !nm, colorbar: {tickformat: \".1%\"}`). New hides it at all widths; under 600px the cell percentages are also suppressed, so an Android reader sees only red/blue hue with no magnitude key and must hover/tap each cell. This is also the one place the page still uses red/blue as a value judgement, now without the legend that made it interpretable.",
+    "fix": "Restore `showscale: !narrow, colorbar: {tickformat: \".1%\", thickness: 10}`; on narrow widths keep text off but add a one-line caption giving the ±max scale (e.g. 'colour range ±X%')."
+   },
+   {
+    "title": "Saved fields newly surfaced that the old report did not display (owner decision: accept or drop)",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:339 ('Gross P&L before costs' row in TRADE), 439-441 ('Avg R added' / 'Avg R removed' overlap columns)",
+    "evidence": "Old MET catalogue and diffTable (template.html) contained neither gross_pnl_trades nor r_added/r_removed. The values are read from the saved payload (metrics.json has trade.gross_pnl_trades and diff_vs_baseline.r_added/r_removed) and I verified them (e.g. VWR3 full: r_added 0.156, r_removed −0.068; VWR0 gross −$16,532), so nothing is computed or altered — but the brief says 'do not add metrics', and these are three new displayed metrics.",
+    "fix": "Either drop the three rows/columns to meet the letter of the brief, or keep them and record in the handoff that they are previously-saved fields newly displayed, not new computations."
+   },
+   {
+    "title": "Inspect-trades status line disagrees with the table under search, and 'Selected trade' survives a session switch",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:457-464 (tradeRows/trStatus), 625 (#daySel onchange)",
+    "evidence": "With 'stop' typed in the DataTables search, .dt-info says 'Showing 1 to 25 of 890 entries (filtered from 2,428 total entries)' while #trStatus still says 'Rows: 2,428 of 2,428' (status only counts the date filter). After picking #2427 (session 2026-08-21) and changing the Session select to 2026-08-19, status reads 'Session: 2026-08-19 · Selected trade: #2427 · long · 14:55 → 15:55 …', i.e. the identified trade is not on the identified session and is not drawn on the chart. Brief: 'Clearly identify configuration, session and selected trade.'",
+    "fix": "Compute the Rows count from `dt.rows({search:'applied'}).count()` and append '(view filter on)' when search or dates are active; on #daySel change, clear state.picked when the picked trade's session differs, or suffix the status with '(on <session>)'."
+   },
+   {
+    "title": "412px tab strip truncates 'Technical details' with no scroll affordance; day-chart y-axis collides with modebar",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:45-47 (nav.tabs overflow-x:auto; scrollbar-width:none), 507-508 (dayPlot margin t:8, yaxis side:right)",
+    "evidence": "mob_*.png: the fourth tab renders as 'Technical' cut at the viewport edge with the scrollbar hidden, so nothing signals the full label or that the strip scrolls. desk_trades.png and mob_trades.png: the top right-axis tick ('768.00'/'767.60') is overdrawn by the Plotly modebar icons.",
+    "fix": "Shorten the tab label to 'Details' (or let the strip wrap/fade at the right edge), and give dayPlot `margin.t: 30` or set `modeBarButtons` to a smaller set / `displayModeBar: false` on narrow widths."
+   },
+   {
+    "title": "Summary table caption claims identical settings for every row, but the separate-run row used a different (unmasked) dataset",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:385 (sumTableCap), 404-406 (related rows)",
+    "evidence": "Caption: 'Same capital ($100,000), sizing and costs ($0.0135/share/side) for every configuration.' The 'VWR0 on raw corpus' row comes from run VWR0-RAW on the corpus with the integrity mask NOT applied (dataset differs), and sits in the same table under that caption; only the 'separate run' tag and the footnote disclose it. Values themselves are correct (−26.6%, −29.5%, 2,432, −0.045 match VWR0-RAW metrics).",
+    "fix": "Change the caption to 'for every configuration in this run' and render related rows after a `tr.grp` divider labelled 'Separate run — same rules, unmasked corpus', so the data difference is adjacent to the row rather than only in a footnote."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Run ID leaks into the opening (Summary) view via the separate-run footnote",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. Rendered #v-summary innerText matches /[A-Z0-9-]+__\\d{8}T\\d{6}Z/ -> [\"VWR0-RAW__20261016T211405Z\"] at both 1280px and 412px; source is template_v2.html:408 (`is from run ${esc(x.run_id)}`). The owner's driver only tested includes(\"VWR0-EXP__\"). It is a literal breach of 'keep run IDs out of the opening view', but it is one related-run ID in the table footnote, not provenance of the run itself, and the fix is a one-line footnote change plus a Provenance row; I would rate it minor rather than major."
+   },
+   {
+    "title": "Compare rule panel labels an independent strategy's and the benchmark's definition as 'Rule change from baseline'",
+    "refuted": false,
+    "reasoning": "Confirmed. With cmpSel=IGP0 #cmpRule reads 'IG-AUSTIN-P0 … independent / RULE CHANGE FROM BASELINE / Separate strategy: 3m bars…'; with BENCH it reads 'SPY session-hold (benchmark) / RULE CHANGE FROM BASELINE / Benchmark, not a trial…', while #cmpOverlapNote simultaneously says the selection 'is not diffed against the baseline'. Cause is template_v2.html:423 testing `v.id === BASE` instead of `isVariant(v)`."
+   },
+   {
+    "title": "Risk and Fragility sections do not state which window their numbers come from",
+    "refuted": false,
+    "reasoning": "Confirmed. renderRisk (line 525) and renderFrag (line 544) use `res(v, FULL)`, and the d-risk markup (231-236) and d-frag markup (243-247) contain no window text; probe regex /full|history|2024-09-10/ on the rendered #d-risk and #d-frag text returned false for both, whereas d-monthly's summary says 'full-history run'. Minor, as rated."
+   },
+   {
+    "title": "Coverage and method facts exposed by the old report are no longer shown anywhere",
+    "refuted": false,
+    "reasoning": "Confirmed. run_record.json coverage = {sessions 494, early_close_sessions 5, sessions_with_missing_minutes 7, missing_minutes_total 9, first_session 2024-09-03}, dataset rows 422657 with path_used; old template.html:265-267 rendered these and 475-482 had the Stops / Costs-not-adjusted / 13:00 half-day / Backtesting.py-own-Sharpe / 09:31→15:55 benchmark bullets. In the rendered v2 Technical details, none of '494', '2024-09-03', '422', '5 early', '7 sessions', '9 min', '09:31', '13:00', \"Backtesting.py's own\" appear (the generic words 'early closes' and 'missing minutes' do appear, but only in the Method engine/calendar bullets, not as counts). The numbers remain in the Run-record download only. Minor."
+   },
+   {
+    "title": "Cross-window view is reduced to return · avg R; the old any-metric-by-window table is gone",
+    "refuted": false,
+    "reasoning": "Confirmed. Old template.html renderWindows (338-350) populated #winMetric from every MET entry and rendered it for all windows × all configurations; v2 #cmpWindows header is 'Window / Dates / <config> return · avg R' for only the compared ids and there is no metric select (probe hasWinMetricSel=false). The data remain in v.results[w], so it is a presentation regression, not a data loss; minor and arguably a deliberate simplification the owner should acknowledge."
+   },
+   {
+    "title": "Monthly heatmap has no colour scale, and on phones no cell text either",
+    "refuted": false,
+    "reasoning": "Confirmed. Rendered monPlot data[0].showscale === false at both widths and texttemplate === '' at 412px (template_v2.html:535), whereas template.html:370 had `showscale: !nm, colorbar: {tickformat: \".1%\"}`. At phone width the heatmap therefore shows only hue with neither legend nor cell values. Minor."
+   },
+   {
+    "title": "Saved fields newly surfaced that the old report did not display (owner decision: accept or drop)",
+    "refuted": false,
+    "reasoning": "Confirmed. Old MET catalogue (template.html:213-249) has no gross_pnl_trades row and old renderDiffs (439-445) has no r_added/r_removed columns; v2 shows 'Gross P&L before costs' (line 339) and 'Avg R added'/'Avg R removed' (439-441), and the rendered #cmpTrade/#cmpOverlap headers include them. Values come from metrics.json unchanged (VWR3 full r_added 0.15602, r_removed −0.06775; VWR0 gross_pnl_trades −16532.11), so nothing was computed, but they are three newly displayed metrics against a 'do not add metrics' brief. Minor, owner call."
+   },
+   {
+    "title": "Inspect-trades status line disagrees with the table under search, and 'Selected trade' survives a session switch",
+    "refuted": false,
+    "reasoning": "Confirmed both halves. With 'stop' in the DataTables search, .dt-info = 'Showing 1 to 25 of 890 entries (filtered from 2,428 total entries)' while #trStatus = 'Rows: 2,428 of 2,428' (trStatus at 458-464 counts only the date filter). After picking #2427 (session 2026-08-21) and changing #daySel to 2026-08-20, status still reads 'Session: 2026-08-20 · Selected trade: #2427 · long · 14:55 → 15:55 …', and the day plot's marker sizes max at 10/9, i.e. no enlarged selected marker is drawn (line 625 only calls renderDay). Minor."
+   },
+   {
+    "title": "412px tab strip truncates 'Technical details' with no scroll affordance; day-chart y-axis collides with modebar",
+    "refuted": false,
+    "reasoning": "Confirmed. At 412px nav.tabs scrollWidth 439 > clientWidth 365 and #tab-details bounding rect right=455 (viewport 412), with scrollbar-width:none and no fade (template_v2.html:45-47); mob_summary.png shows the tab cut at 'Technical'. desk_trades.png shows the top right-axis tick ('768.00') overdrawn by the modebar icons; dayPlot uses margin.t 8 with yaxis side 'right' (line 507-508, rendered _fullLayout confirms). Minor."
+   },
+   {
+    "title": "Summary table caption claims identical settings for every row, but the separate-run row used a different (unmasked) dataset",
+    "refuted": true,
+    "reasoning": "The caption asserts only 'same capital, sizing and costs', and that is true of VWR0-RAW: its run_record has the same dataset_id (spy-1m-polygon-20240901-20260822-a4afaa70), same rules and the same execution settings; only `mask` is None. So the caption does not contradict the row, and the data difference is disclosed by the 'separate run' tag plus the footnote directly under the table. The row values (−26.6%, −29.5%, 2,432, −0.045) match the saved metrics. The one real nuance is that CSS at template_v2.html:111 hides `.tag` under 600px, so on a phone the footnote is the only disclosure; that is a wording/placement preference, not a defect as stated."
+   }
+  ]
+ },
+ {
+  "key": "provenance",
+  "findings": [
+   {
+    "title": "verify_payload covers only metrics, equity series and trade count/sum; most other displayed data is unverified, contradicting its docstring and the page's 'verified against the run's saved files' claim",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/present.py:53-93 (verify_payload); template_v2.html:575 (provenance row '... verified against the run's saved files (N checks, 0 mismatches)')",
+    "evidence": "Docstring says 'Every number the page can show is checked against the run's saved files.' I mutated the embedded payload of report_v2_20261016T222101Z.html and re-ran verify_payload against the run dir; every one of these passed with 3241 checks / 0 mismatches: monthly return 2025-04 -> +50% (heatmap, d-monthly); rolling Sharpe +3 (rollPlot); VWAP of 2025-04-23 zeroed and whole `bars` emptied (price chart); per-trade pnl swapped between trades plus entry_px/r/reason/riskp edited (ledger, day markers, risk box plot, Lorenz curve); record.coverage.last_session -> 2026-10-15 (shown in the Summary notice 'Data ends ...'); record.synthetic set (SYNTHETIC flag); record.packages, record.experiment.title; findings replaced with 'All strategies profitable.'; limitations emptied; config_toml replaced; VWR1 role -> benchmark (suppresses its Δ columns), VWR1 label -> 'VWR0 baseline', hypothesis/difference text changed; variant VWR2 removed entirely (passes with 2743 checks); an extra metric key injected (loop iterates saved keys only); a +0.004 shift on every trade pnl (tolerance is 0.01*n). Only equity-series and metrics/diff edits were caught. The record-key list at line 60 omits experiment, packages, coverage, synthetic; variant metadata (label/role/strategy/params/difference/hypothesis/mechanism) is never compared to run_record.config.variants; trades compare only len() and sum(pnl). For THIS build the numbers are nonetheless correct: the new payload is byte-identical to the git-tracked report_rebuild_20261016T212214Z.html payload and identical to report.html's except `findings` (which equal the 13 bullets of analysis/VWR0_EXP_FINDINGS_2026-10-16.md), and sha256(config_toml) == record.config_sha256. The defect is the guarantee and the on-page claim, not the displayed values.",
+    "fix": "Extend verify_payload: (a) compare record.experiment/packages/coverage/synthetic too; (b) compare each variant's id/label/role/strategy/params/difference/hypothesis/mechanism/primary_metric/uninformative_if to run_record.config.variants and require the variant id set to equal it; (c) compare every embedded trade field column-wise against trades/<vid>__full.csv (ids, times, prices, stop, size, pnl, r, reason, riskp, rr), not just count and sum; (d) recompute monthly and rolling from the already-verified equity CSV with metrics.monthly_returns/rolling_sharpe (pure functions of saved data, no backtest) and compare; (e) check sha256(config_toml) == record.config_sha256; (f) iterate over the union of saved and shown keys so injected keys fail; (g) for bars/bar_map, which cannot be derived from the run dir, see the next finding. Then either keep the docstring/page wording or soften it to list exactly what was verified."
+   },
+   {
+    "title": "Source report authenticity is recorded but never checked, so bars, trades details, findings and texts inherit from whatever HTML is passed to --from-report",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/present.py:118-126 (extract_payload / payload_source_sha256); cli.py:87-92",
+    "evidence": "build_presentation accepts any --from-report path, extracts its payload, records its SHA-256 in provenance, but compares that hash to nothing. Combined with the previous finding, a modified copy of report_rebuild (e.g. with edited bars or trade rows) re-presents with a '0 mismatches' badge. The identity check itself is NOT bypassed: present.py never calls _keep_from_record and the bars are reused from the rebuild payload (built when the tree was 393e0ab9…, matching the run; I confirmed the rebuild's bars equal report.html's bars, 489 sessions per feature set). But nothing in code ties the source file to that pinned computation except the recorded hash.",
+    "fix": "Pin the source: compare sha256 of the source report to the blob git tracks at HEAD for that path (`git rev-parse HEAD:<relpath>` / hash-object) or require an explicit `--source-sha256` and refuse on mismatch; record `payload_source_git_blob` or the matched commit in provenance; refuse an untracked/dirty source unless an explicit flag is given and disclosed on the page. Add a test that a byte-modified source report is refused."
+   },
+   {
+    "title": "Presentation identity cites a commit that does not contain the presentation code; the page says 'uncommitted changes' but not which files",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/present.py:128; template_v2.html:576; tests/test_report_present.py:62",
+    "evidence": "Provenance row reads 'template_v2.html · commit 4fe91b59… · tree 81299e1c… · uncommitted changes'. code_identity() at build time returned git_dirty_paths ['M src/stratlab/cli.py','?? src/stratlab/report/present.py','?? src/stratlab/report/template_v2.html'] (confirmed by re-running `stratlab identity`, same tree 81299e1c…). Commit 4fe91b5 has none of present.py/template_v2.html, so a reader cannot reproduce the presentation from the cited commit; the dirty list is in the payload but not rendered. Disclosure is honest but incomplete. The test only asserts the tree sha is truthy.",
+    "fix": "Render the git_dirty_paths list in the Provenance row (or an expandable note). When the presentation code is committed, record in the study README/handoff which commit contains tree 81299e1c… (the tree hash is byte-based so it will match the committed files). Consider having build_presentation refuse or require an explicit `--allow-dirty` when presentation_code.git_dirty_paths is non-empty for a study export, mirroring check_frozen's stance."
+   },
+   {
+    "title": "Tests exercise saved-file tampering only, not payload-side tampering",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/tests/test_report_present.py:68-75",
+    "evidence": "test_tampered_saved_results_are_refused edits metrics.json; no test edits the payload. All the payload tampers listed in finding 1 pass today and would stay undetected by the suite.",
+    "fix": "Add parametrized tests that mutate the extracted payload (monthly, rolling, a trade field, bars, role/label, coverage.last_session, findings, removed variant) and assert PayloadMismatch, alongside the verify_payload extensions."
+   },
+   {
+    "title": "Related-run rows carry no identity provenance",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/present.py:96-108 (_related); template_v2.html:404-409",
+    "evidence": "The 'VWR0 on raw corpus · separate run' row is read directly from VWR0-RAW__20261016T211405Z/metrics.json (correct values; I confirmed its code tree is the same 393e0ab9… and mask None), but only run_id/label/difference are embedded; the related run's code tree, dataset/mask and config sha are not recorded in provenance, and the Provenance section does not mention the related run at all.",
+    "fix": "Embed the related run's code.code_tree_sha256, dataset.sha256, mask and config_sha256 in `presentation.related[]` and list them in the Provenance table."
+   },
+   {
+    "title": "CLI module docstring not updated for the new --from-report path",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/cli.py:1-14",
+    "evidence": "The usage block documents `stratlab report <run_dir>` and the report_rebuild_<UTC>.html behaviour only; --from-report / --presentation / --related and the report_v2_<UTC>.html output are undocumented.",
+    "fix": "Add a usage line and footnote for `stratlab report <run_dir> --from-report <html> [--presentation JSON] [--related DIR...]` -> report_v2_<UTC>.html (presentation-only, payload verified, no recomputation)."
+   },
+   {
+    "title": "Day chart can show a stale session when the selected session has no bars for the current feature set",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/report/template_v2.html:492",
+    "evidence": "renderDay: `const b = fs.days[day]; if (!b){ trStatus(); return; }` returns without purging #dayPlot or updating #dayNote, so a previously drawn session/configuration chart remains under a status line naming a different session. Not reproducible in this run (both feature sets have all 489 sessions), but the label/plot can disagree in general.",
+    "fix": "On `!b`, call Plotly.purge(el) (or clear innerHTML) and set #dayNote to '<label> · <day>: no bars for this session'."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "verify_payload covers only metrics, equity series and trade count/sum; most other displayed data is unverified, contradicting its docstring and the page's 'verified against the run's saved files' claim",
+    "refuted": false,
+    "reasoning": "Confirmed by re-running the tampers independently with the project venv against /home/dustin/Projects/strategy-lab/src/stratlab/report/present.py:53-93. Undetected (3241 checks / 0 mismatches each): monthly/rolling emptied, bars emptied, record.coverage.last_session changed, findings replaced, config_toml replaced, VWR1 role->benchmark + label change, per-trade pnl swap + entry_px zeroed, +0.004 pnl shift on every trade, injected metric key, record.synthetic set; removing a variant passes with 2883 checks. Only the equity-series tamper was caught. Line 60's record key list indeed omits experiment/packages/coverage/synthetic; variants' metadata is never compared; trades compare only len and sum(pnl). template_v2.html:575 renders the 'verified against the run's saved files (N checks, 0 mismatches)' wording. Also confirmed the exculpatory part: the v2 payload (minus `presentation`) is byte-equal to the rebuild payload and differs from report.html only in `findings`, and sha256(config_toml)==record.config_sha256, so the displayed values are correct for this build. Severity major is fair since this is the guarantee the brief leans on ('do not silently bypass the identity check', 'displayed values match the saved results'), and the page overstates what was verified.",
+    "corrected_severity": "major"
+   },
+   {
+    "title": "Source report authenticity is recorded but never checked, so bars, trades details, findings and texts inherit from whatever HTML is passed to --from-report",
+    "refuted": false,
+    "reasoning": "Confirmed from present.py:118-126 and cli.py:87-92: build_presentation extracts the payload from any --from-report path, records sha256 of the file in provenance, and compares it to nothing; with finding 1's gaps, an edited source report would re-present with a 0-mismatch badge. Also confirmed the reviewer's exculpatory evidence: payload_computed_under_code_tree is 393e0ab9..., equal to the run record's code tree, and present.py contains no call to _keep_from_record, so the identity check is not bypassed in this build. The defect is the absence of any binding between the recorded hash and a pinned source. Major is defensible given the brief's provenance emphasis, though it is a design-hardening gap rather than an observed wrong value.",
+    "corrected_severity": "major"
+   },
+   {
+    "title": "Presentation identity cites a commit that does not contain the presentation code; the page says 'uncommitted changes' but not which files",
+    "refuted": false,
+    "reasoning": "Confirmed. Embedded provenance.presentation_code = {git_commit 4fe91b59..., code_tree_sha256 81299e1c..., git_dirty_paths ['M src/stratlab/cli.py','?? src/stratlab/report/present.py','?? src/stratlab/report/template_v2.html']}. HEAD is 4fe91b59 and git status shows present.py/template_v2.html untracked, so that commit cannot contain them. template_v2.html:576 renders only ' · uncommitted changes' when git_dirty_paths is non-empty and never lists the paths. tests/test_report_present.py:62 asserts only truthiness of code_tree_sha256. Minor is appropriate: disclosure exists and is honest, just incomplete.",
+    "corrected_severity": "minor"
+   },
+   {
+    "title": "Tests exercise saved-file tampering only, not payload-side tampering",
+    "refuted": false,
+    "reasoning": "Confirmed from tests/test_report_present.py:68-75: the single tamper test edits metrics.json (saved side). No test mutates the extracted payload, and every payload-side tamper listed in finding 1 passes verify_payload today, so the suite would not catch them. Minor as a test-coverage gap dependent on finding 1's fix.",
+    "corrected_severity": "minor"
+   },
+   {
+    "title": "Related-run rows carry no identity provenance",
+    "refuted": false,
+    "reasoning": "Confirmed. present.py:96-108 (_related) embeds only run_id/id/label/difference and four metric values; the embedded presentation.related[0] for VWR0-RAW__20261016T211405Z confirms exactly those fields. The related run's run_record.json has code_tree 393e0ab9... (same as the main run) and dataset.mask None, as the reviewer stated, but none of code tree/dataset sha/mask/config sha is embedded, and the Provenance table at template_v2.html:570-577 has no row for related runs. Values displayed are correct; minor.",
+    "corrected_severity": "minor"
+   },
+   {
+    "title": "CLI module docstring not updated for the new --from-report path",
+    "refuted": false,
+    "reasoning": "Confirmed from cli.py:1-14: the usage block lists `stratlab report <run_dir>` with a footnote about report_rebuild_<UTC>.html only; --from-report, --presentation, --related (added at cli.py:64-66) and the report_v2_<UTC>.html output (cli.py:90) are not documented. Minor.",
+    "corrected_severity": "minor"
+   },
+   {
+    "title": "Day chart can show a stale session when the selected session has no bars for the current feature set",
+    "refuted": false,
+    "reasoning": "Confirmed from template_v2.html:492: `const b = fs.days[day]; if (!b){ trStatus(); return; }` returns without purging #dayPlot or updating #dayNote, whereas the `!fs` branch at line 491 does clear both. trStatus (line 458-461) updates only the status line with the new session, so the previous plot and #dayNote text (set at line 509 with the previous day/label) would remain. Also confirmed it is not reproducible in this run: both feature sets ('3m|ohlc4|9' and '5m|hlc3|9') have 489 sessions. Latent defect; minor is correct.",
+    "corrected_severity": "minor"
+   }
+  ]
+ }
+]

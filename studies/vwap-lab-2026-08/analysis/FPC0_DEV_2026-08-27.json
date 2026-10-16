@@ -1,0 +1,629 @@
+{
+  "role": "FPC-0 first development run \u2014 symmetric FPC vs VDC benchmark, screened primary + raw sensitivity; DEVELOPMENT ONLY",
+  "python": "3.13.5",
+  "corpus_sha256": "a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a",
+  "development_window": [
+    "2024-09-03",
+    "2025-12-31"
+  ],
+  "engine": {
+    "mintick": 0.01,
+    "slippage_ticks": 1,
+    "atr_stop_mult": 1.0,
+    "ema": [
+      9,
+      20
+    ]
+  },
+  "determinism": "PASS (each arm byte-identical across re-simulation)",
+  "frozen_classification": {
+    "material_r": 0.03,
+    "rule": "delta_R=FPC-VDC mean expectancy R; BETTER if screened>+0.03 & raw>0; WORSE if screened<-0.03 & raw<0; NEUTRAL if screened in [-0.03,+0.03]; CONFLICTED if screened material but raw opposite"
+  },
+  "budget": {
+    "family": "FPC",
+    "config": "FPC-0",
+    "fpc_dev_before": 0,
+    "fpc_dev_after": 1,
+    "ceiling": 12,
+    "note": "independent of the retired VDC 18-slot budget"
+  },
+  "primary": {
+    "vdc_expectancy_r_screened": 0.009,
+    "fpc_expectancy_r_screened": -0.02319,
+    "delta_expectancy_r_screened": -0.03219,
+    "vdc_expectancy_r_raw": -0.0091,
+    "fpc_expectancy_r_raw": -0.039608,
+    "delta_expectancy_r_raw": -0.030508,
+    "raw_screened_agree_on_direction": true,
+    "fpc_absolute_expectancy_r_screened": -0.02319,
+    "classification": "FPC DEVELOPMENT WORSE",
+    "absolute_edge_note": "a relative improvement from negative to less-negative is NOT a positive edge; read the FPC absolute expectancy R."
+  },
+  "arms": {
+    "vdc_screened": {
+      "n": 1354,
+      "net_usd": -86.6386,
+      "expectancy_usd": -0.063987,
+      "cumulative_r": 12.186614,
+      "expectancy_r": 0.009,
+      "median_r": -0.841052,
+      "profit_factor": 0.88548,
+      "win_rate_pct": 21.7134,
+      "max_dd_usd": 131.9844,
+      "max_dd_r": 75.717825,
+      "avg_bars_held": 12.6152,
+      "median_bars_held": 5.0,
+      "exit_reason_counts": {
+        "Long ATR Stop": 339,
+        "Short ATR Stop": 310,
+        "VWAP Failure": 483,
+        "EOD": 222
+      },
+      "long": {
+        "n": 701,
+        "expectancy_r": 0.04723,
+        "profit_factor": 1.074528,
+        "net_r": 33.108094
+      },
+      "short": {
+        "n": 653,
+        "expectancy_r": -0.032039,
+        "profit_factor": 0.950381,
+        "net_r": -20.92148
+      },
+      "bootstrap_expectancy_usd": {
+        "mean": -0.063987,
+        "iid_ci95": [
+          -0.176498,
+          0.056218
+        ],
+        "block_ci95": [
+          -0.210546,
+          0.071518
+        ]
+      },
+      "bootstrap_expectancy_r": {
+        "mean": 0.009,
+        "iid_ci95": [
+          -0.098035,
+          0.11356
+        ],
+        "block_ci95": [
+          -0.093153,
+          0.118287
+        ],
+        "block_len": 11
+      },
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 5,
+        "pct_profitable_months": 31.25
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 21.9528,
+        "net_excl_best_10": -233.7004,
+        "best_1_pct_of_gross": 6.6891
+      }
+    },
+    "fpc_screened": {
+      "n": 1069,
+      "net_usd": -43.6476,
+      "expectancy_usd": -0.04083,
+      "cumulative_r": -24.790401,
+      "expectancy_r": -0.02319,
+      "median_r": -0.919362,
+      "profit_factor": 0.920719,
+      "win_rate_pct": 21.0477,
+      "max_dd_usd": 66.2018,
+      "max_dd_r": 74.573133,
+      "avg_bars_held": 12.6305,
+      "median_bars_held": 4,
+      "exit_reason_counts": {
+        "Long ATR Stop": 278,
+        "Short ATR Stop": 248,
+        "VWAP Failure": 380,
+        "EOD": 163
+      },
+      "long": {
+        "n": 565,
+        "expectancy_r": 0.014359,
+        "profit_factor": 1.022417,
+        "net_r": 8.113012
+      },
+      "short": {
+        "n": 504,
+        "expectancy_r": -0.065285,
+        "profit_factor": 0.900275,
+        "net_r": -32.903413
+      },
+      "bootstrap_expectancy_usd": {
+        "mean": -0.04083,
+        "iid_ci95": [
+          -0.155669,
+          0.101434
+        ],
+        "block_ci95": [
+          -0.144432,
+          0.071732
+        ]
+      },
+      "bootstrap_expectancy_r": {
+        "mean": -0.02319,
+        "iid_ci95": [
+          -0.139703,
+          0.099063
+        ],
+        "block_ci95": [
+          -0.13356,
+          0.098795
+        ],
+        "block_len": 10
+      },
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 6,
+        "pct_profitable_months": 37.5
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 25.7635,
+        "net_excl_best_10": -174.2426,
+        "best_1_pct_of_gross": 8.84
+      }
+    },
+    "vdc_raw": {
+      "n": 1363,
+      "net_usd": -111.6136,
+      "expectancy_usd": -0.081888,
+      "cumulative_r": -12.402952,
+      "expectancy_r": -0.0091,
+      "median_r": -0.863636,
+      "profit_factor": 0.855134,
+      "win_rate_pct": 21.35,
+      "max_dd_usd": 143.9365,
+      "max_dd_r": 89.003386,
+      "avg_bars_held": 12.5018,
+      "median_bars_held": 5,
+      "exit_reason_counts": {
+        "Long ATR Stop": 347,
+        "Short ATR Stop": 313,
+        "VWAP Failure": 482,
+        "EOD": 221
+      },
+      "long": {
+        "n": 708,
+        "expectancy_r": 0.026664,
+        "profit_factor": 1.041743,
+        "net_r": 18.87787
+      },
+      "short": {
+        "n": 655,
+        "expectancy_r": -0.047757,
+        "profit_factor": 0.926403,
+        "net_r": -31.280822
+      },
+      "bootstrap_expectancy_usd": {
+        "mean": -0.081888,
+        "iid_ci95": [
+          -0.189816,
+          0.032025
+        ],
+        "block_ci95": [
+          -0.230928,
+          0.048333
+        ]
+      },
+      "bootstrap_expectancy_r": {
+        "mean": -0.0091,
+        "iid_ci95": [
+          -0.106747,
+          0.096433
+        ],
+        "block_ci95": [
+          -0.111095,
+          0.096205
+        ],
+        "block_len": 11
+      },
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 5,
+        "pct_profitable_months": 31.25
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 22.3212,
+        "net_excl_best_10": -258.6754,
+        "best_1_pct_of_gross": 6.8013
+      }
+    },
+    "fpc_raw": {
+      "n": 1071,
+      "net_usd": -61.6076,
+      "expectancy_usd": -0.057523,
+      "cumulative_r": -42.420599,
+      "expectancy_r": -0.039608,
+      "median_r": -0.933333,
+      "profit_factor": 0.889308,
+      "win_rate_pct": 20.7283,
+      "max_dd_usd": 80.3176,
+      "max_dd_r": 85.055977,
+      "avg_bars_held": 12.5266,
+      "median_bars_held": 4,
+      "exit_reason_counts": {
+        "Long ATR Stop": 281,
+        "Short ATR Stop": 250,
+        "VWAP Failure": 378,
+        "EOD": 162
+      },
+      "long": {
+        "n": 567,
+        "expectancy_r": -0.00095,
+        "profit_factor": 0.998524,
+        "net_r": -0.538679
+      },
+      "short": {
+        "n": 504,
+        "expectancy_r": -0.083099,
+        "profit_factor": 0.873828,
+        "net_r": -41.88192
+      },
+      "bootstrap_expectancy_usd": {
+        "mean": -0.057523,
+        "iid_ci95": [
+          -0.166976,
+          0.078884
+        ],
+        "block_ci95": [
+          -0.162036,
+          0.052355
+        ]
+      },
+      "bootstrap_expectancy_r": {
+        "mean": -0.039608,
+        "iid_ci95": [
+          -0.151555,
+          0.078936
+        ],
+        "block_ci95": [
+          -0.150357,
+          0.077985
+        ],
+        "block_len": 10
+      },
+      "monthly": {
+        "n_months": 16,
+        "profitable_months": 5,
+        "pct_profitable_months": 31.25
+      },
+      "outliers": {
+        "best_10_pct_of_gross": 26.385,
+        "net_excl_best_10": -192.2026,
+        "best_1_pct_of_gross": 9.0533
+      }
+    }
+  },
+  "entry_diff": {
+    "screened": {
+      "vdc_entries": 1354,
+      "fpc_entries": 1069,
+      "retained": 980,
+      "dropped_from_vdc": 374,
+      "unique_to_fpc": 89,
+      "pct_vdc_retained": 72.378,
+      "pct_vdc_suppressed": 27.622
+    },
+    "raw": {
+      "vdc_entries": 1363,
+      "fpc_entries": 1071,
+      "retained": 980,
+      "dropped_from_vdc": 383,
+      "unique_to_fpc": 91,
+      "pct_vdc_retained": 71.9,
+      "pct_vdc_suppressed": 28.1
+    }
+  },
+  "entry_geometry": {
+    "screened": {
+      "long": {
+        "n_regimes": 908,
+        "n_with_signal": 565,
+        "signal_rate_pct": 62.225,
+        "bars_from_fresh_to_signal_hist": {
+          "1": 208,
+          "2": 144,
+          "3": 90,
+          "4": 49,
+          "5": 32,
+          "6": 20,
+          "7": 9,
+          "8": 6,
+          "9": 1,
+          "10": 2,
+          "11": 1,
+          "12": 1,
+          "18": 1,
+          "21": 1
+        },
+        "min_offset": 1,
+        "max_offset": 21,
+        "median_offset": 2
+      },
+      "short": {
+        "n_regimes": 807,
+        "n_with_signal": 504,
+        "signal_rate_pct": 62.454,
+        "bars_from_fresh_to_signal_hist": {
+          "1": 186,
+          "2": 152,
+          "3": 87,
+          "4": 36,
+          "5": 20,
+          "6": 15,
+          "7": 5,
+          "8": 2,
+          "9": 1
+        },
+        "min_offset": 1,
+        "max_offset": 9,
+        "median_offset": 2
+      },
+      "invariants_verified": [
+        "<=1 FPC signal per continuous regime (asserted from trades)",
+        "no FPC signal on a fresh-regime start bar (asserted)",
+        "unit tests test_fpc_signals.py cover regime-break disarm, entry disarm, out-of-window non-consumption, non-flat non-consumption, and re-arm"
+      ]
+    },
+    "raw": {
+      "long": {
+        "n_regimes": 908,
+        "n_with_signal": 567,
+        "signal_rate_pct": 62.445,
+        "bars_from_fresh_to_signal_hist": {
+          "1": 210,
+          "2": 144,
+          "3": 90,
+          "4": 49,
+          "5": 32,
+          "6": 20,
+          "7": 9,
+          "8": 6,
+          "9": 2,
+          "10": 2,
+          "11": 1,
+          "12": 1,
+          "18": 1
+        },
+        "min_offset": 1,
+        "max_offset": 18,
+        "median_offset": 2
+      },
+      "short": {
+        "n_regimes": 806,
+        "n_with_signal": 504,
+        "signal_rate_pct": 62.531,
+        "bars_from_fresh_to_signal_hist": {
+          "1": 186,
+          "2": 152,
+          "3": 87,
+          "4": 36,
+          "5": 20,
+          "6": 15,
+          "7": 5,
+          "8": 2,
+          "9": 1
+        },
+        "min_offset": 1,
+        "max_offset": 9,
+        "median_offset": 2
+      },
+      "invariants_verified": [
+        "<=1 FPC signal per continuous regime (asserted from trades)",
+        "no FPC signal on a fresh-regime start bar (asserted)",
+        "unit tests test_fpc_signals.py cover regime-break disarm, entry disarm, out-of-window non-consumption, non-flat non-consumption, and re-arm"
+      ]
+    }
+  },
+  "ab_dual": {
+    "experiment": "VDC(control) vs FPC-0(variant)",
+    "screened": {
+      "control": "control",
+      "variant": "variant",
+      "control_metrics": {
+        "n": 1354,
+        "net_pnl": -86.6386,
+        "expectancy": -0.063987,
+        "median_pnl": -0.42,
+        "win_rate_pct": 21.7134,
+        "wins": 294,
+        "losses": 1058,
+        "avg_winner": 2.278571,
+        "avg_loser": -0.715065,
+        "payoff_ratio": 3.186524,
+        "profit_factor": 0.88548,
+        "largest_win": 44.81,
+        "largest_loss": -6.98,
+        "stdev_pnl": 2.137324,
+        "avg_bars_held": 12.6152,
+        "median_bars_held": 5.0,
+        "exit_reason_counts": {
+          "Long ATR Stop": 339,
+          "Short ATR Stop": 310,
+          "VWAP Failure": 483,
+          "EOD": 222
+        },
+        "long": {
+          "n": 701,
+          "net_pnl": 31.0515,
+          "expectancy": 0.044296,
+          "profit_factor": 1.092522
+        },
+        "short": {
+          "n": 653,
+          "net_pnl": -117.6901,
+          "expectancy": -0.18023,
+          "profit_factor": 0.720403
+        }
+      },
+      "variant_metrics": {
+        "n": 1069,
+        "net_pnl": -43.6476,
+        "expectancy": -0.04083,
+        "median_pnl": -0.42,
+        "win_rate_pct": 21.0477,
+        "wins": 225,
+        "losses": 843,
+        "avg_winner": 2.252883,
+        "avg_loser": -0.65308,
+        "payoff_ratio": 3.449629,
+        "profit_factor": 0.920719,
+        "largest_win": 44.81,
+        "largest_loss": -6.41,
+        "stdev_pnl": 2.071935,
+        "avg_bars_held": 12.6305,
+        "median_bars_held": 4,
+        "exit_reason_counts": {
+          "Long ATR Stop": 278,
+          "Short ATR Stop": 248,
+          "VWAP Failure": 380,
+          "EOD": 163
+        },
+        "long": {
+          "n": 565,
+          "net_pnl": 21.6463,
+          "expectancy": 0.038312,
+          "profit_factor": 1.079994
+        },
+        "short": {
+          "n": 504,
+          "net_pnl": -65.2939,
+          "expectancy": -0.129551,
+          "profit_factor": 0.766762
+        }
+      },
+      "variant_minus_control": {
+        "net_pnl": 42.991,
+        "expectancy": 0.023157,
+        "median_pnl": 0.0,
+        "win_rate_pct": -0.6657,
+        "profit_factor": 0.035239,
+        "payoff_ratio": 0.263105,
+        "avg_bars_held": 0.0153,
+        "n": -285,
+        "long_net_pnl": -9.4052,
+        "short_net_pnl": 52.3962
+      },
+      "entry_overlap": {
+        "shared": 980,
+        "control_total": 1354,
+        "variant_total": 1069,
+        "trades_added": 89,
+        "trades_removed": 374,
+        "changed_exit_same_entry": 0,
+        "jaccard": 0.679141
+      },
+      "note": "Do not infer causality beyond the explicitly changed parameter."
+    },
+    "raw": {
+      "control": "control",
+      "variant": "variant",
+      "control_metrics": {
+        "n": 1363,
+        "net_pnl": -111.6136,
+        "expectancy": -0.081888,
+        "median_pnl": -0.43,
+        "win_rate_pct": 21.35,
+        "wins": 291,
+        "losses": 1070,
+        "avg_winner": 2.264072,
+        "avg_loser": -0.720055,
+        "payoff_ratio": 3.144306,
+        "profit_factor": 0.855134,
+        "largest_win": 44.81,
+        "largest_loss": -6.98,
+        "stdev_pnl": 2.124114,
+        "avg_bars_held": 12.5018,
+        "median_bars_held": 5,
+        "exit_reason_counts": {
+          "Long ATR Stop": 347,
+          "Short ATR Stop": 313,
+          "VWAP Failure": 482,
+          "EOD": 221
+        },
+        "long": {
+          "n": 708,
+          "net_pnl": 17.1765,
+          "expectancy": 0.024261,
+          "profit_factor": 1.049743
+        },
+        "short": {
+          "n": 655,
+          "net_pnl": -128.7901,
+          "expectancy": -0.196626,
+          "profit_factor": 0.697077
+        }
+      },
+      "variant_metrics": {
+        "n": 1071,
+        "net_pnl": -61.6076,
+        "expectancy": -0.057523,
+        "median_pnl": -0.43,
+        "win_rate_pct": 20.7283,
+        "wins": 222,
+        "losses": 848,
+        "avg_winner": 2.229544,
+        "avg_loser": -0.656328,
+        "payoff_ratio": 3.396995,
+        "profit_factor": 0.889308,
+        "largest_win": 44.81,
+        "largest_loss": -6.41,
+        "stdev_pnl": 2.059102,
+        "avg_bars_held": 12.5266,
+        "median_bars_held": 4,
+        "exit_reason_counts": {
+          "Long ATR Stop": 281,
+          "Short ATR Stop": 250,
+          "VWAP Failure": 378,
+          "EOD": 162
+        },
+        "long": {
+          "n": 567,
+          "net_pnl": 12.5763,
+          "expectancy": 0.02218,
+          "profit_factor": 1.045799
+        },
+        "short": {
+          "n": 504,
+          "net_pnl": -74.1839,
+          "expectancy": -0.14719,
+          "profit_factor": 0.736905
+        }
+      },
+      "variant_minus_control": {
+        "net_pnl": 50.006,
+        "expectancy": 0.024365,
+        "median_pnl": 0.0,
+        "win_rate_pct": -0.6217,
+        "profit_factor": 0.034174,
+        "payoff_ratio": 0.252689,
+        "avg_bars_held": 0.0248,
+        "n": -292,
+        "long_net_pnl": -4.6002,
+        "short_net_pnl": 54.6062
+      },
+      "entry_overlap": {
+        "shared": 980,
+        "control_total": 1363,
+        "variant_total": 1071,
+        "trades_added": 91,
+        "trades_removed": 383,
+        "changed_exit_same_entry": 0,
+        "jaccard": 0.674003
+      },
+      "note": "Do not infer causality beyond the explicitly changed parameter."
+    },
+    "screened_net_delta": 42.991,
+    "raw_net_delta": 50.006,
+    "views_agree_on_direction": true,
+    "primary_view": "screened"
+  }
+}

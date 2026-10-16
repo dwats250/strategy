@@ -1,0 +1,133 @@
+"""Command line entry point.
+
+  stratlab run <experiment.toml> [--out DIR] [--no-ledger]   real-data experiment -> run dir + report
+  stratlab report <run_dir>                                  rebuild report.html from saved files*
+  stratlab demo [--out DIR]                                  synthetic end-to-end demo (labelled)
+  stratlab data verify <dataset_id>                          SHA-256 check of the local copy
+  stratlab data validate <dataset_id> [--mask ID]            coverage / integrity summary (JSON)
+  stratlab data compare <dataset_a> <dataset_b>              bar-by-bar overlap comparison (vendor revisions)
+  stratlab data probe --date YYYY-MM-DD [--ticker SPY]       one-day entitlement check (needs key)
+  stratlab data capture --start D --end D [--ticker SPY]     new capture into the lab store (needs key)
+
+  stratlab report <run_dir> --from-report <committed report.html> [--presentation JSON]
+                  [--findings MD] [--related RUN_DIR ...]      presentation-only re-render -> report_v2_<UTC>.html:
+                  the source payload is regenerated with the pinned computation (modules byte-identical to
+                  the run's commit) and must match exactly; nothing is recomputed for display
+* `report` writes report_rebuild_<UTC>.html and re-embeds price charts when the recorded
+  dataset is available locally and the code tree matches the run; otherwise it omits them.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+from .data.store import REPO_ROOT
+
+
+def _demo(out: Path | None) -> Path:
+    from .experiment import prepare_market, run_experiment
+    from .synthetic import SYNTHETIC_LABEL, random_walk_bars
+    bars = random_walk_bars("2025-01-02", "2025-09-30", seed=11, s0=580.0)
+    md = prepare_market({}, bars_1m=bars, identity={"dataset_id": "synthetic-randomwalk-seed11",
+                                                    "sha256": "n/a (generated in-process)", "mask": None})
+    cfg = REPO_ROOT / "experiments" / "demo_synthetic.toml"
+    out = out or REPO_ROOT / "local_runs"
+    return run_experiment(cfg, out_root=out, market=md, synthetic_label=SYNTHETIC_LABEL, ledger=False)
+
+
+def _findings_from_md(path: Path) -> list[str]:
+    """Bullets ('- ...', continuation lines joined) under the first '## Findings' heading."""
+    out, on = [], False
+    for line in path.read_text().splitlines():
+        if line.startswith("## "):
+            on = line.strip().lower().startswith("## findings")
+            continue
+        if not on:
+            continue
+        m = re.match(r"^(?:[-*]|\d+[.)])\s+(.*)$", line)
+        if m:
+            out.append(m.group(1).strip())
+        elif line.startswith((" ", "\t")) and out and line.strip():
+            sub = re.match(r"^\s+(?:[-*]|\d+[.)])\s+(.*)$", line)
+            out[-1] += ("; " + sub.group(1).strip()) if sub else (" " + line.strip())
+    if not out:
+        print(f"warning: no '## Findings' bullets found in {path}", file=sys.stderr)
+    return out
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="stratlab")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    r = sub.add_parser("run"); r.add_argument("config"); r.add_argument("--out"); r.add_argument("--no-ledger", action="store_true")
+    rp = sub.add_parser("report"); rp.add_argument("run_dir")
+    rp.add_argument("--findings", help="markdown file; its '- ' bullets under a '## Findings' heading are embedded")
+    rp.add_argument("--from-report", help="re-present the verified data payload of this existing report (no recomputation)")
+    rp.add_argument("--presentation", help="JSON with title_short / eyebrow / headline / data_notice (with --from-report)")
+    rp.add_argument("--related", nargs="*", default=[], help="other run dirs whose headline rows are shown as separate runs")
+    d = sub.add_parser("demo"); d.add_argument("--out")
+    sub.add_parser("identity", help="print the code identity a FROZEN config must pin")
+    dd = sub.add_parser("data"); dsub = dd.add_subparsers(dest="dcmd", required=True)
+    v = dsub.add_parser("verify"); v.add_argument("dataset_id")
+    va = dsub.add_parser("validate"); va.add_argument("dataset_id"); va.add_argument("--mask")
+    cm = dsub.add_parser("compare"); cm.add_argument("a"); cm.add_argument("b")
+    pr = dsub.add_parser("probe"); pr.add_argument("--ticker", default="SPY"); pr.add_argument("--date", required=True)
+    ca = dsub.add_parser("capture"); ca.add_argument("--ticker", default="SPY")
+    ca.add_argument("--start", required=True); ca.add_argument("--end", required=True)
+    ca.add_argument("--out"); ca.add_argument("--sleep", type=float, default=13.0)
+    a = ap.parse_args(argv)
+
+    if a.cmd == "run":
+        from .experiment import run_experiment
+        p = run_experiment(Path(a.config), out_root=Path(a.out) if a.out else None, ledger=not a.no_ledger)
+        print(p / "report.html")
+    elif a.cmd == "report":
+        import datetime as _dt
+        from .report.build import build_report
+        stamp = _dt.datetime.now(_dt.UTC).strftime("%Y%m%dT%H%M%SZ")
+        if a.from_report:
+            from .report.present import build_presentation
+            pres = json.loads(Path(a.presentation).read_text()) if a.presentation else {}
+            fpath = Path(a.findings) if a.findings else None
+            print(build_presentation(Path(a.run_dir), Path(a.from_report), f"report_v2_{stamp}.html", pres,
+                                     [Path(x) for x in a.related],
+                                     findings=_findings_from_md(fpath) if fpath else None, findings_source=fpath))
+            return 0
+        findings = _findings_from_md(Path(a.findings)) if a.findings else None
+        print(build_report(Path(a.run_dir), out_name=f"report_rebuild_{stamp}.html",
+                           findings=findings, rebuild_charts=True))
+    elif a.cmd == "demo":
+        print(_demo(Path(a.out) if a.out else None) / "report.html")
+    elif a.cmd == "identity":
+        from .experiment import code_identity
+        print(json.dumps(code_identity(), indent=2))
+    elif a.cmd == "data":
+        from .data.store import resolve
+        if a.dcmd in ("probe", "capture"):
+            from . import data as _d  # noqa: F401
+            from .data import polygon
+            from .data.store import DEFAULT_STORE
+            if a.dcmd == "probe":
+                print(json.dumps(polygon.probe(a.ticker, a.date), indent=2))
+            else:
+                print(json.dumps(polygon.capture(a.ticker, a.start, a.end,
+                                                 Path(a.out) if a.out else DEFAULT_STORE, a.sleep), indent=2))
+            return 0
+        if a.dcmd == "compare":
+            from .data.validate import compare_datasets
+            print(json.dumps(compare_datasets(a.a, a.b), indent=2))
+            return 0
+        if a.dcmd == "verify":
+            rec, path = resolve(a.dataset_id)
+            print(json.dumps({"dataset_id": rec.id, "sha256": rec.sha256, "path": str(path), "verified": True}))
+        else:
+            from .data.validate import validate_dataset
+            print(json.dumps(validate_dataset(a.dataset_id, a.mask), indent=2, default=str))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

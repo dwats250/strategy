@@ -1,0 +1,257 @@
+[
+ {
+  "key": "mr",
+  "findings": [
+   {
+    "title": "MR3 shock filter silently requires 6 full prior in-session bars; stated rule (\"some bar among the 6 before had |E| < 1\") would pass early-session shocks, code blocks them",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/strategies/vwap_mean_reversion.py:48-53 (`rolling(shock_lookback, min_periods=shock_lookback)`), vs /home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md MR3 row and VMRL_EXPERIMENT_v0.1.toml MR3 `difference`",
+    "evidence": "Window alignment itself is correct (verified by hand: minabsE_before_prev at decision bar t equals min|E| over t-7..t-2; minabsE_before_cur equals t-6..t-1). But with min_periods=6 the feature is NaN whenever the extended bar t-1 has fewer than 6 in-session predecessors, and `not (nan < 1.0)` blocks the entry. For decision bars ending 10:00 and 10:05 ET (inside the declared window) MR3 therefore never fires regardless of shock. Synthetic probe (scratch review4-fable/probe.py): plunge at 09:50, failed extension 09:55-10:00 -> MR0 enters 10:00; MR3 blocked (minabsE_before_prev = nan, E_prev = -7.12) and instead entered 10:10 on a later recovery bar. Under the proposal's wording the 09:30 bar has |E| ~ 0 so this displacement 'arrived quickly from near VWAP' and should pass. MR3's 'trades differ from MR0' count will mix shock/non-shock with this time-of-day artefact.",
+    "fix": "Decide before freeze and write it down in the proposal and TOML `difference`: either (a) keep min_periods=6 and state 'the extended bar must have at least 6 completed in-session bars before it; MR3 cannot fire for bars ending before 10:10', or (b) use min_periods=1 (any available prior bars) so the rule matches the prose. Add a synthetic test pinning whichever is chosen."
+   },
+   {
+    "title": "Test suite covers longs only: short mirror, 5 bps stop floor, and extension_only+shock_filter are untested while the proposal says 'implemented and tested'",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/tests/test_mean_reversion.py (all rule tests use _shock_down longs); /home/dustin/Projects/strategy-lab/src/stratlab/strategies/vwap_mean_reversion.py:85-99",
+    "evidence": "No test asserts a short entry, short stop (max(high_t, high_{t-1}) + tick), short half_target, or the `c - floor` branch of the stop. My synthetic probe confirms the code is correct: spike to 102 then lower-high/lower-close -> short entry 10:40 @ 101.70, stop 102.06 = max(102.00,102.05)+0.01, exit vwap_reached; half_target 100.97 matches round(c+0.5*(v-c),2); 'still extending' (higher high) correctly produces no 10:40 entry; floor branch picks the further of (low-tick, c-5bps). So this is a coverage gap, not a behaviour defect, but half of every variant's trades are shorts.",
+    "fix": "Add mirrored short tests (entry, stop, half_target, still-extending), one stop-floor test where c - 5bps is below the extreme-based stop, and one failed_extension+shock/extension_only+shock short case."
+   },
+   {
+    "title": "K = 4.0 derivation does not state that the quantile population is exactly the population that will be scored",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md 'Where K = 4.0 comes from'; /home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/analysis/excursion_quantiles.py:21-26",
+    "evidence": "excursion_quantiles.py uses warmup=5, bars ending 10:00-15:00 inclusive, complete bars, all sessions of the dataset -- the same scored sessions, window and feature code (mr_features defaults) the experiment will score. The fresh-capture quantile (P90 = 3.94) was computed on the recommended run dataset over its full history, including the 'latest 6 months' window. That is honest (no P&L, no strategy) but it is in-sample on the scoring population, unlike the August charter's K, which was a P90 on a development window with a holdout untouched. The proposal says 'trade-blind' and 'nothing here is a holdout' but never says 'K was set from the same bars that will be scored'. August thresholds were NOT silently revived (4.0 vs 4.09, noted explicitly; |E|<1.0 and 6-bar lookback are new lab choices).",
+    "fix": "Add one sentence: 'The |E| quantiles were computed on the full scored population of the run dataset; K is trade-blind but not out-of-sample.' Optionally also report the quantile on the first calendar half alone so the reviewer can see stability."
+   },
+   {
+    "title": "Competing explanation (2) 'volatility scaling' is untestable from the declared variants and saved outputs; enter() metadata E_signal/k is not persisted",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md 'Competing explanation' row; /home/dustin/Projects/strategy-lab/src/stratlab/strategies/vwap_mean_reversion.py:134 (`E_signal=..., k=...`); /home/dustin/Projects/strategy-lab/src/stratlab/engine.py:356-369 (row builder exports a fixed field list)",
+    "evidence": "The proposal lists three competing explanations but only (3) has a variant (MR3). (1) trend days is only indirectly touched by MR3; (2) ATR-denominator scaling has no variant and no pre-committed diagnostic. The synthetic probe shows (2) is real: in a flat tail the 5m ATR collapses and E <= -3 fires on a 0.2-point move (extension_only produced two long entries at 11:40/11:45 on 99.80 flat bars). The strategy passes E_signal and k into enter(), but _closed_trade_rows/_open_trade_rows copy only named meta keys, so E_signal (and ATR at signal, which is not passed at all) never reach trades.csv/metrics -- a post-run slice by ATR or |E| quantile cannot be done from saved outputs. The uninformative-if gates themselves ARE computable: diff_vs_baseline has added/removed/altered and r_removed; metrics has ambiguous_stop_target_minutes and t_stat_r.",
+    "fix": "Either state explicitly that (1) and (2) are not tested by this experiment, or pre-commit a post-run diagnostic (expectancy R by ATR-at-signal tercile) and persist atr_signal/E_signal into the trade rows (that is an engine change -- note it against the 'no engine changes' reuse claim, or pass them through a generic meta passthrough)."
+   },
+   {
+    "title": "Re-entry behaviour is undeclared: the failed-extension trigger re-fires on every up-close bar while E_{t-1} <= -K, so one displacement can produce several trades after stop-outs",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/src/stratlab/strategies/vwap_mean_reversion.py:81-99 (_signal has no 'first failed extension' state); /home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md Baseline MR0 items 2 and 6",
+    "evidence": "Rule 2 as written (low_t > low_{t-1} and close_t > close_{t-1}) matches the code exactly, but during a slow drift back toward VWAP every bar satisfies it until E_{t-1} rises above -K. Probe: MR3 entered at 10:10 on the third recovery bar after being blocked at 10:00; extension_only re-entered at 11:45 one bar after an 11:40 stop-out. 'One position at a time' only prevents overlap; nothing prevents immediate re-entry on the same displacement. The narrative ('a failed extension after a large displacement') and the 200/100-trade gates read as one trade per displacement.",
+    "fix": "Add a sentence to MR0 rule 6: 'A new entry may be taken on the first qualifying bar after any exit, including on the same displacement; no cooldown.' If a cooldown is wanted it must be declared now, before any run, not added as a rescue."
+   },
+   {
+    "title": "Exit wording 'first later completed bar' vs code evaluating exits on bars with missing minutes",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md MR0 rule 5; /home/dustin/Projects/strategy-lab/src/stratlab/strategies/vwap_mean_reversion.py:105-109",
+    "evidence": "on_signal_bar checks the vwap_close exit before `signal_bar_complete()`, so a 5m bar missing constituent minutes (masked print) can trigger the exit; only new entries are gated on completeness (engine convention, documented in engine.py:162-165). The proposal uses 'completed bar' for both the entry decision and the exit, which a reader may take to mean 'no missing minutes'. Entry window inclusivity (10:00 <= end <= 15:00), stop formula, half-target formula, shorts mirror, extension index (t-1 for failed_extension, t for extension_only), and causality (features published at the bar's last minute, shift/rolling backward only, VWAP cumulative) all match code and are causal.",
+    "fix": "Reword rule 5 to 'the first later signal bar (complete or not) whose close is at or through VWAP' or state the engine convention once in item 6."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "MR3 shock filter silently requires 6 full prior in-session bars; stated rule (\"some bar among the 6 before had |E| < 1\") would pass early-session shocks, code blocks them",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "CONFIRMED. vwap_mean_reversion.py lines 51-55 (not 48-53) use rolling(shock_lookback, min_periods=shock_lookback) on shift(2)/shift(1) grouped by session, and line 103 `not (shock_ref < shock_near)` returns None on NaN. Independent synthetic probe: plunge 09:50, failed extension 09:55 -> MR0 enters 10:00 (stop 97.94); MR3 blocked (minabsE_before_prev = nan, E_prev = -7.12, |E| at 09:30 bar = 0.0) and instead entered 10:10 on a recovery bar. Shock with extended bar starting 09:55 (5 prior bars) also blocked (nan); extended bar starting 10:00 (6 prior bars) passes (minabsE=0.0, entry 10:10). So MR3 cannot fire for decision bars ending 10:00 or 10:05 regardless of shock, while the proposal/TOML wording ('some bar among the 6 before') implies it would. Definition/code mismatch in a pre-freeze spec affecting one variant: major stands."
+   },
+   {
+    "title": "Test suite covers longs only: short mirror, 5 bps stop floor, and extension_only+shock_filter are untested while the proposal says 'implemented and tested'",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "CONFIRMED. tests/test_mean_reversion.py: every rule test builds on _shock_down (long) or a downward drift; no assertion on side == 'short', no short stop/half_target, no case exercising the `c - floor` / `c + floor` branch, no extension_only+shock_filter. My own short probe (spike to 102.00/102.05 then lower-high/lower-close bar) gives entry 10:40 short @ 101.70, stop 102.06 = max(102.00,102.05)+0.01, exit vwap_reached, so the code behaves correctly; this is a coverage gap, not a behaviour defect. Minor."
+   },
+   {
+    "title": "K = 4.0 derivation does not state that the quantile population is exactly the population that will be scored",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "CONFIRMED as a documentation omission. excursion_quantiles.py scores sessions[warmup:] (default 5, same as TOML warmup_sessions), bars ending 10:00-15:00 inclusive (m in [600,900]), complete bars, mr_features defaults — identical to the experiment's scored population on the recommended dataset. The JSON artifact carries two runs (August masked, fresh capture, 29701/30136 bars). Proposal says 'trade-blind', 'fixed before any outcome', 'nothing here is a holdout' but never states K is in-sample on the scored bars, whereas VMR_CHARTER_v0.1.md line 87/141 derived its P90 on a development window. August K (4.0916) is correctly noted and not adopted. A one-sentence disclosure fix; minor."
+   },
+   {
+    "title": "Competing explanation (2) 'volatility scaling' is untestable from the declared variants and saved outputs; enter() metadata E_signal/k is not persisted",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "CONFIRMED. Strategy line 133-134 passes E_signal and k to enter(); engine.py line 177 stores them in trade_meta, but the only readers (engine.py lines 302-321 and 336-369) copy a fixed field list (initial_stop, target, entry_reason, signal_start, decision_time). grep across src/stratlab shows no other consumer of trade_meta, so E_signal/k never reach trades.csv or metrics, and ATR at signal is never passed. Of the three competing explanations only (3) has a variant (MR3). The fix as stated (declare untested, or pre-commit a diagnostic and persist fields) is right; persisting would be an engine change against the 'no changes to the engine' reuse note. Minor."
+   },
+   {
+    "title": "Re-entry behaviour is undeclared: the failed-extension trigger re-fires on every up-close bar while E_{t-1} <= -K, so one displacement can produce several trades after stop-outs",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "CONFIRMED. _signal (lines 84-108) is stateless: any bar with E_prev <= -k, higher low and higher close qualifies. Probe: plunge 10:30, failed extension 10:35, entry 10:40 @ 98.30 stop 97.94; dip to 97.90 at 10:41 stops it out; the 10:45 bar again has E_prev = -6.13, higher low, higher close -> second long entry 10:50 @ 98.62 (stop 97.89) on the same displacement, exit vwap_reached. Also seen in the F1 probe (MR3 entering 10:10 on the third recovery bar). Proposal MR0 rules 2 and 6 say nothing about cooldown or 'first qualifying bar only'; a declaration is needed before freeze. Minor."
+   },
+   {
+    "title": "Exit wording 'first later completed bar' vs code evaluating exits on bars with missing minutes",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "CONFIRMED. on_signal_bar (lines 110-119) evaluates the vwap_close exit inside `if self.position:` and returns before the `signal_bar_complete()` gate at line 119; engine.py lines 162-165 document this as the convention ('exits are still evaluated'). Proposal rule 5 says 'the first later completed bar that closes at or through VWAP', which can be read as 'no missing minutes'. Also verified the reviewer's positive checks: window inclusivity (<= on both ends, line 122), stop/half-target formulas, extension index (E_prev for failed_extension, E for extension_only), causal shift/rolling. Wording-only; minor."
+   }
+  ]
+ },
+ {
+  "key": "dataq",
+  "findings": [
+   {
+    "title": "Wider-scan example 2026-06-09 is a Yahoo data hole, not a Massive anomaly; the 31-hour count mixes Yahoo gaps with Massive wicks",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/docs/lab/DATA_QUALITY_2026-10-16.md (\"Wider scan\" row: \"including unmasked ones such as 2026-06-09 (Massive low $730.77 vs Yahoo $740.35)\" and \"The issue is broader than one day\"); /home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/analysis/compare_independent_hourly.py lines 48-50 (up/dn selection has no Yahoo-completeness guard)",
+    "evidence": "Re-ran the aggregation against the Yahoo CSV. For 2026-06-09 10:30 the Yahoo bar carries 568,551 shares vs Massive's ~10M for the hour (ratio 0.057); Yahoo's 09:30 bar has volume 1,122 and its 11:30 bar is missing entirely. Massive's 1m bodies (Open/Close) in that hour trade down to 731.00 at 11:29 with VendorVWAP 731.11 tracking them, i.e. the move is real and Yahoo simply lacks the trades. Massive's body extreme exceeds Yahoo's range by $9.35 there; the same body-beyond-Yahoo condition (>0.50) holds for 3 more of the 31 hours (2025-01-27 09:30 +1.58, 2025-06-16 09:30 +0.56, 2026-07-15 15:30 +0.53, the last with Yahoo volume ratio 0.60). Six Yahoo hours in range have <10% of Massive's volume. The note presents all 31 hours as Massive-side discrepancies and picks the Yahoo-gap hour as its example.",
+    "fix": "In the script, join Yahoo Volume too and (a) skip or label hours where Yahoo volume is far below Massive's, (b) report separately hours where Massive's BODY range (max(Open,Close)/min(Open,Close)) exceeds Yahoo's range, which indicates missing Yahoo data rather than a suspicious wick. Re-emit the diagnostic, drop the 2026-06-09 example from the note, and state the hour count after excluding Yahoo-deficient hours (dated amendment, not in-place edit if the note is treated as frozen)."
+   },
+   {
+    "title": "Findings note and wick script assert unexecutability and a 'defect' that DATA_QUALITY says is unresolved",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/analysis/VWR0_EXP_FINDINGS_2026-10-16.md (section \"Data-integrity defect found after the run\": \"A resting stop could not have filled there at midday\"; Findings bullet: \"The defect accounts for −$14.0k of VWR0's −$25.3k, −$13.4k of VWR1's and −$8.1k of VWR3's\"); /home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/analysis/diagnose_offmarket_wicks.py docstring lines 5-8; /home/dustin/Projects/strategy-lab/docs/research/STRATEGY_RESEARCH_LEDGER.md VWR card (\"A post-run data defect inflates some losses\")",
+    "evidence": "DATA_QUALITY_2026-10-16.md (same commit) states \"Status: unresolved\", \"does not show that they were unexecutable\", and \"Yahoo ... is not ground truth\". FINDINGS (committed at 377d414, untouched by 9ab5df9) and the script docstring state the opposite as fact with no condition-code evidence (the Massive tick endpoint returned 403). The \"accounts for −$14.0k\" figure is the whole session's P&L (19 trades), while the script's own trade-level measure of stops on flagged minutes is −$9,802 for VWR0 (−$10,184 VWR1, −$5,707 VWR3); the remainder is ordinary trading on a tariff-shock day. Owner intent for this closeout explicitly forbids calling prints unexecutable without evidence and treating a day's P&L subtraction as the defect's size.",
+    "fix": "Add a dated addendum section to VWR0_EXP_FINDINGS_2026-10-16.md (do not edit the frozen text) that retracts 'could not have filled', renames the item 'suspicious prints (unresolved)', points to DATA_QUALITY, and replaces 'accounts for' with 'the session booked'; change the diagnose_offmarket_wicks.py docstring to the hedged wording (or add a header note referencing DATA_QUALITY); change the ledger card to 'suspicious prints, treatment undecided'."
+   },
+   {
+    "title": "Stop-exit test uses an undisclosed $0.01 tolerance while the hour scan uses $0.50; VWR2 and IG-AUSTIN-P0 rows are tolerance artefacts",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/analysis/compare_independent_hourly.py line 70 (`chk.exit_price > chk.yh + 0.01 | ... < chk.yl - 0.01`) vs TOL = 0.50 at line 27; /home/dustin/Projects/strategy-lab/docs/lab/DATA_QUALITY_2026-10-16.md \"Affected scope\" table (no tolerance stated)",
+    "evidence": "Recomputed the exceedance of each flagged fill beyond Yahoo's hourly range: VWR2's four are $0.37, $2.17, $0.33, $0.07 (the 2026-02-06 session exists only because of a 7-cent difference); IG-AUSTIN-P0's three are $3.42, $0.33, $0.29; VWR0/VWR1 include a $0.18 case (2025-01-14) and VWR3 a $0.13 case (2025-06-23). Yahoo's own prices are stored as float32 noise (e.g. 539.510009765625) and 85.0%/94.7% of hourly closes agree to $0.00/$0.01, so sub-$0.40 range differences are within ordinary feed disagreement. At the scan's own $0.50 tolerance the table becomes VWR0 15, VWR1 15, VWR2 1, VWR3 6, VWR4 1, IG-AUSTIN-P0 1, and the sessions 2026-02-06 (VWR2), 2025-04-07 and 2026-02-26 (IGP0), 2025-01-14 (VWR0/1), 2025-06-23 (VWR3) drop out. All 16 VWR0 fills are at the exact stop price (none gapped), so the test is measuring stop levels, which is fine, but the tolerance drives the small rows.",
+    "fix": "State the tolerance in the note and script output, use one tolerance for both tests (or report the stop table at both $0.01 and $0.50), and add a column with the exceedance amount so the reader can see which rows are marginal."
+   },
+   {
+    "title": "Uncheckable hours inside the Yahoo window are not disclosed (35 Massive hours have no Yahoo bar; 6 Yahoo bars are near-empty)",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/docs/lab/DATA_QUALITY_2026-10-16.md (\"Hours before 2024-12-18 cannot be checked\"); /home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/analysis/compare_independent_hourly.py (inner join at line 44 silently drops them; `chk = st[st.yh.notna()]` at line 69)",
+    "evidence": "Massive hours in 2024-12-18..2026-08-21 with no Yahoo bar: the 12:30 bar on each early-close day (2024-12-24, 2025-07-03, 2025-11-28, 2025-12-24), 2026-01-30 10:30-15:30, 2026-02-02 09:30-12:30, 2026-06-09 11:30, 2026-07-10 10:30-15:30, all of 2026-07-13 and 2026-07-14. Additionally Yahoo bars with <10% of Massive volume: e.g. 2026-01-30 09:30 (1,369 shares), 2026-06-09 09:30 (1,122). None of the 16 flagged fills fall in these hours (checked), but the 'checkable' denominators exclude them without saying so, and a future run of the same diagnostic would count a stop in a near-empty Yahoo hour as 'outside range'.",
+    "fix": "Print the list of in-range hours without a Yahoo bar and the hours with Yahoo volume < 50% of Massive; exclude the latter from both tests; add one sentence to the note listing the uncheckable sessions."
+   },
+   {
+    "title": "Mask v1.0 calibration and 'median difference $0.00' have no committed script or output",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/docs/lab/DATA_QUALITY_2026-10-16.md rows \"Yahoo Finance hourly bars\" (median difference) and \"Calibration on mask v1.0's prints\"",
+    "evidence": "compare_independent_hourly.py prints neither the median close difference nor any comparison of the 9 masked bars (it aggregates with mask v1.0 applied, so those minutes are absent from its Massive hourly series). I reproduced the claims from the raw dataset: 2024-12-20 11:10 low 581.52 vs Yahoo low 586.92; 2025-03-14 13:44 low 551.49 vs 560.23; 2025-04-16 14:31 high 537.89 vs 526.18; 2025-12-22 15:12 low 680.59 vs 684.66 (Yahoo lacks these four); 2025-05-19 12:05/12:18/12:20 lows 588.95-589.32 vs Yahoo low 588.51 and 2025-05-27 13:13 low 578.43 = Yahoo 578.43 (Yahoo shows these two); median close difference ≈ $0.00. The numbers are correct, but the 8th masked date 2024-10-01 11:32 precedes Yahoo's window and is not mentioned, and none of this is reproducible from the repository.",
+    "fix": "Add a `--mask-calibration` branch (load raw, compare each mask_keys bar's extreme with the Yahoo hourly range) and the median close difference to compare_independent_hourly.py, commit its output, and note that 1 of the 9 masked bars (2024-10-01) is outside the checkable window."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Wider-scan example 2026-06-09 is a Yahoo data hole, not a Massive anomaly; the 31-hour count mixes Yahoo gaps with Massive wicks",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Reproduced from the dataset (mask v1.0) and the scratch Yahoo CSV. For the 2026-06-09 10:30 bucket Yahoo carries 568,551 shares vs Massive 10,019,337 (ratio 0.057); Yahoo's 11:30 bar for that day is absent. Massive's body low in that bucket is 731.00 at 11:29 with VendorVWAP 731.11, i.e. bodies trade $9.35 below Yahoo's low of 740.35, so the move is real and Yahoo lacks the trades. Body-beyond-Yahoo >$0.50 also holds for 2025-01-27 09:30 (+1.58), 2025-06-16 09:30 (+0.56) and 2026-07-15 15:30 (+0.53, Yahoo volume ratio 0.60). Six Yahoo hours in range have <10% of Massive volume (five of them zero). compare_independent_hourly.py lines 48-50 apply no Yahoo-completeness guard, and DATA_QUALITY_2026-10-16.md names 2026-06-09 as its one unmasked example of a Massive-side discrepancy. One sub-detail in the finding is wrong: Yahoo's 2026-06-09 09:30 bar has volume 11,226,356, not 1,122. That does not affect the defect."
+   },
+   {
+    "title": "Findings note and wick script assert unexecutability and a 'defect' that DATA_QUALITY says is unresolved",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Confirmed by text. VWR0_EXP_FINDINGS_2026-10-16.md line 24-25: 'A resting stop could not have filled there at midday'; line 69: 'The defect accounts for −$14.0k of VWR0's −$25.3k, −$13.4k of VWR1's and −$8.1k of VWR3's'. diagnose_offmarket_wicks.py docstring line 7 repeats 'could not have filled'. STRATEGY_RESEARCH_LEDGER.md line 129 (added in 9ab5df9): 'A post-run data defect inflates some losses'. DATA_QUALITY_2026-10-16.md (same commit) says 'Status: unresolved', tick condition codes returned HTTP 403, and Yahoo 'does not show that they were unexecutable'. DIAGNOSTIC_offmarket_wicks output confirms −$13,998 is the whole-session figure (19 trades) while stops on flagged minutes total −$9,802 (VWR0), −$10,184 (VWR1), −$5,707 (VWR3). FINDINGS was committed at 377d414 and 9ab5df9 added no amendment, so the committed records contradict each other and the ledger card carries the overclaim into the closeout."
+   },
+   {
+    "title": "Stop-exit test uses an undisclosed $0.01 tolerance while the hour scan uses $0.50; VWR2 and IG-AUSTIN-P0 rows are tolerance artefacts",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Reproduced exactly. Script line 27 TOL = 0.50 for the hour scan; line 70 uses ±0.01 for stop fills; the note's table states no tolerance. Exceedances beyond Yahoo's hourly range: VWR2 0.37, 2.17, 0.33, 0.07 (2026-02-06 10:52 = $0.07); IGP0 3.42, 0.33, 0.29; VWR0/VWR1 include 2025-01-14 13:51 at $0.18; VWR3 includes 2025-06-23 11:29 at $0.13. At $0.50 the table becomes VWR0 15 (−$13,186), VWR1 15, VWR2 1 (−$469, 2025-03-07 only), VWR3 6, VWR4 1, IGP0 1 (−$139, 2025-03-03 only); sessions 2026-02-06, 2025-04-07, 2026-02-26 (IGP0), 2025-01-14, 2025-06-23 drop out. Yahoo prices are float32-noise (e.g. 580.530029296875). My close-agreement figures differ slightly from the finding's (89.8% at $0.00, 95.0% at ≤$0.01 by abs-diff vs the script's 85.0% by round-equality), which is immaterial. Three of six table rows and the sessions list change with tolerance, so major stands."
+   },
+   {
+    "title": "Uncheckable hours inside the Yahoo window are not disclosed (35 Massive hours have no Yahoo bar; 6 Yahoo bars are near-empty)",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed in substance: exactly 35 Massive RTH hours inside 2024-12-18..2026-08-21 have no Yahoo bar, and the list matches the finding (early-close 12:30 bars on 2024-12-24, 2025-07-03, 2025-11-28, 2025-12-24; 2026-01-30 10:30-15:30; 2026-02-02 09:30-12:30; 2026-06-09 11:30; 2026-07-10 10:30-15:30; all of 2026-07-13 and 2026-07-14). The inner join at line 44 and `st[st.yh.notna()]` at line 69 drop them silently (137 VWR0 stops, 158 VWR1, 188 VWR3 fall in such hours). Six Yahoo bars have <10% of Massive volume. The finding's two examples are wrong, though: Yahoo's 2026-01-30 09:30 bar has 13,695,706 shares and 2026-06-09 09:30 has 11,226,356; the actual near-empty bars are 2026-06-08 11:30, 06-23 09:30, 07-28 09:30, 08-03 13:30, 08-07 14:30 (all volume 0) and 2026-06-09 10:30 (568,551). None of the 16 flagged VWR0 fills fall in those hours. Defect is real; minor is right."
+   },
+   {
+    "title": "Mask v1.0 calibration and 'median difference $0.00' have no committed script or output",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. compare_independent_hourly.py prints a percent-identical figure but no median close difference, and it loads the dataset with mask v1.0 applied so the 9 masked minutes are absent from its hourly series; no committed output covers the calibration row. Reproduced from the raw dataset: 2024-12-20 11:10 low 581.52 vs Yahoo low 586.92; 2025-03-14 13:44 low 551.49 vs 560.23; 2025-04-16 14:31 high 537.89 vs 526.18; 2025-12-22 15:12 low 680.59 vs 684.66 (Yahoo lacks all four); 2025-05-19 12:05/12:18/12:20 lows 588.95/589.27/589.32 vs Yahoo low 588.51 and 2025-05-27 13:13 low 578.43 = Yahoo low 578.43 (Yahoo shows these two); median close difference 1.7e-05 ≈ $0.00. The 9th masked bar 2024-10-01 11:32 has no Yahoo hour and the note does not say so. Numbers in the note are correct but not reproducible from the repository."
+   }
+  ]
+ },
+ {
+  "key": "continuity",
+  "findings": [
+   {
+    "title": "Fresh-extension inherits trade-count gates that 38 sessions almost certainly cannot meet",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/manifests/VWR0_FRESH_EXTENSION_v0.1.toml lines 48, 59, 70, 92, 104 (uninformative_if); limitations block lines 9-13",
+    "evidence": "Scored window verified via the data layer: 463 sessions before 2026-08-24, 38 from 2026-08-24..2026-10-15, build_windows(cov,463,0,False) -> single 'full' window 2026-08-24..2026-10-15, 38 sessions. The variants are byte-identical to VWR0_EXPERIMENT_v1.1 (only [windows] differs), so the gates are carried over unchanged: VWR0 'fewer than 200 closed trades' and VWR1-4/IGP0 'fewer than 100'. Pro-rating VWR0-EXP's recorded counts (2,428/489 sessions etc.) gives ~189 VWR0, ~72 VWR2, ~107 VWR4, ~99 IGP0 trades on 38 sessions, so most arms including the baseline would be pre-declared uninformative by the manifest's own rule. The limitations say 'small sample; a single look' but do not say the inherited gates are expected to fail or what the run is then for.",
+    "fix": "Before freezing as v1.0, add a dated limitation stating that the gates are inherited from v1.1, give the pro-rated expected trade counts, and state what the run can support (descriptive fresh-historical evidence on the same rules, pooled with or compared to the original window), or declare a smaller pre-registered gate for this extension in writing. Do not change the rules or variants."
+   },
+   {
+    "title": "PR carries a committed third-party bar-data export (TradingView BATS SPY 5m) despite the lab's 'vendor data is never committed' policy",
+    "severity": "major",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-lab-2026-08/exports/TV_CHARTDATA_BATS_SPY_5m_RTH_2025-08-11_2026-08-25_FastAlphaV0.csv (2,359,355 bytes; added in August commit a824eb5, part of PR #20's 31 inherited August commits)",
+    "evidence": "File header: time,open,high,low,close,Session VWAP,EMA 9,... with full OHLC rows (a chart-data export of BATS SPY bars). datasets/REGISTRY.json _doc says 'Vendor data is never committed'; .gitignore excludes CuttingBoard raw vendor exports 'pending provenance and redistribution review'. The export is referenced by RUN_VDC_SPY_5m_dev_R0_v1.0.md and PARITY_GATES.md, so it is a frozen August artifact and must not be edited in place. No other raw market data was found in the diff: datasets/REGISTRY.json holds only metadata, trade/equity CSVs are derived run outputs, and grep of the diff found no API keys (only env-var names and the test fixture value TESTKEY123).",
+    "fix": "Record an explicit decision in the closeout review (keep with a provenance/redistribution note in the PR description, or remove via a new dated commit before merge) rather than silently merging; do not edit the frozen August files."
+   },
+   {
+    "title": "HANDOFF canonical-record paths do not resolve from the file's location",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/docs/lab/HANDOFF.md, 'Where things stand' table rows 'Seam-2 report' and 'Data quality'",
+    "evidence": "The table gives `exports/runs/VWR0-EXP__20261016T211249Z/report_v2_20261016T231111Z.html` (no study prefix; actual path is studies/vwap-ema9-2026-10/exports/runs/...) and `DATA_QUALITY_2026-10-16.md` (bare name, resolves only because HANDOFF sits in docs/lab). Every other row uses a repo-relative path. A fresh session following 'resume from HANDOFF alone' has to guess the study.",
+    "fix": "Use full repo-relative paths: studies/vwap-ema9-2026-10/exports/runs/VWR0-EXP__20261016T211249Z/report_v2_20261016T231111Z.html and docs/lab/DATA_QUALITY_2026-10-16.md."
+   },
+   {
+    "title": "HANDOFF's list of the 12 pinned computation modules omits strategies/common.py",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/docs/lab/HANDOFF.md, 'Rules that bite', third bullet",
+    "evidence": "PINNED_MODULES in src/stratlab/report/present.py (lines 45-51) has 12 entries including src/stratlab/strategies/common.py. The HANDOFF prose names engine, experiment, windows, metrics, indicators, sessions, store, the VWR/IG/benchmark strategies and report/build.py (11), so common.py is the one module a reader could edit without realising it breaks re-presentation. (All 12 verified byte-identical to 1f4af3a today.)",
+    "fix": "Add `strategies/common.py` to the parenthetical list, or replace the list with 'see PINNED_MODULES in src/stratlab/report/present.py'."
+   },
+   {
+    "title": "Fresh-extension mask comment is imprecise about warm-up sessions and mask binding",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/manifests/VWR0_FRESH_EXTENSION_v0.1.toml line 11 (limitations[1])",
+    "evidence": "'no mask: none of mask v1.0's bars fall in these dates' is true for the 38 scored sessions, but the 463 warm-up sessions do include 2025-04-23 and the other masked minutes unmasked, and mask v1.0 is bound to the August file (the fresh dataset's registry entry has masks: {}), so no mask could be applied to this dataset at all. Harmless for session-anchored VWAP/EMA9 state, but the stated reason is not the operative one.",
+    "fix": "Reword: 'No mask is available for this dataset (mask v1.0 is bound to the August file); the scored dates 2026-08-24..2026-10-15 contain none of the flagged minutes, and warm-up sessions only seed indicators.'"
+   },
+   {
+    "title": "VMR-L proposal states the fresh capture's range as 2024-10-23 → 2026-10-15",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-mr-2026-10/manifests/VMRL_FAMILY_PROPOSAL_v0.1.md, 'Data' row of the Data/execution table",
+    "evidence": "datasets/REGISTRY.json gives the capture as 2024-10-16..2026-10-15 (first session 2024-10-16, 501 sessions, verified via the data layer); VWR0_FRESH_EXTENSION_v0.1.toml and HANDOFF use 2024-10-16. 2024-10-23 is the first scored session after 5 warm-up sessions, not the dataset start, so the two documents describe the same dataset with different ranges.",
+    "fix": "State the dataset range as 2024-10-16 → 2026-10-15 and, if useful, add '(scored from 2024-10-23 after 5 warm-up sessions)'."
+   },
+   {
+    "title": "PR adds ~37 MB of generated HTML for two runs, four near-identical ~7.7 MB reports for one run",
+    "severity": "minor",
+    "where": "/home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/exports/runs/VWR0-EXP__20261016T211249Z/{report.html, report_rebuild_20261016T212214Z.html, report_v2_20261016T223632Z.html, report_v2_20261016T231111Z.html} and VWR0-RAW__20261016T211405Z/report.html",
+    "evidence": "Sizes 7,733,741 / 7,736,981 / 7,755,597 / 7,755,824 / 6,276,976 bytes (git cat-file -s at HEAD). PR #20 reports 171,076 additions over 323 files. The immutability rule (rebuilds get a new file name) explains the duplication, and HANDOFF names only report_v2_20261016T231111Z.html as canonical.",
+    "fix": "Not blocking. For the closeout review, note in the PR description which report file is canonical and that the earlier three are superseded presentations of the same frozen run, so a reviewer does not diff them."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Fresh-extension inherits trade-count gates that 38 sessions almost certainly cannot meet",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Confirmed against files and the data layer. Variants block of VWR0_FRESH_EXTENSION_v0.1.toml is byte-identical (diff) to VWR0_EXPERIMENT_v1.1.toml, so uninformative_if gates are inherited verbatim (VWR0: <200 closed trades in full window; VWR2 either arm <100; VWR4 <100; IGP0 <100). Data-layer read of the fresh dataset: 501 sessions, 463 before 2026-08-24, 38 from 2026-08-24; build_windows(cov,463,0,False) -> single 'full' window 2026-08-24..2026-10-15, 38 sessions. Stronger than pro-rating: the frozen VWR0-EXP metrics.json already contains a 37-session window (2026H2, 2026-07-01..2026-08-21) with VWR0=169, VWR2=80, VWR4=102, IGP0=102 trades, so the baseline gate (200) fails on a comparably sized window from the real run and VWR2 fails too; VWR4/IGP0 are marginal. The limitations block (lines 9-13) says only 'small sample; a single look' and does not acknowledge the inherited gates. The manifest is PROPOSED v0.1, but it is the document that will be frozen, so the design defect is real. Severity major stands."
+   },
+   {
+    "title": "PR carries a committed third-party bar-data export (TradingView BATS SPY 5m) despite the lab's 'vendor data is never committed' policy",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Facts confirmed: file exists at the stated path, 2,359,355 bytes, header 'time,open,high,low,close,Session VWAP,EMA 9,...' with full OHLC rows; added in a824eb5 ('preserve TradingView R0 capture'), which is NOT an ancestor of main (only on origin/lab/restart-2026-10 and origin/study/vwap-lab-2026-08), so PR #20 (323 files, +171,076) would introduce it to main. Referenced by PARITY_GATES.md and RUN_VDC_SPY_5m_dev_R0/R1_v1.0.md (frozen August artifacts). REGISTRY.json _doc says 'Vendor data is never committed'. Downgraded to minor: the finding is not a defect of commit 9ab5df9 (the file predates it by 31 commits); .gitignore explicitly states the lab deliberately tracks study CSV exports under studies/*/exports/ (narrow raw-vendor exclusions only), so committing it was a stated August decision rather than an oversight; and the proposed fix is a note/decision in the PR description, not a change to the commit. Still worth recording because the redistribution question is unaddressed for a third-party chart export."
+   },
+   {
+    "title": "HANDOFF canonical-record paths do not resolve from the file's location",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. docs/lab/HANDOFF.md 'Where things stand' table: Seam-2 report row gives `exports/runs/VWR0-EXP__20261016T211249Z/report_v2_20261016T231111Z.html` (actual path is studies/vwap-ema9-2026-10/exports/runs/...; no such path at repo root or relative to docs/lab) and Data quality row gives bare `DATA_QUALITY_2026-10-16.md`. All other rows use repo-relative paths (studies/..., datasets/REGISTRY.json). The inconsistency is real; impact is small."
+   },
+   {
+    "title": "HANDOFF's list of the 12 pinned computation modules omits strategies/common.py",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. src/stratlab/report/present.py PINNED_MODULES (lines 45-51) has 12 entries including src/stratlab/strategies/common.py. HANDOFF 'Rules that bite' parenthetical lists engine, experiment, windows, metrics, indicators, sessions, store, the VWR/IG/benchmark strategies, report/build.py — 11 items, common.py absent. Low impact since HANDOFF also names the PINNED_MODULES symbol and check_pinned_modules enforces it at re-presentation time."
+   },
+   {
+    "title": "Fresh-extension mask comment is imprecise about warm-up sessions and mask binding",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Core claim confirmed with one correction to the reviewer's evidence. Data layer: load_mask on the fresh dataset raises 'has no mask integrity-mask-v1.0' (registry entry masks: {}), so no mask can be applied to this dataset at all, and the manifest's stated reason ('none of mask v1.0's bars fall in these dates') is true but not the operative one. Mask v1.0 drops 9 minutes: 2024-10-01 (before the fresh dataset starts), 2024-12-20, 2025-03-14, 2025-04-16, 2025-05-19 x3, 2025-05-27, 2025-12-22 — 8 fall in the 463 warm-up sessions, none in the 38 scored sessions. Correction: 2025-04-23 (the wick cluster under DATA_QUALITY investigation) is NOT one of mask v1.0's bars; the reviewer's evidence conflates the two. The suggested reword is still accurate if '2025-04-23' is dropped from the justification. Minor; the TOML comment is in a PROPOSED document and warm-up bars only seed session-anchored indicators."
+   },
+   {
+    "title": "VMR-L proposal states the fresh capture's range as 2024-10-23 → 2026-10-15",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. VMRL_FAMILY_PROPOSAL_v0.1.md line 72 Data row: 'spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9, 2024-10-23 → 2026-10-15'. REGISTRY.json: query start 2024-10-16, first_bar_utc 2024-10-16; data layer: first session 2024-10-16, 501 sessions, and with the proposal's own 'warm-up 5 sessions' (line 77) the first scored session is 2024-10-23. So 2024-10-23 is the scored start, not the dataset range, and the row does not say so; VWR0_FRESH_EXTENSION_v0.1.toml and HANDOFF describe the same dataset as starting 2024-10-16. Minor wording inconsistency, correct fix proposed."
+   },
+   {
+    "title": "PR adds ~37 MB of generated HTML for two runs, four near-identical ~7.7 MB reports for one run",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. git cat-file -s at HEAD: 7,733,741 / 7,736,981 / 7,755,597 / 7,755,824 bytes for the four VWR0-EXP reports and 6,276,976 for VWR0-RAW report.html (total ~37.3 MB). gh pr view 20: 323 changed files, +171,076/-2. HANDOFF names only report_v2_20261016T231111Z.html as canonical. Duplication is a consequence of the immutability rule (docs/conventions.md: rebuilds get a new file name), so not a defect in the commit; the reviewer already marks it non-blocking. Minor, informational."
+   }
+  ]
+ }
+]

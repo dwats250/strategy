@@ -1,0 +1,45 @@
+# VWR0_RAW_ROBUSTNESS — v1.1 FROZEN (2026-10-16), the RUNNABLE frozen config. Identical to v1.0 except this
+# header and code_tree_sha256, which pins src/stratlab at commit 6d25dd1 (v1.0 carried a placeholder;
+# see the dated amendment in VWR_FAMILY_v1.0.md). Created before any real-data run.
+# Supersedes v0.1. Counted in the family's N=7. Identical to VWR0 except that NO integrity mask is
+# applied. Reported as a difference against masked VWR0; never used to choose between them.
+
+limitations = [
+  "DATA ENDS 2026-08-21. Nothing here is October-current.",
+  "Robustness check of the data treatment only; not a strategy variant. Same exploratory status and prior-exposure caveats as VWR0-EXP.",
+]
+
+[experiment]
+id = "VWR0-RAW"
+title = "VWR0 on the unmasked corpus (robustness, data to 2026-08-21)"
+study = "studies/vwap-ema9-2026-10"
+description = "VWR0 baseline rerun without integrity mask v1.0, to show how much the 9 masked wick prints matter at 1-minute stop resolution."
+trials_planned = 7   # shared family count, see VWR0_EXPERIMENT_v1.0
+dsr_threshold_implied = "illustrative independent-trials null approximation: 0.997 annualized Sharpe (N=7, T=489); not a significance threshold or complete DSR"
+status = "FROZEN"
+code_tree_sha256 = "393e0ab99ff62733b1b50b2033a2368211bfb24a18ec1478cb767de9023f0550"
+
+[data]
+dataset = "spy-1m-polygon-20240901-20260822-a4afaa70"
+warmup_sessions = 5
+
+[execution]
+cash = 100000.0
+commission_per_share = 0.0035
+slippage_per_share = 0.01
+flatten_minutes = 5
+
+[windows]
+calendar_halves = true
+recent_months = 6
+
+[[variants]]
+id = "VWR0-RAW"
+role = "baseline"
+label = "VWR0 on raw corpus"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = {}
+difference = "VWR0 rules unchanged; integrity mask NOT applied."
+hypothesis = "Masked wick prints change VWR0's stop outcomes only marginally."
+primary_metric = "Delta expectancy R and delta stop-exit count vs masked VWR0"
+uninformative_if = "Descriptive only; never selected between."

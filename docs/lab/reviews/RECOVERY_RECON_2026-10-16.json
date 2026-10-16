@@ -1,0 +1,809 @@
+[
+ {
+  "key": "engine",
+  "summary": "Read-only review of the FastAlpha offline engine and its feature/calibration seam. The engine is a faithful, bar-by-bar mirror of the Pine v0 execution model (next-open market fills, resting 1x ATR stop with intrabar and gap handling, VWAP-failure exit at next open, EOD flatten only on a 15:50 bar). I found no look-ahead in the decision path. Both test files pass (13 engine tests, 9 parity tests). The main defects are methodological: the calibration script hard-codes its conclusions instead of computing them, the engine silently drops any position or pending order still open at the end of a window, and a 13:00 partial minute on half-days is included in the bars without verification against the TradingView feed. Test coverage misses the FPC mode and most window, half-day and boundary paths. I did not run v0_calibration.py or parity_foundation.py main, because both write output files.",
+  "reusable": [
+   {
+    "item": "load_corpus_rth SHA-256 identity guard and RTH-only filter before resampling",
+    "where": "parity_foundation.py:61-72",
+    "why": "Generic and fail-closed; the RTH filter runs before any resampling or indicator input is built."
+   },
+   {
+    "item": "build_5m_bars ET wall-clock 5-minute aggregation with partial-bucket flag",
+    "where": "parity_foundation.py:75-102",
+    "why": "Generic bar builder. It never fills missing minutes and keeps terminal partial buckets."
+   },
+   {
+    "item": "Seeded EMA/RMA recursion and true-range/ATR with continuous TR across sessions",
+    "where": "parity_foundation.py:105-142",
+    "why": "Generic indicator math (SMA-seeded EMA, RMA ATR) with no FastAlpha-specific logic."
+   },
+   {
+    "item": "Session VWAP (hlc3 x volume, reset on session_date change)",
+    "where": "parity_foundation.py:145-164",
+    "why": "Generic session anchoring that matches the Pine newRTH/inRTH logic (FastAlpha v0 Pine:130-148)."
+   },
+   {
+    "item": "compute_feature_rows EMA-length rebinding helper and drop_t_ms corpus filter",
+    "where": "fastalpha_engine.py:85-106",
+    "why": "Reversible, pure filter that keeps indicator semantics in one module. The global-rebinding pattern is not thread-safe."
+   },
+   {
+    "item": "spike_bars and summarize",
+    "where": "fastalpha_engine.py:326-341 and 271-317",
+    "why": "Generic analysis helpers that read only precomputed rows and do not affect execution."
+   },
+   {
+    "item": "Fill and stop mechanics: next-open market fill, stop = S unless the bar opens through it, adverse 1-tick slippage",
+    "where": "fastalpha_engine.py:211-241",
+    "why": "Reusable as a generic bar-level broker emulator for any stop-and-market strategy, provided the same assumptions are stated."
+   },
+   {
+    "item": "signal_mode FPC arm-state logic",
+    "where": "fastalpha_engine.py:135-146, 193-208, 251-266",
+    "why": "Reusable as a pattern (regime arm, one entry per regime) but it is FastAlpha-specific and untested."
+   },
+   {
+    "item": "Calibration framework: R0 headline assertion, matched-trade structure, phase classifier",
+    "where": "v0_calibration.py:83-98 and 116-148",
+    "why": "The R0 headline gate and feed-robust structure matching are reusable for any future TradingView reconciliation."
+   }
+  ],
+  "not_reusable": [
+   {
+    "item": "Hard-coded FastAlpha constants (EMA 9/20, ATR 14, entry window 935-1530, EOD 1550, MINTICK 0.01, SLIPPAGE 1 tick, DEV window)",
+    "where": "parity_foundation.py:42-47; fastalpha_engine.py:77-82",
+    "why": "Fixed by the v0 Pine source and its pre-registration. Changing them would be a new study, not a reuse."
+   },
+   {
+    "item": "R0_EXPECTED headline, HALF_DAYS list, and tradelist SHA constants",
+    "where": "v0_calibration.py:40-50",
+    "why": "Specific to the R0 export and the development window."
+   },
+   {
+    "item": "simulate() execution layer as a whole",
+    "where": "fastalpha_engine.py:115-268",
+    "why": "Encodes the v0 flat-gate, VWAP-failure and EOD order of operations. The module itself says it is not a generic backtester."
+   },
+   {
+    "item": "Hard-coded calibration narrative strings",
+    "where": "v0_calibration.py:201-203, 211-213, 237-255, 265-281",
+    "why": "These are literal conclusions, not computed results. Do not reuse them as evidence."
+   }
+  ],
+  "defects": [
+   {
+    "claim": "The calibration's conclusions are hard-coded text, not computed. The printed disposition ('No engine implementation defect demonstrated', 'LOCAL ENGINE RESEARCH-READY', 'execution logic validated', 'confirms fills/slippage/mintick are correct') is printed and written to JSON regardless of the measured mismatch counts. The only real gate is the R0 headline reproduction, so the module docstring's claim of a nonzero exit on gross failure does not cover engine-vs-R0 disagreement.",
+    "where": "v0_calibration.py:21-22, 201-203, 211-213, 237-255, 265-281 (only the assert at 83-94 is a gate)",
+    "severity": "medium"
+   },
+   {
+    "claim": "A position still open, or an entry or close still pending, when simulate() reaches the end of its bar list is silently discarded. The function returns only closed trades with no mark-to-market or warning. It does not bite at DEV_END today because the last trade is an EOD on 2025-12-31 15:50, but it would for any window ending on a half-day or a session with no 15:50 bar.",
+    "where": "fastalpha_engine.py:268 (return trades with no post-loop handling of pos or pending)",
+    "severity": "low"
+   },
+   {
+    "claim": "The 13:00 terminal partial minute on half-days is kept as a 5-minute bar. The corpus has a 2024-12-24T13:00 RTH row (volume 6), so build_5m_bars creates a 1-minute bucket at hm 1300 that is inside the entry window and can produce candidates. Twenty dev-window signals fall on a 13:00 bar, including 2025-11-28 13:00, whose pending entry fills 2025-12-01 09:30. The R0 export shows no 13:00 rows on half-days, so whether TradingView has this bar is unverified. Any mismatch is attributed to 'early_close_session' in the calibration without isolating it.",
+    "where": "parity_foundation.py:75-102 (partial-bucket keep), fastalpha_engine.py:243-268; corpus row 2024-12-24T13:00:00-05:00 volume 6",
+    "severity": "medium"
+   },
+   {
+    "claim": "Test coverage misses FPC mode entirely. No test references signal_mode, enable_longs=False alone, dev-window filtering, drop_t_ms, spike_bars, an open position at window end, a pending order crossing a session boundary, or half-day behavior.",
+    "where": "test_fastalpha_engine.py (whole file; no signal_mode reference)",
+    "severity": "medium"
+   },
+   {
+    "claim": "The test comment misdescribes the mechanism. The symmetric run does not evaluate the 10:10 long candidate because it is blocked by the flat gate. It is skipped entirely by the thesis-exit `continue`. The assertion still passes.",
+    "where": "test_fastalpha_engine.py:170-172 and 176 vs fastalpha_engine.py:243-248",
+    "severity": "low"
+   },
+   {
+    "claim": "Rounding differs from Pine. The engine uses Python round() (banker's rounding) where Pine uses math.round (half away from zero). The divergence exists only if atr14/mintick lands exactly on k+0.5. That case does not occur in the dev data (0 of 25,864 bars within 1e-6 of .5), so the defect is latent.",
+    "where": "fastalpha_engine.py:250 vs VWAP_Continuation_FastAlpha_v0.pine:211-220",
+    "severity": "low"
+   },
+   {
+    "claim": "FPC arm-state is not reset at session boundaries. An arm set late in one session can carry into the next session's first red or green bar, via prev_bullish and armed flags that persist across sessions. This is a semantic question that is not documented or tested.",
+    "where": "fastalpha_engine.py:193-208 and 251-266",
+    "severity": "low"
+   },
+   {
+    "claim": "A missing 15:50 bucket for any reason, not only a half-day, silently suppresses EOD. Nothing counts or reports this, and the calibration's early-close class is asserted rather than measured.",
+    "where": "fastalpha_engine.py:240 (hm == 1550 gate); v0_calibration.py:247-248",
+    "severity": "low"
+   },
+   {
+    "claim": "The calibration's entry-to-signal mapping (entry minus 5 minutes) misattributes entries that fill at 09:30 from a prior-session signal. Such entries fall into 'no local bar' instead of their true class.",
+    "where": "v0_calibration.py:151-160",
+    "severity": "low"
+   },
+   {
+    "claim": "The partial flag (len < 5) also marks interior gap buckets, not only the shortened-session terminal bucket. The field name overstates what it identifies.",
+    "where": "parity_foundation.py:100",
+    "severity": "low"
+   },
+   {
+    "claim": "The spike-bar attribution uses a fixed 2.0-point wick threshold chosen after the divergence was observed, and it is applied post hoc to attribute the local-versus-R0 gap to data quality. The docstring frames it as analysis only, but the 'brings net back to R0 ballpark' claim is a post-hoc attribution.",
+    "where": "fastalpha_engine.py:326-328; v0_calibration.py:113-114, 145-148, 170-173, 226-236",
+    "severity": "low"
+   },
+   {
+    "claim": "Fill-ordering and slippage assumptions are not verified in this session. These are: the pending thesis close fills before the stop can act on the same bar (assumption B); slippage applies adversely to stop fills (assumption D); and the EMA/ATR seeding matches TradingView. The docstrings label these as TV-confirmation pending or as documented behavior.",
+    "where": "fastalpha_engine.py:26-46; parity_foundation.py:18-19",
+    "severity": "info"
+   }
+  ],
+  "facts": [
+   "Bar resolution: RTH 5-minute bars built from the 1-minute corpus on ET wall-clock boundaries (09:30, 09:35, ...). Missing minutes are not filled, and a terminal partial bucket is kept with partial=len<5 (parity_foundation.py:75-102). Corpus identity is SHA-256 guarded and RTH is filtered before resampling (parity_foundation.py:61-72).",
+   "Signal timing: all decisions use the feature row for bar i, which holds the close of bar i. The entry is a market order that fills at bar i+1's open with +1 tick slippage for longs (fastalpha_engine.py:211-229; assumption A at lines 26-30). Pine has calc_on_every_tick=false and process_orders_on_close=false (VWAP_Continuation_FastAlpha_v0.pine:14-16).",
+   "Entry rules: long_candidate = in_window and bullish and red; short_candidate = in_window and bearish and green (parity_foundation.py:188-189). in_window is 935 <= hm < 1530 on bar start (parity_foundation.py:45-46, 166). bullish = close > session VWAP and EMA9 > EMA20 (parity_foundation.py:171-172). Pine matches at VWAP_Continuation_FastAlpha_v0.pine:113-200. The flat gate is pos==0 at step 3 (fastalpha_engine.py:249).",
+   "Stop: initial stop = 1 x ATR14 at signal, expressed as max(1, round(atr14/0.01)) ticks and frozen on the signal bar (fastalpha_engine.py:250, 217-224). The stop is checked intrabar from the fill bar onward, with l<=S for longs and h>=S for shorts. A gap through the stop fills at the open, otherwise at S, then 1 tick adverse (fastalpha_engine.py:231-237). Pine strategy.exit loss= at VWAP_Continuation_FastAlpha_v0.pine:237-241 and 250-254.",
+   "Targets and trailing: none. Pine lists profit target and trailing stop as INTENTIONALLY ABSENT (VWAP_Continuation_FastAlpha_v0.pine:60-68). Thesis exit: a long closes on a bar close below session VWAP and a short on a close above, filled at the next open with 1 tick adverse (fastalpha_engine.py:243-248, 226-229).",
+   "Early close: EOD is a bar-presence test, not a clock. It fires only on a bar whose start hm == 1550, closing at that bar's close minus 1 tick (fastalpha_engine.py:240-242). On half-days no 1550 bar exists, so EOD never fires and the position carries into later sessions. Verified: 4 trades span sessions, namely 2024-11-29 09:50 to 2024-12-02, 2024-12-24 10:10 to 12-26, 2025-07-03 10:00 to 07-07 and 2025-12-24 10:00 to 12-26. The R0 export contains the same half-day entries (export rows 249, 318, 847 on 2024-11-29, 2024-12-24 and 2025-07-03). Pine EOD is equivalent (VWAP_Continuation_FastAlpha_v0.pine:294-302).",
+   "Early-close bars: the corpus contains a 2024-12-24T13:00:00-05:00 RTH row with volume 6. build_5m_bars therefore emits a 1-minute terminal bucket at hm 1300 that is inside the entry window. Twenty dev-window signals fall at 13:00, including 2025-11-28 13:00. Its pending entry fills at 2025-12-01 09:30 (verified by running the engine read-only). R0 export rows show no 13:00 bars on half-days, so TradingView's handling is unverified.",
+   "Costs and sizing: commission_value=0 and fixed quantity 1 share (VWAP_Continuation_FastAlpha_v0.pine:8-12). The engine has no commission or equity model. P/L is per-share points (fastalpha_engine.py:169-181). R0 export shows Commission 0 and Size 1. Slippage is 1 tick on every market and stop fill (fastalpha_engine.py:77-79, 216-241). The Pine strategy() declares slippage=1 (VWAP_Continuation_FastAlpha_v0.pine:13).",
+   "VWAP: hlc3 x volume, cumulative over RTH bars only, reset when session_date changes (parity_foundation.py:145-164). Pine matches at VWAP_Continuation_FastAlpha_v0.pine:130-148. VWAP is None when cumulative volume is 0 (parity_foundation.py:164).",
+   "EMA: close, alpha = 2/(n+1), seeded with the SMA of the first n values, continuous across sessions and the corpus start (parity_foundation.py:105-120). EMA20 becomes valid at index 19 and EMA9 at index 8. ATR: RMA alpha=1/14 seeded with the SMA at index 13, over true range that is continuous across sessions and includes overnight gaps (parity_foundation.py:123-142). Pine ta.ema and ta.atr are assumed to match, with TradingView confirmation still pending (parity_foundation.py:18-19). The corpus begins 2024-09-03T09:30 ET, which is the first RTH row (verified).",
+   "Look-ahead: none found. compute_features is single-pass and uses only bars up to i (parity_foundation.py:145-191). simulate reads only row i and the already-decided pending order (fastalpha_engine.py:188-268). spike_bars and the calibration attribution read full-bar high and low after the fact, but they are not inputs to the engine (fastalpha_engine.py:331-341; v0_calibration.py:113, 146, 172).",
+   "Math rounding: Python round() at fastalpha_engine.py:250 uses banker's rounding. Pine math.round at VWAP_Continuation_FastAlpha_v0.pine:211-220 rounds half away from zero. Zero dev-window bars land exactly on .5 (checked over 25,864 bars), so the divergence is latent.",
+   "FPC mode: fastalpha_engine.py:135-146 (spec), 193-208 (arm-state, advanced every bar), 251-266 (entry). The arm persists across sessions and is not reset at session boundaries. No test covers this mode.",
+   "Run results (read-only, python3 -B): test_fastalpha_engine.py prints 'ALL 13 FASTALPHA ENGINE TESTS PASS' (exit 0). test_parity_foundation.py prints 'PASS: 9 tests' (exit 0). The real-corpus session count test ran with the corpus present, so it was not skipped. Engine simulation over the dev corpus (read-only) gives 1,363 trades: VWAP Failure 482, Long ATR Stop 347, Short ATR Stop 313, EOD 221. The last trade is an EOD on 2025-12-31 15:50.",
+   "Test coverage map: fastalpha tests cover long fill and slippage, long stop, same-bar entry and stop, gap-through-stop, thesis exit at next open, the flat gate, short stop mirror, NA ATR blocks entry, EOD only on 1550, atr_stop_mult scaling, enable_shorts path dependence, determinism and summarize shape. Parity tests cover RTH-before-resample, partial bucket, VWAP reset, EMA warmup and session continuity, ATR gap, entry-window boundaries and doji, source hash, corpus guard, and corpus bar counts. Not covered: FPC, enable_longs alone, dev-window filtering, drop_t_ms, spike_bars, open-at-end, pending across sessions, half-day behavior, and Pine-equivalence of rounding."
+  ],
+  "critique": "Verification complete. Report follows.\n\n## Lane-2 skeptic report — scope `engine`\n\nAll checks were read-only (`python3 -B`, `PYTHONDONTWRITEBYTECODE=1`); the `analysis/__pycache__/` in git status pre-existed this session.\n\n### WRONG or materially misleading claims\n\n1. **\"corpus row 2024-12-24T13:00:00-05:00 volume 6\" — WRONG.** The 13:00 1-minute RTH row on 2024-12-24 has volume **958485**; the five half-day 13:00 rows carry 0.88M–2.36M shares each (they are the 13:00 closing-auction print). `parity_foundation.py:75-102` turns each into a 1-constituent bucket at hm 1300 (`constituent_count 1, partial True`). The defect is real; the supporting number is not.\n\n2. **\"Twenty dev-window signals fall on a 13:00 bar\" — misleading.** 20 trades have `signal_bar` at 13:00, but 18 of those are ordinary full 13:00 bars on regular sessions. Only **2** candidates sit on half-day partial 13:00 buckets (`2025-07-03T13:00`, `2025-11-28T13:00`), and only **1** becomes a trade (2025-07-03 is blocked by the flat gate — the 10:00 long is still open). The half-day exposure is one trade, not twenty.\n\n3. **\"whether TradingView has this bar is unverified\" — UNDERSTATED; it is verifiable in-repo and the answer is NO.** `exports/TV_CHARTDATA_BATS_SPY_5m_RTH_2025-08-11_2026-08-25_FastAlphaV0.csv` (epoch `time` column, 20,364 bars) covers both 2025 half-days: 2025-11-28 and 2025-12-24 each have 42 bars ending at **12:55**; all 260 regular days end at 15:55. TradingView has no 13:00 bar on half-days. Consequence: the local engine takes a long on `2025-11-28 13:00` → fills `2025-12-01 09:30` → exits `09:40 VWAP Failure`; R0 has no 2025-12-01 trade before 10:40 (trades 1232–1234). This is a **confirmed engine-vs-TV bar-construction divergence producing one phantom trade in the dev window**, and it should be raised from \"medium/unverified\" to a demonstrated defect of the bar builder (`parity_foundation.py:100` keeps the bucket; nothing drops a 1-minute terminal bucket at session close).\n\n4. **\"Test coverage misses FPC mode entirely... No test references signal_mode\" — WRONG as a scope claim.** `analysis/test_fpc_signals.py` exists (153 lines) and drives `fe.simulate(rows, signal_mode=\"fpc\")` at lines 38, 110–111; `fpc0_dev.py:206-215` also exercises both modes. The claim is only true of `test_fastalpha_engine.py` in isolation. (Not checked: whether FPC tests cover arm-persistence across sessions — the reader's low-severity FPC-reset point still stands as untested.)\n\n5. **\"R0 export rows 249, 318, 847\"** — those are **trade numbers**, not rows (CSV rows 499, 637, 1695). Minor. The reader also omitted R0 trade 1312 (2025-12-24 10:00 → 12-26 09:55), which is the fourth cross-session trade; local and R0 cross-session trade sets match exactly (4/4, same entries).\n\n### Confirmed\n\n- All cited line numbers in `fastalpha_engine.py`, `parity_foundation.py`, `v0_calibration.py`, `test_fastalpha_engine.py`, and `VWAP_Continuation_FastAlpha_v0.pine` resolve to the described code (spot-checked every citation in the findings).\n- Tests: `ALL 13 FASTALPHA ENGINE TESTS PASS`, `PASS: 9 tests`, both exit 0.\n- Engine run: 1,363 trades; VWAP Failure 482 / Long ATR Stop 347 / Short ATR Stop 313 / EOD 221; last trade `2025-12-31 15:50 EOD`. Four cross-session trades as listed.\n- Rounding: 0 bars with `atr14/0.01` on exactly .5 (25,877 dev bars, 25,864 with non-null ATR — the reader's count is the non-null set), and 0 practical `round()` vs `floor(x+.5)` divergences. Latent, as stated.\n- Corpus starts `2024-09-03T09:30:00-04:00`; first RTH row.\n- Hard-coded calibration narrative (`v0_calibration.py:201-203, 211-213, 233-235, 237-255, 278-281`): confirmed literal strings; the only `sys.exit` gates are `sha256_file` (57-58) and `assert_r0_headline` (90-92). The docstring's \"demonstrated engine implementation defect\" exit path (21-22) has no code behind it.\n- Open position/pending at end of `simulate` silently dropped (`fastalpha_engine.py:268`): confirmed, no post-loop handling.\n- Test comment at `test_fastalpha_engine.py:170-172`: confirmed the engine skips the 10:10 long via the thesis-exit `continue` at `fastalpha_engine.py:245`, never reaching the `pos == 0` check at 249. Pedantic though — in Pine terms (`flat` at `.pine:187-188`) it *is* the flat gate; the comment describes Pine semantics, the engine achieves the same result by a different control path.\n- `sig_key` entry−5min mapping (`v0_calibration.py:151-153`) misclassifies 09:30 fills from prior-session signals: confirmed by reading; and see the added finding below.\n\n### Missed in scope\n\n- **The calibration cannot see the half-day phantom.** `half_day_involved` (`v0_calibration.py:166-167`) tests `eb[:10] in HALF_DAYS` on the *entry (fill) bar*. The phantom trade's fill bar is `2025-12-01 09:30`, a regular session, so it lands in `local_only` and is attributed to \"signal_boundary ... path drift\" (241-243), while `early_close_session` is asserted as \"no separate defect observed\" (247-248). The one demonstrable half-day defect is thus mis-binned by construction.\n- Session-close handling is asymmetric to TV in a second way the reader did not note: `in_entry_window` at `parity_foundation.py:166` is purely clock-based (`935 <= hm < 1530`), so on a half-day the 13:00 bucket is \"in window\" while TV's chart simply has no such bar. A fix at the bar-builder (drop a terminal bucket whose single constituent is the auction print / whose start equals the session close) is the correct place, not the engine.\n- `et_start` carries a UTC offset (`start.isoformat()` at `parity_foundation.py:90`, e.g. `...T09:30:00-04:00`); `_hhmm` (`fastalpha_engine.py:109-112`) and the calibration's `[:16]` slice (`v0_calibration.py:112`) both truncate it safely, but synthetic test rows omit the offset, so the tests never exercise the real string shape. Not a defect today.\n\nRelevant files: `/home/dustin/Projects/strategy/studies/vwap-lab-2026-08/analysis/fastalpha_engine.py`, `/home/dustin/Projects/strategy/studies/vwap-lab-2026-08/analysis/parity_foundation.py`, `/home/dustin/Projects/strategy/studies/vwap-lab-2026-08/analysis/v0_calibration.py`, `/home/dustin/Projects/strategy/studies/vwap-lab-2026-08/analysis/test_fpc_signals.py`, `/home/dustin/Projects/strategy/studies/vwap-lab-2026-08/exports/TV_CHARTDATA_BATS_SPY_5m_RTH_2025-08-11_2026-08-25_FastAlphaV0.csv`."
+ },
+ {
+  "key": "data",
+  "summary": "Read-only review of the SPY 1m corpus acquisition seam, integrity screen, mask, dividend sidecar and records. The corpus checks out against its own record: the canonical sha matches, 494 sessions (489 x 390 full RTH, 5 x 211 early closes), and the 9-bar HIGH mask matches the report. Real issues: the gitignore blocks the capture manifest the README says to commit; the dividend sidecar overclaims its 6th-decimal precision and stops at 2025-12-31 while the corpus runs to 2026-08-21; the prereg misstates the HIGH excursion range; the screen has no gap, half-day or DST checks and uses non-adjacent neighbours in EXT; and one HIGH bar (2024-12-20 11:10) has 56x median volume, which the screen records but does not weigh. Credential env var: MASSIVE_API_KEY (fallback POLYGON_API_KEY), sent as a Bearer header.",
+  "facts": [
+   "Credential env var: MASSIVE_API_KEY, falling back to POLYGON_API_KEY; sent only as an Authorization: Bearer header (data/fetch_spy_aggs.py:58, 66; key never written, per 8-9 and 60-61). Base URL https://api.polygon.io (line 40).",
+   "Fetch request: endpoint /v2/aggs/ticker/SPY/range/1/minute/{start}/{end} with adjusted=true, sort=asc, limit=50000 (lines 71-75, 41-42). adjusted=true is hard-coded and recorded as 'adjusted': true in the manifest (line 215); the code does not say whether dividends are adjusted for. The repo's own CORPUS record calls the adjustment convention an open parity item (data/README.md:60-62; CORPUS_SPY_1m_2024-09-01_2026-08-22.md:94-96).",
+   "Pagination: loop follows payload['next_url'] (line 201), reusing the auth header, with a 13 s sleep between pages (lines 43, 203-204). Capture produced 9 pages (8 x 50,000 + 22,657) per data/cache/manifests/SPY_1m_2024-09-01_2026-08-22.manifest.json. get_json has no retry or HTTP-error handling (lines 65-68).",
+   "Raw-page sha256 is computed over json.dumps(payload, sort_keys=True), i.e. a re-serialization of the response, not the received bytes (fetch_spy_aggs.py:192-199). The full payload, including next_url, is persisted to cache/raw.",
+   "Canonicalization (normalize, lines 82-103): t_ms preserved as the provider bar-start epoch ms; utc_iso and et_iso derived via zoneinfo America/New_York; session RTH iff 09:30 <= ET start < 16:00, else EXT; EXT bars kept, not deleted; rows sorted by t_ms; no dedupe, gap fill, or price adjustment. Canonical CSV.gz written with mtime=0 for determinism (line 139). Missing vw/n are written as empty strings.",
+   "Provider vw is explicitly marked as vendor per-bar VWAP and not TradingView session VWAP (fetch_spy_aggs.py:99; data/README.md:69-73).",
+   "resample_5m (lines 106-131) builds ET-wall-clock 5-minute buckets: o=first, h=max, l=min, c=last, v=sum, vw volume-weighted, n=sum, with a bars count per bucket.",
+   "Structural checks in the screen are only duplicate t_ms count and strict monotonicity (corpus_integrity_screen.py:95-99), plus Rule A OHLC validity (lines 109-124). The screen does not check gaps, expected bar counts, half days, holidays or DST. Those checks exist only in the CORPUS record's offline verification (CORPUS_SPY...md:60-73).",
+   "Corpus facts I recomputed read-only: canonical sha256 a4afaa70...ed97a matches the pin (screen line 37 via parity_foundation). 422,657 rows; RTH histogram {390: 489, 211: 5} over 494 dates; the 211-bar dates are 2024-11-29, 2024-12-24, 2025-07-03, 2025-11-28, 2025-12-24. Every RTH date starts 09:30 ET and the 390-bar dates end 15:59. The ET offset switches correctly (-05:00 on 2024-11-04 and 2025-03-07, -04:00 on 2025-03-10 and 2024-11-01). The only weekdays absent from the RTH set are NYSE holidays, including 2025-01-09 and 2026-07-03.",
+   "Gaps: 28,864 consecutive pairs in the full corpus are not exactly 60,000 ms apart. The sizes include 2-minute and 3-minute steps (thin EXT trading) and about 8 h overnight gaps, plus 56 h weekend gaps. RTH has no interior gaps, since 390 distinct bars fill 09:30-15:59.",
+   "Screen integrity counts (analysis/CORPUS_INTEGRITY_SCREEN_2026-08-26.json, keys counts/structural): total_1m_bars 422,657; timestamp_duplicates 0; timestamp_monotonic true; ohlc_impossible_count 0; flagged_1m_total 166; high_confidence 9 (all RTH, rule B); plausible_extreme_print 157 (all EXT, rule B); sessions_affected 123; known_examples_all_rediscovered true.",
+   "Rule B (lines 127-154) compares each bar with its positional same-session neighbours (lines 128-132), not time-adjacent ones. On re-check, 6 of the 157 EXT flags have a non-1-minute neighbour and 0 of the 9 HIGH flags do. Neighbours cross the RTH gap at the EXT pre/post boundary.",
+   "Hour distribution of the 157 EXT flags: 08:xx 104 (65 exactly at 08:00), 16:xx 33, 09:xx 8, 17:xx 4, 07:xx 3, 04:xx 3, 18:xx 2. The prereg attributes the clustering to 'thin session edges' (CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md:79-80) without testing it.",
+   "Volume evidence on the HIGH bars: the 2024-12-20T11:10 bar has volume 7,877,215 against a session median of 140,692 (about 56x), and volume_outlier_corroborates is true (report, high_confidence_flags evidence). Rule C (screen lines 51-53; prereg 51-53) records volume only as evidence, so this 1-minute 1.48% wick is masked even though a volume spike of that size is consistent with a real event.",
+   "Blind-rediscovery expression at corpus_integrity_screen.py:201-202 is redundant: the second disjunct (set(KNOWN) <= flagged set) alone is the actual check.",
+   "HIGH excursion range: the prereg text says '1.2-2.2%' (CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md:91). The report's excursion_pct_of_price for the 9 HIGH bars spans 0.6006% to 2.2268%.",
+   "Frozen-artifact hashes listed in the prereg (lines 150-157) match current files: corpus_integrity_screen.py 691013ed..., CORPUS_INTEGRITY_SCREEN_2026-08-26.json 74c59f63..., CORPUS_MASK_v1.0.json d1360f6f..., test_corpus_integrity_screen.py 550b5b25....",
+   "Mask: CORPUS_MASK_v1.0.json lists 9 mask_t_ms and mask_keys that exactly match the report's high_confidence_flags. The mask is a drop-list keyed by t_ms, bound to the corpus sha, and applied by dropping bars before 5m aggregation (prereg 96-100).",
+   "Dividend sidecar (data/SPY_EX_DIVIDENDS_v1.0.json): 6 distributions, all Fridays and all RTH dates in the corpus: 2024-09-20 1.745531; 2024-12-20 1.965548; 2025-03-21 1.695528; 2025-06-20 1.761117; 2025-09-19 1.831114; 2025-12-19 1.993368 (USD per SPY share, ex-date ET). Only ex-dates and cash amounts are recorded: no record or pay dates, no split data. scope_window is [2024-09-03, 2025-12-31] (line 6), so the 2026 quarterly ex-dates in the corpus range are absent with no stated reason.",
+   "Dividend overclaim: line 5 says the 6th-decimal precision 'is the exact State Street trust distribution value'. The stated verification only reached 5 decimal places against a third-party site (stockanalysis.com) and a web search for one 3-decimal figure. The 6th decimal is not verified by anything listed.",
+   "The dividend sidecar has no code consumer in the data layer. fetch_spy_aggs.py contains no dividend or split adjustment logic. The sidecar is for MIM normalization only (line 3; authorized_seam).",
+   "Fixture: data/fixtures/sample_aggs_response.json is labelled synthetic via request_id 'SYNTHETIC-FIXTURE-NOT-PROVIDER-DATA' (line 129), matching data/README.md:49-50. selftest asserts 12 rows, 2 EXT then 10 RTH, and 5m bucket OHLC/VWAP values (fetch_spy_aggs.py:236-261).",
+   "Gitignore conflict: root /home/dustin/Projects/strategy/.gitignore:11 ignores studies/vwap-lab-2026-08/data/cache/ wholesale. git check-ignore confirms the capture manifest at data/cache/manifests/ is ignored. Yet the .gitignore comment and data/README.md:47-48 say the small metadata manifest is committed. Only the CORPUS md and other data/ files are tracked, so the manifest cannot be committed as the README instructs without a force-add.",
+   "Tests: test_corpus_integrity_screen.py imports fastalpha_engine at module top (line 17). The mask test (lines 105-115) runs compute_feature_rows against the full corpus, so the test file is not standalone. The screen's firewall relies on parity_foundation being constants-only (corpus_integrity_screen.py:31), which I did not inspect.",
+   "Early-close structure: the 211th bar of each early-close day starts at 13:00 ET and is classed RTH by the 16:00 rule. The 5 incomplete 5m buckets are these 13:00 bars (CORPUS md:72-73, 78-81). The record states this is an open TradingView question.",
+   "Scope-only credential check: no live API call was made and no network was used. All counts and checks come from the local gitignored canonical file, which I read without writing anything, and from committed JSON and markdown."
+  ],
+  "reusable": [
+   {
+    "item": "Hash-guarded canonical load: sha256 check before parsing, then CSV DictReader with numeric coercion",
+    "where": "analysis/corpus_integrity_screen.py:65-78",
+    "why": "Generic pattern for pinning any canonical dataset before analysis."
+   },
+   {
+    "item": "Deterministic capture: raw page JSON with per-page sha256, gzip mtime=0 canonical CSV, and a metadata manifest recording query, range, row count, pages and semantics",
+    "where": "data/fetch_spy_aggs.py:139, 178-233",
+    "why": "Provenance layout is ticker-agnostic apart from the TICKER constant and can be reused for other datasets."
+   },
+   {
+    "item": "Timestamp and session policy: keep the provider bar-start t_ms, derive UTC and ET ISO fields, flag EXT and never delete it",
+    "where": "data/fetch_spy_aggs.py:82-103; data/README.md:52-63",
+    "why": "Keeps RTH filtering an analysis-time decision with the original timestamp preserved."
+   },
+   {
+    "item": "describe() manifest helper: row count, field list, vendor-field presence, first and last bar",
+    "where": "data/fetch_spy_aggs.py:145-157",
+    "why": "Cheap, generic capture metadata."
+   },
+   {
+    "item": "Reversible derived mask: a drop-list of t_ms bound to the corpus sha and applied before aggregation, with the raw view recovered by not applying it",
+    "where": "analysis/corpus_integrity_screen.py:206-216; analysis/CORPUS_MASK_v1.0.json",
+    "why": "Clean separation of data-quality masking from the raw corpus, reusable for any lab data layer."
+   },
+   {
+    "item": "Frozen thresholds with a pre-registration table and a sensitivity grid, plus a blind rediscovery cross-check",
+    "where": "manifests/CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md:21-68, 80-86",
+    "why": "Governance pattern for data-quality rules that must not be tuned to outcomes."
+   },
+   {
+    "item": "Synthetic fixture labelled in-band via request_id, with offline selftest assertions",
+    "where": "data/fixtures/sample_aggs_response.json:129; data/fetch_spy_aggs.py:236-261",
+    "why": "Lets the seam be tested without credentials and keeps synthetic data unmistakable."
+   },
+   {
+    "item": "Structural checks: duplicate t_ms count, strict monotonicity, OHLC validity (Rule A)",
+    "where": "analysis/corpus_integrity_screen.py:95-124",
+    "why": "Dataset-agnostic bar sanity checks."
+   },
+   {
+    "item": "Repo-level evidence record structure: capture identity table, canonical table, raw page SHA table, health table, what-this-does-NOT-prove list",
+    "where": "data/CORPUS_SPY_1m_2024-09-01_2026-08-22.md",
+    "why": "A model for committing provenance without committing datasets."
+   },
+   {
+    "item": "Dividend sidecar format: per-share cash, ex-date ET, explicit scope window, and a verification narrative",
+    "where": "data/SPY_EX_DIVIDENDS_v1.0.json",
+    "why": "Simple, versioned corporate-action input for normalization, reusable once its precision and scope gaps are closed."
+   }
+  ],
+  "not_reusable": [
+   {
+    "item": "Hard-coded ticker, interval and RTH window (TICKER='SPY', one-minute path, RTH 09:30-16:00)",
+    "where": "data/fetch_spy_aggs.py:41, 49-50, 72",
+    "why": "A general layer needs these as parameters."
+   },
+   {
+    "item": "Hard-coded free-tier rate limit (13 s sleep) and no retry, backoff or HTTP-error handling",
+    "where": "data/fetch_spy_aggs.py:43, 65-68, 203-204",
+    "why": "Breaks on 429s or transient errors and does not suit paid tiers."
+   },
+   {
+    "item": "adjusted=true is hard-coded with no stated dividend-adjustment semantics",
+    "where": "data/fetch_spy_aggs.py:74, 215",
+    "why": "Adjustment convention must become an explicit, validated parameter."
+   },
+   {
+    "item": "Hard-coded canonical path and sha pin, plus a dependency on parity_foundation constants",
+    "where": "analysis/corpus_integrity_screen.py:31, 35-37",
+    "why": "Ties the screen to one study layout."
+   },
+   {
+    "item": "Screen thresholds and rules are tuned to SPY 1m RTH; EXT uses positional neighbours that can cross the RTH gap",
+    "where": "analysis/corpus_integrity_screen.py:46-54, 127-132",
+    "why": "Needs time-adjacency checks and per-asset calibration before reuse."
+   },
+   {
+    "item": "Test file depends on fastalpha_engine and the full corpus",
+    "where": "analysis/test_corpus_integrity_screen.py:16-17, 105-115",
+    "why": "Not a standalone unit test."
+   },
+   {
+    "item": "Dividend sidecar is hand-curated, limited to 2024-2025, and has no code consumer in the data layer",
+    "where": "data/SPY_EX_DIVIDENDS_v1.0.json:5-6",
+    "why": "Not a general corporate-actions source."
+   }
+  ],
+  "defects": [
+   {
+    "claim": "Dividend sidecar overclaims precision: the 6th decimal is asserted to be the exact State Street value, but verification reached only 5 decimal places, and no source for the 6th is listed.",
+    "where": "data/SPY_EX_DIVIDENDS_v1.0.json:5",
+    "severity": "medium"
+   },
+   {
+    "claim": "Dividend sidecar scope stops at 2025-12-31 while the corpus runs to 2026-08-21, so 2026 quarterly distributions are absent with no stated reason.",
+    "where": "data/SPY_EX_DIVIDENDS_v1.0.json:6; data/CORPUS_SPY_1m_2024-09-01_2026-08-22.md:23-25",
+    "severity": "medium"
+   },
+   {
+    "claim": "Gitignore blocks the entire data/cache/ tree, including manifests/, contradicting the stated plan to commit the small metadata manifest. The capture manifest is ignored.",
+    "where": "/home/dustin/Projects/strategy/.gitignore:11; studies/vwap-lab-2026-08/data/README.md:47-48",
+    "severity": "medium"
+   },
+   {
+    "claim": "Prereg misstates the HIGH-confidence excursion range as 1.2-2.2%. The report gives 0.60%-2.23% of price. Frozen record, so a dated amendment would be needed.",
+    "where": "manifests/CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md:91; analysis/CORPUS_INTEGRITY_SCREEN_2026-08-26.json high_confidence_flags",
+    "severity": "low"
+   },
+   {
+    "claim": "A HIGH-confidence bar (2024-12-20T11:10, volume 7,877,215, about 56x session median) is masked as a bad tick even though the screen's own volume evidence is consistent with a real event. The classification is not settled by the evidence.",
+    "where": "analysis/corpus_integrity_screen.py:143 (vol_out recorded only); CORPUS_INTEGRITY_SCREEN_2026-08-26.json high_confidence_flags",
+    "severity": "medium"
+   },
+   {
+    "claim": "The screen has no gap, expected-count, half-day or DST checks. Those claims rest on offline verification outside the script, so the integrity screen is not self-sufficient as a general data-quality gate. The corpus has 28,864 non-1-minute consecutive steps (EXT thin trading), which the screen does not record.",
+    "where": "analysis/corpus_integrity_screen.py:95-99 (only duplicates and monotonicity); CORPUS_SPY...md:60-73",
+    "severity": "medium"
+   },
+   {
+    "claim": "Rule B neighbours are positional within (date, session), not time-adjacent. For 6 EXT flags the neighbour is hours away across the RTH gap. No HIGH flag is affected, but the rule is mis-specified for EXT.",
+    "where": "analysis/corpus_integrity_screen.py:102-103, 127-132",
+    "severity": "low"
+   },
+   {
+    "claim": "Raw-page sha256 is computed over a sorted-key re-serialization, not the bytes received from the provider, so the 'raw' provenance overstates what was captured. Raw files also persist the full payload including next_url, with no check that it carries no credential.",
+    "where": "data/fetch_spy_aggs.py:192-199, 201",
+    "severity": "low"
+   },
+   {
+    "claim": "Adjustment semantics are unverified: adjusted=true is requested and recorded, but whether dividends are adjusted for is not established in code or in the record, and the record calls it an open parity item.",
+    "where": "data/fetch_spy_aggs.py:74, 215; data/README.md:60-62; CORPUS_SPY...md:94-96",
+    "severity": "medium"
+   },
+   {
+    "claim": "The 65 of 157 EXT flags exactly at 08:00 ET is an unexplained concentration. The prereg attributes it to 'thin session edges' without testing, so it could be a vendor or session-boundary artifact.",
+    "where": "manifests/CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md:79-80; report plausible_flags",
+    "severity": "low"
+   },
+   {
+    "claim": "Known-example rediscovery expression is redundant: the first disjunct is subsumed by the second, which is the real check.",
+    "where": "analysis/corpus_integrity_screen.py:201-202",
+    "severity": "low"
+   },
+   {
+    "claim": "The 211th bar on early-close days (13:00 ET start) is classed RTH by the 16:00 rule and is unresolved against TradingView. It produces the 5 incomplete 5m buckets.",
+    "where": "data/CORPUS_SPY...md:72-81; analysis/corpus_integrity_screen.py:91 (session flag in fetch)",
+    "severity": "low"
+   },
+   {
+    "claim": "Test file is not standalone: it imports fastalpha_engine at module top and its mask test reads the full corpus.",
+    "where": "analysis/test_corpus_integrity_screen.py:16-17, 105-115",
+    "severity": "low"
+   }
+  ],
+  "critique": "All spot-checks complete. Verdict follows.\n\n## Lane-2 skeptic verdict on the `data` findings\n\n### Confirmed (checked against files/recomputed read-only)\n\n- Credential/URL/pagination/raw-sha claims: `data/fetch_spy_aggs.py:40-43, 57-68, 71-75, 189-204` all match exactly (MASSIVE_API_KEY → POLYGON_API_KEY fallback; Bearer header; `adjusted=true`, `sort=asc`, `limit=50000`; `next_url` loop with 13 s sleep; sha over `json.dumps(payload, sort_keys=True)` at 192-198; no retry in `get_json`). Header docstring lines 8-9 confirm \"never printed, never written\".\n- Canonicalization (`normalize` 82-103), `mtime=0` at 139, manifest `\"adjusted\": True` at 215, fixture label at `data/fixtures/sample_aggs_response.json:129`, selftest assertions at `fetch_spy_aggs.py:236-261` — all confirmed.\n- Corpus recompute: sha `a4afaa70...ed97a` matches; 422,657 rows; 494 RTH dates, {390: 489, 211: 5}; the five 211-bar dates match and end 13:00; all dates start 09:30, 390-bar dates end 15:59; 0 dups, strictly monotonic; 28,864 non-60,000 ms steps; DST offsets flip as stated (-04:00 on 2024-11-01/2025-03-10, -05:00 on 2024-11-04/2025-03-07).\n- Screen structure: structural checks are only dups+monotonic (`corpus_integrity_screen.py:95-99`); Rule A 109-124; Rule B positional neighbours `rows[idxs[pos±1]]` at 127-128; `vol_out` evidence-only at 143/152. Recomputed: 6 of 157 EXT flags have a non-adjacent neighbour, 0 of 9 HIGH — confirmed.\n- Report/mask: counts {166, 9 HIGH all RTH, 157 PLAUSIBLE all EXT, 123 sessions, rediscovery true} confirmed; mask keys and t_ms exactly equal the HIGH set, bound to the corpus sha. EXT hour histogram 08:xx 104 (65 at 08:00), 16:xx 33, 09:xx 8, 17:xx 4, 07:xx 3, 04:xx 3, 18:xx 2 — confirmed.\n- Excursion range 0.6006%–2.2268% confirmed vs prereg `manifests/CORPUS_INTEGRITY_SCREEN_PREREG_v0.1.md:91` \"1.2–2.2%\". Four of nine HIGH bars (2025-05-19 x3, 2025-12-22) are below 1.2%, so the misstatement is real.\n- Frozen hashes at prereg lines 152-157 match `sha256sum` of all four files.\n- Redundant rediscovery expression: `rediscovered` (lines 177-178) is `sorted(k in KNOWN if k in hi-keys)`, so `sorted(KNOWN) == rediscovered` is exactly equivalent to `set(KNOWN) <= hi-keys` at 201-202. Confirmed (the two disjuncts are equivalent, not merely one subsuming the other).\n- Gitignore: `/home/dustin/Projects/strategy/.gitignore:11` ignores `data/cache/` wholesale; `git check-ignore -v` hits the manifest; `git ls-files` shows no manifest tracked; `data/README.md:47-48` says lane 1 commits it. Confirmed defect.\n- Dividend sidecar lines 5-6, six values/dates, all Fridays, all in corpus — confirmed. The verification narrative at line 5 lists only 5-decimal and 3-decimal corroborations, then asserts the 6th decimal is \"the exact State Street trust distribution value\" — overclaim confirmed as written.\n- Test file imports `fastalpha_engine` at line 17 and `compute_feature_rows` in 105-115 — confirmed.\n- CORPUS record lines 23-25, 60-73, 75-81, 94-98 and README 60-62 cite correctly.\n\n### WRONG or UNSUPPORTED\n\n1. **Defect \"Dividend sidecar scope stops at 2025-12-31 ... with no stated reason\" (medium) — UNSUPPORTED as a defect.** `[2024-09-03, 2025-12-31]` is exactly the study's DEVELOPMENT window: `manifests/STUDY_CHARTER_v0.1.md:453` and `manifests/MIM_CHARTER_v0.1.md:73` (\"Development 2024-09-03 → 2025-12-31 only\"). 2026 is embargo/validation/holdout data under the charter, so omitting 2026 distributions is consistent with the governance scheme, not an oversight. At most a low \"the JSON should cross-reference the charter window\". The reader did not look outside `data/` for the reason.\n2. **\"The screen ... records volume only as evidence\" framing understates what is recorded.** `_rec` at `corpus_integrity_screen.py:162-166` writes `vw` and `n` into every flag record. The reader missed this, and it matters (see below).\n3. **\"parity_foundation being constants-only, which I did not inspect\"** — now inspected: `analysis/parity_foundation.py` is **not** constants-only. It defines `load_corpus_rth` (61), `build_5m_bars` (75), `ema` (119), `atr` (141), `compute_features` (145), `main` (194). The screen uses only `pf.CANONICAL_SHA256` (line 37), so the usage is clean, but the \"CONSTANTS ONLY\" comment at line 31 misdescribes the module and the trade-blind firewall rests on a comment, not on module content.\n\n### Important thing the reader missed in scope\n\n**The 2024-12-20 11:10 bar's vendor VWAP.** Canonical row: `o=590.46 h=590.64 l=581.5183 c=590.59 v=7,877,215 vw=581.646 n=1529`. The vendor VWAP sits 0.13 above the low while open/close are at ~590.5, which means essentially all 7.88M shares across 1,529 trades printed near 581.6, not at the body price. That is not a single-print fat finger; it is a bulk-volume event at the excursion price (2024-12-20 was quad-witching / S&P rebalance and also SPY's ex-dividend date per the sidecar). Whether that is a late-reported/off-exchange block or a genuine print, the classification \"HIGH-CONFIDENCE DATA ANOMALY\" rests on neighbour-isolation alone while two recorded fields (`v`, `vw`) point the other way. This materially strengthens the reader's defect #5 from \"not settled\" to \"the screen's own recorded evidence contradicts the classification\", and the bar is in the frozen mask (`CORPUS_MASK_v1.0.json`), so any change needs a dated amendment per `docs/conventions.md` §b.\n\nMinor additional notes: `volume_outlier_corroborates` fires only for this one HIGH bar (the other eight have v ≤ ~5.8x median), so the mask's eight remaining bars are untouched by this concern. The Rule B EXT boundary issue is real but harmless to the mask (0 HIGH flags affected), so \"low\" is the right severity.\n\n### Severity adjustments\n\n- Dividend scope defect: medium → drop or low (reason exists in charter).\n- 2024-12-20 11:10 classification: medium → medium-high (vw evidence).\n- Add low: `corpus_integrity_screen.py:31` \"CONSTANTS ONLY\" comment is false about `parity_foundation`.\n\nAll other defects and facts stand as stated, with line numbers verified."
+ },
+ {
+  "key": "tearsheet",
+  "summary": "Read-only review of the vwap-lab tear-sheet layer (tearsheet.py, test_tearsheet.py, v0_tearsheet.py, EXPERIMENT_TEARSHEET_v0.1.md, V0_TEARSHEET_2026-08-26.md, plus JSON structure). The layer is stdlib-only, deterministic, and trade-based. Sharpe/Sortino are per-trade and annualized by sqrt(trades/year), not sqrt(252), so the daily-annualization misuse is not present. The annualized figure is labelled assumption-dependent. Output is JSON (canonical), Markdown (generated summary), and a pure-SVG equity+underwater figure. Main defects are documentation/hash drift and a few labelling/robustness issues, not arithmetic errors. Verified: V0 annualized Sharpe -0.029938*sqrt(1021.79) = -0.9570 matches the JSON. Test count is 12, not the 11 the manifest states. The tearsheet.py hash matches the Amendment 1 hash (c950bc...), but the manifest's Files table still lists the pre-amendment hash (76535...). The test_tearsheet.py hash (3790b6...) does not match the manifest's 07c4a1... and has no recorded amendment.",
+  "reusable": [
+   {
+    "item": "Canonical JSON report via full_report()/dual_report() (trade_metrics, r_metrics, equity, distribution, outliers, bootstrap, portfolio, plus screened/raw/delta)",
+    "where": "analysis/tearsheet.py:402-411, 428-458; analysis/V0_TEARSHEET_2026-08-26.json top-level keys",
+    "why": "Data-first layer; an HTML report can render directly from these series without recomputing metrics."
+   },
+   {
+    "item": "Pure-stdlib SVG generator for equity and underwater panels",
+    "where": "analysis/tearsheet.py:514-541",
+    "why": "Self-contained SVG string; a template for lightweight inline charts, though it has no axes or ticks."
+   },
+   {
+    "item": "Trade-index rolling expectancy/PF and cumulative long/short series",
+    "where": "analysis/tearsheet.py:170-197 (equity_series), 219-237 (r_equity)",
+    "why": "Ready-made time series for interactive line charts."
+   },
+   {
+    "item": "Histogram helper with fixed-width bins",
+    "where": "analysis/tearsheet.py:68-80 (_hist) and its uses at 149, 268-269",
+    "why": "Deterministic bin edges and counts; directly plottable as bar charts."
+   },
+   {
+    "item": "Deterministic bootstrap with seed, IID and moving-block CIs, explicitly labelled PROVISIONAL",
+    "where": "analysis/tearsheet.py:308-353",
+    "why": "Reproducible uncertainty display."
+   },
+   {
+    "item": "Markdown rendering of the report with a headline table",
+    "where": "analysis/v0_tearsheet.py:24-84",
+    "why": "A reusable text-summary pattern alongside the JSON."
+   },
+   {
+    "item": "Test suite including a numpy cross-check for expectancy, stdev, PF, Sharpe, and Sortino",
+    "where": "analysis/test_tearsheet.py:118-138",
+    "why": "Good regression anchor for any refactor."
+   }
+  ],
+  "not_reusable": [
+   {
+    "item": "equity_drawdown_svg as a general chart component",
+    "where": "analysis/tearsheet.py:514-541",
+    "why": "Fixed 900x320 geometry with hardcoded colors and hardcoded panel y-ranges; it draws no axes, gridlines, or zero line; the equity fill closes to the bottom of the panel rather than to a zero baseline, which is misleading when equity goes negative. The dataviz palette and layout guidance would require replacing it."
+   },
+   {
+    "item": "The 'annualized' Sharpe/Sortino as a headline number",
+    "where": "analysis/tearsheet.py:380-387; V0 MD line 31",
+    "why": "sqrt(trades/year) assumes independent, identically distributed trade P&L. Trades here are not independent (the report itself flags the serial dependence). The magnitude (-0.96 annualized from -0.030 per trade) is therefore not a reliable quantity."
+   },
+   {
+    "item": "The exit_reason_counts breakdown",
+    "where": "analysis/tearsheet.py:122-124",
+    "why": "Hardcodes four reason strings, so any other exit reason is silently excluded from the counts."
+   }
+  ],
+  "defects": [
+   {
+    "claim": "Manifest Files table lists the test file hash as 07c4a1f6... but analysis/test_tearsheet.py now hashes to 3790b609...; no amendment records the change.",
+    "where": "manifests/EXPERIMENT_TEARSHEET_v0.1.md:23 vs analysis/test_tearsheet.py (sha256 3790b609...)",
+    "severity": "medium"
+   },
+   {
+    "claim": "Manifest Files table still records the pre-amendment tearsheet.py hash (76535ed2...). Amendment 1 says the new hash is c950bc6f..., which does match the file on disk, but the table was not updated.",
+    "where": "manifests/EXPERIMENT_TEARSHEET_v0.1.md:21 vs :131-132 (file on disk = c950bc6f...)",
+    "severity": "low"
+   },
+   {
+    "claim": "Manifest states the test suite has 11 tests; test_tearsheet.py defines 12 test_ functions (including test_r_equity_cumulative_and_drawdown, added after the count was written).",
+    "where": "manifests/EXPERIMENT_TEARSHEET_v0.1.md:23 vs analysis/test_tearsheet.py (grep -c '^def test_' = 12)",
+    "severity": "low"
+   },
+   {
+    "claim": "Units are inconsistent. The code labels pnl as points (PNL_BIN_WIDTH comment, the portfolio sentence on 1-share) while the manifest and V0 summary refer to '$-expectancy' and 'net P/L' without a unit. The layer never states whether pnl is points or dollars.",
+    "where": "analysis/tearsheet.py:41 ('points'), :396 ('fixed 1-share vs $50k'); manifests/EXPERIMENT_TEARSHEET_v0.1.md:94 ('$-expectancy'); analysis/V0_TEARSHEET_2026-08-26.md:3 area",
+    "severity": "medium"
+   },
+   {
+    "claim": "portfolio_metrics has dead code in its try block: span_days and the int year difference are computed and never used. The trade-span years calculation also assumes trades are ordered chronologically (first entry_bar and last exit_bar) and does not check this.",
+    "where": "analysis/tearsheet.py:366-377",
+    "severity": "low"
+   },
+   {
+    "claim": "Downside and Sortino use the root mean over all n trades (target 0), which is the standard convention. Sharpe is mean/sample-stdev with no risk-free rate, which is fine for points but should be stated. The per-trade Sharpe is not annualized as a daily series, so no sqrt(252) misuse is present.",
+    "where": "analysis/tearsheet.py:361-379",
+    "severity": "info"
+   },
+   {
+    "claim": "equity_series starts peak at 0.0, so drawdown and longest-drawdown counts include the initial pre-trade equity baseline. That is a defensible convention, but it is not stated in the manifest.",
+    "where": "analysis/tearsheet.py:159, 164-168",
+    "severity": "info"
+   },
+   {
+    "claim": "The stdlib-only claim holds for the helpers, but dual_report imports fastalpha_engine and parity_foundation (v0_tearsheet.py:17) and reads CORPUS_MASK_v1.0.json from its own directory. The module therefore cannot run standalone.",
+    "where": "analysis/tearsheet.py:432-436; analysis/v0_tearsheet.py:17",
+    "severity": "low"
+   },
+   {
+    "claim": "outlier_concentration gross-profit percentage is correctly defined as a stable denominator. The 'top_1pct' count uses round(0.01*n), so for n<50 it always equals 1 trade. This is correct but worth noting for the report.",
+    "where": "analysis/tearsheet.py:293-299",
+    "severity": "info"
+   }
+  ],
+  "facts": [
+   "Metrics are trade-based, computed from per-trade pnl, pnl_r, and bars_held (analysis/tearsheet.py:96-127, 130-150).",
+   "Equity/drawdown series are cumulative sums of per-trade pnl; the R equity is cumulative pnl_r (analysis/tearsheet.py:153-198, 201-237).",
+   "Sharpe per trade = mean/sample stdev (analysis/tearsheet.py:361-378); Sortino per trade = mean / sqrt(sum(min(0,x)^2)/n) (analysis/tearsheet.py:363-364, 379).",
+   "Annualized Sharpe/Sortino = per-trade ratio * sqrt(trades/year), with trades/year = n/years over the trade span (analysis/tearsheet.py:366-387), labelled assumption-dependent.",
+   "JSON check: sharpe_per_trade -0.029938 * sqrt(1021.79) = -0.95698, matching sharpe_annualized -0.956984 in the JSON (analysis/V0_TEARSHEET_2026-08-26.json, screened.portfolio).",
+   "Bootstrap: IID and moving-block (block length round(n^(1/3))), seed 20260826, B=2000 (analysis/tearsheet.py:38-39, 308-353).",
+   "Output formats: canonical JSON (analysis/v0_tearsheet.py:92-96), generated Markdown (analysis/v0_tearsheet.py:24-84), pure-SVG equity+underwater (analysis/tearsheet.py:514-541; analysis/v0_tearsheet.py:94-102). No HTML output.",
+   "Outlier concentration uses gross profit as the denominator (analysis/tearsheet.py:281-287), and the test covers it (analysis/test_tearsheet.py:62-68).",
+   "Hashes on disk: tearsheet.py c950bc6f... (matches Amendment 1); v0_tearsheet.py 0753cc9d... (matches manifest); test_tearsheet.py 3790b609... (manifest says 07c4a1f6...); V0 JSON a824f623... (matches manifest).",
+   "Manifest: 'Sharpe/Sortino are trade-based ... annualized form emitted with the exact trades/year assumption labelled' (manifests/EXPERIMENT_TEARSHEET_v0.1.md:46-47, 66-71). Consistent with the code."
+  ],
+  "critique": "CONFIRMED (checked against files on disk, HEAD 4780dbf):\n\n- Hashes: tearsheet.py = c950bc6f… (matches Amendment 1, manifests/EXPERIMENT_TEARSHEET_v0.1.md:130-131); v0_tearsheet.py = 0753cc9d… (matches :22); V0 JSON = a824f623… (matches :24); test_tearsheet.py = 3790b609… vs manifest 07c4a1f6… at :23. All four reader hash facts correct.\n- Test count: `grep -c '^def test_'` = 12; manifest :23 says 11. Original commit 03c1ada had 11; test_r_equity_cumulative_and_drawdown (test_tearsheet.py:81) was added in 573c439. Confirmed. I ran the suite (no bytecode written): ALL 12 TEARSHEET TESTS PASS, including test_dual_report_raw_screened_delta which runs the engine.\n- Annualization math: -0.029938*sqrt(1021.79) = -0.956982 and -0.066307*sqrt(1021.79) = -2.119533; JSON screened.portfolio.annualized has -0.956984 / -2.119538 (rounding of the per-trade inputs). Confirmed; MD line 31 confirmed.\n- Sharpe = mean/sample stdev (tearsheet.py:361-362, 378; `_stdev` = statistics.stdev at :56-57); Sortino uses sqrt(sum(min(0,x)^2)/n) over all n (:363-364, 379). Confirmed.\n- Dead code: span_days (:369) and y0/y1 (:367-368) unused; chronological-order assumption at :367-368/372-373 unchecked. Confirmed.\n- exit_reason_counts hardcoded at :122-124. Confirmed.\n- equity_series peak starts 0.0 (:159), drawdown counted from the pre-trade baseline (:163-168). Confirmed.\n- SVG fill closes to panel bottom y1, not a zero baseline (:528); fixed 900x320, hardcoded colors (:514, :534-535); no axes. Confirmed.\n- Outliers: gross_profit denominator (:281-287), top_1pct = max(1, round(0.01n)) (:293). Confirmed. Test at test_tearsheet.py:62-68 confirmed.\n- Bootstrap constants :38-39, block length round(n^(1/3)) :329, PROVISIONAL label :347. Confirmed.\n- Units: tearsheet.py:41 \"(points)\", :395-396 \"fixed 1-share vs $50k\"; manifest :94 \"$-expectancy\", :95 \"in dollars\". Confirmed as a labelling inconsistency. Caveat the reader did not state: under fixed 1-share sizing, points and dollars are numerically identical, so this is label drift only, not a numeric error.\n\nPARTIALLY WRONG / OVERSTATED:\n\n- \"The stdlib-only claim holds for the helpers, but dual_report imports fastalpha_engine… so the module cannot run standalone\" (severity low). The manifest's stdlib-only claim (:28-30) is explicitly about third-party dependencies (numpy/QuantStats/Empyrical), not about intra-study modules; dual_report's import at :433 and the CORPUS_MASK load at :435-436 are inside the function, so the metric helpers do import and run standalone. The finding is factually accurate but the defect framing is not a defect against what the manifest claims. Downgrade to info.\n- \"test_tearsheet.py hash … has no recorded amendment\" — true for the manifest, but the change is traceable: commit 573c439 (same commit as Amendment 1) records \"Tests extended\", and the file at that commit hashes to 3790b609…. Since CLAUDE.md says git history is not authority, the manifest gap stands, but the reader should have said the provenance exists in git and the omission is specifically in Amendment 1 (manifest :125-133 names only the tearsheet.py hash).\n- exit_reason_counts hardcoding: the four strings exactly match the engine's emitted reasons (fastalpha_engine.py:234, 237, 241, 244/247) and the engine's own summary at fastalpha_engine.py:311-314 uses the identical tuple. So today nothing is silently excluded; it is a fragility, not a live defect.\n\nMISSED BY THE READER:\n\n- SVG underwater panel is mislabelled. `poly` (tearsheet.py:517-533) closes over the single `title` argument and writes it for both panels (:531-532), so the underwater panel is captioned \"V0 9/20 screened cum P/L [-132.0..-0.0]\" in analysis/V0_TEARSHEET_equity_2026-08-26.svg (second `<text>` element, y=186). The caption also renders \"-0.0\". This is the one actual output defect in the SVG beyond the layout complaints.\n- portfolio_metrics' bare `except Exception` (:376) silently emits `\"annualized\": {}` on any date-parse problem, with no note field; the Markdown renderer would then misreport or KeyError. Not exercised by the V0 run but is a robustness gap worth noting given the span-ordering assumption.\n- Bootstrap percentile indexing `int(q*B)` (:315-317) yields indices 50 and 1950 for B=2000 — an asymmetric (one-sided-biased) percentile pick. Negligible at B=2000, but unlabelled.\n- The reader did not review `ab_report`/`ab_dual` (tearsheet.py:415-510), which the manifest lists as modes at :72-76 and which two tests cover (test_tearsheet.py:92-109). Scope gap, not an error.\n\nNet: the reader's load-bearing facts and line citations are accurate; its two medium defects stand (manifest test-hash drift; unit labelling), its \"cannot run standalone\" item should be downgraded, and it missed the duplicated SVG panel caption."
+ },
+ {
+  "key": "ledger_results",
+  "summary": "READ-ONLY review of the vwap-lab-2026-08 study record (LEDGER.csv, README.md, PARITY_GATES.md, analysis/README.md, STUDY_CHARTER_v0.1.md, VDC_TERMINAL_DISPOSITION_v1.0.md, CONTINUATION_TERMINAL_DISPOSITION_v1.0.md). No files written; the only execution was a read-only csv parse of LEDGER.csv.\n\n## 1. Ledger table (LEDGER.csv has a 27-column header and 20 data rows; the R0 row, file line 2, has only 26 fields)\n\nEach row is one interpreted arm. \"Draw\" is the cumulative budget count stated in that row's notes, or \"0\" for a sealed or validation-class row. Run IDs are the full `run_id` values.\n\n| CSV line | run_id | run_date | family | class | draw (cumulative) | verdict (as recorded) |\n|---|---|---|---|---|---|---|\n| 2 | VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0 | 2026-08-25 | VDC | development | 1 (VDC 1/18) | R0 naked V0 TV reference; REFERENCE-ONLY; PF 1.0401, net +25.69; 1331 trades |\n| 3 | VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0R1 | 2026-08-26 | VDC | development | 0 (sealed) | SEALED-UNINTERPRETED; identity gate PASS (trade list byte-identical to R0); no draw at capture |\n| 4 | VWAP_VDC_SPY_5m_RTH_dev_2024-09-03_2025-12-31_v0R1_UNSEAL_PVAE | 2026-08-26 | VDC | development | 1 (2/18) | PVAE symmetric PARKED (rule C: long -0.0824, short +0.1074); validation not earned |\n| 5 | OFFLINE_FASTALPHA_ENGINE_V1_EMA10_22_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (3/18) | V1 EMA 10/22 vs V0 9/20 (local engine): DEVELOPMENT NEUTRAL (dNet -3.02) |\n| 6 | OFFLINE_FASTALPHA_ATR_STOP_0p75_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (4/18) | ATR-stop arm 0.75: family FLAT in R (screened expR 0.0198); $ gain = sizing artifact |\n| 7 | OFFLINE_FASTALPHA_ATR_STOP_1p25_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (5/18) | ATR-stop arm 1.25: FLAT (expR 0.0189) |\n| 8 | OFFLINE_FASTALPHA_ATR_STOP_1p50_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (6/18) | ATR-stop arm 1.50: FLAT (expR 0.0186) |\n| 9 | OFFLINE_FASTALPHA_ATR_STOP_1p75_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (7/18) | ATR-stop arm 1.75: FLAT (expR 0.0217); no production value selected |\n| 10 | OFFLINE_FASTALPHA_LONG_ONLY_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (8/18) | MODEST / UNCERTAIN; CI straddles 0; fails best-10 removal (net +31 to -74 screened) |\n| 11 | OFFLINE_FASTALPHA_EMA_8_18_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (9/18) | EMA surface cell: FLAT / PARAMETER-INSENSITIVE (expR 0.000764) |\n| 12 | OFFLINE_FASTALPHA_EMA_8_20_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (10/18) | EMA surface cell (expR 0.00262); same family verdict |\n| 13 | OFFLINE_FASTALPHA_EMA_8_22_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (11/18) | EMA surface cell (expR 0.007298); same family verdict |\n| 14 | OFFLINE_FASTALPHA_EMA_9_18_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (12/18) | EMA surface cell (expR 0.00102); same family verdict |\n| 15 | OFFLINE_FASTALPHA_EMA_9_22_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (13/18) | EMA surface cell (expR 0.005388); same family verdict |\n| 16 | OFFLINE_FASTALPHA_EMA_10_18_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (14/18) | EMA surface cell (expR 0.006348); same family verdict |\n| 17 | OFFLINE_FASTALPHA_EMA_10_20_dev_2024-09-03_2025-12-31 | 2026-08-26 | VDC | development | 1 (15/18) | EMA surface cell (expR 0.003222); same family verdict |\n| 18 | OFFLINE_FASTALPHA_LONG_ONLY_VALIDATION_2026-01-06_2026-04-30 | 2026-08-26 | VDC | validation | 0 dev draw (validation 1/6) | FAILS VALIDATION: criterion A (long-only expR > 0) fails at -0.01872; B and C pass; long-only PARKED, no rescue |\n| 19 | FPC0_DEV_2024-09-03_2025-12-31 | 2026-08-27 | FPC | development | 1 (FPC 1/12) | FPC DEVELOPMENT WORSE (screened delta_R -0.03219); closed unused |\n| 20 | MIM0_DEV_2024-09-03_2025-12-31 | 2026-08-27 | MIM | development | 1 (MIM 1/4) | MIM FAMILY DEAD (beta -0.01674; gross -0.59 bps; fails 5 bps stress) |\n| 21 | ODR0_DEV_2024-09-03_2025-12-31 | 2026-08-27 | ODR | development | 1 (ODR 1/4) | ODR FAMILY DEAD (beta -0.03571, insignificant; gross -0.63 bps; fails 5 bps stress) |\n\n## 2. Families and terminal dispositions\n\n- **VDC (naked V0, symmetric):** RETIRED as a candidate and RETAINED as benchmark/control. Final interpreted-dev count 15/18; the 3 unused slots are intentionally unused. The validation window 2026-01-06 to 2026-04-30 is consumed. (VDC_TERMINAL_DISPOSITION_v1.0.md:9-12, 33-44)\n- **VDC EMA 3x3 surface:** PARAMETER-INSENSITIVE; no production pair. (ledger rows 11-17; VDC_TERMINAL:24)\n- **VDC EMA 10/22 (V1):** DEVELOPMENT NEUTRAL. (row 5)\n- **VDC ATR-stop surface:** FLAT in R; the $ improvement is a sizing artifact. (rows 6-9; VDC_TERMINAL:23)\n- **VDC PVAE stratification:** symmetric PVAE PARKED; no validation earned. (row 4; README.md:3)\n- **VDC long-only:** development MODEST / UNCERTAIN (row 10); single validation look FAILS, PARKED (row 18; VDC_TERMINAL:26).\n- **FPC (First Pullback Continuation):** FPC DEVELOPMENT WORSE; report and stop; budget 1/12 closed unused. (row 19; CONTINUATION_TERMINAL:43-46)\n- **Continuation lane overall:** NO EDGE FOUND; VDC kept as benchmark only; no further continuation-entry variants. (CONTINUATION_TERMINAL:9-11, 41-50)\n- **VMR (VWAP Mean Reversion):** DESIGN ONLY, parked; 0 of its budget spent, no ledger row. (README.md:3; CONTINUATION_TERMINAL:59-63)\n- **VREV:** 0 tests, held by pre-registration. (STUDY_CHARTER:63, 190, 206)\n- **MIM:** FAMILY DEAD (row 20). **ODR:** FAMILY DEAD (row 21).\n\n## 3. Trial count (how it was counted)\n\n1. The `trials_planned` column is not a count. It holds the family budget ceiling (18 for VDC rows, 12 for FPC, 4 for MIM and ODR). Counts were taken from the per-row draw notes instead.\n2. Interpreted ledger rows: 19 (CSV lines 2, 4-21). Row 3 is SEALED with 0 draws.\n3. VDC dev draws: R0 (1) + R1 unseal (1) + V1 (1) + ATR 0.75/1.25/1.50/1.75 (4) + long-only dev (1) + EMA 7 new cells (7) = **15**. The V0 control arms (1.00 ATR, 9/20 EMA) and the V0 calibration arm are not new draws. This matches the stated 15/18 (README.md:3; VDC_TERMINAL:35-37).\n4. FPC 1 + MIM 1 + ODR 1 = 3 dev draws across the other families.\n5. **Total dev draws = 18** (VDC 15, FPC 1, MIM 1, ODR 1). **Validation draws = 1** of 6 (row 18). **Holdout = 0** of 2.\n6. **Total interpreted draws = 19.**\n7. **Distinct configurations = 17 dev.** R1 re-interprets the same V0 trade list (byte-identical to R0, row 3), and PVAE is a stratification of that list, so it is not a new configuration. The 17 are: V0, V1, four ATR arms, long-only, seven EMA cells, FPC-0, MIM-0, ODR-0.\n8. Note: the sum of the per-family ceilings (VDC 18 + VMR 12 + FPC 12 + MIM 4 + ODR 4 + validation 6 + holdout 2 = 58) exceeds the charter's stated total ≤38 (STUDY_CHARTER:193). The FPC, MIM and ODR budgets are not in the charter's §9 table.\n\n## 4. Windows\n\n- **Development:** 2024-09-03 to 2025-12-31 (STUDY_CHARTER A3 table, lines 451-458). Every row uses this window; 334 sessions, 25,877 5m RTH bars.\n- **Embargo:** 2026-01-02 and 2026-01-05. Stated as never simulated (row 18 notes).\n- **Validation / deferred-inspection:** 2026-01-06 to 2026-04-30 (80 RTH sessions). Consumed by row 18.\n- **Unused historical buffer:** 2026-05-01 to the start of the late-May hypothesis-source sessions.\n- **Hypothesis-source:** late May to Aug 2026, visually inspected; descriptive use only.\n- **Holdout:** frozen-forward only. No date or window is recorded in the seven scoped files (STUDY_CHARTER:248 lists it as UNRESOLVED).\n\n## 5. FastAlpha v0 rules as stated by the charter\n\nThe charter states none of the entry, stop, exit or session rules. §8 (lines 134-176) declares the exact trigger, entry, stop, exit and Pine logic UNRESOLVED and forbids inferring them. A2 (lines 411-439) makes the ingested Pine source (sha256 c476429225...) the sole authority, and that source is outside the scoped files, so I did not read it.\n\nWhat the charter does state:\n- Provisional: SPY, 5m, RTH 09:30-16:00 ET, AMEX:SPY (§10, lines 211-221).\n- Excursion metric: (close - session_vwap) / ATR14, with VWAP reset at each RTH open (§5, lines 89-108; A1.3 at 314-323).\n- Lineage (non-authoritative only): EMA 9 / EMA 20, ATR(14), continuation, mirrored long/short (§8, lines 152-161).\n\nRules stated elsewhere in the scoped files (secondary, not verified against the Pine source):\n- Entry on every opposing-colour candle in a VWAP/EMA regime (README.md:3). Entry window 09:40-15:30 ET (PARITY_GATES.md:86).\n- Stop is the initial ATR stop, multiplier 1.00 for V0 (ledger rows 6-9 notes).\n- Thesis exit at the VWAP boundary (row 10 notes).\n- EOD flatten on the 15:50 bar (PARITY_GATES.md:74).\n\n## 6. Early-close handling\n\n- Open sub-item: shortened-session 211-bar behaviour and the terminal partial 5m bucket vs TV early-close bars (PARITY_GATES.md:20-21).\n- Two local-only 13:00 partial bars on early closes 2025-11-28 and 2025-12-24, classified as resampling/session difference (PARITY_GATES.md:28-30).\n- No 15:50 bar exists on shortened sessions, so the source's EOD flatten never fires there (PARITY_GATES.md:74). Whether the local engine replicates this is not documented in the scoped files.\n\n## 7. Holdout status\n\n- No holdout access is recorded. Holdout budget is 0 of 2.\n- The validation window is consumed (row 18; VDC_TERMINAL:40-41).\n- Two firewall concerns are raised in the defects below: the preserved TV chart-data exports and the trade-blind corpus screen both touched data inside the validation and later periods.",
+  "reusable": [
+   {
+    "item": "Per-row verdicts and draw counts for all 20 ledger rows",
+    "where": "LEDGER.csv lines 2-21",
+    "why": "Each verdict string is explicit and matches the README and disposition summaries."
+   },
+   {
+    "item": "Dev draw total 18 (VDC 15 + FPC 1 + MIM 1 + ODR 1); validation 1/6; holdout 0/2",
+    "where": "LEDGER.csv notes columns; README.md:3; VDC_TERMINAL_DISPOSITION_v1.0.md:35-37; CONTINUATION_TERMINAL_DISPOSITION_v1.0.md:43-46",
+    "why": "Cumulative counts in the notes reconcile arithmetically to the stated 15/18 and 1/12 budgets."
+   },
+   {
+    "item": "Terminal dispositions: VDC retired as benchmark; continuation lane NO EDGE FOUND; MIM and ODR FAMILY DEAD; VMR design-only; VREV 0 tests",
+    "where": "VDC_TERMINAL_DISPOSITION_v1.0.md:9-12; CONTINUATION_TERMINAL_DISPOSITION_v1.0.md:9-11; README.md:3; STUDY_CHARTER_v0.1.md:63,190",
+    "why": "Each is stated as a binding ruling with a citation."
+   },
+   {
+    "item": "Window boundaries (dev 2024-09-03 to 2025-12-31; embargo 2026-01-02/05; validation 2026-01-06 to 2026-04-30)",
+    "where": "STUDY_CHARTER_v0.1.md:451-458; LEDGER.csv rows 2-21",
+    "why": "The charter table and every ledger row agree."
+   },
+   {
+    "item": "Charter states no FastAlpha entry, stop, exit or session rules; the Pine source is the only authority",
+    "where": "STUDY_CHARTER_v0.1.md:134-176, 411-439",
+    "why": "Explicit decline to infer, so no charter rule should be cited as an entry or exit rule."
+   }
+  ],
+  "not_reusable": [
+   {
+    "item": "trials_planned column as a trial count (18/12/4 on every row)",
+    "where": "LEDGER.csv col 17 (trials_planned), all rows; STUDY_CHARTER_v0.1.md:182-183",
+    "why": "It holds family budget ceilings, not committed configurations. R0 shows 18 when only 1 configuration existed."
+   },
+   {
+    "item": "dsr_threshold_implied as a numeric DSR threshold",
+    "where": "LEDGER.csv rows 6-21 (prose, not numbers); rows 2-5 carry 'daily SR 0.1014 ... N=18'",
+    "why": "No row contains a computed DSR statistic. The threshold is numeric only for the VDC rows, and the FPC, MIM and ODR rows have no numeric threshold at all."
+   },
+   {
+    "item": "The stated EMA-surface band of 0.0096R",
+    "where": "LEDGER.csv rows 11-17 notes; FPC row 19 notes ('VDC +0.00900')",
+    "why": "From the seven cell values in the ledger, max minus min with control 0.00900 gives about 0.0082, not 0.0096. The EMA_SURFACE JSON is outside scope and would be needed to resolve this."
+   },
+   {
+    "item": "R0 row parsed by column position",
+    "where": "LEDGER.csv line 2 (26 fields vs 27 header)",
+    "why": "Known malformed row, left untouched per README.md:3. Fields after the trials column are shifted. Read by name, not position."
+   },
+   {
+    "item": "Study-wide total of <=38 interpreted runs",
+    "where": "STUDY_CHARTER_v0.1.md:186-193; README.md:80",
+    "why": "FPC 12, MIM 4 and ODR 4 are outside the charter's table. Summed per family the ceilings give 58, and no amendment reconciles them."
+   }
+  ],
+  "defects": [
+   {
+    "claim": "The one validation look ran on the local offline engine over the local corpus, not the sealed TradingView R2 capture the charter defines for validation. README still says R2 remains SEALED while the validation window is declared consumed.",
+    "where": "LEDGER.csv line 18 (LOCAL-ENGINE, no TV capture); README.md:3; STUDY_CHARTER_v0.1.md:466-470 (R2 = TV capture); VDC_TERMINAL_DISPOSITION_v1.0.md:40-41",
+    "severity": "high"
+   },
+   {
+    "claim": "Preserved TradingView chart-data exports contain bars inside the validation window and after the 2026-08-24 charter date. The R0 export is named 2025-08-11 to 2026-08-25. The R1 companion sample covers 2026-08-21 to 2026-08-26. Rows after 2025-12-31 were read and dropped, so validation-window bars were loaded by the parity code. The conventions section defining holdout was not read, so the holdout classification is unconfirmed.",
+    "where": "PARITY_GATES.md:25-28; LEDGER.csv line 3 notes; STUDY_CHARTER_v0.1.md:451-458 and line 1 (2026-08-24)",
+    "severity": "high"
+   },
+   {
+    "claim": "R0 loaded-bar range is recorded as UNRECORDED, so the TV run cannot be shown to have stayed within development dates.",
+    "where": "LEDGER.csv line 2 (tv_capture_method / bars_evaluated fields)",
+    "severity": "medium"
+   },
+   {
+    "claim": "dsr_threshold_implied holds prose for 16 of 20 rows and no DSR statistic is computed anywhere. The charter requires the threshold to be computed before each run.",
+    "where": "LEDGER.csv col 17, lines 6-21; STUDY_CHARTER_v0.1.md:199; README.md:94",
+    "severity": "medium"
+   },
+   {
+    "claim": "trials_planned carries family budget ceilings rather than committed configuration counts, contrary to the charter's own definition.",
+    "where": "LEDGER.csv col 16, all rows; STUDY_CHARTER_v0.1.md:182-183",
+    "severity": "medium"
+   },
+   {
+    "claim": "No joint multiple-testing deflation across families. Each family's DSR note says it should be computed separately, but 18 dev draws across four families are all tested against the same frontier.",
+    "where": "LEDGER.csv rows 10-21 notes ('DSR should reflect ... separately')",
+    "severity": "medium"
+   },
+   {
+    "claim": "The charter's total-interpreted ceiling of 38 does not include FPC (12), MIM (4) or ODR (4). Those ceilings sum to 58, and no charter amendment (Amendments end at A3) reconciles them.",
+    "where": "STUDY_CHARTER_v0.1.md:186-193, 265-478; README.md:73-80",
+    "severity": "medium"
+   },
+   {
+    "claim": "VMR budget is inconsistent: the README table and charter §9 say <=12, while the README row for the VMR charter says <=8.",
+    "where": "README.md:76 and STUDY_CHARTER_v0.1.md:189 (<=12) vs README.md:58 (budget <=8)",
+    "severity": "medium"
+   },
+   {
+    "claim": "The EMA band arithmetic does not reproduce. With control 0.00900 and the minimum cell 0.000764 the band is about 0.0082R, not 0.0096R. Separately, all four ATR alternatives (0.0186 to 0.0217) exceed the 1.00 control (0.009), which is the lowest arm in its family; the FLAT label relies only on the 0.03R threshold and this ordering is not discussed.",
+    "where": "LEDGER.csv rows 6-17 notes and expR fields; FPC row 19 notes",
+    "severity": "medium"
+   },
+   {
+    "claim": "Early-close handling is an open sub-item. The EOD flatten never fires on shortened sessions, and the engine's behaviour there is not documented in the scoped files.",
+    "where": "PARITY_GATES.md:20-21, 28-30, 74",
+    "severity": "medium"
+   },
+   {
+    "claim": "Local-engine results are not TradingView evidence. PARITY_GATES states no local result may substitute until all gates close, yet the terminal dispositions use LOCAL-ENGINE rows as evidence. Gate 1 is PARTIAL and Gate 3 is PROBED only.",
+    "where": "PARITY_GATES.md:3-6, 12-23, 71-94; VDC_TERMINAL_DISPOSITION_v1.0.md:14-26",
+    "severity": "medium"
+   },
+   {
+    "claim": "The FPC motivating hypothesis (H3) is attested by HELM and not committed verbatim, so the provenance is not in committed records.",
+    "where": "README.md:3; LEDGER.csv line 19 notes",
+    "severity": "low"
+   },
+   {
+    "claim": "The corpus integrity mask was computed over the full corpus through 2026-08-21, including validation-window bars. It is trade-blind, but it read those bars.",
+    "where": "LEDGER.csv line 18 notes ('mask flags 0 bars in-window'); README.md:3 (corpus screen)",
+    "severity": "low"
+   },
+   {
+    "claim": "Holdout is nominal. No frozen-forward holdout window or pre-registration date is recorded in the scoped files, so the holdout budget of 2 has no defined data to spend.",
+    "where": "STUDY_CHARTER_v0.1.md:248, 458",
+    "severity": "low"
+   },
+   {
+    "claim": "MIM and ODR observation counts do not reconcile with trade counts (MIM 328 observations vs 187+140=327; ODR 328 vs 131+196=327). ODR's '==0 flat' rule may explain one, but this is not stated for MIM.",
+    "where": "LEDGER.csv lines 20-21 notes",
+    "severity": "low"
+   },
+   {
+    "claim": "LEDGER row 1 (R0, file line 2) is malformed, with 26 fields against a 27-field header. This is pre-existing and was left untouched.",
+    "where": "LEDGER.csv line 2; README.md:3",
+    "severity": "low"
+   }
+  ],
+  "facts": [
+   "LEDGER.csv header has 27 columns; 20 data rows (file lines 2-21); R0 row (line 2) has 26 fields (csv parse).",
+   "Interpreted ledger rows: 19 (lines 2, 4-21); row 3 (R1) is SEALED with no draw at capture.",
+   "VDC dev draws: R0 1 + R1 unseal 1 + V1 1 + ATR arms 4 + long-only dev 1 + EMA cells 7 = 15 (rows 2, 4, 5, 6-9, 10, 11-17).",
+   "FPC 1/12 (row 19), MIM 1/4 (row 20), ODR 1/4 (row 21); validation 1/6 (row 18); holdout 0/2.",
+   "Charter §9 budget table: VDC <=18, VMR <=12, VREV 0, validation <=6, holdout <=2, total <=38 (STUDY_CHARTER_v0.1.md:186-193).",
+   "Charter A3 windows: dev 2024-09-03 to 2025-12-31; embargo 2026-01-02, 2026-01-05; validation 2026-01-06 to 2026-04-30; buffer 2026-05-01 onward; holdout frozen-forward only (STUDY_CHARTER_v0.1.md:451-458).",
+   "Charter §8 declares entry, stop, exit and Pine logic unresolved and forbids inference (STUDY_CHARTER_v0.1.md:134-176); A2 ingests the Pine source as sole authority (lines 411-439).",
+   "Charter §10 provisional execution context: SPY, 5m, RTH 09:30-16:00 ET, AMEX:SPY (STUDY_CHARTER_v0.1.md:211-221).",
+   "Early-close: PARITY_GATES.md:20-21 (open), 28-30 (two 13:00 partial bars classified resampling), 74 (no 15:50 bar, EOD flatten never fires).",
+   "Entry window 09:40-15:30 ET stated at PARITY_GATES.md:86.",
+   "Validation look ran on local offline corpus, 80 sessions, firewall end-cap 2026-04-30 (LEDGER.csv line 18 notes).",
+   "VDC terminal disposition: retired as candidate, retained as benchmark; final 15/18; validation window consumed (VDC_TERMINAL_DISPOSITION_v1.0.md:9-12, 35-41).",
+   "Continuation terminal disposition: NO EDGE FOUND; FPC 1/12 closed unused (CONTINUATION_TERMINAL_DISPOSITION_v1.0.md:9-11, 43-46); VMR next lane design-only (lines 59-63).",
+   "Charter has no amendment after A3; Amendments section ends at STUDY_CHARTER_v0.1.md:478."
+  ],
+  "critique": "**Spot-check of the `ledger_results` findings — READ-ONLY lane-2/3 pass**\n\nFiles opened: `LEDGER.csv` (parsed by name, csv module), `README.md`, `PARITY_GATES.md`, `manifests/STUDY_CHARTER_v0.1.md`, `manifests/VDC_TERMINAL_DISPOSITION_v1.0.md`, `manifests/CONTINUATION_TERMINAL_DISPOSITION_v1.0.md`; plus two quick out-of-scope confirmations (`analysis/EMA_SURFACE_2026-08-26.csv`, `analysis/ATR_STOP_SURFACE_2026-08-26.csv`, `grep dsr manifests/`, `git log -1` on cited SHAs). Nothing written; no mutating git. Note: the reader cited `STUDY_CHARTER_v0.1.md` etc. as if at study root; they live under `manifests/`.\n\n## WRONG\n\n1. **EMA-band \"does not reproduce\" (defect, severity medium) — WRONG.** The reader summed only the 7 new cells plus the 9/20 control and forgot the 9th cell (10/22). The ledger notes for rows 11–17 state in the same sentence the reader quoted: \"10/22 prior NEUTRAL consistent (delta -0.0096R vs control)\" (`LEDGER.csv` line 11 notes; also `README.md:3` \"10/22's prior NEUTRAL corroborated (Δ −0.0096R)\"). 0.00900 − 0.0096 = −0.0006 is the band floor. `analysis/EMA_SURFACE_2026-08-26.csv` screened 10/22 row: `expectancy_r = -0.000638`; 0.009 − (−0.000638) = 0.009638 ≈ 0.0096R. The band is exactly as stated. Drop this defect and the matching `not_reusable` item.\n\n2. **\"ATR ordering is not discussed\" — WRONG in part.** Rows 6–9 notes say \"Control 1.00 reasonable risk-adjusted (negligible trough), 'too tight' only in fixed-share $\" — i.e. the record does name the control as the trough. The arithmetic (control 0.009 is the minimum; range [0.009, 0.0217], spread ≈0.013) is confirmed by `analysis/ATR_STOP_SURFACE_2026-08-26.csv`. The reader's residual point (FLAT rests only on the 0.03R threshold) stands as an observation, not a defect.\n\n3. **R0 malformed-row description — WRONG about where the shift is.** The reader says \"fields after the trials column are shifted\". The shift begins at column 15 `script_file`: by position `script_file = c476429225…` (the sha), `script_sha256 = 18`, `trials_planned = daily SR 0.1014 …`, `dsr_threshold_implied = owner (plan tier UNRECORDED)`, …, `acceptance_result = <the notes text>`, `notes` missing (`LEDGER.csv` line 2, 26 fields vs 27). The omitted field is the `script_file` path. Any by-position read from column 15 onward is misattributed.\n\n4. **\"No DSR statistic is computed anywhere\" (defect, severity medium) — OVERSTATED.** The threshold *is* computed for the VDC TV lineage: \"daily SR 0.1014 (ann ~1.61) at N=18 T=334 sessions\" on rows 3, 4, 5 (and row 2 by intent), and in `manifests/RUN_VDC_SPY_5m_dev_R0_v1.0.md:33`, `RUN_VDC_SPY_5m_dev_R1_v1.0.md:47`. What is true: rows 6–21 carry prose, not a number, and no row records an observed Sharpe compared against the hurdle. The charter requirement (`STUDY_CHARTER_v0.1.md:199-201`) is on the *run manifest*, not the ledger, and the reader did not read the offline-run manifests, so \"computed nowhere\" is UNSUPPORTED in scope. Reframe as: numeric hurdle absent for all offline rows in the ledger; whether their manifests computed one is unverified.\n\n## UNSUPPORTED / needs reframing\n\n5. **\"README still says R2 remains SEALED while validation declared consumed\" — text confirmed (`README.md:3`), but the inference is off.** R2 was never captured: charter A3 says \"When later captured: manifest frozen first…\" (`STUDY_CHARTER_v0.1.md:466-470`) and no R2 ledger row exists. So \"R2 remains SEALED\" is loose language for \"never captured\", not a contradiction with \"consumed\". The real defect is the stronger one the reader also makes: the single validation look (row 18) ran on `LOCAL-ENGINE` (`tv_account` field, line 18) while `PARITY_GATES.md:5-6` says \"every gate being closed is required before any local backtest result could ever substitute for TradingView evidence\", and Gates 1/3 are PARTIAL/PROBED (`PARITY_GATES.md:23, 79`). Confirmed, high — but it is one defect, not two.\n\n6. **\"No joint multiple-testing deflation\" — interpretation, not a record defect.** The notes explicitly label each arm \"recorded as an explored candidate, not 'one test'\" and say DSR should reflect N additional looks (rows 6–17) or be computed per-family (rows 19–21). The record acknowledges the issue rather than hiding it; whether a cross-family correction is *owed* is a methodological opinion. Keep as a note, lower severity.\n\n## CONFIRMED (spot-checked against file:line)\n\n- Header 27 columns, 20 data rows, R0 row 26 fields (csv parse).\n- VDC draw ledger: 1 (line 2) → 2 (line 4 \"now 2/18\") → 3 (line 5 \"now 3/18\") → 7 (lines 6–9 \"now 7/18\") → 8 (line 10) → 15 (lines 11–17 \"now 15/18\"); row 18 \"remains 15/18 (validation-class look)\"; FPC 1/12 (line 19), MIM 1/4 (line 20), ODR 1/4 (line 21). Totals 18 dev / 1 validation / 0 holdout reconcile.\n- `trials_planned` = 18/18/…/12/4/4 on every row (family ceiling), vs charter definition \"count of independent configurations committed before the first run\" (`STUDY_CHARTER_v0.1.md:182-184`). Confirmed defect.\n- Charter §9 table and total ≤38 (`:186-193`); README copy (`README.md:73-80`); FPC/MIM/ODR ceilings absent; amendments end at A3 (`:443-478`). 18+12+12+4+4+6+2 = 58. Confirmed.\n- VMR ≤12 (`README.md:76`, charter `:189`) vs ≤8 (`README.md:58`, and `README.md:3` \"Proposed VMR budget ≤8\"). Confirmed.\n- Windows A3 (`:451-458`); embargo \"outside window, not simulated\" (line 18 `embargo_desc`); R2 window `:466`. Confirmed.\n- Charter declines to infer entry/stop/exit (`:143-176`); A2 source pin sha `c476429225c2ba4a…e342c6c9e` (`:420-421`). Confirmed. Minor: §10 does state the *session* rule provisionally (RTH 09:30–16:00 ET, `:219`), so \"none of the … session rules\" is slightly overstated.\n- TV chart-data exports span 2025-08-11→2026-08-25 (`PARITY_GATES.md:25`, line 2 field) and R1 sample 2026-08-21→2026-08-26 (line 3 notes); \"rows after 2025-12-31 dropped uninspected\" (`PARITY_GATES.md:27-28`). Confirmed. Note the R1 sample also post-dates the charter freeze (2026-08-24) by two sessions, i.e. it is post-freeze data in the frozen-forward sense (`STUDY_CHARTER_v0.1.md:369-371`), header-only read claimed.\n- Early-close: `PARITY_GATES.md:20-21` (open sub-item), `:29-31` (two 13:00 partial bars; reader's 28-30 is off by one), `:74-75` (no 15:50 bar, EOD flatten never fires). Confirmed.\n- Entry window 09:40–15:30 (`PARITY_GATES.md:86`). Confirmed.\n- MIM 187+140 = 327 vs N=328; ODR 131+196 = 327 vs 328; ODR notes \"==0 flat\" (line 21), MIM notes do not. Confirmed, low.\n- Dispositions: `VDC_TERMINAL_DISPOSITION_v1.0.md:11-12, 35-37, 40-41`; `CONTINUATION_TERMINAL_DISPOSITION_v1.0.md:11, 43-46, 59-63`. Confirmed. Cited HEADs `d8a20dd`, `49038cb`, freeze commits `401c1bb`, `be03f0c`, bootstrap pin `77a9484` all resolve in `git log` with matching subjects/dates.\n- H3 provenance \"not committed verbatim\" (`README.md:3`; line 19 notes). Confirmed.\n- Corpus screen computed over the full corpus to 2026-08-21/22 (line 18 notes; `README.md:40`). Confirmed.\n\n## Missed by the reader (in scope)\n\n- **Stale README statements contradict the current record**: `README.md:14-16` \"Everything here is exploratory and pre-run. No result has been produced\"; `:66` LEDGER \"header only until source ingest\"; `:68` scripts \"currently SOURCE_REQUIRED; none present\"; `:95` \"no data row is written until source ingest\"; `:104-107` \"Tonight's stop line … No VMR implementation\". These are frozen-era prose never amended, now false; the whole live status is crammed into one line (`README.md:3`).\n- **Row 18 (`budget_class=validation`) carries `trials_planned=18`**, the VDC-dev ceiling, not the ≤6 validation ceiling (`LEDGER.csv` line 18 col 17).\n- **Engine sha drift across the ledger**: engine `f3862da…` (line 5), `975f747d…` (lines 6–9), `11af1c55…` (lines 10–18), `26e1fb07…` (line 19). Byte-identical re-verification is recorded only for the last change (`README.md:3` \"V0_V1_AB + EMA_SURFACE re-verified byte-identical\"); nothing in scope records equivalence across the earlier two bumps. V0 control n_trades differs (1363 line 5 vs 1354 lines 10/19) — consistent with raw vs screened (`ATR_STOP_SURFACE` csv: raw 1.0 = 1363, screened 1.0 = 1354), so not itself a defect, but the reader should state that the baseline shifted from raw to screened between lines 5 and 6.\n- **Row 2 `chart_data_convention = ADJ (dividend-adjusted)` vs local corpus `split-only`** on every offline row — the feed seam is the stated reason the local engine cannot reproduce R0's +25.69 (`README.md:3`, line 5 notes). This makes the TV→local benchmark handoff the load-bearing unverified link for every disposition, which the reader touched only via the PARITY defect.\n- Reader's `facts` and `reusable` lists cite `STUDY_CHARTER_v0.1.md` etc. at study root; actual paths are `studies/vwap-lab-2026-08/manifests/…`.\n\n## Net\nOf 16 defect claims: 1 WRONG (EMA band), 1 partly wrong (ATR ordering), 1 overstated/unsupported in scope (DSR \"nowhere\"), 1 misframed (R2 SEALED), 1 opinion (joint deflation), the rest confirmed. Draw/budget arithmetic, window boundaries, and terminal dispositions are reliable. The R0 row shift description must be corrected before anyone parses line 2 by position."
+ },
+ {
+  "key": "families",
+  "summary": "Nine scoped files (6 family/analysis scripts plus 3 unit-test modules) are a mix of two accounting paths. FPC-0, long-only validation, the EMA surface and the ATR-stop surface all run through the shared engine fastalpha_engine.simulate, which holds the execution semantics. MIM-0 and ODR-0 bypass the engine entirely and re-implement their own observation, sign-strategy, cost and classification code, with ODR importing MIM. About 90 lines of near-identical logic sit between mim.py and odr.py, and about 140 lines of report-summary code are repeated across the four engine families at 0.4 to 0.7 similarity. The three test modules pass read-only (8 FPC, 7 MIM, 4 ODR) on Python 3.13.5. No scoped file or transitive local import uses pandas or numpy; everything is stdlib plus the lab's own modules. I found no look-ahead defect in the signal or entry timing. The defects are around invariant enforcement, inconsistent statistics between siblings, untested classifiers, and hardcoded audit constants.",
+  "reusable": [
+   {
+    "item": "fastalpha_engine.simulate (signal_mode vdc|fpc, atr_stop_mult, enable_longs/shorts, dev window)",
+    "where": "fastalpha_engine.py:115-130; used by fpc0_dev.py:206-209, long_only_validation.py:66-67, ema_surface.py:322-323, atr_stop_surface.py:200-201",
+    "why": "single execution model (fills, ATR stop, thesis/EOD exits, flat gate); FPC is a signal mode, not a separate engine (test_fpc_signals.py:4-8)"
+   },
+   {
+    "item": "fastalpha_engine.compute_feature_rows(fast, slow, drop_t_ms)",
+    "where": "fastalpha_engine.py:85-107",
+    "why": "one place for EMA-length rebinding and the frozen corpus-mask drop; reused by 4 engine-based families"
+   },
+   {
+    "item": "parity_foundation.load_corpus_rth (sha256 identity guard, RTH-only)",
+    "where": "parity_foundation.py:61-72; used by mim.py:286, odr.py:187, fpc via compute_feature_rows",
+    "why": "hash-verified corpus load; the only corpus entry point the scripts use"
+   },
+   {
+    "item": "tearsheet metrics: trade_metrics, r_metrics, r_equity, equity_series, outlier_concentration, distribution, bootstrap_ci (block+iid)",
+    "where": "tearsheet.py:96,130,201,153,275,240,308",
+    "why": "shared accounting summary for the engine-based families"
+   },
+   {
+    "item": "mask application as a set of str t_ms",
+    "where": "fastalpha_engine.py:100-102; CORPUS_MASK_v1.0.json mask_t_ms is int; loader t_ms is str (CSV), so str() conversion matches (verified)",
+    "why": "the screened/raw dual view is implemented correctly and consistently"
+   },
+   {
+    "item": "mim.ols_hc1 (stdlib OLS with HC1 and classical SE)",
+    "where": "mim.py:101-132; HC1 variance formula at mim.py:116-118 is the correct n/(n-2) form",
+    "why": "generic, already imported by odr.py:38 and odr.py:194"
+   },
+   {
+    "item": "mim.load_ex_dividends and the dividend-neutral early/overnight return convention",
+    "where": "mim.py:49-56, mim.py:89-95; odr.py:66-71",
+    "why": "shared corporate-action sidecar; the same convention is applied in both families"
+   },
+   {
+    "item": "classify pattern (FAMILY DEAD / EDGE CANDIDATE gates with frozen constants)",
+    "where": "mim.py:239-261; odr.py:154-176",
+    "why": "logic is generic in shape but duplicated (see not_reusable)"
+   }
+  ],
+  "not_reusable": [
+   {
+    "item": "mim.build_observations vs odr.build_observations (session grouping, prev-close, dividend add, required-bar gate)",
+    "where": "mim.py:59-98; odr.py:44-75",
+    "why": "about 50% textually identical (difflib 0.50); the same per-day loop is written twice with different bar sets"
+   },
+   {
+    "item": "sign_strategy (fixed-notional equity, drawdown, side blocks, monthly, outlier) in mim and odr",
+    "where": "mim.py:152-210; odr.py:78-132",
+    "why": "about 75% identical (difflib 0.75); copy-paste with bps scaling and a different sign rule"
+   },
+   {
+    "item": "cost_diagnostics and classify in mim and odr",
+    "where": "mim.py:213-236 vs odr.py:135-151; mim.py:239-261 vs odr.py:154-176",
+    "why": "near-duplicates (0.54 and 0.52); the 5 bps stress and the slippage formula are copied; the cost model differs from the engine's per-fill tick accounting"
+   },
+   {
+    "item": "MIM _bootstrap_mean_ci (iid resample, bps) reused by ODR for its CI",
+    "where": "mim.py:135-149; odr.py:128",
+    "why": "iid bootstrap, while the engine families use tearsheet block bootstrap as the operative CI (long_only_validation.py:80-88, 203-204); two CI methods across siblings"
+   },
+   {
+    "item": "arm_report / cell_summary / arm_summary (per-arm report assembly)",
+    "where": "fpc0_dev.py:55-90; long_only_validation.py:91-118; ema_surface.py:87-122; atr_stop_surface.py:35-79",
+    "why": "four versions of the same tearsheet-to-dict mapping (similarity 0.38 to 0.67), each with different field sets"
+   },
+   {
+    "item": "_side_r / side_block / side_r per-side expectancy and PF",
+    "where": "fpc0_dev.py:38-46 (identical to ema_surface.py:66-74); atr_stop_surface.py:46-53; mim.py:180-187; odr.py:104-111; tearsheet.py:86",
+    "why": "six copies of one 9-line function"
+   },
+   {
+    "item": "capped_feature_rows",
+    "where": "long_only_validation.py:46-62",
+    "why": "re-implements compute_feature_rows (fastalpha_engine.py:85-107) with an end cap; the monkeypatch-and-restore pattern is repeated"
+   },
+   {
+    "item": "regime_scan (independent re-implementation of the engine's fresh-regime arming)",
+    "where": "fpc0_dev.py:98-121",
+    "why": "an intentional cross-check, but it duplicates the engine's arm logic without sharing code, so the two can drift"
+   },
+   {
+    "item": "monotonicity rule",
+    "where": "ema_surface.py:166-167 (strict d>0 / d<0) vs atr_stop_surface.py:105-108 (tolerance +/-MATERIAL_R)",
+    "why": "sibling classifiers define monotone differently, so the same phrase gives different verdicts"
+   },
+   {
+    "item": "hardcoded audit constants in reports",
+    "where": "fpc0_dev.py:238,244-246; long_only_validation.py:219-220; ema_surface.py:360,369; atr_stop_surface.py:214-215; MATERIAL_R literal at fpc0_dev.py:30, ema_surface.py:59, atr_stop_surface.py:32",
+    "why": "budget and engine values are typed into the report rather than read from the config that ran"
+   }
+  ],
+  "defects": [
+   {
+    "claim": "FPC invariant checks use assert and are stripped under python -O, while the docstring promises they raise on any breach",
+    "where": "fpc0_dev.py:143-147, 151-152 (asserts); docstring at fpc0_dev.py:125-126 'Raises on any invariant breach'",
+    "severity": "medium"
+   },
+   {
+    "claim": "The FPC invariant checks (entry_geometry, regime_scan, side_geo) have no unit test; they only run on the real corpus, so the frozen 'invariants_verified' output is not exercised by tests",
+    "where": "fpc0_dev.py:98-173; test_fpc_signals.py has no coverage of these functions; fpc0_dev.py:168-173 emits a static list of 'verified' strings",
+    "severity": "medium"
+   },
+   {
+    "claim": "The FPC classify function labels dr==0 as CONFLICTED, which the frozen rule (CONFLICTED = raw opposite direction) does not define",
+    "where": "fpc0_dev.py:188-193 (dr==0 falls to CONFLICTED); rule text at fpc0_dev.py:30-35",
+    "severity": "low"
+   },
+   {
+    "claim": "regime_scan runs on the date-windowed bars, so the first in-window bar is treated as fresh even if the regime began before DEV_START; geometry counts can then be wrong, and the fresh-bar assertion could fire wrongly",
+    "where": "fpc0_dev.py:111 (state[-1]=False on windowed list), called with win_s at fpc0_dev.py:225-226; applies only if the corpus has pre-window state",
+    "severity": "low"
+   },
+   {
+    "claim": "MIM and ODR use an iid bootstrap for their CI (ODR reuses MIM's), while the engine families use tearsheet's block bootstrap as the operative discriminator; the same lab reports two CI methods",
+    "where": "mim.py:135-149; odr.py:128; contrast long_only_validation.py:80-88 and 203-204",
+    "severity": "medium"
+   },
+   {
+    "claim": "prev_close is the last surviving bar of the previous date, with no check that the previous date is the immediately preceding trading day or that the bar is the 15:59 close. A corpus gap or a mask touching 15:59 silently changes the overnight baseline. The current 9 mask keys do not touch the bars these families use (verified against mask_keys), so this is latent",
+    "where": "mim.py:72-83; odr.py:49-60",
+    "severity": "low"
+   },
+   {
+    "claim": "The required-bar gate does not check that the previous date is adjacent to the current one, so a multi-day gap yields an overnight return spanning several sessions without a flag",
+    "where": "mim.py:72-74; odr.py:49-51",
+    "severity": "low"
+   },
+   {
+    "claim": "The MIM mask filter rebuilds the str set once per row (correct but O(N x 9) work per row)",
+    "where": "mim.py:287",
+    "severity": "low"
+   },
+   {
+    "claim": "atr_stop_surface recomputes compute_feature_rows(9,20) inside the mult loop, so the features are built 10 times instead of 2, and this script has no determinism re-simulation while its siblings do",
+    "where": "atr_stop_surface.py:197-201 vs ema_surface.py:322-328, long_only_validation.py:191-196",
+    "severity": "low"
+   },
+   {
+    "claim": "ols_hc1 has no guard for sxx==0 (all x identical), so it raises ZeroDivisionError rather than returning an INDETERMINATE result; the n<3 guard does not cover this case",
+    "where": "mim.py:101-109",
+    "severity": "low"
+   },
+   {
+    "claim": "Dollar-space thresholds (20) are undeclared magic numbers and the $-space verdict is sizing-dependent, but they feed the printed control assessment",
+    "where": "atr_stop_surface.py:161, 164",
+    "severity": "low"
+   },
+   {
+    "claim": "Monotonicity is defined two ways across sibling surface classifiers, so 'monotone' has different meanings in the EMA and ATR surfaces",
+    "where": "ema_surface.py:166-167 vs atr_stop_surface.py:105-108",
+    "severity": "low"
+   },
+   {
+    "claim": "No unit tests exist for the classifiers that set frozen verdicts: EMA topology (_contiguous, _marginal_monotone, classify), ATR shape (classify), long-only classify and path_difference, and FPC classify/entry_diff",
+    "where": "ema_surface.py:137-316; atr_stop_surface.py:82-188; long_only_validation.py:121-176; fpc0_dev.py:176-193; no matching test_*.py in analysis/",
+    "severity": "medium"
+   },
+   {
+    "claim": "The report-level constants for the engine (atr_stop_mult 1.0, EMA [9,20]) and the budget counts are typed into the output, not read from the config that ran, so the audit trail can disagree with the executed config if the code changes",
+    "where": "fpc0_dev.py:237-238, 244-246; long_only_validation.py:219-220; ema_surface.py:359-360, 365-369; atr_stop_surface.py:212-215",
+    "severity": "low"
+   },
+   {
+    "claim": "Duplicated test helpers (bar, approx, main runner) across test_mim.py and test_odr.py",
+    "where": "test_mim.py:13-18 vs test_odr.py:9-14",
+    "severity": "low"
+   }
+  ],
+  "facts": [
+   "No third-party imports in any scoped file or in the local modules they import (fastalpha_engine, parity_foundation, tearsheet). Imports are stdlib only: json, os, platform, math, random, statistics, csv, sys, gzip, hashlib, io, datetime. No pandas or numpy anywhere. (grep of import lines across the 9 scoped files plus fastalpha_engine.py, parity_foundation.py and tearsheet.py.) tearsheet.py:433 imports fastalpha_engine lazily inside a function, so there is no import-time cycle.",
+   "Python dependence: the recorded interpreter is 3.13.5 (python field in FPC0_DEV_2026-08-27.json, MIM0_DEV_2026-08-27.json, ODR0_DEV_2026-08-27.json, LONG_ONLY_VALIDATION_2026-08-26.json). Results rely on stdlib float sum() and statistics. Per my understanding, sum() over floats changed to compensated summation in Python 3.12, so last-bit results can differ on older interpreters; the determinism checks only compare runs within one interpreter. The bootstrap depends on random.Random seeded streams (mim.py:139-145; tearsheet.py seeded via BOOTSTRAP_SEED). This is an inference from stdlib behaviour, not verified by running another interpreter.",
+   "Tests run read-only (PYTHONDONTWRITEBYTECODE=1, python3 -I -B, sys.path inserted manually): test_fpc_signals ALL 8 PASS, test_mim ALL 7 PASS, test_odr ALL 4 PASS. No test was run for ema_surface, atr_stop_surface or long_only_validation (none exist). Full corpus runs were not executed.",
+   "FPC signal timing is causal: arming on a fresh bullish_state bar, signal on the first later opposing bar, entry on the next bar's open. test_fpc_signals.py:41-50 expects entry 10:10 after signal 10:05; test_skips_green_takes_first_red expects entry 10:15 after signal 10:10; out-of-window red gives no entry (test_out_of_window_red_no_entry:76-82).",
+   "FPC is an engine signal mode and shares execution with V0 (fastalpha_engine.simulate:115-130 docstring; test_fpc_signals.py:4-8). fpc0_dev.py runs VDC and FPC through the same simulate and compute_feature_rows (fpc0_dev.py:201-209), so the comparison is like-for-like.",
+   "MIM-0 and ODR-0 do not call fe.simulate. Their accounting is fixed-notional fractional return with a flat bps cost subtraction (mim.py:213-236; odr.py:135-151), and they bypass the engine's per-fill tick accounting. ODR imports mim for ols_hc1, load_ex_dividends and the cost constants (odr.py:38, 128, 140, 147).",
+   "Look-ahead check, MIM: early_return uses the 09:59 bar close (observed at 10:00) and entry at the 15:30 bar open (mim.py:84, 85, 95-96; docstring 15-22). Dividend cash is a session-date sidecar, known ex ante (mim.py:89). No look-ahead found.",
+   "Look-ahead check, ODR: signal from the 09:30 open, entry at the 09:31 open, exit at the 09:59 close (odr.py:61-63, 71-73, docstring 24-28). Causal. The test test_odr.py:22-35 checks these returns.",
+   "The long-only validation firewall truncates 1m rows at 2026-04-30 before 5m aggregation (long_only_validation.py:46-62, 55), with the engine dev_end set to the same date (long_only_validation.py:66). The EMA/VWAP/ATR features are causal, so this is sound. Screened equals raw in-window by construction (long_only_validation.py:223-227), so the raw sensitivity is redundant.",
+   "The mask is applied as str(t_ms) membership (fastalpha_engine.py:100-102; mim.py:287; long_only_validation.py:57-58). CORPUS_MASK_v1.0.json stores ints (mask_t_ms, count 9), and the loader returns str (parity_foundation.py:61-72, csv DictReader). The match is correct. The mask keys (CORPUS_MASK_v1.0.json mask_keys) do not include 09:30, 09:31, 09:59, 15:30 or 15:59.",
+   "Duplication, measured by difflib on AST-extracted function bodies: mim.sign_strategy vs odr.sign_strategy 0.75 (58 vs 54 lines); cost_diagnostics 0.54; classify 0.52; build_observations 0.50; fpc0 arm_report vs ema cell_summary 0.67; vs atr arm_summary 0.50; vs long_only arm_report 0.38; _side_r identical (fpc0_dev.py:38-46 and ema_surface.py:66-74). The mask-load line json.load(open(MASK))['mask_t_ms'] appears in 6 files (fpc0_dev.py:199, long_only_validation.py:184, ema_surface.py:335, atr_stop_surface.py:193, mim.py:285, odr.py:186). The determinism re-simulation pattern appears in fpc0_dev.py:211-216, long_only_validation.py:191-196, ema_surface.py:325-328.",
+   "Hardcoded DEV window literals appear in fastalpha_engine.py:80-81, mim.py:39 and odr.py:41, and MATERIAL_R=0.03 is a literal at fpc0_dev.py:30, ema_surface.py:59 and atr_stop_surface.py:32."
+  ],
+  "critique": "CONFIRMED (checked against files):\n- fpc0_dev.py:143-147,151-152 are bare `assert`s; docstring :125-126 says \"Raises on any invariant breach\". Stripped under -O. Correct.\n- fpc0_dev.py:168-173 `invariants_verified` is a static string list; entry_geometry/regime_scan have no unit test (test_fpc_signals.py tests only fe.simulate; test names at :41-129). Correct.\n- fpc0_dev.py:188-193: `ds > MATERIAL_R and dr == 0` -> CONFLICTED, while rule text :35 says \"raw opposite direction\". Correct, low.\n- mim.py:101-109: n<3 guard only; `sxy / sxx` at :109 has no sxx==0 guard. Correct.\n- mim.py:135-149 iid bootstrap; odr.py:128 reuses it; long_only_validation.py:80-88,203-204 use tearsheet block CI as the operative discriminator. Correct.\n- mim.py:72-83 / odr.py:49-60: prev_close = `prev[-1][\"c\"]` of the preceding date in the dict, no adjacency or 15:59 check. Correct. Mask keys (CORPUS_MASK_v1.0.json, 9 entries, int type) are all mid-day 11:xx-15:12, none at 09:30/09:31/09:59/15:30/15:59. Correct, latent.\n- mim.py:287 and odr.py:188 rebuild `{str(x) for x in mask}` inside the list-comp filter per row. Correct (odr.py:188 was not cited by reader; same defect).\n- atr_stop_surface.py:197-201 recomputes compute_feature_rows(9,20) inside the mult loop (10 calls) and has no re-simulation determinism check; ema_surface.py:325-328 and long_only_validation.py:191-196 do. Correct.\n- atr_stop_surface.py:161,164 literal `> 20` dollar thresholds. Correct.\n- ema_surface.py:166-167 strict `d>0`/`d<0` vs atr_stop_surface.py:107-108 `d > -MATERIAL_R`/`d < MATERIAL_R`. Correct.\n- Hardcoded report constants: fpc0_dev.py:237-238,244-246; long_only_validation.py:219-220; ema_surface.py:359-360,365-369; atr_stop_surface.py:212-215; MATERIAL_R literal at fpc0_dev.py:30, ema_surface.py:59, atr_stop_surface.py:32. All confirmed.\n- _side_r identical at fpc0_dev.py:38-46 and ema_surface.py:66-74; inner side_r at atr_stop_surface.py:46-53; side_block mim.py:180-187 / odr.py:104-111; tearsheet._side_block :86. Confirmed.\n- capped_feature_rows long_only_validation.py:46-62 mirrors fastalpha_engine.compute_feature_rows :85-107 with the `<= end_cap` filter at :55. Confirmed.\n- Imports stdlib-only across all 12 files (grep); tearsheet.py:433 lazy `import fastalpha_engine`. Confirmed.\n- Recorded python 3.13.5 in all four JSON outputs (line 3 of each). Confirmed; local interpreter is also 3.13.5.\n- Tests: test_fpc_signals 8 PASS, test_mim 7 PASS, test_odr 4 PASS (run read-only with -I -B, PYTHONDONTWRITEBYTECODE=1, from scratchpad). Confirmed.\n- Line cites for tearsheet functions (96,130,201,153,275,240,308), parity_foundation.load_corpus_rth :61-72, fastalpha_engine.simulate :115-116, compute_feature_rows :85-107, DEV window literals (fastalpha_engine.py:80-81, mim.py:39, odr.py:41). Confirmed.\n- Look-ahead claims for MIM (mim.py:84-86,95-96) and ODR (odr.py:61-63,71-73; test_odr.py:22-35) hold.\n- test_mim.py:13-18 vs test_odr.py:9-14 duplicated `bar`/`approx`. Confirmed.\n\nWRONG / UNSUPPORTED:\n1. \"No unit tests exist for the classifiers ... EMA topology (_contiguous, _marginal_monotone, classify) ... long-only classify ... no matching test_*.py in analysis/\" — WRONG. `/home/dustin/Projects/strategy/studies/vwap-lab-2026-08/analysis/test_ema_surface.py` exists (110 lines) and exercises es.classify across shapes 1/3/4/5/6, directional asymmetry, and the control/10-22 flags (:33-94), implicitly covering _contiguous and _marginal_monotone (:48, :76-77). `test_long_only_validation.py` exists (68 lines) and covers every verdict branch of v.classify (:127-162). Both pass read-only (7 PASS, 5 PASS). The reader's inventory also missed test_tearsheet.py, test_fastalpha_engine.py, test_parity_foundation.py, test_corpus_integrity_screen.py, test_instrumentation_r1.py. What remains genuinely untested: atr_stop_surface.classify (no test_atr_stop_surface.py), long_only_validation.path_difference, fpc0_dev.classify/entry_diff/entry_geometry/regime_scan. The \"medium\" defect should be narrowed to those.\n2. \"regime_scan runs on the date-windowed bars, so the first in-window bar is treated as fresh ... the fresh-bar assertion could fire wrongly\" — MISFRAMED. fe.simulate itself filters `bars = [r for r in rows if dev_start <= r[\"session_date\"] <= dev_end]` (fastalpha_engine.py:148) and initialises `prev_bullish = False` (:161), so the engine ALSO treats the first in-window bar as fresh. regime_scan(win_s) at fpc0_dev.py:225 therefore matches engine semantics exactly; the assertion cannot fire wrongly on this account. The real observation is that BOTH engine and scan share the boundary artefact (a regime already in force at DEV_START is counted as fresh on 2024-09-03's first bar; likewise prev_* carries across session boundaries so a regime spanning an overnight is \"continuous\"), and the cross-check cannot detect it because it reproduces it. The ODR/MIM-style \"defect\" claim about miscounted geometry is unsupported as a mismatch.\n3. \"MIM mask filter ... O(N x 9)\" cited only at mim.py:287 — the identical construct is at odr.py:188; the reader cited odr.py:186 for the load but not the per-row rebuild. Minor incompleteness, not wrong.\n4. \"rule text at fpc0_dev.py:30-35\" for the CONFLICTED claim: the rule is at :31-35 (comment), :30 is MATERIAL_R. Trivial.\n\nMISSED in scope:\n- mim.cost_diagnostics docstring (:216-217) says costs \"are subtracted from each trade's realized return\", but the implementation subtracts a flat bps from the MEAN only (:228,:230); PF, drawdown, win rate, monthly and the bootstrap CI (:203-209) are all reported gross. Same in odr.py:145-147. Equivalent for the mean, misleading for every other cost-sensitive statistic; the DEAD gate only reads stress_mean_bps so the verdict is unaffected.\n- mim.sign_strategy/odr.sign_strategy bootstrap CI is computed on gross realized returns, so an \"EDGE CANDIDATE\" verdict could rest on a CI that includes the costs-adjusted zero; not a current-outcome issue (both families DEAD) but a frozen-gate design gap.\n- odr.cost_diagnostics spy_price_ref averages `open_0931` over ALL obs including zero-signal sessions (:139); harmless but inconsistent with \"2 fills\" semantics.\n- long_only_validation.classify (:146-160) uses `(x or 0)` for sign of B, so a None expectancy silently becomes 0 and can produce `raw_agrees=True` on missing data; the A/C checks treat None as 0 too (sgn). Not exercised by test_long_only_validation.py.\n- atr_stop_surface.classify monotone rule (:107-108) with MATERIAL_R tolerance means a perfectly flat series yields inc=dec=True and the `inc != dec` branch (:116) falls through — intended, but it also means a series with one sub-material dip is still \"MONOTONIC\"; the EMA sibling would call that non-monotone. Reader flagged the divergence; the flat-series fall-through is the concrete consequence."
+ }
+]

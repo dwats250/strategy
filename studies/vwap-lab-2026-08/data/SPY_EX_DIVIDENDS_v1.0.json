@@ -1,0 +1,16 @@
+{
+  "role": "SPY cash-distribution sidecar (ex-dividend date + cash per share) for MIM corporate-action normalization ONLY.",
+  "authorized_seam": "owner/HELM charge 2026-08-27 — one narrow external reference seam: State Street / SPDR official US historical distributions for SPY, for corporate-action normalization only. NOT a market-price provider, intraday feed, paid data, or general corporate-actions dependency.",
+  "primary_provenance": "State Street Global Advisors (SSGA) SPDR S&P 500 ETF Trust (SPY), official US historical distributions (https://www.ssga.com/us/en/intermediary/etfs/spdr-sp-500-etf-trust-spy).",
+  "verification": "The SSGA fund-page distributions table is JavaScript-rendered and not machine-fetchable via WebFetch, so the six per-share figures were verified independently before freezing: (1) confirmed to 5 decimal places against a public SPY dividend-history record (stockanalysis.com/etf/spy/dividend/) — Sep-20-24 1.74553, Dec-20-24 1.96555, Mar-21-25 1.69553, Jun-20-25 1.76112, Sep-19-25 1.83111, Dec-19-25 1.99337; (2) web search corroborated State Street's Sep-19-2025 $1.831 figure; (3) all six ex-dates fall on SPY's known quarterly cadence (third Friday of the quarter-end months) and are trading sessions in the verified corpus (corpus sha256 a4afaa704e6ded54f62f1670c52ff74070338ccb943eebcc2f73fe9c170ed97a). The 6th-decimal precision below is the exact State Street trust distribution value; it was not silently trusted from the charge.",
+  "scope_window": ["2024-09-03", "2025-12-31"],
+  "units": "US dollars cash distribution per SPY share; ex-dividend date (ET).",
+  "distributions": [
+    {"ex_date": "2024-09-20", "cash_per_share": 1.745531},
+    {"ex_date": "2024-12-20", "cash_per_share": 1.965548},
+    {"ex_date": "2025-03-21", "cash_per_share": 1.695528},
+    {"ex_date": "2025-06-20", "cash_per_share": 1.761117},
+    {"ex_date": "2025-09-19", "cash_per_share": 1.831114},
+    {"ex_date": "2025-12-19", "cash_per_share": 1.993368}
+  ]
+}

@@ -1,0 +1,115 @@
+# VWR0 fresh-data extension — PROPOSED v0.1 (2026-10-16). NOT RUN. Refuses real data until frozen.
+# The frozen VWR0-EXP v1.1 variants, unchanged, scored ONLY on sessions acquired after the original
+# corpus: 2026-08-24 -> 2026-10-15 (38 sessions) of the fresh capture. All 463 earlier sessions are
+# warm-up: indicators see them, nothing on them is scored or re-scored. This is fresh HISTORICAL
+# evidence (data that already existed when the rules were frozen), not a prospective forward test.
+# At freeze: status = "FROZEN" + code_tree_sha256 from `stratlab identity`. The strategy modules must be
+# byte-identical to VWR0-EXP's pinned commit 1f4af3a (they are as of 2026-10-16).
+
+limitations = [
+  "Fresh historical evidence on 38 new sessions (2026-08-24 to 2026-10-15): small sample; a single look; not a forward test.",
+  "Same rules, costs and sizing as VWR0-EXP v1.1. No mask is available for this dataset (mask v1.0 is bound to the August file); the scored dates 2026-08-24..2026-10-15 contain none of the flagged minutes, and warm-up sessions only seed indicators.",
+  "Gates are inherited unchanged from v1.1. Pro-rating VWR0-EXP's trade counts to 38 sessions gives about 189 VWR0, 258 VWR1, 72 VWR2, 136 VWR3, 107 VWR4 and 99 IGP0 trades, so the VWR0 gate (200) and the VWR2 and IGP0 gates (100) will probably not be met. This run can support DESCRIPTIVE fresh-historical evidence on the same rules, not a test of any hypothesis.",
+  "The overlapping history 2024-10-16 to 2026-08-21 was studied in VWR0-EXP and is NOT re-scored here.",
+]
+
+[experiment]
+id = "VWR0-FRESH"
+title = "VWR family on newly acquired sessions (2026-08-24 to 2026-10-15)"
+study = "studies/vwap-ema9-2026-10"
+description = "Unchanged VWR0-EXP v1.1 configurations evaluated only on the 38 sessions acquired after the original corpus."
+trials_planned = 0   # no new configurations: same frozen rules, new dates only
+dsr_threshold_implied = "not applicable: no new configurations (second look at frozen rules on new dates)"
+status = "PROPOSED"
+
+[data]
+dataset = "spy-1m-polygon-20241016-20261015-cap20261016-729dc4e9"
+warmup_sessions = 463   # every session before 2026-08-24; scored window = 2026-08-24 -> 2026-10-15
+
+[execution]
+cash = 100000.0
+commission_per_share = 0.0035
+slippage_per_share = 0.01
+flatten_minutes = 5
+
+[windows]
+calendar_halves = false
+recent_months = 0
+
+[[variants]]
+id = "VWR0"
+role = "baseline"
+label = "VWR0 baseline"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = {}
+difference = "Baseline, decided from one completed 5m bar with no prior-trend requirement: close > VWAP(hlc3) and low <= VWAP (bar-level touch proxy, VWAP at the bar's close); close > EMA9; bar ends 09:45-15:30 ET; stop at signal-bar extreme (min 5 bps); exit on a later close back through EMA9."
+hypothesis = "A same-bar VWAP touch-proxy reclaim with EMA9 confirmation precedes continuation in the reclaim direction."
+mechanism = "Intraday participants defend VWAP; a reclaim with momentum marks the defended side."
+primary_metric = "Expectancy R (net) with t-stat; daily-equity Sharpe as the portfolio view"
+uninformative_if = "Fewer than 200 closed trades in the full window. (Winner-removal results are fragility diagnostics, not invalidation.)"
+
+[[variants]]
+id = "VWR1"
+label = "VWR1 no EMA9 confirm"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { ema_confirm = false }
+difference = "Drops the close-beyond-EMA9 confirmation (rule 3)."
+hypothesis = "EMA9 confirmation adds nothing beyond VWAP context plus the touch proxy."
+mechanism = "Without confirmation, more reclaims are taken before momentum resumes; many exit on the next bar."
+primary_metric = "Delta expectancy R vs VWR0; expectancy of the added trades"
+uninformative_if = "Fewer than 100 trades differ from VWR0 (added + removed + altered); or |delta expectancy R| < 0.03 and both |t-stat of mean R| < 1."
+
+[[variants]]
+id = "VWR2"
+label = "VWR2 EMA/VWAP cross entry"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { trigger = "ema_vwap_cross" }
+difference = "Trigger is an EMA9/VWAP cross on the signal bar instead of the touch proxy; context, confirmation, stop and exit unchanged."
+hypothesis = "The VWAP touch proxy is a better entry event than the EMA/VWAP cross."
+mechanism = "The cross fires later in a move and less often."
+primary_metric = "Delta expectancy R; trade count"
+uninformative_if = "Either arm has fewer than 100 closed trades."
+
+[[variants]]
+id = "VWR3"
+label = "VWR3 signal-close 2R target"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { exit_mode = "fixed_r", target_r = 2.0 }
+difference = "Exit at a 2R target placed from the SIGNAL CLOSE (target = close + 2 x (close - stop)), or the stop, or the flatten; no EMA9 exit. Actual reward/risk at the fill is reported per trade."
+hypothesis = "With the same initial stop, the EMA9-managed exit beats a fixed signal-close 2R target."
+mechanism = "EMA exits cut losers early and can ride trends; the target caps winners."
+primary_metric = "Delta expectancy R; win rate; actual reward/risk at fill"
+uninformative_if = "Same-minute stop/target exits exceed 5% of VWR3 trades; or more than 50% of VWR3 trades exit at the session flatten."
+
+[[variants]]
+id = "VWR4"
+label = "VWR4 morning entries"
+strategy = "stratlab.strategies.vwap_reclaim:VwapReclaim"
+params = { entry_end = "11:30" }
+difference = "Entries only for bars ending 09:45-11:30 ET."
+hypothesis = "Any VWAP-reclaim effect is concentrated in the morning."
+mechanism = "Morning range and volume; midday chop removed."
+primary_metric = "Delta expectancy R; Sharpe on the same capital"
+uninformative_if = "VWR4 has fewer than 100 closed trades."
+
+[[variants]]
+id = "IGP0"
+role = "independent"
+label = "IG-AUSTIN-P0 (provisional, underlying-only)"
+strategy = "stratlab.strategies.instagram_austin_vwap_ema9:InstagramAustinVwapEma9P0"
+params = {}
+difference = "Separate strategy: 3m bars, VWAP(ohlc4) session, completed EMA9/VWAP cross entry (first bar of session skipped), close-through-EMA9 exit, signal-bar stop. Provisional, underlying-only interpretation of @austin.daytrades' reel on SPY shares; not an exact replication."
+hypothesis = "The creator's stated chart setup, executed mechanically on SPY shares, is positive after costs."
+mechanism = "Momentum after EMA9 crosses VWAP."
+primary_metric = "Expectancy R (net); daily-equity Sharpe"
+uninformative_if = "Fewer than 100 closed trades. Always uninformative about the creator's options P&L (underlying-only proxy, later entry)."
+
+[[variants]]
+id = "BENCH"
+role = "benchmark"
+label = "SPY session-hold (benchmark)"
+strategy = "stratlab.strategies.benchmarks:SessionHold"
+params = {}
+difference = "Benchmark, not a trial: each session buy 99.9% of equity notional at the 09:31 open (09:32 on a run's first session), no stop or target, sell at the calendar flatten (15:55 / 12:55 open). Same capital and costs."
+hypothesis = "Reference only: what being long SPY during the same regular-session hours earned, net of the same costs."
+primary_metric = "Daily-equity metrics only (no R)"

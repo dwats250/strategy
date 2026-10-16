@@ -1,0 +1,10 @@
+flagged minutes: 122; sessions with any: 10; sessions with >=10: 1 -> ['2025-04-23']
+
+exposure by configuration (full window), affected session 2025-04-23:
+  VWR0   total $  -25,320 | 2025-04-23:  19 trades $  -13,998 | stops on flagged minutes:  11 $  -9,802 | excl. 2025-04-23: $  -11,322, mean R -0.0316 (t -0.92)
+  VWR1   total $  -27,748 | 2025-04-23:  24 trades $  -13,367 | stops on flagged minutes:  11 $ -10,184 | excl. 2025-04-23: $  -14,381, mean R -0.0394 (t -1.42)
+  VWR2   total $   -6,126 | 2025-04-23:   2 trades $     -496 | stops on flagged minutes:   5 $    -884 | excl. 2025-04-23: $   -5,630, mean R -0.0107 (t -0.17)
+  VWR3   total $  -27,961 | 2025-04-23:  10 trades $   -8,125 | stops on flagged minutes:   6 $  -5,707 | excl. 2025-04-23: $  -19,836, mean R -0.0660 (t -2.00)
+  VWR4   total $  -18,506 | 2025-04-23:   6 trades $   -1,838 | stops on flagged minutes:   3 $  -1,351 | excl. 2025-04-23: $  -16,667, mean R -0.0374 (t -0.80)
+  IGP0   total $   -4,934 | 2025-04-23:   4 trades $     -798 | stops on flagged minutes:   5 $    -939 | excl. 2025-04-23: $   -4,135, mean R -0.0166 (t -0.30)
+  BENCH  total $   13,399 | 2025-04-23:   1 trades $     -626 | stops on flagged minutes:   0 $       0 | excl. 2025-04-23: $   14,025, mean R +nan (t +nan)
