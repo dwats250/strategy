@@ -78,7 +78,7 @@ div.dt-container .dt-input,div.dt-container .dt-search input{background:var(--su
   <div class="bar"><h1 id="title"></h1><button class="chip" id="themeBtn" title="Toggle theme">◐</button></div>
   <nav class="sec">
     <a href="#overview">Overview</a><a href="#equity">Equity</a><a href="#metrics">Metrics</a>
-    <a href="#windows">Windows</a><a href="#stability">Monthly</a><a href="#trades">Trades</a>
+    <a href="#risk">Risk</a><a href="#windows">Windows</a><a href="#stability">Monthly</a><a href="#trades">Trades</a>
     <a href="#diffs">Differences</a><a href="#downloads">Downloads</a><a href="#method">Method</a>
   </nav>
 </header>
@@ -107,6 +107,14 @@ div.dt-container .dt-input,div.dt-container .dt-search input{background:var(--su
     <p class="sub" id="metSub"></p>
     <div class="tablewrap"><table class="m" id="metTable"></table></div>
     <p class="note">Portfolio rows use session-close account equity (Sharpe/Sortino annualized with √252 over all sessions, flat days included). Trade rows use per-trade R multiples and are never annualized. Δ = variant − baseline under the same window, capital and costs.</p>
+  </section>
+
+  <section id="risk">
+    <h2>Initial risk under notional sizing</h2>
+    <p class="sub">Every entry uses 99.9% of equity as notional, so the money at risk to the initial stop varies with the stop distance. These are exposure facts per trade, not performance. Portfolio returns (account equity) and per-trade R are separate measures.</p>
+    <div id="riskPlot" class="plot"></div>
+    <div class="tablewrap"><table class="m" id="riskTable"></table></div>
+    <p class="note">Initial risk = shares × |fill − initial stop|, as a share of account equity just before the entry minute. Actual reward/risk = side × (target − fill) / |fill − stop|. VWR3's target is placed from the signal close, so its actual multiple differs from the nominal 2R.</p>
   </section>
 
   <section id="windows">
@@ -142,7 +150,8 @@ div.dt-container .dt-input,div.dt-container .dt-search input{background:var(--su
     <h2>What each variant changes</h2>
     <p class="sub">Trades matched to the baseline by signal bar and side (full-history window). Independent strategies are not diffed against the baseline.</p>
     <div class="tablewrap"><table class="m" id="diffTable"></table></div>
-    <h2 style="margin-top:16px">Concentration in large winners</h2>
+    <h2 style="margin-top:16px">Fragility: dependence on large winners</h2>
+    <p class="sub">A diagnostic, not a validity rule. It shows how much each result leans on its biggest trades.</p>
     <div class="tablewrap"><table class="m" id="concTable"></table></div>
     <div id="lorenzPlot" class="plot"></div>
     <p class="note">Curve: cumulative net P&amp;L with trades sorted from best to worst. A result that only exists because of a few trades rises steeply then falls for most of the curve.</p>
@@ -199,7 +208,7 @@ function draw(id, traces, layout){
   layout.autosize = false;
   return Plotly.react(el, traces, layout, PCFG);
 }
-let _rt; window.addEventListener("resize", () => { clearTimeout(_rt); _rt = setTimeout(() => { renderEquity(); renderMonthly(); renderDay(); renderDiffs(); }, 200); });
+let _rt; window.addEventListener("resize", () => { clearTimeout(_rt); _rt = setTimeout(() => { renderEquity(); renderMonthly(); renderDay(); renderDiffs(); renderRisk(); }, 200); });
 
 /* ---------------- metric catalogue ---------------- */
 const MET = [
@@ -233,6 +242,9 @@ const MET = [
   ["Top-5 share of gross profit", r => r.trade?.top5_share_of_gross_profit, pct, false],
   ["Net P&L excl. top 5", r => r.trade?.net_pnl_ex_top5, money, true],
   ["Stop/target same-minute exits", r => r.trade?.ambiguous_stop_target_minutes, x => num(x,0), null],
+  ["Initial risk, % equity (median)", r => r.trade?.risk_pct_equity_median, x => pct(x,3), null],
+  ["Initial risk, % equity (p90)", r => r.trade?.risk_pct_equity_p90, x => pct(x,3), null],
+  ["Actual reward/risk at fill (median)", r => r.trade?.reward_risk_median, x => num(x,2), null],
   ["Open at end", r => r.trade?.open_at_end, x => num(x,0), null],
 ];
 
@@ -244,10 +256,11 @@ function renderOverview(){
   const last = cov.last_session, gen = R.run_utc.slice(0,4)+"-"+R.run_utc.slice(4,6)+"-"+R.run_utc.slice(6,8);
   const stale = Math.round((new Date(gen) - new Date(last)) / 86400000);
   $("#ovSub").textContent = R.experiment.description || "";
+  if (stale > 7) $("#synthBanner").insertAdjacentHTML("beforeend", `<div class="banner">Data ends ${esc(last)}, ${stale} days before this run (${esc(gen)}). Every result here describes history up to ${esc(last)}. Nothing on this page is current to the run date.</div>`);
   const card = (h, rows) => `<div class="card"><h3>${h}</h3><div class="kv">${rows.map(([k,v]) => `<b>${k}</b><span>${v}</span>`).join("")}</div></div>`;
   $("#ovGrid").innerHTML = [
-    card("What ran", [["Experiment", esc(R.experiment.id)], ["Run", esc(R.run_id)], ["Variants", V.length + " (baseline " + esc(BASE) + ")"],
-      ["Trials planned", R.trials.planned], ["Chance-max Sharpe", num(R.trials.dsr_threshold_implied.sr_annualized,2) + " ann. at N=" + R.trials.planned]]),
+    card("What ran", [["Experiment", esc(R.experiment.id)], ["Run", esc(R.run_id)], ["Configurations", V.length + " (baseline " + esc(BASE) + ")"],
+      ["Trials planned", R.trials.planned], ["Chance-max Sharpe", num(R.trials.dsr_threshold_implied.sr_annualized,2) + " ann. at N=" + R.trials.planned + " (illustrative; see Method)"]]),
     card("Data", [["Dataset", esc(ds.dataset_id || "—")], ["SHA-256", esc((ds.sha256||"").slice(0,16)) + "…"],
       ["Sessions", `${cov.first_session} → ${cov.last_session} (${cov.sessions})`], ["Warm-up", cov.warmup_sessions + " sessions, never scored"],
       ["Freshness", `last session ${last}; ${stale} days before this run`], ["Mask", ds.mask ? esc(ds.mask.id) + ` (${ds.mask.bars_dropped} bars)` : "none"],
@@ -280,8 +293,9 @@ function renderEquity(){
     const s = v.series[state.win]; if (!s) return;
     const vis = state.on.has(v.id);
     let peak = R.execution.cash; const dd = s.eq.map(e => { peak = Math.max(peak, e); return e/peak - 1; });  // same definition as Max DD (session close)
-    traces.push({x: s.d, y: s.eq, name: v.label, type: "scatter", mode: "lines", line: {color: col(v), width: 2}, visible: vis, legendgroup: v.id, hovertemplate: "%{y:$,.0f}"});
-    traces.push({x: s.d, y: dd, name: v.label + " DD", type: "scatter", mode: "lines", line: {color: col(v), width: 1.5}, xaxis: "x", yaxis: "y2", visible: vis, legendgroup: v.id, showlegend: false, hovertemplate: "%{y:.2%}"});
+    const dash = v.role === "benchmark" ? "dash" : "solid";
+    traces.push({x: s.d, y: s.eq, name: v.label, type: "scatter", mode: "lines", line: {color: col(v), width: 2, dash}, visible: vis, legendgroup: v.id, hovertemplate: "%{y:$,.0f}"});
+    traces.push({x: s.d, y: dd, name: v.label + " DD", type: "scatter", mode: "lines", line: {color: col(v), width: 1.5, dash}, xaxis: "x", yaxis: "y2", visible: vis, legendgroup: v.id, showlegend: false, hovertemplate: "%{y:.2%}"});
   });
   draw("eqPlot", traces, layoutBase({
     grid: {rows: 2, columns: 1, roworder: "top to bottom"},
@@ -461,13 +475,25 @@ function renderMethod(){
     <li><b>Costs:</b> a per-share amount per side, charged as cash; fill prices are not adjusted.</li>
     <li><b>Sessions:</b> XNYS calendar (exchange_calendars ${esc(p.exchange_calendars)}): early closes, holidays and DST come from the calendar. The 13:00 closing-auction print on half days is outside the session.</li>
     <li><b>Metrics:</b> portfolio statistics use session-close equity; trade statistics use R multiples from the initial stop and are not annualized. Backtesting.py's own Sharpe (a geometric-return formula) is stored in metrics.json but not shown.</li>
-    <li><b>Multiple testing:</b> ${R.trials.planned} configurations were planned. The expected best Sharpe among that many zero-skill configurations over ${R.trials.dsr_threshold_implied.n_obs} sessions is about ${num(R.trials.dsr_threshold_implied.sr_annualized,2)} (annualized). Results below that level are consistent with luck from selection alone.</li>
+    <li><b>Multiple testing (illustrative):</b> ${R.trials.planned} configurations were planned. If they were independent zero-skill trials, the expected best annualized Sharpe over ${R.trials.dsr_threshold_implied.n_obs} sessions would be about ${num(R.trials.dsr_threshold_implied.sr_annualized,2)}. This null approximation is not a significance threshold and not a complete deflated Sharpe ratio. The variants are strongly correlated (shared rules and trades), and this corpus was already explored in August, so the true selection effect is not captured by this number.</li>
+    <li><b>Benchmark:</b> a dashed line, where present. It is long SPY from the 09:31 open to the 15:55 open each session, with the same capital and costs. It is not buy-and-hold and has no R multiple.</li>
   </ul>
   <details><summary>Identity</summary><pre>${esc(JSON.stringify({run_id: R.run_id, config_sha256: R.config_sha256, code: c, packages: p, dataset: R.dataset}, null, 2))}</pre></details>
   <details><summary>Experiment config</summary><pre>${esc(DATA.config_toml)}</pre></details>`;
 }
 
-function renderAll(){ renderOverview(); renderControls(); renderEquity(); renderMetrics(); renderWindows(); renderMonthly(); renderTradeControls(); renderTrades(); renderDay(); renderDiffs(); renderDownloads(); renderMethod(); }
+function renderRisk(){
+  const vs = V.filter(v => v.role !== "benchmark");
+  const traces = vs.map(v => ({type: "box", name: v.label, y: v.trades.filter(t => t.riskp != null).map(t => t.riskp), marker: {color: col(v), size: 3}, line: {color: col(v), width: 1.5}, boxpoints: false, hovertemplate: "%{y:.3%}<extra>" + esc(v.label) + "</extra>"}));
+  draw("riskPlot", traces, layoutBase({height: 320, showlegend: false, yaxis: axis({tickformat: ".2%", title: {text: "Initial risk, % of equity", font: {size: 12}}, rangemode: "tozero"}), xaxis: axis({tickfont: {size: 10, color: css("--muted")}}), hovermode: "closest"}));
+  const cols = [["p10", "risk_pct_equity_p10", x => pct(x,3)], ["Median", "risk_pct_equity_median", x => pct(x,3)], ["p90", "risk_pct_equity_p90", x => pct(x,3)], ["Max", "risk_pct_equity_max", x => pct(x,3)],
+    ["Median $", "risk_usd_median", money], ["Notional (median)", "notional_pct_equity_median", x => pct(x,1)], ["Reward/risk p10", "reward_risk_p10", x => num(x,2)], ["Reward/risk median", "reward_risk_median", x => num(x,2)], ["Reward/risk p90", "reward_risk_p90", x => num(x,2)]];
+  let h = "<thead><tr><th>Configuration</th>" + cols.map(c => `<th>${c[0]}</th>`).join("") + "</tr></thead><tbody>";
+  vs.forEach(v => { const t = v.results[W[0].id]?.trade || {}; h += `<tr><td>${esc(v.label)}</td>` + cols.map(c => `<td>${c[2](t[c[1]] ?? null)}</td>`).join("") + "</tr>"; });
+  $("#riskTable").innerHTML = h + "</tbody>";
+}
+
+function renderAll(){ renderOverview(); renderControls(); renderEquity(); renderMetrics(); renderRisk(); renderWindows(); renderMonthly(); renderTradeControls(); renderTrades(); renderDay(); renderDiffs(); renderDownloads(); renderMethod(); }
 $("#themeBtn").onclick = () => { document.documentElement.dataset.theme = isDark() ? "light" : "dark"; renderAll(); };
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) renderAll(); });
 renderAll();

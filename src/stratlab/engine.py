@@ -235,6 +235,7 @@ def run_backtest(strategy_cls, frame: pd.DataFrame, cfg: ExecutionConfig,
     open_rows = _open_trade_rows(strat, frame)
     if open_rows:
         trades = pd.concat([trades, pd.DataFrame(open_rows)], ignore_index=True)
+    trades = add_risk_columns(trades, eq["Equity"].to_numpy(), cfg.cash)
     sess = frame["session_code"]
     last_bar = ~sess.duplicated(keep="last").to_numpy()
     session_equity = pd.Series(eq["Equity"].to_numpy()[last_bar],
@@ -247,6 +248,35 @@ def run_backtest(strategy_cls, frame: pd.DataFrame, cfg: ExecutionConfig,
     msgs = sorted({str(w.message)[:200] for w in caught
                    if "remain open at the end of backtest" not in str(w.message)})
     return RunOutput(trades, eq, session_equity, lib, msgs)
+
+
+def add_risk_columns(trades: pd.DataFrame, equity: np.ndarray, cash: float) -> pd.DataFrame:
+    """Per-trade initial exposure and risk, measured against account equity just
+    before the entry minute (the previous minute's mark-to-market close).
+
+    initial_risk_usd         shares x |fill - initial stop|  (NaN when R is undefined)
+    initial_risk_pct_equity  that amount / equity before entry
+    notional_pct_equity      shares x fill / equity before entry (~0.999 by sizing)
+    initial_reward_risk      side x (target - fill) / |fill - stop|  (targets only); the
+                             target is placed from the signal close, so this is the
+                             ACTUAL reward/risk at the fill, not the nominal multiple
+    """
+    t = trades.copy()
+    if t.empty:
+        for c in ("equity_before", "initial_risk_usd", "initial_risk_pct_equity",
+                  "notional_pct_equity", "initial_reward_risk"):
+            t[c] = pd.Series(dtype=float)
+        return t
+    eb = t["entry_bar"].astype(int).to_numpy()
+    before = np.where(eb > 0, equity[np.clip(eb - 1, 0, len(equity) - 1)], cash)
+    sign = np.where(t["side"].to_numpy() == "long", 1.0, -1.0)
+    t["equity_before"] = before
+    t["initial_risk_usd"] = t["size"].astype(float) * t["risk_per_share"].astype(float)
+    t["initial_risk_pct_equity"] = t["initial_risk_usd"] / before
+    t["notional_pct_equity"] = t["size"].astype(float) * t["entry_price"].astype(float) / before
+    tgt = pd.to_numeric(t["target"], errors="coerce")
+    t["initial_reward_risk"] = sign * (tgt - t["entry_price"]) / t["risk_per_share"]
+    return t
 
 
 def _risk(side: int, entry: float, stop) -> float:
@@ -286,7 +316,7 @@ def _open_trade_rows(strat: LabStrategy, frame: pd.DataFrame) -> list[dict]:
             r_multiple=(unreal / size) / risk if risk and risk > 0 else np.nan,
             r_gross=side * (last_close - t.entry_price) / risk if risk and risk > 0 else np.nan,
             exit_reason="open_at_end", entry_reason=meta.get("entry_reason"),
-            bars_held=int(len(frame) - 1 - t.entry_bar),
+            entry_bar=int(t.entry_bar), bars_held=int(len(frame) - 1 - t.entry_bar),
             minutes_spanned=int(len(frame) - t.entry_bar),
             signal_start=meta.get("signal_start"), decision_time=meta.get("decision_time"),
         ))
@@ -298,7 +328,7 @@ def _trade_table(t: pd.DataFrame, strat: LabStrategy, frame: pd.DataFrame) -> pd
         cols = ["trade_id", "side", "size", "entry_time", "exit_time", "entry_price", "exit_price",
                 "initial_stop", "target", "risk_per_share", "pnl", "costs", "gross_pnl",
                 "return_pct", "r_multiple", "r_gross", "exit_reason", "entry_reason",
-                "bars_held", "minutes_spanned", "signal_start", "decision_time"]
+                "entry_bar", "bars_held", "minutes_spanned", "signal_start", "decision_time"]
         return pd.DataFrame(columns=cols)
     rows = []
     for _, r in t.iterrows():
@@ -334,7 +364,7 @@ def _trade_table(t: pd.DataFrame, strat: LabStrategy, frame: pd.DataFrame) -> pd
             r_multiple=(pnl / size) / risk if risk and risk > 0 else np.nan,
             r_gross=(side * (exit_ - entry)) / risk if risk and risk > 0 else np.nan,
             exit_reason=reason, entry_reason=meta.get("entry_reason"),
-            bars_held=int(r["ExitBar"] - r["EntryBar"]),
+            entry_bar=int(r["EntryBar"]), bars_held=int(r["ExitBar"] - r["EntryBar"]),
             minutes_spanned=int(r["ExitBar"] - r["EntryBar"]) + 1,
             signal_start=meta.get("signal_start"), decision_time=meta.get("decision_time"),
         ))

@@ -1,7 +1,7 @@
 # Engine behaviour — Backtesting.py 0.6.6 as used by the lab
 
 Every statement below is pinned by a hand-checkable test in `tests/test_engine_behavior.py`
-(25 tests) and re-run in CI. Default test setup: price 100.00 everywhere except the minutes a test
+(25 tests, plus the seam-2 amendment tests in `tests/test_seam2_amendments.py`) and re-run in CI. Default test setup: price 100.00 everywhere except the minutes a test
 overrides; cash 10,000; zero costs unless stated. If a version bump breaks any of these tests, it is
 a behaviour change to understand. Do not edit the test to match.
 
@@ -29,6 +29,8 @@ a behaviour change to understand. Do not edit the test to match.
 | 20 | Why not `finalize_trades=True` | The library would close at the last bar's **open** (105) rather than mark at the close (105.5) | `test_library_finalize_would_close_at_last_open_documented` |
 | 22 | Entry minute opens beyond the stop | Long, stop 99, the fill minute opens at 98: entry and exit both at 98. No risk was ever defined, so R is NaN and exit_reason is `stop_beyond_fill` (counted as "Trades with undefined R"). | `test_entry_minute_opening_beyond_stop_has_no_defined_risk` |
 | 23 | Open beyond the target, same minute touches the stop | The library fills the **stop** (99), although the open (103) shows the target was reached first. This is a pessimistic bias, not merely an unknown path. Flagged `ambiguous_exit`. | `test_open_beyond_target_with_stop_touch_still_resolves_to_stop_pessimistic` |
+| 24 | First bar of a backtest | Backtesting.py never calls `next()` on bar 0, so a run's first minute is never a decision point. The session-hold benchmark therefore fills at 09:32 (not 09:31) on the first session of each run only. | `test_session_hold_benchmark_enters_0931_exits_flatten_including_early_close` |
+| 25 | Actual reward/risk with a signal-close target | Stop 99 and target 101 set at a 100 signal close; the fill gaps to 100.5, so the actual reward/risk is 0.5/1.5 = 0.33, reported per trade | `test_signal_close_target_reports_actual_reward_risk_after_gap` |
 | 21 | Determinism | Identical trades and equity on rerun | `test_reruns_are_identical`, plus `tests/test_experiment_pipeline.py::test_reruns_are_deterministic` (byte-identical metrics and trade files) |
 
 ## Library facts that shaped the design

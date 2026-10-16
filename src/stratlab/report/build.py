@@ -85,8 +85,8 @@ def _bars_payload(md, keep, variants, full_id) -> tuple[dict, dict]:
     fsets, vmap = {}, {}
     for v in variants:
         res = keep.get((v["id"], full_id))
-        if res is None:
-            continue
+        if res is None or not {"vwap", "ema"} <= set(res["_features"].columns):
+            continue  # e.g. the session-hold benchmark has no indicator overlay
         from ..experiment import resolve_strategy
         cls = resolve_strategy(v["strategy"])
         p = {k: res["params"].get(k, getattr(cls, k, None)) for k in ("vwap_source", "ema_length")}
@@ -134,7 +134,30 @@ def _slim(res: dict) -> dict:
     return out
 
 
-def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html") -> Path:
+def _keep_from_record(record: dict):
+    """Recompute (without backtesting) what the price charts need: market data and each
+    variant's full-window features. Used when rebuilding a report from a run directory."""
+    from ..experiment import prepare_market, resolve_strategy, signal_bars
+    cfg = record["config"]
+    md = prepare_market(cfg["data"])
+    if md.identity.get("sha256") != record["dataset"].get("sha256"):
+        raise RuntimeError("dataset identity differs from the run record; refusing to rebuild charts")
+    w = record["windows"][0]
+    keep = {}
+    for v in cfg["variants"]:
+        cls = resolve_strategy(v["strategy"])
+        params = dict(v.get("params", {}))
+        minutes = int(params.get("signal_minutes", cls.signal_minutes))
+        sig = signal_bars(md, minutes)
+        s = pd.to_datetime(sig["session"])
+        sig = sig[(s >= pd.Timestamp(w["start"])) & (s <= pd.Timestamp(w["end"]))]
+        feats = cls.build_features(signal_bars(md, minutes), **params).loc[sig.index]
+        keep[(v["id"], w["id"])] = {"params": params, "minutes": minutes, "_features": feats}
+    return md, keep
+
+
+def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html",
+                 findings: list[str] | None = None, rebuild_charts: bool = False) -> Path:
     run_dir = Path(run_dir)
     record = json.loads((run_dir / "run_record.json").read_text())
     results = json.loads((run_dir / "metrics.json").read_text())
@@ -144,7 +167,13 @@ def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html
     full_id = windows[0]["id"]
 
     vdata = []
-    for i, v in enumerate(variants):
+    slot = 0
+    for v in variants:
+        if v.get("role") == "benchmark":
+            c_light = c_dark = "#898781"          # neutral, never a categorical slot
+        else:
+            c_light, c_dark = PALETTE_LIGHT[slot % 8], PALETTE_DARK[slot % 8]
+            slot += 1
         series = {}
         for w in windows:
             p = run_dir / "equity" / f"{v['id']}__{w['id']}.csv"
@@ -165,6 +194,7 @@ def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html
                     "pnl": round(float(r.pnl), 2), "r": r.r_multiple, "reason": r.exit_reason,
                     "mins": int(r.minutes_spanned), "sig": str(r.signal_start),
                     "amb": bool(r.get("ambiguous_exit", False)),
+                    "riskp": r.get("initial_risk_pct_equity"), "rr": r.get("initial_reward_risk"),
                 }))
         monthly = {}
         ep = run_dir / "equity" / f"{v['id']}__{full_id}.csv"
@@ -183,12 +213,14 @@ def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html
             "hypothesis": v.get("hypothesis", ""), "difference": v.get("difference", ""),
             "mechanism": v.get("mechanism", ""), "primary_metric": v.get("primary_metric", ""),
             "uninformative_if": v.get("uninformative_if", ""),
-            "color_light": PALETTE_LIGHT[i % 8], "color_dark": PALETTE_DARK[i % 8],
+            "color_light": c_light, "color_dark": c_dark,
             "series": series, "trades": trades, "monthly": monthly, "rolling": rolling,
             "results": _slim(results.get(v["id"], {})),
         })
 
     bars, vmap = ({}, {})
+    if (md is None or keep is None) and rebuild_charts:
+        md, keep = _keep_from_record(record)
     if md is not None and keep is not None:
         bars, vmap = _bars_payload(md, keep, variants, full_id)
 
@@ -197,7 +229,7 @@ def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html
                                           "synthetic", "code", "packages", "dataset", "execution",
                                           "windows", "coverage", "trials")},
         "limitations": cfg.get("limitations", []),
-        "findings": cfg.get("findings", []),
+        "findings": findings if findings is not None else cfg.get("findings", []),
         "variants": vdata, "bars": bars, "bar_map": vmap,
         "config_toml": Path(record["config_path"]).read_text() if Path(record["config_path"]).exists() else "",
     })

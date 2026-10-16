@@ -351,3 +351,11 @@ appears:
 - **Unknown MCP or tool ownership** — a configured connector, hook, or automation whose owner,
   purpose, or current consumer cannot be established. Do not invoke it to find out.
 - **Wrong-side mutation** — any target that is not exactly `dwats250/strategy`, per §i.
+
+### Model releases — amendment 2026-10-16 (owner instruction)
+
+The binding table above assigns **roles** to model **families**. A newer release of the bound
+family (for example Opus 5.5 for "Claude Opus 5", or a later Fable or Haiku release) fills the same
+lane without a further amendment and is **not** a model-role conflict. Sessions name the exact
+model version in their preflight. A change of family for a lane, a new lane, or any change to a
+lane's scope or authority still requires Dustin's explicit authorization by dated amendment.

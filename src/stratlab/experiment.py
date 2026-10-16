@@ -170,8 +170,8 @@ def run_variant(md: MarketData, variant: dict, exe: ExecutionConfig, w: Window) 
     feats = feats_all.loc[sig.index]
     rth = _slice_sessions(md.rth, w)
     frame = build_execution_frame(rth, sig, feats, md.sessions.loc[w.start:w.end], minutes, exe.flatten_minutes)
-    first = feats.iloc[0]
-    if first[["vwap", "ema"]].isna().any() if {"vwap", "ema"} <= set(feats.columns) else False:
+    warm_cols = [c for c in ("vwap", "ema") if c in feats.columns]
+    if warm_cols and feats.iloc[0][warm_cols].isna().any():
         raise RuntimeError(f"{variant['id']}: indicators not warm at window start {w.start}")
     out = run_backtest(cls, frame, exe, params)
     trades = mark_ambiguous_exits(out.trades, frame)
@@ -271,7 +271,7 @@ def run_experiment(config_path: Path, out_root: Path | None = None, market: Mark
             keep[(v["id"], w.id)] = res
     # Diffs vs baseline (per window)
     for v in variants:
-        if v["id"] == baseline or v.get("role") == "independent":
+        if v["id"] == baseline or v.get("role") in ("independent", "benchmark"):
             continue  # independent strategies are compared side by side, never diffed as variants
         for w in windows:
             if (v["id"], w.id) in keep and (baseline, w.id) in keep:
@@ -331,7 +331,7 @@ def _append_ledger(path: Path, record: dict, results: dict, variants: list, full
                 "mask": (record["dataset"].get("mask") or {}).get("id"),
                 "window": full.id, "window_start": full.start, "window_end": full.end, "sessions": full.sessions,
                 "trials_planned": record["trials"]["planned"],
-                "dsr_threshold_implied": f"{record['trials']['dsr_threshold_implied']['sr_annualized']:.3f} ann. (N={record['trials']['planned']}, T={full.sessions})",
+                "dsr_threshold_implied": f"illustrative independent-trials null: {record['trials']['dsr_threshold_implied']['sr_annualized']:.3f} ann. (N={record['trials']['planned']}, T={full.sessions}); not a significance threshold",
                 "trades": tm.get("trades"), "net_pnl": em.get("net_pnl"), "total_return": em.get("total_return"),
                 "sharpe_daily_ann": em.get("sharpe_daily_ann"), "max_dd_session_close": em.get("max_dd_session_close"),
                 "expectancy_r": tm.get("expectancy_r"), "status": r.get("status", "missing"),

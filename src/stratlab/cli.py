@@ -31,11 +31,28 @@ def _demo(out: Path | None) -> Path:
     return run_experiment(cfg, out_root=out, market=md, synthetic_label=SYNTHETIC_LABEL, ledger=False)
 
 
+def _findings_from_md(path: Path) -> list[str]:
+    """Bullets ('- ...', continuation lines joined) under the first '## Findings' heading."""
+    out, on = [], False
+    for line in path.read_text().splitlines():
+        if line.startswith("## "):
+            on = line.strip().lower().startswith("## findings")
+            continue
+        if not on:
+            continue
+        if line.startswith("- "):
+            out.append(line[2:].strip())
+        elif line.startswith("  ") and out and line.strip():
+            out[-1] += " " + line.strip()
+    return out
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="stratlab")
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run"); r.add_argument("config"); r.add_argument("--out"); r.add_argument("--no-ledger", action="store_true")
     rp = sub.add_parser("report"); rp.add_argument("run_dir")
+    rp.add_argument("--findings", help="markdown file; its '- ' bullets under a '## Findings' heading are embedded")
     d = sub.add_parser("demo"); d.add_argument("--out")
     sub.add_parser("identity", help="print the code identity a FROZEN config must pin")
     dd = sub.add_parser("data"); dsub = dd.add_subparsers(dest="dcmd", required=True)
@@ -51,7 +68,9 @@ def main(argv=None):
         import datetime as _dt
         from .report.build import build_report
         stamp = _dt.datetime.now(_dt.UTC).strftime("%Y%m%dT%H%M%SZ")
-        print(build_report(Path(a.run_dir), out_name=f"report_rebuild_{stamp}.html"))
+        findings = _findings_from_md(Path(a.findings)) if a.findings else None
+        print(build_report(Path(a.run_dir), out_name=f"report_rebuild_{stamp}.html",
+                           findings=findings, rebuild_charts=True))
     elif a.cmd == "demo":
         print(_demo(Path(a.out) if a.out else None) / "report.html")
     elif a.cmd == "identity":

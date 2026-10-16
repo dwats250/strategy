@@ -95,6 +95,28 @@ def trade_metrics(trades: pd.DataFrame) -> dict:
         "ambiguous_stop_target_minutes": int(closed.get("ambiguous_exit", pd.Series(False, index=closed.index)).sum()),
     })
     out.update(concentration(pnl))
+    out.update(risk_distribution(closed))
+    return out
+
+
+def risk_distribution(trades: pd.DataFrame) -> dict:
+    """Initial account risk per trade under notional sizing, and actual reward/risk where a
+    target exists. Descriptive only: these are exposure facts, not performance."""
+    out = {}
+    def q(col, name):
+        if col not in trades:
+            return
+        x = pd.to_numeric(trades[col], errors="coerce").dropna()
+        if not len(x):
+            return
+        for p, lab in ((0.1, "p10"), (0.5, "median"), (0.9, "p90")):
+            out[f"{name}_{lab}"] = float(x.quantile(p))
+        out[f"{name}_max"] = float(x.max())
+        out[f"{name}_mean"] = float(x.mean())
+    q("initial_risk_pct_equity", "risk_pct_equity")
+    q("initial_risk_usd", "risk_usd")
+    q("initial_reward_risk", "reward_risk")
+    q("notional_pct_equity", "notional_pct_equity")
     return out
 
 

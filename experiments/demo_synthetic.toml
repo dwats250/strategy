@@ -72,3 +72,11 @@ label = "IG-AUSTIN-P0 (provisional)"
 strategy = "stratlab.strategies.instagram_austin_vwap_ema9:InstagramAustinVwapEma9P0"
 params = {}
 difference = "Separate strategy: 3m EMA9/VWAP(OHLC4) cross, EMA9 exit. Provisional interpretation."
+
+[[variants]]
+id = "BENCH"
+role = "benchmark"
+label = "SPY session-hold (benchmark)"
+strategy = "stratlab.strategies.benchmarks:SessionHold"
+params = {}
+difference = "Benchmark: long 09:31 open to 15:55 open each session, same capital and costs."
