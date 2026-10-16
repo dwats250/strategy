@@ -273,3 +273,24 @@ def test_reruns_are_identical(one_session):
     c = run_plan(b, s, plan)
     pd.testing.assert_frame_equal(a.trades, c.trades)
     pd.testing.assert_frame_equal(a.equity, c.equity)
+
+
+def test_entry_minute_opening_beyond_stop_has_no_defined_risk(one_session):
+    """Review finding: a long whose fill opens BELOW its stop is stopped in the same
+    minute at the open; it never had a defined risk, so R is NaN and it is labelled."""
+    b = flat_session_bars(one_session)
+    set_bar(b, f"{D} 09:41", 98, 98.2, 97.8, 98)
+    t = run_plan(b, one_session, {f"{D} 09:40": ("buy", 99.0)}).trades.iloc[0]
+    assert t.entry_price == 98.0 and t.exit_price == 98.0
+    assert t.exit_reason == "stop_beyond_fill" and np.isnan(t.r_multiple) and np.isnan(t.risk_per_share)
+
+
+def test_open_beyond_target_with_stop_touch_still_resolves_to_stop_pessimistic(one_session):
+    """Review finding: the minute OPENS above the target (so a resting target would have
+    filled at the open), but the same minute also trades through the stop. The library
+    processes the stop first and fills it at the stop: a pessimistic bias, not just an
+    unknowable path. Such exits are flagged ambiguous by the experiment runner."""
+    b = flat_session_bars(one_session)
+    set_bar(b, f"{D} 09:42", 103, 103.5, 98.5, 103)
+    t = run_plan(b, one_session, {f"{D} 09:40": ("buy", 99.0, 101.0)}).trades.iloc[0]
+    assert (t.exit_price, t.exit_reason) == (99.0, "stop")

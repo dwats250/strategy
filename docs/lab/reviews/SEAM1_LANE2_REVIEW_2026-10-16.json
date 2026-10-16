@@ -1,0 +1,390 @@
+[
+ {
+  "key": "execution",
+  "findings": [
+   {
+    "title": "Stop gapped through at entry yields a zero-R 'stop' trade with a wrong-side initial_stop reported as positive risk",
+    "severity": "minor",
+    "file": "src/stratlab/engine.py",
+    "line": 174,
+    "failure_scenario": "Decision at 09:40 (close 100), long with stop 99.0; the 09:41 bar opens at 98 (below the stop). Backtesting opens the trade at 98 and the SL (reprocessed on the entry bar) fills at min(open, stop)=98 in the same minute. The trade table records side=long, entry_price=98, exit_price=98, initial_stop=99 (above the entry), risk_per_share=1.0 (abs() hides the sign), pnl=-costs, r_multiple=0, exit_reason='stop', bars_held=0. The trade counts toward trade count / stop-rate / win-rate statistics although no risk was ever defined for it, and `initial_stop` is on the wrong side of the fill without any flag.",
+    "evidence": "Demonstrated with /tmp/claude-1000/-home-dustin-Projects-strategy/bd4ee4f7-5b67-4b16-9025-d79d8158bba9/scratchpad/review-execution/exp1.py section (a): output row `long 101 ... entry_price 98.0 exit_price 98.0 initial_stop 99.0 risk_per_share 1.0 pnl 0.0 r_multiple 0.0 exit_reason stop bars_held 0`. Cause: `enter()` passes `sl=stop` validated by Backtesting only against the decision-minute close (backtesting.py new_order), and `_trade_table` line 296 uses `abs(entry - stop)` so the sign inversion is lost; line 303 then classifies any exit <= sl as 'stop'.",
+    "suggested_fix": "In `_trade_table`/`_open_trade_rows`, detect `side*(entry-stop) <= 0` and either tag these rows with a distinct exit_reason (e.g. 'stop_gapped_at_entry') or set risk_per_share/r_multiple to NaN and surface a count in metrics, so they are not pooled with genuine -1R stops. Document the behaviour in ENGINE_BEHAVIOR.md."
+   },
+   {
+    "title": "ENGINE_BEHAVIOR claim 7 ('target gapped through fills at the better open') is false when the gap bar also touches the stop: resolved as a stop at the stop price, ignoring the known open",
+    "severity": "minor",
+    "file": "docs/lab/ENGINE_BEHAVIOR.md",
+    "line": 16,
+    "failure_scenario": "Long entered at 100 with stop 99 / target 101. The 09:42 minute opens at 103 (above the target), high 103.5, low 98.5 (below the stop), close 103. The first print of the minute (the open) is above the target, so a limit at 101 would fill at 103 as claim 7 states; instead Backtesting processes the SL order first (`orders.insert(0, ...)` for stop orders) and fills at min(open, stop)=99. Trade table: exit_price=99.0, exit_reason='stop', r_multiple=-1.0, when the only sequence consistent with the bar's open is a +3R target fill. The doc describes same-minute stop/target as 'unavoidable ambiguity', but here the open resolves the order of events and is ignored.",
+    "evidence": "Demonstrated with /tmp/claude-1000/-home-dustin-Projects-strategy/bd4ee4f7-5b67-4b16-9025-d79d8158bba9/scratchpad/review-execution/exp1.py section (b): `long 99 ... entry 100.0 exit 99.0 initial_stop 99.0 target 101.0 pnl -99.0 r_multiple -1.0 exit_reason stop`. Library mechanics: backtesting.py lines ~888-932 (SL processed first; price = min(open, stop) for a sell stop). Only `test_target_gapped_through_fills_at_the_better_open` (no stop touch in the bar) backs claim 7; `test_stop_and_target_in_same_minute_resolves_to_stop` uses open=100 inside both levels, so neither test covers an open beyond the target. experiment.mark_ambiguous_exits would count this trade as ambiguous, so it is not silently lost, but the doc claim and the §'Unavoidable bar-resolution ambiguity' item 1 overstate what is unknowable.",
+    "suggested_fix": "Amend claim 7 and ambiguity item 1 to state that a same-minute stop touch takes precedence even when the bar OPENS beyond the target (pessimistic, not merely ambiguous), add a pinned test for that case, or special-case it in the engine (e.g. a market exit at the open when open is beyond the target) if the lab wants the open honoured."
+   },
+   {
+    "title": "Comment in build_execution_frame says mid-data open positions are reported as `end_of_data`; the engine reports `open_at_end`, and the `end_of_data` branch in _trade_table is unreachable",
+    "severity": "minor",
+    "file": "src/stratlab/engine.py",
+    "line": 118,
+    "failure_scenario": "Reader of build_execution_frame (line 116-118) expects an `end_of_data` exit_reason for the truncated last session; actual rows come from `_open_trade_rows` with exit_reason='open_at_end' (line 273), which is also the string metrics.py filters on. `_trade_table` line 308 can only produce 'end_of_data' for a closed trade that is neither in exit_reasons nor matches SL/TP, which cannot occur with finalize_trades=False and the lab's strategies; any future caller grepping for 'end_of_data' (e.g. to exclude open positions) would silently miss every open row.",
+    "evidence": "engine.py lines 116-118 vs 273; metrics.py line 67/69 and experiment.py line 159 filter on 'open_at_end' only; exp1.py section (c) shows the open row labelled 'open_at_end'. No test or code path emits 'end_of_data'.",
+    "suggested_fix": "Change the comment at line 118 to `open_at_end`, and either remove the unreachable 'end_of_data' fallback in _trade_table or replace it with an explicit error/'unclassified' label so a genuinely unclassified closed trade is noticed rather than mislabelled."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Stop gapped through at entry yields a zero-R 'stop' trade with a wrong-side initial_stop reported as positive risk",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by rerunning the reviewer's exp1.py section (a) at /home/dustin/Projects/strategy-lab (HEAD 80799e5): long with stop 99 decided at 09:40, 09:41 opens at 98 -> trade row `entry_price 98.0, exit_price 98.0, initial_stop 99.0, risk_per_share 1.0, pnl 0.0, r_multiple 0.0, exit_reason stop, bars_held 0`. Cause verified in src/stratlab/engine.py: `enter()` (line 174) passes `sl=stop` with no check against the eventual fill; `_trade_table` line 296 uses `abs(entry - stop)` so the inverted stop becomes a positive 1.0 risk, and line 303 classifies exit<=sl as 'stop'. metrics.trade_metrics (src/stratlab/metrics.py lines 67-93) then pools it into `trades`, `win_rate` (pnl<=0 counts as a loss when costs>0), `expectancy_r` (contributes 0) and `exit_reasons['stop']`. No flag anywhere distinguishes it from a genuine stop. Impact is bounded (R=0 rather than a falsely large loss, and only on gap-at-entry minutes), so minor stands."
+   },
+   {
+    "title": "ENGINE_BEHAVIOR claim 7 ('target gapped through fills at the better open') is false when the gap bar also touches the stop: resolved as a stop at the stop price, ignoring the known open",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by rerunning exp1.py section (b): long entered 100, stop 99 / target 101, 09:42 bar O=103 H=103.5 L=98.5 C=103 -> `exit_price 99.0, exit_reason stop, r_multiple -1.0`. The bar's open (103) is the first known print and is above the target, yet the engine fills the stop at 99. docs/lab/ENGINE_BEHAVIOR.md line 16 states the target gap case fills at the better open without qualification, and the only backing test (`test_target_gapped_through_fills_at_the_better_open`, tests/test_engine_behavior.py:102-106) uses a bar whose low (102.5) never touches the stop; `test_stop_and_target_in_same_minute_resolves_to_stop` uses open=100 inside both levels. So no test covers open-beyond-target with a stop touch, and the doc's blanket claim and ambiguity item 1 ('path is unknown') overstate the case since the open resolves it. Mitigating: experiment.mark_ambiguous_exits (src/stratlab/experiment.py:121-139) would flag this row as ambiguous_exit (hi>=target and lo<=stop), so the trade is counted, not lost. Minor stands as a documentation/pessimism-labelling defect."
+   },
+   {
+    "title": "Comment in build_execution_frame says mid-data open positions are reported as `end_of_data`; the engine reports `open_at_end`, and the `end_of_data` branch in _trade_table is unreachable",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by inspection and reproduction. src/stratlab/engine.py line 118 comment says 'reported as `end_of_data`'; the actual open-position rows come from `_open_trade_rows` with exit_reason='open_at_end' (line 273), reproduced in exp1.py section (c) (`open_at_end`, exit_time NaT). grep over src/, tests/, docs/ shows 'end_of_data' appears only at engine.py:118 (comment) and engine.py:308 (fallback in _trade_table); every consumer (metrics.py:67,69; experiment.py:159; template.html:225; test_engine_behavior.py:245; ENGINE_BEHAVIOR.md row 19) uses 'open_at_end'. With finalize_trades=False (line 224) and every discretionary exit recorded in exit_reasons via exit_all(), a closed trade that is neither in exit_reasons nor matches SL/TP cannot arise, so the line-308 label is dead and would mislabel any future unclassified trade rather than flag it. Minor: misleading comment plus dead/mislabelling fallback, no current wrong output."
+   }
+  ]
+ },
+ {
+  "key": "metrics",
+  "findings": [
+   {
+    "title": "Freeze gate is a deny-list: only status == \"PROPOSED\" is refused, so an unlabelled or otherwise-labelled config runs on real data and writes LEDGER rows",
+    "severity": "major",
+    "file": "src/stratlab/experiment.py",
+    "line": 209,
+    "failure_scenario": "Copy studies/vwap-ema9-2026-10/manifests/VWR0_EXPERIMENT_v0.1.toml and delete (or misspell, e.g. status = \"DRAFT\" or \"PRE-REG\") the `status = \"PROPOSED\"` line, then `stratlab run <file>` with no synthetic label: run_experiment() passes the gate, loads the real dataset, runs every variant, and appends rows to studies/vwap-ema9-2026-10/LEDGER.csv. The convention (docs/lab/HANDOFF.md step 1) is that only a FROZEN versioned file may run on real data; the code enforces the complement of one string rather than the required value.",
+    "evidence": "experiment.py:209-212: `if str(exp.get(\"status\", \"\")).upper() == \"PROPOSED\" and not synthetic_label: raise PermissionError(...)`. A missing key yields \"\" which is != \"PROPOSED\" and runs. The committed demo config (experiments/demo_synthetic.toml) has no status field at all and relies on the synthetic label; a real-data config with the same omission is not stopped. test_proposed_config_refuses_real_data only covers the literal PROPOSED value.",
+    "suggested_fix": "Invert to an allow-list: `if not synthetic_label and str(exp.get(\"status\", \"\")).upper() != \"FROZEN\": raise PermissionError(...)`, and add a test that a config with no status (and one with status = \"DRAFT\") is refused on real data."
+   },
+   {
+    "title": "Ledger row is appended before the report is built; a report-build failure leaves a status=ok ledger row pointing at a run directory with no report.html",
+    "severity": "minor",
+    "file": "src/stratlab/experiment.py",
+    "line": 279,
+    "failure_scenario": "On a real-data run, `_append_ledger` writes one row per variant with status \"ok\", then `build_report` raises (e.g. `_vendor_assets` raises RuntimeError if the pinned itables bundle has an unexpected export clause, or any plotly/itables import error). run_experiment propagates the exception; the LEDGER.csv now has rows for a run whose directory holds run_record.json/metrics.json but no report.html, and because runs are immutable (FileExistsError on reuse of run_id) the row cannot be reconciled by re-running into the same id.",
+    "evidence": "experiment.py:279-283: `_append_ledger(...)` at line 280 precedes `from .report.build import build_report; build_report(run_dir, md=md, keep=keep)` at 282-283. Nothing catches a build_report failure or records it in the ledger/run_record.",
+    "suggested_fix": "Build the report (or at least import and vendor-check the report assets) before appending the ledger, or wrap build_report and record a `report_status` in run_record.json/ledger notes; alternatively write the ledger row last."
+   },
+   {
+    "title": "Dataset SHA-256 verification is cached by (path, mtime, size): a same-size, same-mtime replacement passes verification on the second load in a process",
+    "severity": "minor",
+    "file": "src/stratlab/data/store.py",
+    "line": 67,
+    "failure_scenario": "Demonstrated in /tmp/claude-1000/-home-dustin-Projects-strategy/bd4ee4f7-5b67-4b16-9025-d79d8158bba9/scratchpad/review-metrics/probe4.py: register a 1-row canonical file, resolve() once (SHA verified, close=1.5), overwrite the file with a same-length row (close=9.5) and restore mtime with os.utime; resolve() again returns success and read_canonical parses close=9.5 although the file's SHA no longer matches the registry. Within one long-lived process (CLI batch, notebook, test session) the module docstring's guarantee 'Every load verifies the SHA-256 before parsing' does not hold after the first load.",
+    "evidence": "store.py:67-69 `@lru_cache(maxsize=None) def _verified(path, mtime, size, expected)`; store.py:84 keys the lookup on `st.st_mtime, st.st_size`. Output of the probe: `size same: True | mtime same: True | file sha == registry: False` followed by `second resolve ACCEPTED tampered file; parsed close = 9.5`.",
+    "suggested_fix": "Drop the cache (a 422k-row gz hashes in well under a second) or make load_dataset() hash the bytes it actually parses (hash the stream once and feed the same buffer to pandas), so verification and parse cannot diverge."
+   },
+   {
+    "title": "`recent_Nm` window is never flagged partial, even when the available history is shorter than N months",
+    "severity": "minor",
+    "file": "src/stratlab/windows.py",
+    "line": 201,
+    "failure_scenario": "coverage of 65 business sessions 2025-03-03..2025-05-30, warmup 5, recent_months=6 -> build_windows returns Window(id='recent_6m', label='Latest 6 months', start='2025-03-10', end='2025-05-30', sessions=60, partial=False). The window actually spans under 3 months and is identical to `full`, but the run record and report label it 'Latest 6 months' with partial=False, while the calendar halves in the same output are correctly flagged partial.",
+    "evidence": "windows.py:200-204 computes `rec = scored[scored >= start_bound]` and hard-codes `False` for `partial`; there is no check that `rec[0] <= start_bound` (i.e. that data existed at the start of the requested span). Reproduced in probe1.py (third block).",
+    "suggested_fix": "Set `partial = scored[0] > start_bound` (and append a note) so a clipped recent window is marked like the halves are."
+   },
+   {
+    "title": "Concentration shares include losing trades in the top-k sum when there are fewer than k winners, understating dependence on big winners",
+    "severity": "minor",
+    "file": "src/stratlab/metrics.py",
+    "line": 106,
+    "failure_scenario": "pnl = [100, -50] -> concentration() returns top1_share_of_gross_profit=1.0 but top5_share_of_gross_profit=0.5 and top10_share=0.5. All gross profit comes from one trade, so every top-k share for k>=1 should be 1.0; the reported 0.5 arises because s.head(5) sums the -50 loser into 'top'. For a real strategy with, say, 8 winners and many losers, top10_share is pulled below top5_share and below 1.0, which reads as diversification that does not exist.",
+    "evidence": "metrics.py:105-107: `top = float(s.head(k).sum())` then `top / gross_profit` with no restriction to positive pnl. Reproduced in probe1.py (second block).",
+    "suggested_fix": "Compute the share from positive trades only: `top_pos = float(s[s > 0].head(k).sum())` for the share, keeping `net - s.head(k).sum()` for net_pnl_ex_topk if 'remove the k largest trades' is the intended meaning (or restrict both and document)."
+   },
+   {
+    "title": "`avg_minutes_held` is reported in bars_held (exit_bar - entry_bar) while the report's 'mins' column and exposure_minutes_frac use bars_held + 1",
+    "severity": "minor",
+    "file": "src/stratlab/metrics.py",
+    "line": 87,
+    "failure_scenario": "A trade entered at minute i's open and stopped within minute i has bars_held=0. trade_metrics() reports avg_minutes_held=0.0 (probe1.py block 4), the report lists the same trade as mins=1 (build.py:141 `int(r.bars_held) + 1`), and experiment.py:160 counts it as 1 minute of exposure. metrics.json 'avg_minutes_held' is therefore systematically one minute lower than the trade-table minutes the reader sees, and the two cannot be reconciled from the report.",
+    "evidence": "metrics.py:87 `\"avg_minutes_held\": float(closed[\"bars_held\"].mean())`; engine.py:319 `bars_held=int(r[\"ExitBar\"] - r[\"EntryBar\"])`; experiment.py:160 `(closed[\"bars_held\"] + 1).sum() / len(frame)`; report/build.py:141 `\"mins\": int(r.bars_held) + 1`.",
+    "suggested_fix": "Use `(closed[\"bars_held\"] + 1).mean()` in trade_metrics (or rename the field to avg_bars_held) so the three places agree."
+   },
+   {
+    "title": "Code identity hashes only *.py: report/template.html (which shapes report.html) is outside code_tree_sha256, and build_report can overwrite report.html inside an 'immutable' run directory",
+    "severity": "minor",
+    "file": "src/stratlab/experiment.py",
+    "line": 60,
+    "failure_scenario": "Edit src/stratlab/report/template.html (e.g. change how a statistic is labelled or which precomputed field a panel shows) with git stash-free dirty tree; code_identity() returns the same code_tree_sha256 (files_hashed=18, all .py), and `git status --porcelain -- src` does flag it only if the file is tracked and modified. Then `stratlab report <run_dir>` regenerates report.html in an existing run directory with the new template, while run_record.json still carries the original identity. Two reports produced from the same run_record with different templates are indistinguishable by the recorded identity.",
+    "evidence": "experiment.py:60 `files = sorted(p for p in src.rglob(\"*.py\"))`; `git ls-files src | grep -v .py` shows src/stratlab/report/template.html is a tracked non-.py source; report/build.py:187-188 `out = run_dir / \"report.html\"; out.write_text(html)` with no existence check, unlike run_experiment's FileExistsError guard at experiment.py:225-226.",
+    "suggested_fix": "Hash `rglob(\"*\")` for regular files under src/stratlab (or explicitly add template.html), and have build_report refuse to overwrite an existing report.html unless an explicit rebuild flag is passed, recording the rebuild (template hash + time) in a sidecar rather than silently replacing the file."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Freeze gate is a deny-list: only status == \"PROPOSED\" is refused, so an unlabelled or otherwise-labelled config runs on real data and writes LEDGER rows",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Confirmed by code: src/stratlab/experiment.py:209 `if str(exp.get(\"status\", \"\")).upper() == \"PROPOSED\" and not synthetic_label: raise PermissionError`. A missing key yields \"\" and any other value (DRAFT, PRE-REG, a typo of PROPOSED) also compares unequal, so the gate falls through to prepare_market + run + _append_ledger (line 280, guarded only by `ledger and not synthetic_label`). The committed demo config experiments/demo_synthetic.toml has no status key and the only test (tests/test_experiment_pipeline.py:107) covers the literal PROPOSED value. docs/lab/HANDOFF.md:35-36 states the convention that a FROZEN file is what gets run; the code enforces the complement of one string, i.e. fails open. Not reproduced on real data (would violate the blind-experiment constraint), but the logic is unconditional. Kept at major: a pre-registration gate that fails open on a misspelling or omitted key is a governance control defect, not a style issue."
+   },
+   {
+    "title": "Ledger row is appended before the report is built; a report-build failure leaves a status=ok ledger row pointing at a run directory with no report.html",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by code order: experiment.py:279-283 writes run_record.json, metrics.json, then `_append_ledger(...)` at 280, then `from .report.build import build_report; build_report(run_dir, md=md, keep=keep)` at 282-283 with no try/except. report/build.py `_vendor_assets` (lines 29-45) has two `raise RuntimeError` paths and imports itables/plotly at call time, so a build failure after the ledger write is a real path. Run dirs are immutable (FileExistsError at experiment.py:225-226), so the orphaned ledger row cannot be reconciled by re-running into the same id. Not demonstrated end-to-end because doing so would require writing LEDGER.csv inside the repository, which is forbidden for this reviewer; the static ordering is unambiguous. Minor is the right severity: results are not wrong, the ledger just points at a run without its HTML."
+   },
+   {
+    "title": "Dataset SHA-256 verification is cached by (path, mtime, size): a same-size, same-mtime replacement passes verification on the second load in a process",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Reproduced independently in /tmp/claude-1000/-home-dustin-Projects-strategy/bd4ee4f7-5b67-4b16-9025-d79d8158bba9/scratchpad/review-verify-metrics/probe.py: registered a 1-row canonical file (close=1.5), resolve() verified it, overwrote with a same-length row (close=9.5) and restored mtime via os.utime; output `same mtime/size True True sha matches False` then `second resolve ACCEPTED; parsed {... 'Close': 9.5 ...}`. Cause is store.py:67-69 `@lru_cache(maxsize=None) def _verified(path, mtime, size, expected)` keyed at store.py:84 on `st.st_mtime, st.st_size`. The module docstring (store.py:1-6) claims 'Every load verifies the SHA-256 before parsing', which does not hold after the first load within a process. Requires an in-process same-size, mtime-preserving replacement, so minor."
+   },
+   {
+    "title": "`recent_Nm` window is never flagged partial, even when the available history is shorter than N months",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Reproduced: coverage of 65 business sessions 2025-03-03..2025-05-30 (present==minutes), warmup 5, recent_months=6 -> build_windows returns `Window(id='recent_6m', label='Latest 6 months', start='2025-03-10', end='2025-05-30', sessions=60, kind='recent', partial=False, ...)` while the 2025H1 half in the same output is correctly `partial=True, note='clipped to available data'`. windows.py:58-63 computes `rec = scored[scored >= start_bound]` and hard-codes `False` for partial with no check that scored[0] <= start_bound. The window is identical to `full` but labelled as a 6-month window with partial=False. Mislabelling only, affects report/run-record metadata, so minor."
+   },
+   {
+    "title": "Concentration shares include losing trades in the top-k sum when there are fewer than k winners, understating dependence on big winners",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Reproduced: `concentration(pd.Series([100.0, -50.0]))` returns `top1_share_of_gross_profit: 1.0, top5_share_of_gross_profit: 0.5, top10_share_of_gross_profit: 0.5`. metrics.py:105-107 sums `s.head(k)` without restricting to positive pnl, so once k exceeds the number of winners the share is pulled below 1.0 (and below smaller-k shares), reading as diversification that does not exist. The `net_pnl_ex_topk` field is arguably correct under a 'remove the k largest trades' reading, but the share-of-gross-profit metric is wrong for k > number of winners. Minor: a secondary diagnostic metric, not a headline statistic, and only wrong when winners < k."
+   },
+   {
+    "title": "`avg_minutes_held` is reported in bars_held (exit_bar - entry_bar) while the report's 'mins' column and exposure_minutes_frac use bars_held + 1",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by code: metrics.py:87 `\"avg_minutes_held\": float(closed[\"bars_held\"].mean())`; engine.py:319 `bars_held=int(r[\"ExitBar\"] - r[\"EntryBar\"])`; experiment.py:160 `(closed[\"bars_held\"] + 1).sum() / len(frame)`; report/build.py:141 `\"mins\": int(r.bars_held) + 1`; template.html:221 displays the metric as 'Avg minutes held'. bars_held=0 is a real, tested outcome (tests/test_engine_behavior.py:77 asserts `t.bars_held == 0` for a stop hit in the entry minute; ENGINE_BEHAVIOR.md row 4). So the headline 'Avg minutes held' is systematically one minute below the per-trade 'mins' column and the exposure calculation. Minor: an off-by-one labelling inconsistency, not a wrong P&L."
+   },
+   {
+    "title": "Code identity hashes only *.py: report/template.html (which shapes report.html) is outside code_tree_sha256, and build_report can overwrite report.html inside an 'immutable' run directory",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by code: experiment.py:60 `files = sorted(p for p in src.rglob(\"*.py\"))`; `git ls-files src | grep -v .py` returns exactly src/stratlab/report/template.html; report/build.py:187-188 `out = run_dir / \"report.html\"; out.write_text(html)` has no existence guard, and cli.py:49-51 exposes `stratlab report <run_dir>` which calls it on an existing run dir. Partial mitigation the finding already acknowledges: git_commit and `git status --porcelain -- src` (experiment.py:70) do capture a committed or tracked-and-modified template change, so the identity is not blind to it, only code_tree_sha256 is. The overwrite of report.html in an otherwise immutable run directory is real. Minor: identity is still recoverable from git_commit/git_dirty_paths; this is a gap in the content hash and the immutability guard, not a wrong result."
+   }
+  ]
+ },
+ {
+  "key": "report",
+  "findings": [
+   {
+    "title": "Drawdown panel recomputed in JS disagrees with 'Max DD (session close)' metric (peak not seeded with starting cash)",
+    "severity": "major",
+    "file": "src/stratlab/report/template.html",
+    "line": 271,
+    "failure_scenario": "renderEquity() computes dd with `let peak = -Infinity; ... e/peak - 1`, so the first session's equity defines the peak and any loss on day 1 (or any run that never exceeds starting capital before a new low) shows as 0% / too-shallow drawdown. metrics.equity_metrics prepends initial_cash before cummax. Demonstrated on the demo run: VWR3 first-session equity 99,542.41 -> JS panel minimum -9.04% while the metrics table shows Max DD (session close) -9.43% for the same window. For a window where equity falls from the start and never recovers to $100k the panel would read ~0% at the start of the drawdown while the metric correctly shows the loss from $100k.",
+    "evidence": "Scripted check in headless Chrome on the demo report: `dd VWR3 :: {js_min:-0.09037, metric:-0.09435, first_eq:99542.41}`; all other variants whose first session closed above 100,000 match exactly. metrics.py lines 41-43 (`eq_with_start = pd.concat([pd.Series([initial_cash]), ...])`).",
+    "suggested_fix": "Seed the peak with the window's starting cash: `let peak = R.execution.cash;` (fresh-capital windows all start at execution.cash per the eqNote text). Alternatively embed the Python drawdown series so the panel is a pure view."
+   },
+   {
+    "title": "Trade table 'Min' column uses bars_held+1 while 'Avg minutes held' metric uses bars_held — same quantity shown with two conventions",
+    "severity": "major",
+    "file": "src/stratlab/report/build.py",
+    "line": 141,
+    "failure_scenario": "build.py embeds `mins = bars_held + 1` per trade (so a trade entered 12:05 and exited 12:06 shows 'Min 2', entry 09:45/exit 11:20 shows 96), but metrics.trade_metrics reports avg_minutes_held = mean(bars_held). The displayed per-trade minutes therefore average exactly 1.0 more than the 'Avg minutes held' row of the metrics table; a reader reconciling the table against the metric gets a contradiction. Exposure (experiment.py:160) uses bars_held+1, so the three displayed quantities use two definitions.",
+    "evidence": "Headless check on demo: `VWR0 mean table Min :: 27.0997`, `metric avg_minutes_held :: 26.0997`. metrics.py:87 `\"avg_minutes_held\": float(closed[\"bars_held\"].mean())`; experiment.py:160 `(closed[\"bars_held\"] + 1)`.",
+    "suggested_fix": "Pick one definition of minutes held and use it in build.py:141, metrics.py:87 and experiment.py:160 (or label the column 'Bars spanned'); document whether the entry minute counts."
+   },
+   {
+    "title": "Experiment title inserted into <title> without HTML escaping — config string can break the document head / inject script",
+    "severity": "major",
+    "file": "src/stratlab/report/build.py",
+    "line": 183,
+    "failure_scenario": "`tpl.replace(\"__TITLE__\", ... + title)` uses the raw `experiment.title` from the TOML/run record. A title containing `</title><script>...</script>` or just `&`/`<` is emitted verbatim into <head>. Every other config string (labels, hypothesis, synthetic banner) goes through esc() in JS; this is the one unescaped sink and the only server-side one.",
+    "evidence": "Rebuilt a scratch copy with title `Demo </title><script>document.body.innerHTML=\"PWNED\"</script> & <b>x</b>` via `stratlab report`; output contains `<title>SYNTHETIC · Demo </title><script>document.body.innerHTML=\"PWNED\"</script> & <b>x</b></title>` and the browser title is truncated to 'SYNTHETIC · Demo '. Variant label `<img onerror>` was correctly escaped in the DOM (only appears inside the JSON payload).",
+    "suggested_fix": "`import html` and use `html.escape(title)` for the __TITLE__ substitution (and consider escaping ids used in `data-w`/`data-v` attributes in template.html:260/262)."
+   },
+   {
+    "title": "Report size will be ~15-16 MB on the real corpus (~490 sessions), at or over the 16 MB artifact limit",
+    "severity": "major",
+    "file": "src/stratlab/report/build.py",
+    "line": 78,
+    "failure_scenario": "Demo report (181 scored sessions, 6 variants, 2 feature sets, 5,112 trades) is 9.29 MB: 5.58 MB vendored Plotly+DataTables + 3.72 MB JSON payload, of which bars = 1.95 MB (two feature sets x 181 days x 7 arrays), trades = 1.40 MB, results = 0.28 MB (diff_vs_baseline.keys lists are embedded but never rendered). Scaling the payload linearly to ~490 sessions gives ~10.1 MB payload + 5.58 MB vendor ≈ 15.6 MB — within noise of the 16 MB artifact cap, and any variant with more trades per session or a third feature set (different minutes/ema/vwap_source) pushes it over.",
+    "evidence": "Measured from the generated demo: total 9,293,478 bytes; `data bytes 3717145`; `bars 1951818` (fsets '5m|hlc3|9','3m|ohlc4|9', 181 days each); per-variant trades 116-403 KB; VWR2 results 100,984 bytes of which diff_vs_baseline 40,238 bytes (keys lists). Chrome DOM dump of the rendered page is 9.6 MB.",
+    "suggested_fix": "Strip `diff_vs_baseline.keys` and `library_stats` from the embedded results; round vwap/ema to 2 dp and emit bar arrays as compact numeric arrays (or gzip+base64 the payload and inflate with DecompressionStream); consider embedding 1 feature set per distinct `minutes` only, or dropping non-trade days from bars."
+   },
+   {
+    "title": "`stratlab report` rebuild renders 'Signals use completed -minute bars' when no bar data is embedded",
+    "severity": "minor",
+    "file": "src/stratlab/report/template.html",
+    "line": 446,
+    "failure_scenario": "renderMethod() derives the bar size from `DATA.bars[DATA.bar_map[v.id]]?.minutes`. When the report is rebuilt from a run directory (cli.py `report` path, which cannot embed bars) `bars` is `{}` and the Method section reads 'Signals use completed -minute bars anchored at the session open'. The per-variant `minutes` is available in `results[window].minutes` and should be used instead.",
+    "evidence": "`uv run stratlab report <scratch copy of demo run>` then DOM dump: 'Engine: Backtesting.py 0.6.6 on 1-minute regular-session bars. Signals use completed -minute bars anchored at the session open; ...'. metrics.json contains `\"minutes\": 5` per variant/window.",
+    "suggested_fix": "Use `[...new Set(V.map(v => v.results[W[0].id]?.minutes).filter(Boolean))]` for the Method sentence."
+   },
+   {
+    "title": "Download labelled 'All trades (CSV)' exports only full-window trades; note claims it is a copy of the run directory's CSVs",
+    "severity": "minor",
+    "file": "src/stratlab/report/template.html",
+    "line": 435,
+    "failure_scenario": "build.py embeds trades only for `full_id` (build.py:131), so the 'All trades (CSV)' button yields 5,112 rows (sum of the six *__full.csv files) while the run directory holds 24 trade CSVs including the H1/H2/recent fresh-capital runs. The Downloads note says the files 'are a copy of the run directory's CSV/JSON files', which is not true for trades.",
+    "evidence": "Headless check: `csv lines :: 5112` = 1143+1466+428+864+610+601 (full-window counts); run dir contains e.g. VWR0__2025H1.csv (713 rows), VWR0__recent_3m.csv (430 rows) that are not embedded.",
+    "suggested_fix": "Rename the button 'Full-history trades (CSV)' and adjust the note, or embed per-window trade files."
+   },
+   {
+    "title": "Zero/near-zero deltas get a '+' sign and green colour for lower-is-better metrics",
+    "severity": "minor",
+    "file": "src/stratlab/report/template.html",
+    "line": 301,
+    "failure_scenario": "`cls = (d > 0) === higherBetter ? \"pos\" : (d === 0 ? \"\" : \"neg\")`: for higherBetter === false and d === 0, `(false) === false` is true so an exactly-zero delta is coloured green; for tiny positive float noise (e.g. 1e-12) `fmt` prints '+0.0' in green or red. Visible in the demo: VWR2 'Avg minutes held' delta prints '+0.0'.",
+    "evidence": "Rendered metrics table: 'Avg minutes held | 26.1 | ... | 26.1 | +0.0'.",
+    "suggested_fix": "Round d to the display precision before deciding sign/colour, and test `d === 0` before the higherBetter comparison."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Drawdown panel recomputed in JS disagrees with 'Max DD (session close)' metric (peak not seeded with starting cash)",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Confirmed. template.html:271 seeds `peak = -Infinity` so the first session's equity becomes the peak; metrics.py:41-42 prepends initial_cash before cummax. Reproduced in Python on the demo run's full-window equity CSVs: VWR3 first_eq 99542.41 -> JS-style min -0.09037 vs metric max_dd_session_close -0.09435 (mismatch); all five variants whose first session closed above 100,000 match exactly. The drawdown panel and the metrics table display different numbers for the same quantity; for a window that falls from the start the panel reads 0% while the metric shows the loss from starting cash."
+   },
+   {
+    "title": "Trade table 'Min' column uses bars_held+1 while 'Avg minutes held' metric uses bars_held — same quantity shown with two conventions",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Confirmed. build.py:141 `\"mins\": int(r.bars_held) + 1`; metrics.py:87 `avg_minutes_held = mean(bars_held)`; experiment.py:160 exposure uses `bars_held + 1`. Recomputed on every demo variant's full-window trades CSV: table-column mean is exactly metric + 1.0 (e.g. VWR0 27.0997 vs 26.0997, IGP0 16.3028 vs 15.3028). The 'Min' column (template.html:361) and the 'Avg minutes held' row cannot be reconciled by a reader."
+   },
+   {
+    "title": "Experiment title inserted into <title> without HTML escaping — config string can break the document head / inject script",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by code (build.py:181-183 raw `tpl.replace(\"__TITLE__\", ...)`, template.html:6 is the only sink) and reproduced: rebuilt a scratch copy with the title set to `Demo </title><script>document.title=\"PWNED\"</script> & <b>x</b>`; output head contains `<title>SYNTHETIC · Demo </title><script>document.title=\"PWNED\"</script> & <b>x</b></title>`. Downgraded to minor: the title comes from the operator-authored experiment TOML / run record, not untrusted input, so the realistic failure is a truncated or malformed title for titles containing `&` or `<`, not an attack. Fix is one `html.escape` call."
+   },
+   {
+    "title": "Report size will be ~15-16 MB on the real corpus (~490 sessions), at or over the 16 MB artifact limit",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Arithmetic confirmed, consequence not. Measured demo report: 9,406,946 bytes total, DATA payload 3,830,559 bytes (bars 1,951,818 for two feature sets x 181 sessions; variants 1,873,739, of which trades 116-404 KB and results up to 122 KB per variant with diff_vs_baseline key lists embedded). Real corpus has 494 unique session dates (~489 after 5 warmup sessions), so linear scaling gives ~10.3 MB payload + ~5.58 MB vendor ≈ 15.9 MB. However this is a projection, not an observed failure, and no project document (charge LAB-RESTART-2026-10-16, HANDOFF, START_HERE) states a 16 MB limit — the charge requires an offline, mobile-readable self-contained HTML, and the 16 MB figure is a claude.ai artifact constraint. Survives only as a minor size/portability concern (a ~16 MB page is heavy for the stated mobile-readable goal), not as a wrong result."
+   },
+   {
+    "title": "`stratlab report` rebuild renders 'Signals use completed -minute bars' when no bar data is embedded",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed. `uv run stratlab report` on a scratch copy of the demo run produced a payload with `bars: {}` and `bar_map: {}`; evaluating the template.html:446 expression in node with that payload yields `completed -minute bars`. metrics.json carries `minutes` per variant/window (5 for VWR*, 3 for IGP0), so the sentence could be derived from results instead. HANDOFF.md:44 acknowledges the rebuild lacks bars but not this garbled sentence."
+   },
+   {
+    "title": "Download labelled 'All trades (CSV)' exports only full-window trades; note claims it is a copy of the run directory's CSVs",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Confirmed by code and run directory. build.py:131 reads only `trades/{vid}__{full_id}.csv`; the demo run's trades/ directory holds 24 files (full, 2025H1, 2025H2, recent_3m per variant). template.html:435 labels the button 'All trades (CSV)' and template.html:152 states the files are 'a copy of the run directory's CSV/JSON files', which is false for the per-window trade files. Embedded full-window trade counts sum to 1143+1466+428+864+610+601 = 5112."
+   },
+   {
+    "title": "Zero/near-zero deltas get a '+' sign and green colour for lower-is-better metrics",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Logic confirmed in node: with template.html:301's expression, d=0 and higherBetter=false yields class 'pos' (green), d=0/higherBetter=true yields '' — asymmetric; d=1e-12 with higherBetter=false yields 'neg' and prints '+0.0'. Three metrics have higherBetter=false (Ann. volatility, Costs paid, Top-5 share). One correction to the reviewer's evidence: the demo's 'Avg minutes held +0.0' row has higherBetter=null, so it shows the spurious '+' sign but no colour. Cosmetic; severity minor stands."
+   }
+  ]
+ },
+ {
+  "key": "governance",
+  "findings": [
+   {
+    "title": "Pre-registration gates disagree between the proposal (md) and the experiment TOML; VWR4's md gate is unmeasurable",
+    "severity": "major",
+    "file": "studies/vwap-ema9-2026-10/manifests/VWR_FAMILY_PROPOSAL_v0.1.md",
+    "line": 45,
+    "failure_scenario": "Both files are to be frozen as v1.0 and then interpreted against. VWR4 md row (line 45) says evidence is uninformative if '...VWR0's morning subset (from the diff) is statistically indistinguishable from its afternoon subset' — no test, no threshold, and the diff table does not split VWR0 by time of day; the TOML (VWR0_EXPERIMENT_v0.1.toml:92) drops that clause entirely ('Fewer than 100 morning trades.'). Conversely VWR0's own uninformative-if (TOML:48, '<200 trades in the full window, or sign change when top 5 removed') appears nowhere in the md. After the run, a reader choosing which frozen document governs can flip whether VWR4 or VWR0 counts as informative.",
+    "evidence": "VWR_FAMILY_PROPOSAL_v0.1.md:40-45 vs VWR0_EXPERIMENT_v0.1.toml:38-48 and :83-92. The md gives no uninformative-if for VWR0 at all (section 'VWR0 — baseline', lines 27-36). IGP0 TOML:104 'uninformative_if' is a disclaimer ('Always partly uninformative...'), not a criterion either.",
+    "suggested_fix": "Before freezing v1.0, make the TOML the single machine-readable source of hypothesis/metric/uninformative-if and have the md reference it (or generate the md table from the TOML). Replace the VWR4 subset clause with a concrete, computable test (e.g. Welch t on R of VWR0 trades entered <=11:30 vs >11:30, |t|<1) or drop it; add VWR0's gate to the md; give IGP0 a real criterion (trade count / top-5 sign flip)."
+   },
+   {
+    "title": "Frozen manifest does not pin code identity; the §c claim in scripts/README.md is not what the mechanism delivers",
+    "severity": "major",
+    "file": "studies/vwap-ema9-2026-10/scripts/README.md",
+    "line": 8,
+    "failure_scenario": "VWR0_EXPERIMENT_v1.0.toml (frozen) will reference 'stratlab.strategies.vwap_reclaim:VwapReclaim' with no version or hash. After the freeze, edit src/stratlab/strategies/common.py line 27 (e.g. make vwap_prev cross-session) or indicators.py/engine.py/sessions.py — none of which the 'new class or module' rule covers — and run the unchanged frozen TOML: the run succeeds, results differ, and the only trace is a different code_tree_sha256 in run_record/ledger that nothing pre-registered can be checked against. run_experiment also does not refuse a dirty src tree (experiment.py:71-72 records git_dirty_paths only), and the real-data gate at experiment.py:209 blocks only status == 'PROPOSED', so a TOML with status 'DRAFT', 'frozen?' or no status runs on real data.",
+    "evidence": "scripts/README.md:8-10 claims §c is satisfied by 'a NEW strategy class or module... the old one stays' plus recording git commit/tree SHA. docs/conventions.md §c (lines 45-49) requires retired versions kept alongside; the §-preamble allows an override only 'explicitly and deliberately... in writing, with a reason' — the README presents compliance, not an override. VWR0_EXPERIMENT_v0.1.toml has no code hash field; experiment.py:57-73, 205-212.",
+    "suggested_fix": "Add `code_commit` and `code_tree_sha256` (and `backtesting` version) to the frozen v1.0 TOML and make run_experiment refuse on mismatch or when src is dirty; gate real-data runs on status == 'FROZEN' rather than != 'PROPOSED'. Either state in scripts/README.md that this is a written §c override (git-addressed versioning instead of retained script copies) with the reason, or keep per-run snapshots of src/stratlab/strategies in the run dir."
+   },
+   {
+    "title": "IG-P0 code suppresses the EMA/VWAP cross on a session's first 3m bar; the rule table presents the bare formula and a 09:33 window start",
+    "severity": "minor",
+    "file": "studies/vwap-ema9-2026-10/manifests/SOURCE_RULES_IG_AUSTIN_v0.1.md",
+    "line": 37,
+    "failure_scenario": "Synthetic demo: day 1 flat at 100 (EMA == VWAP at the close), day 2 flat at 99. On day 2's first completed 3m bar EMA=99.80 > VWAP=99.00 and the previous bar had EMA<=VWAP, so the table's formula (ema[t-1] <= vwap[t-1] and ema[t] > vwap[t]) — and TradingView's ta.crossover, which uses the prior bar regardless of session — fires at 09:30-09:33. The lab code produces 0 trades because common.py sets ema_prev/vwap_prev to NaN on each session's first bar (groupby(session).shift(1)) and instagram_austin_vwap_ema9.py:62 returns on NaN. The creator's own short example (frame t=47 s, Mo 28 Sep) is an opening-drop situation where EMA sits far above the freshly reset VWAP. The table's 'Decisions on bars ending 09:33' is therefore never true; the earliest possible entry is the bar ending 09:36.",
+    "evidence": "src/stratlab/strategies/common.py:16-18, 27-28; src/stratlab/strategies/instagram_austin_vwap_ema9.py:62, 68; SOURCE_RULES_IG_AUSTIN_v0.1.md rows 'Entry event' (line 37) and 'Time window' (line 46) make no mention of the exclusion. Demo script output: rule-table formula fires at ['09:30']; lab code fires at []; trades: 0.",
+    "suggested_fix": "Add a rule-table row 'Cross on the session's first bar (EMA vs reset VWAP)': Source — / Kind — / Lab assumption: excluded (or included) — and make it a reviewer decision, since TradingView would show it as a cross. Correct the window text to the effective 09:36 start if exclusion stays. Same disclosure applies to VWR2 (trigger 'ema_vwap_cross'), though its 09:45 start makes it moot in practice."
+   },
+   {
+    "title": "Trials accounting omits the pre-committed raw-corpus rerun and the TOML lacks dsr_threshold_implied required by §b amendment",
+    "severity": "minor",
+    "file": "studies/vwap-ema9-2026-10/manifests/VWR0_EXPERIMENT_v0.1.toml",
+    "line": 20,
+    "failure_scenario": "The proposal (line 83) and HANDOFF item 3 commit, before the first run, to 'rerun VWR0 on the raw corpus and report the difference'. That is a seventh configuration evaluated on this corpus, with its own ledger row, but trials_planned = 6; the implied hurdle is 0.934 at N=6 vs 0.997 at N=7 (metrics.expected_max_sharpe(7, 489)). The rerun also has no TOML yet, so when it is written its own trials_planned and status will be chosen after the main result is known. Separately, docs/conventions.md §b amendment 2026-07-30 says every run manifest records both trials_planned AND dsr_threshold_implied; the TOML records only trials_planned (the 0.93 figure lives only in the md, line 25).",
+    "evidence": "VWR0_EXPERIMENT_v0.1.toml:15-21 (no dsr field); VWR_FAMILY_PROPOSAL_v0.1.md:25, :83; docs/lab/HANDOFF.md:23, :38-39; docs/conventions.md:37-42; experiment.py:231 computes the hurdle from exp.trials_planned per config file.",
+    "suggested_fix": "Either count the raw rerun (trials_planned = 7, hurdle ~1.00) or state in the manifest why a same-rules/different-data-view rerun is excluded from N. Add `dsr_threshold_implied = \"0.934 ann. (N=6, T=489)\"` to the TOML. Write the raw-corpus rerun's TOML (mask = none, status FROZEN alongside v1.0) now, so it is pre-registered too."
+   },
+   {
+    "title": "Mask v1.0 makes 9 five-minute and 8 three-minute signal bars incomplete; strategies still trade on them and the proposal says signals use completed bars",
+    "severity": "minor",
+    "file": "studies/vwap-ema9-2026-10/manifests/VWR_FAMILY_PROPOSAL_v0.1.md",
+    "line": 18,
+    "failure_scenario": "On the real corpus with integrity-mask-v1.0, resample_session_bars flags complete=False for 5m bars starting 2024-10-01 11:30, 2024-12-20 11:10, 2025-03-14 13:40, 2025-04-16 14:30, 2025-05-19 12:05/12:15/12:20, 2025-05-27 13:10, 2025-12-22 15:10 ET (and 8 analogous 3m bars). build_execution_frame publishes features for them and neither VwapReclaim nor InstagramAustinVwapEma9P0 reads sig_complete, so a 4-minute 'signal bar' with the wick minute removed can generate an entry/exit. The proposal's 'Signals use completed bars' (line 18) and the data note (lines 72-83) do not disclose this; the '0.6–2.2%' wick range is 0.61–2.32% (2025-04-16 14:31 high dev 2.32%).",
+    "evidence": "src/stratlab/data/sessions.py:84-86; src/stratlab/engine.py:84 publishes sig_complete; no reference to sig_complete in src/stratlab/strategies/*.py. Verified by loading the dataset with mask and resampling (data-layer check only).",
+    "suggested_fix": "Decide and freeze one rule before v1.0: skip signal decisions on incomplete bars (add `if self.f('sig_complete') != 1.0: return` in both strategies, and say so in the proposal), or document that masked minutes shorten the affected signal bars. Fix the range to 0.6–2.3%."
+   },
+   {
+    "title": "August development-draw counts are stated three different ways across the new documents",
+    "severity": "minor",
+    "file": "docs/lab/RECOVERY_FINDINGS_2026-10-16.md",
+    "line": 60,
+    "failure_scenario": "RECOVERY_FINDINGS line 60-61 says '18 development draws (VDC 15, FPC 1, MIM 1, ODR 1)... covering 17 distinct development configurations'; the August LEDGER.csv has 19 rows with budget_class=development (VDC 16, FPC 1, MIM 1, ODR 1) plus 1 validation. The 18/15 count only holds if the R1 SEALED-UNINTERPRETED row is excluded as 'not a draw', which the text does not say. VWR_FAMILY_PROPOSAL_v0.1.md:62 then says '18 development configurations and one validation look', mixing draws with configurations (17 distinct). A reader reconciling the ledger will find none of the three numbers directly.",
+    "evidence": "csv-parsed studies/vwap-lab-2026-08/LEDGER.csv: Counter({('VDC','development'):16, ('VDC','validation'):1, ('FPC','development'):1, ('MIM','development'):1, ('ODR','development'):1}); row 3 notes 'SEALED-UNINTERPRETED (A1.7)'; row 4 notes 'VDC-dev interpreted runs now 2/18'.",
+    "suggested_fix": "State the counting rule explicitly: 19 development ledger rows, of which 1 sealed-uninterpreted (R1) → 18 interpreted draws over 17 distinct configurations (R0/R1/UNSEAL share one). Use the same phrase in the proposal."
+   },
+   {
+    "title": "§j model-role drift handled by disclosure rather than the stop the section prescribes; lane-2 recovery reviews have no committed record",
+    "severity": "minor",
+    "file": "docs/lab/RECOVERY_FINDINGS_2026-10-16.md",
+    "line": 88,
+    "failure_scenario": "docs/conventions.md §j binds lane 1 to 'Claude Opus 5' and lists 'Model-role conflict — a charge, plan, or configuration that assigns a lane differently from the table above' as a stop-report-wait condition. The lane declaration (line 83) assigns lane 1 to Opus 5.5 and proceeded to commit 4,401 lines; the amendment is 'proposed, not made' (line 90). Lines 86-87 also claim lane-2 Fable reviews 'one skeptic per reader scope during recovery', but no review output is committed anywhere in 80799e5, so the claim cannot be checked and §j's 'the reviewer reports' leaves no record.",
+    "evidence": "docs/conventions.md:271-276, 347-348; RECOVERY_FINDINGS_2026-10-16.md:81-91; `git show --stat 80799e5` contains no reviews/ or lane-2 artifact; docs/charges/LAB-RESTART-2026-10-16.md:47 only points to the declaration.",
+    "suggested_fix": "At seam-1 approval, have Dustin adopt the one-line dated §j amendment (Opus 5.5 / Fable 5.1 / Haiku point releases) so the packet is not sitting on an unresolved stop condition; either commit the lane-2 recovery review notes under docs/lab/ (or the study's analysis/) or reword lines 86-87 to say the reviews were informal and unrecorded."
+   }
+  ],
+  "verdicts": [
+   {
+    "title": "Pre-registration gates disagree between the proposal (md) and the experiment TOML; VWR4's md gate is unmeasurable",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Confirmed by reading both files at /home/dustin/Projects/strategy-lab/studies/vwap-ema9-2026-10/manifests/. VWR_FAMILY_PROPOSAL_v0.1.md:45 (VWR4) ends with 'or VWR0's morning subset (from the diff) is statistically indistinguishable from its afternoon subset' with no test or threshold, and the diff table has no time-of-day split; VWR0_EXPERIMENT_v0.1.toml:92 says only 'Fewer than 100 morning trades.' The TOML gives VWR0 'Fewer than 200 trades ... or sign change when top 5 removed' (line 48) while the md section 'VWR0 — baseline' (lines 27-36) has no uninformative-if at all. IGP0's TOML:104 uninformative_if is a disclaimer, not a criterion. Both documents say they are to be frozen as v1.0 together (md:4-5, toml:3-4), so a post-run reader can pick whichever gate suits. The documents are still v0.1 PROPOSED and headed for seam-1 review, which is the right moment to fix this, but as the packet stands the pre-registration is internally inconsistent; major is appropriate."
+   },
+   {
+    "title": "Frozen manifest does not pin code identity; the §c claim in scripts/README.md is not what the mechanism delivers",
+    "refuted": false,
+    "corrected_severity": "major",
+    "reasoning": "Code claims verified in src/stratlab/experiment.py: code_identity() (57-73) only records git_commit, git_dirty_paths and code_tree_sha256; nothing compares them to anything in the config. run_experiment (209-212) refuses real data only when status upper-cases to 'PROPOSED', so 'DRAFT', 'frozen?' or a missing status runs on real data. VWR0_EXPERIMENT_v0.1.toml has no code_commit/code_tree_sha256/package-version fields. scripts/README.md:8-10 says §c is met by 'a NEW strategy class or module ... the old one stays' plus recording identities, but that rule covers only strategy modules; an in-place edit to common.py / indicators.py / engine.py / sessions.py changes results without any version bump and the frozen TOML would still run unchanged. docs/conventions.md §c (retired versions kept alongside) and the preamble (override only 'explicitly and deliberately ... in writing, with a reason') are as quoted. One overstatement in the finding: the freeze commit SHA will exist in git history, so a run's git_commit can be diffed against it after the fact; but the frozen manifest itself pins nothing and the tool enforces nothing, which is the defect. Major: a pre-registration integrity gap, not yet a wrong result."
+   },
+   {
+    "title": "IG-P0 code suppresses the EMA/VWAP cross on a session's first 3m bar; the rule table presents the bare formula and a 09:33 window start",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Reproduced with a two-session flat synthetic (100 then 99) via stratlab.data.sessions and stratlab.strategies.common: on day 2's first 3m bar ema=99.80, vwap=99.0, ema_prev/vwap_prev=NaN. The rule-table formula with an unconditional prior bar fires at ['09-04 09:30'] (bar ending 09:33); the lab's session-grouped prev fires at []. common.py:27-28 groups shift(1) by session, and instagram_austin_vwap_ema9.py:62 returns on NaN prev, so the earliest possible P0 entry decision is the bar ending 09:36, while SOURCE_RULES_IG_AUSTIN_v0.1.md:46 says 'Decisions on bars ending 09:33–15:30 ET' and row 37 shows the bare formula with no exclusion. Same prev-NaN guard exists for VWR2 at vwap_reclaim.py:74 but its 09:45 start makes it moot. Minor: a disclosure/window-text error in a provisional interpretation, not a results error."
+   },
+   {
+    "title": "Trials accounting omits the pre-committed raw-corpus rerun and the TOML lacks dsr_threshold_implied required by §b amendment",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Verified: VWR0_EXPERIMENT_v0.1.toml:15-21 has trials_planned = 6 and no dsr_threshold_implied; docs/conventions.md §b amendment 2026-07-30 says every future run manifest records both fields (the 0.93 figure appears only in the md, line 25). VWR_FAMILY_PROPOSAL_v0.1.md:83 and docs/lab/HANDOFF.md item 3 and 'Next' step 3 commit to a raw-corpus VWR0 rerun before the first run, with no TOML for it. metrics.expected_max_sharpe gives 0.934 at N=6 and 0.997 at N=7, as stated. Whether a same-rules/different-data-view robustness rerun should count toward N is a judgement call, but the pre-registration does not state the rule either way, and the missing TOML field is a plain convention miss. Minor."
+   },
+   {
+    "title": "Mask v1.0 makes 9 five-minute and 8 three-minute signal bars incomplete; strategies still trade on them and the proposal says signals use completed bars",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Reproduced on the real corpus (data layer only, no strategy run): with integrity-mask-v1.0, resample_session_bars flags exactly 9 five-minute bars and 8 three-minute bars complete=False (0 on the raw corpus), at the timestamps listed in the finding. engine.py:84 publishes sig_complete; grep finds no reference to sig_complete in src/stratlab/strategies/*.py, so both strategies decide on the shortened bars. Nuance: the mask's own definition (studies/vwap-lab-2026-08/analysis/CORPUS_MASK_v1.0.json) says apply by 'DROPPING these 1m bars before 5m aggregation', so trading the shortened bar is the mask's designed semantic rather than an accident; the defect is that the proposal (line 18 'completed bars', data note 72-83) never states this rule while the engine computes a flag nothing consumes. The wick range: by (High-body)/body the dropped minutes span 0.61%-2.32% (2025-04-16 14:31 at 2.32%), so '0.6-2.2%' looks low, but the proposal's metric is unstated, so that sub-claim is plausible rather than confirmed. Minor."
+   },
+   {
+    "title": "August development-draw counts are stated three different ways across the new documents",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Parsed studies/vwap-lab-2026-08/LEDGER.csv: 20 data rows; budget_class=development: VDC 16, FPC 1, MIM 1, ODR 1 (19), plus VDC validation 1. The R1 row (row 3) is marked 'SEALED-UNINTERPRETED (not inspected)'. RECOVERY_FINDINGS_2026-10-16.md:60-61 says '18 development draws (VDC 15, ...) ... 17 distinct development configurations' without stating that R1 is excluded; VWR_FAMILY_PROPOSAL_v0.1.md:62 says '18 development configurations', conflating draws with configurations. The 18/15 numbers are reconstructible only with an unstated exclusion rule. Minor documentation inconsistency, confirmed."
+   },
+   {
+    "title": "§j model-role drift handled by disclosure rather than the stop the section prescribes; lane-2 recovery reviews have no committed record",
+    "refuted": false,
+    "corrected_severity": "minor",
+    "reasoning": "Verified: docs/conventions.md §j table binds lane 1 to 'Claude Opus 5' and lists 'Model-role conflict — a charge, plan, or configuration that assigns a lane differently from the table above' as a stop-report-wait condition; RECOVERY_FINDINGS_2026-10-16.md:83 declares lane 1 as Opus 5.5 and line 88-91 says the amendment is 'proposed, not made' while the packet proceeded to a 4,401-line commit. `git show --stat=200 80799e5` contains no review/skeptic/lane artifact, so the lines 86-87 claim of lane-2 reviews per reader scope is unverifiable. Whether a point release is 'assigning a lane differently' is interpretive (role matches, model name does not), and the drift was disclosed rather than hidden, so this is a governance loose end to close at seam-1 rather than a results defect. Minor."
+   }
+  ]
+ }
+]

@@ -58,7 +58,11 @@ def build_windows(coverage: pd.DataFrame, warmup_sessions: int, recent_months: i
     if recent_months:
         start_bound = end - pd.DateOffset(months=recent_months) + pd.Timedelta(days=1)
         rec = scored[scored >= start_bound]
+        clipped = bool(scored[0] > start_bound)
+        note = "EXPLORATORY — overlaps the full sample; not a holdout"
+        if clipped:
+            note += f"; CLIPPED: available history starts {scored[0].date()}, after {start_bound.date()}"
         out.append(Window(f"recent_{recent_months}m", f"Latest {recent_months} months",
                           rec[0].date().isoformat(), end.date().isoformat(), len(rec), "recent",
-                          False, "EXPLORATORY — overlaps the full sample; not a holdout"))
+                          clipped, note))
     return out

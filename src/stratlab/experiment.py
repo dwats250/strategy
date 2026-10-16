@@ -57,7 +57,7 @@ def resolve_strategy(spec: str):
 def code_identity() -> dict:
     src = REPO_ROOT / "src" / "stratlab"
     h = hashlib.sha256()
-    files = sorted(p for p in src.rglob("*.py"))
+    files = sorted(p for p in src.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
     for p in files:
         h.update(str(p.relative_to(REPO_ROOT)).encode())
         h.update(p.read_bytes())
@@ -71,6 +71,27 @@ def code_identity() -> dict:
     dirty = git("status", "--porcelain", "--", "src", "pyproject.toml", "uv.lock")
     return {"git_commit": git("rev-parse", "HEAD"), "git_dirty_paths": dirty.splitlines() if dirty else [],
             "code_tree_sha256": h.hexdigest(), "files_hashed": len(files)}
+
+
+def check_frozen(exp: dict, config_path) -> None:
+    """Real-data runs need a FROZEN config pinned to the exact code it was frozen against.
+
+    Allow-list, not deny-list: anything but status = "FROZEN" is refused. The frozen
+    config must carry `code_tree_sha256` (from `stratlab identity`) and the source tree
+    must match it and be clean, so a frozen experiment cannot silently run new code.
+    """
+    if str(exp.get("status", "")).upper() != "FROZEN":
+        raise PermissionError(f"{config_path}: status is {exp.get('status')!r}; only a FROZEN config "
+                              "may run on real data (conventions §b).")
+    ident = code_identity()
+    pinned = exp.get("code_tree_sha256")
+    if not pinned:
+        raise PermissionError(f"{config_path}: FROZEN config lacks code_tree_sha256")
+    if ident["code_tree_sha256"] != pinned:
+        raise PermissionError(f"{config_path}: code tree {ident['code_tree_sha256'][:12]} != pinned {pinned[:12]}; "
+                              "the code changed after the freeze")
+    if ident["git_dirty_paths"]:
+        raise PermissionError(f"uncommitted changes in {ident['git_dirty_paths']}; commit before a real-data run")
 
 
 def package_versions() -> dict:
@@ -157,7 +178,7 @@ def run_variant(md: MarketData, variant: dict, exe: ExecutionConfig, w: Window) 
     em = M.equity_metrics(out.session_equity, exe.cash, out.equity["Equity"])
     tm = M.trade_metrics(trades)
     closed = trades[trades["exit_reason"] != "open_at_end"]
-    em["exposure_minutes_frac"] = float((closed["bars_held"] + 1).sum() / len(frame)) if len(frame) else 0.0
+    em["exposure_minutes_frac"] = float(closed["minutes_spanned"].sum() / len(frame)) if len(frame) else 0.0
     return {"trades": trades, "session_equity": out.session_equity, "equity": em, "trade": tm,
             "library_stats": out.library_stats, "warnings": out.warnings,
             "flatten_fallback_sessions": int(frame.groupby("session_code")["flatten_fallback"].max().sum()),
@@ -206,10 +227,8 @@ def run_experiment(config_path: Path, out_root: Path | None = None, market: Mark
                    synthetic_label: str | None = None, ledger: bool = True, now: str | None = None) -> Path:
     cfg, cfg_sha = load_config(config_path)
     exp = cfg["experiment"]
-    if str(exp.get("status", "")).upper() == "PROPOSED" and not synthetic_label:
-        raise PermissionError(
-            f"{config_path} is PROPOSED, not frozen. Freeze it as a versioned file (conventions §b) "
-            "before running on real data.")
+    if not synthetic_label:
+        check_frozen(exp, config_path)
     md = market or prepare_market(cfg["data"])
     exe = ExecutionConfig(**cfg.get("execution", {}))
     wcfg = cfg.get("windows", {})
@@ -276,15 +295,22 @@ def run_experiment(config_path: Path, out_root: Path | None = None, market: Mark
     }
     (run_dir / "run_record.json").write_text(json.dumps(_jsonable(record), indent=2, sort_keys=False))
     (run_dir / "metrics.json").write_text(json.dumps(_jsonable(results), indent=2))
-    if ledger and not synthetic_label:
-        _append_ledger(study / "LEDGER.csv", record, results, variants, full)
-
     from .report.build import build_report
-    build_report(run_dir, md=md, keep=keep)
+    report_status = "ok"
+    try:
+        build_report(run_dir, md=md, keep=keep)
+    except Exception as e:  # the run is still recorded; the failure is visible in the ledger
+        report_status = f"report_error: {type(e).__name__}: {e}"
+        (run_dir / "REPORT_ERROR.txt").write_text(report_status)
+    if ledger and not synthetic_label:
+        _append_ledger(study / "LEDGER.csv", record, results, variants, full, report_status)
+    if report_status != "ok":
+        raise RuntimeError(f"run recorded at {run_dir}, but {report_status}")
     return run_dir
 
 
-def _append_ledger(path: Path, record: dict, results: dict, variants: list, full: Window) -> None:
+def _append_ledger(path: Path, record: dict, results: dict, variants: list, full: Window,
+                   report_status: str = "ok") -> None:
     new = not path.exists() or path.stat().st_size == 0
     with open(path, "a", newline="") as f:
         w = csv.DictWriter(f, fieldnames=LEDGER_FIELDS)
@@ -309,5 +335,5 @@ def _append_ledger(path: Path, record: dict, results: dict, variants: list, full
                 "trades": tm.get("trades"), "net_pnl": em.get("net_pnl"), "total_return": em.get("total_return"),
                 "sharpe_daily_ann": em.get("sharpe_daily_ann"), "max_dd_session_close": em.get("max_dd_session_close"),
                 "expectancy_r": tm.get("expectancy_r"), "status": r.get("status", "missing"),
-                "notes": v.get("hypothesis", "")[:200],
+                "notes": ("" if report_status == "ok" else f"[{report_status}] ") + v.get("hypothesis", "")[:200],
             })

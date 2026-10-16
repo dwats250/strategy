@@ -78,3 +78,15 @@ def test_recent_window_ends_on_last_complete_session():
     cov.iloc[-1, cov.columns.get_loc("present")] = 100      # last session truncated
     w = build_windows(cov, 5, 6)
     assert w[0].end == sessions[-2].date().isoformat() and w[-1].end == sessions[-2].date().isoformat()
+
+
+def test_concentration_share_counts_winners_only():
+    c = M.concentration(pd.Series([100.0, -50.0]))
+    assert c["top1_share_of_gross_profit"] == 1.0 and c["top5_share_of_gross_profit"] == 1.0
+    assert c["net_pnl_ex_top1"] == -50.0
+
+
+def test_recent_window_flagged_when_history_shorter_than_n_months():
+    sessions = pd.bdate_range("2025-03-03", "2025-05-30")
+    rec = build_windows(_cov(sessions), 5, 6)[-1]
+    assert rec.partial and "CLIPPED" in rec.note

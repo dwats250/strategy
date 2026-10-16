@@ -11,6 +11,7 @@ date filters and table searches only change the VIEW and never recompute statist
 
 from __future__ import annotations
 
+import html as _html
 import json
 import re
 from pathlib import Path
@@ -101,15 +102,35 @@ def _bars_payload(md, keep, variants, full_id) -> tuple[dict, dict]:
                 "h": np.round(sig["High"].to_numpy()[ii], 2).tolist(),
                 "l": np.round(sig["Low"].to_numpy()[ii], 2).tolist(),
                 "c": np.round(sig["Close"].to_numpy()[ii], 2).tolist(),
-                "vwap": [None if np.isnan(x) else round(float(x), 3) for x in feats["vwap"].to_numpy()[ii]],
-                "ema": [None if np.isnan(x) else round(float(x), 3) for x in feats["ema"].to_numpy()[ii]],
+                "vwap": [None if np.isnan(x) else round(float(x), 2) for x in feats["vwap"].to_numpy()[ii]],
+                "ema": [None if np.isnan(x) else round(float(x), 2) for x in feats["ema"].to_numpy()[ii]],
             }
         fsets[key] = {"minutes": res["minutes"], "vwap_source": p.get("vwap_source"),
                       "ema_length": p.get("ema_length"), "days": days}
     return fsets, vmap
 
 
-def build_report(run_dir: Path, md=None, keep=None) -> Path:
+def _pack(payload: dict) -> str:
+    """Deterministic gzip+base64 of the JSON payload (mtime=0)."""
+    import base64
+    import gzip
+    raw = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode()
+    return base64.b64encode(gzip.compress(raw, compresslevel=9, mtime=0)).decode()
+
+
+def _slim(res: dict) -> dict:
+    """Drop bulky fields the page never renders (diff key lists, library stats)."""
+    out = {}
+    for w, r in res.items():
+        r = dict(r)
+        r.pop("library_stats", None)
+        if "diff_vs_baseline" in r:
+            r["diff_vs_baseline"] = {k: v for k, v in r["diff_vs_baseline"].items() if k != "keys"}
+        out[w] = r
+    return out
+
+
+def build_report(run_dir: Path, md=None, keep=None, out_name: str = "report.html") -> Path:
     run_dir = Path(run_dir)
     record = json.loads((run_dir / "run_record.json").read_text())
     results = json.loads((run_dir / "metrics.json").read_text())
@@ -138,7 +159,7 @@ def build_report(run_dir: Path, md=None, keep=None) -> Path:
                     "entry_px": r.entry_price, "exit_px": r.exit_price, "stop": r.initial_stop,
                     "target": r.target if pd.notna(r.target) else None, "size": int(r["size"]),
                     "pnl": round(float(r.pnl), 2), "r": r.r_multiple, "reason": r.exit_reason,
-                    "mins": int(r.bars_held) + 1, "sig": str(r.signal_start),
+                    "mins": int(r.minutes_spanned), "sig": str(r.signal_start),
                     "amb": bool(r.get("ambiguous_exit", False)),
                 }))
         monthly = {}
@@ -160,7 +181,7 @@ def build_report(run_dir: Path, md=None, keep=None) -> Path:
             "uninformative_if": v.get("uninformative_if", ""),
             "color_light": PALETTE_LIGHT[i % 8], "color_dark": PALETTE_DARK[i % 8],
             "series": series, "trades": trades, "monthly": monthly, "rolling": rolling,
-            "results": results.get(v["id"], {}),
+            "results": _slim(results.get(v["id"], {})),
         })
 
     bars, vmap = ({}, {})
@@ -180,10 +201,12 @@ def build_report(run_dir: Path, md=None, keep=None) -> Path:
     tpl = (HERE / "template.html").read_text()
     title = record["experiment"].get("title", record["experiment"]["id"])
     html = (tpl.replace("/*__DT_CSS__*/", dt_css)
-               .replace("__TITLE__", ("SYNTHETIC · " if record.get("synthetic") else "") + title)
+               .replace("__TITLE__", _html.escape(("SYNTHETIC · " if record.get("synthetic") else "") + title))
                .replace("/*__PLOTLY__*/", plotly_js)
                .replace("/*__DT_JS__*/", dt_js)
-               .replace("/*__DATA__*/null", json.dumps(payload, separators=(",", ":")).replace("</", "<\\/")))
-    out = run_dir / "report.html"
+               .replace("/*__DATA__*/", _pack(payload)))
+    out = run_dir / out_name
+    if out.exists():
+        raise FileExistsError(f"{out} exists; run directories are immutable (write a new name)")
     out.write_text(html)
     return out

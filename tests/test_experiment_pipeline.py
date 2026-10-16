@@ -107,5 +107,21 @@ def test_run_record_has_identity_and_trials(runs):
 def test_proposed_config_refuses_real_data(tmp_path):
     cfg = tmp_path / "p.toml"
     cfg.write_text(CONFIG.replace('trials_planned = 3', 'trials_planned = 3\nstatus = "PROPOSED"'))
-    with pytest.raises(PermissionError, match="PROPOSED"):
+    with pytest.raises(PermissionError, match="FROZEN"):
+        run_experiment(cfg, out_root=tmp_path, market=None, ledger=False)
+
+
+@pytest.mark.parametrize("status", [None, "DRAFT", "PRE-REG"])
+def test_only_frozen_configs_run_on_real_data(tmp_path, status):
+    cfg = tmp_path / "p.toml"
+    body = CONFIG if status is None else CONFIG.replace('trials_planned = 3', f'trials_planned = 3\nstatus = "{status}"')
+    cfg.write_text(body)
+    with pytest.raises(PermissionError, match="FROZEN"):
+        run_experiment(cfg, out_root=tmp_path, market=None, ledger=False)
+
+
+def test_frozen_config_must_match_code_tree(tmp_path):
+    cfg = tmp_path / "p.toml"
+    cfg.write_text(CONFIG.replace('trials_planned = 3', 'trials_planned = 3\nstatus = "FROZEN"\ncode_tree_sha256 = "deadbeef"'))
+    with pytest.raises(PermissionError, match="code tree"):
         run_experiment(cfg, out_root=tmp_path, market=None, ledger=False)

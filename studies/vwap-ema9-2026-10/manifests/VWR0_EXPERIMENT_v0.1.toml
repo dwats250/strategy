@@ -17,8 +17,10 @@ id = "VWR0-EXP"
 title = "VWAP touch-and-reclaim family + IG-AUSTIN-P0 reference (SPY 1m execution)"
 study = "studies/vwap-ema9-2026-10"
 description = "Baseline VWR0 and four one-factor variants, plus the independent provisional Instagram interpretation, on identical data, capital, costs and windows."
-trials_planned = 6
+trials_planned = 7   # VWR0-VWR4 + IGP0 + the pre-committed VWR0 raw-corpus rerun (VWR0_RAW_ROBUSTNESS)
+dsr_threshold_implied = "0.997 annualized Sharpe (expected max of N=7 zero-skill trials, T=489 sessions)"
 status = "PROPOSED"
+# At freeze: status = "FROZEN" and code_tree_sha256 = <output of `uv run stratlab identity`>
 
 [data]
 dataset = "spy-1m-polygon-20240901-20260822-a4afaa70"
@@ -45,7 +47,7 @@ difference = "Baseline: 5m bars; close > VWAP(hlc3) and low <= VWAP (touch-and-r
 hypothesis = "A completed VWAP touch-and-reclaim bar with EMA9 confirmation precedes continuation in the reclaim direction."
 mechanism = "Intraday participants defend VWAP; a reclaim with momentum marks the defended side."
 primary_metric = "Expectancy R (net) with t-stat; daily-equity Sharpe as portfolio view"
-uninformative_if = "Fewer than 200 trades in the full window, or the result changes sign when the top 5 trades are removed."
+uninformative_if = "Fewer than 200 closed trades in the full window; or full-window net P&L changes sign when its 5 largest trades are removed (net_pnl_ex_top5)."
 
 [[variants]]
 id = "VWR1"
@@ -56,7 +58,7 @@ difference = "Drops the close-beyond-EMA9 confirmation (rule 3)."
 hypothesis = "EMA9 confirmation adds nothing beyond VWAP context plus touch."
 mechanism = "Without confirmation, more reclaims are taken before momentum resumes; many exit on the next bar."
 primary_metric = "Delta expectancy R vs VWR0; expectancy of the added trades"
-uninformative_if = "Fewer than 100 trades differ, or |delta R| < 0.03 with both t-stats below 1."
+uninformative_if = "Fewer than 100 trades differ from VWR0 (added + removed + altered); or |delta expectancy R| < 0.03 and both |t-stat of mean R| < 1."
 
 [[variants]]
 id = "VWR2"
@@ -67,7 +69,7 @@ difference = "Trigger is an EMA9/VWAP cross on the signal bar instead of a VWAP 
 hypothesis = "The VWAP touch is a better entry event than the EMA/VWAP cross."
 mechanism = "The cross fires later in a move and less often."
 primary_metric = "Delta expectancy R; trade count; top-5 concentration"
-uninformative_if = "Either arm has fewer than 100 trades, or a sign reversal after removing the top 5 trades."
+uninformative_if = "Either arm has fewer than 100 closed trades; or VWR2 net P&L changes sign when its 5 largest trades are removed."
 
 [[variants]]
 id = "VWR3"
@@ -78,7 +80,7 @@ difference = "Exit at a 2R target from the signal close or the stop; no EMA9 exi
 hypothesis = "With the same initial risk, the EMA9-managed exit beats a fixed 2R target."
 mechanism = "EMA exits cut losers early and can ride trends; 2R caps winners and lets losers reach the full stop."
 primary_metric = "Delta expectancy R; win rate; average winner/loser R"
-uninformative_if = "Same-minute stop/target ambiguity in more than 5% of exits, or most 2R trades end at the session flatten."
+uninformative_if = "Same-minute stop/target exits exceed 5% of VWR3 trades; or more than 50% of VWR3 trades exit at the session flatten."
 
 [[variants]]
 id = "VWR4"
@@ -89,7 +91,7 @@ difference = "Entries only for bars ending 09:45-11:30 ET."
 hypothesis = "Any VWAP-reclaim effect is concentrated in the morning."
 mechanism = "Morning range and volume; midday chop removed."
 primary_metric = "Delta expectancy R; Sharpe on the same capital"
-uninformative_if = "Fewer than 100 morning trades."
+uninformative_if = "VWR4 has fewer than 100 closed trades."
 
 [[variants]]
 id = "IGP0"
@@ -101,4 +103,4 @@ difference = "Separate strategy: 3m bars, VWAP(ohlc4) session, completed EMA9/VW
 hypothesis = "The creator's stated chart setup, executed mechanically on SPY shares, is positive after costs."
 mechanism = "Momentum after EMA9 crosses VWAP."
 primary_metric = "Expectancy R (net); daily-equity Sharpe"
-uninformative_if = "Always partly uninformative about the creator's options P&L (underlying-only proxy, later entry)."
+uninformative_if = "Fewer than 100 closed trades; or net P&L changes sign when its 5 largest trades are removed. Always uninformative about the creator's options P&L (underlying-only proxy, later entry)."

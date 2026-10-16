@@ -9,10 +9,10 @@ consume a different file under a familiar name.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 from dataclasses import dataclass
-from functools import lru_cache
 from pathlib import Path
 
 import pandas as pd
@@ -64,11 +64,6 @@ def candidate_paths(rec: DatasetRecord) -> list[Path]:
     return paths
 
 
-@lru_cache(maxsize=None)
-def _verified(path: str, mtime: float, size: int, expected: str) -> bool:
-    return sha256_file(Path(path)) == expected
-
-
 def resolve(ds_id: str, registry: dict[str, DatasetRecord] | None = None) -> tuple[DatasetRecord, Path]:
     """Find a local copy of `ds_id` whose SHA-256 matches the registry. Fail closed."""
     registry = registry or load_registry()
@@ -80,8 +75,7 @@ def resolve(ds_id: str, registry: dict[str, DatasetRecord] | None = None) -> tup
         if not p.exists():
             tried.append(f"{p} (absent)")
             continue
-        st = p.stat()
-        if _verified(str(p), st.st_mtime, st.st_size, rec.sha256):
+        if sha256_file(p) == rec.sha256:
             return rec, p
         tried.append(f"{p} (SHA-256 MISMATCH)")
     raise DatasetError(
@@ -89,11 +83,11 @@ def resolve(ds_id: str, registry: dict[str, DatasetRecord] | None = None) -> tup
         + "\nSee docs/lab/DATA_BACKUP_RECOVERY.md for recovery.")
 
 
-def read_canonical(path: Path, fmt: str) -> pd.DataFrame:
+def read_canonical(path: Path | io.BytesIO, fmt: str) -> pd.DataFrame:
     """Parse a canonical file into a UTC-indexed OHLCV frame (bar-start timestamps)."""
     if fmt != "august-canonical-v1":
         raise DatasetError(f"unsupported dataset format {fmt!r}")
-    df = pd.read_csv(path, usecols=["t_ms", "o", "h", "l", "c", "v", "vw", "n"],
+    df = pd.read_csv(path, compression="gzip", usecols=["t_ms", "o", "h", "l", "c", "v", "vw", "n"],
                      dtype={"t_ms": "int64", "o": "float64", "h": "float64", "l": "float64",
                             "c": "float64", "v": "float64", "vw": "float64", "n": "float64"})
     idx = pd.to_datetime(df["t_ms"], unit="ms", utc=True)
@@ -123,7 +117,11 @@ def load_dataset(ds_id: str, mask: str | None = None) -> tuple[pd.DataFrame, dic
     """Load a verified dataset. Returns (bars, identity) where identity is run-record ready."""
     registry = load_registry()
     rec, path = resolve(ds_id, registry)
-    df = read_canonical(path, rec.format)
+    blob = Path(path).read_bytes()
+    # Hash the exact bytes that are parsed, so verification and parsing cannot diverge.
+    if hashlib.sha256(blob).hexdigest() != rec.sha256:
+        raise DatasetError(f"{ds_id}: SHA-256 changed between resolve and read ({path})")
+    df = read_canonical(io.BytesIO(blob), rec.format)
     if len(df) != rec.rows:
         raise DatasetError(f"{ds_id}: row count {len(df)} != registered {rec.rows}")
     identity = {"dataset_id": rec.id, "sha256": rec.sha256, "rows": rec.rows,

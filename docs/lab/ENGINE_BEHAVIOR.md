@@ -1,7 +1,7 @@
 # Engine behaviour — Backtesting.py 0.6.6 as used by the lab
 
 Every statement below is pinned by a hand-checkable test in `tests/test_engine_behavior.py`
-(23 tests) and re-run in CI. Default test setup: price 100.00 everywhere except the minutes a test
+(25 tests) and re-run in CI. Default test setup: price 100.00 everywhere except the minutes a test
 overrides; cash 10,000; zero costs unless stated. If a version bump breaks any of these tests, it is
 a behaviour change to understand. Do not edit the test to match.
 
@@ -13,7 +13,7 @@ a behaviour change to understand. Do not edit the test to match.
 | 4 | Initial stop on the entry bar | A stop at 99 hit inside the entry minute exits in that same minute at 99 (R = −1) | `test_initial_stop_can_trigger_in_the_entry_minute` |
 | 5 | Gap through stop | A minute opening at 97 under a 99 stop fills at **97** (R = −3) | `test_gap_through_stop_fills_at_the_worse_open` |
 | 6 | Stop and target in the same minute | Resolved as the **stop**, for longs and shorts (pessimistic). The lab counts these as `ambiguous_exit`. | `test_stop_and_target_in_same_minute_resolves_to_stop` |
-| 7 | Target gapped through | Fills at the better open (103 against a 101 target) | `test_target_gapped_through_fills_at_the_better_open` |
+| 7 | Target gapped through | Fills at the better open (103 against a 101 target), **provided the minute does not also trade through the stop**. If it does, the stop wins even though the open was beyond the target (see row 23). | `test_target_gapped_through_fills_at_the_better_open` |
 | 8 | Discretionary exit against a later stop touch | The exit fills at the minute's open, before the stop. The library already does this; I tested my contrary hypothesis and it was wrong. | `test_discretionary_exit_precedes…`, `test_raw_library_close_with_live_stop_also_fills_at_open` |
 | 9 | Costs | Per-share cost charged as cash on entry and exit; fills unadjusted. 99 shares × $0.01 × 2 = $1.98. Relative sizing includes the cost (floor(9990 / 100.01) = 99). | `test_per_share_costs_charged_on_both_sides` |
 | 10 | Equity reconciliation | Final equity = cash + Σ trade P&L | `test_equity_reconciles_to_trade_pnl` |
@@ -27,6 +27,8 @@ a behaviour change to understand. Do not edit the test to match.
 | 18 | Interior session missing its close | Flattened at the last available minute and flagged (`flatten_fallback`) | `test_interior_session_missing_close_flattens…` |
 | 19 | Open position when the data ends | Reported as `open_at_end`, marked to the final **close**; the equity curve carries the unrealized P&L | `test_open_position_at_data_end_is_marked_not_closed` |
 | 20 | Why not `finalize_trades=True` | The library would close at the last bar's **open** (105) rather than mark at the close (105.5) | `test_library_finalize_would_close_at_last_open_documented` |
+| 22 | Entry minute opens beyond the stop | Long, stop 99, the fill minute opens at 98: entry and exit both at 98. No risk was ever defined, so R is NaN and exit_reason is `stop_beyond_fill` (counted as "Trades with undefined R"). | `test_entry_minute_opening_beyond_stop_has_no_defined_risk` |
+| 23 | Open beyond the target, same minute touches the stop | The library fills the **stop** (99), although the open (103) shows the target was reached first. This is a pessimistic bias, not merely an unknown path. Flagged `ambiguous_exit`. | `test_open_beyond_target_with_stop_touch_still_resolves_to_stop_pessimistic` |
 | 21 | Determinism | Identical trades and equity on rerun | `test_reruns_are_identical`, plus `tests/test_experiment_pipeline.py::test_reruns_are_deterministic` (byte-identical metrics and trade files) |
 
 ## Library facts that shaped the design
@@ -46,7 +48,7 @@ a behaviour change to understand. Do not edit the test to match.
 
 Execution is on 1-minute OHLC. Inside a minute the path is unknown, so:
 
-1. A stop and a target touched in the same minute resolve as the stop. The count is reported per run.
+1. A stop and a target touched in the same minute resolve as the stop, even when the minute opens beyond the target (row 23), so the bias is pessimistic. The count is reported per run ("Stop/target same-minute exits").
 2. A stop is assumed fillable at its price unless the minute opens beyond it. Real fills in fast
    markets can be worse. The per-share slippage allowance is the only proxy.
 3. Isolated bad prints in the 1-minute data can trigger stops (see the integrity mask note in

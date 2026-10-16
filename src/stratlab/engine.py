@@ -114,8 +114,8 @@ def build_execution_frame(rth_1m: pd.DataFrame, signal_bars: pd.DataFrame,
             # No minute at/after the cutoff exists in this session's data.
             if k == len(starts) - 1:
                 # Data ends mid-session: flattening early would use knowledge that no
-                # more data is coming. Leave any position open; it is finalized and
-                # reported as `end_of_data`.
+                # more data is coming. Leave any position open; it is reported as
+                # `open_at_end`, marked to the final close.
                 continue
             # Interior session missing its closing minutes: flatten at the last
             # available minute so nothing carries overnight, and flag it.
@@ -158,6 +158,11 @@ class LabStrategy(Strategy):
 
     def now(self) -> pd.Timestamp:
         return self.data.index[-1]
+
+    def signal_bar_complete(self) -> bool:
+        """False when the signal bar is missing constituent minutes (e.g. a masked print).
+        Strategies take no NEW entries on such bars; exits are still evaluated."""
+        return self.f("sig_complete") == 1.0
 
     def has_pending_entry(self) -> bool:
         return any(not o.is_contingent for o in self.orders)
@@ -244,6 +249,16 @@ def run_backtest(strategy_cls, frame: pd.DataFrame, cfg: ExecutionConfig,
     return RunOutput(trades, eq, session_equity, lib, msgs)
 
 
+def _risk(side: int, entry: float, stop) -> float:
+    """Initial risk per share. NaN when the stop is missing or on the wrong side of the
+    actual fill (the entry minute opened beyond the stop): such a trade never had a
+    defined risk, so it gets no R multiple and exit_reason `stop_beyond_fill`."""
+    if stop is None or (isinstance(stop, float) and np.isnan(stop)):
+        return np.nan
+    d = side * (entry - stop)
+    return float(d) if d > 0 else np.nan
+
+
 def _open_trade_rows(strat: LabStrategy, frame: pd.DataFrame) -> list[dict]:
     """Positions still open when the data ends, marked to the final close (not closed).
 
@@ -258,7 +273,7 @@ def _open_trade_rows(strat: LabStrategy, frame: pd.DataFrame) -> list[dict]:
         side = 1 if t.size > 0 else -1
         size = abs(int(t.size))
         stop = meta.get("initial_stop")
-        risk = abs(t.entry_price - stop) if stop is not None else np.nan
+        risk = _risk(side, t.entry_price, stop)
         entry_cost = float(strat._broker._commission(t.size, t.entry_price))
         unreal = side * (last_close - t.entry_price) * size - entry_cost
         rows.append(dict(
@@ -272,6 +287,7 @@ def _open_trade_rows(strat: LabStrategy, frame: pd.DataFrame) -> list[dict]:
             r_gross=side * (last_close - t.entry_price) / risk if risk and risk > 0 else np.nan,
             exit_reason="open_at_end", entry_reason=meta.get("entry_reason"),
             bars_held=int(len(frame) - 1 - t.entry_bar),
+            minutes_spanned=int(len(frame) - t.entry_bar),
             signal_start=meta.get("signal_start"), decision_time=meta.get("decision_time"),
         ))
     return rows
@@ -282,7 +298,7 @@ def _trade_table(t: pd.DataFrame, strat: LabStrategy, frame: pd.DataFrame) -> pd
         cols = ["trade_id", "side", "size", "entry_time", "exit_time", "entry_price", "exit_price",
                 "initial_stop", "target", "risk_per_share", "pnl", "costs", "gross_pnl",
                 "return_pct", "r_multiple", "r_gross", "exit_reason", "entry_reason",
-                "bars_held", "signal_start", "decision_time"]
+                "bars_held", "minutes_spanned", "signal_start", "decision_time"]
         return pd.DataFrame(columns=cols)
     rows = []
     for _, r in t.iterrows():
@@ -293,7 +309,7 @@ def _trade_table(t: pd.DataFrame, strat: LabStrategy, frame: pd.DataFrame) -> pd
         entry, exit_ = float(r["EntryPrice"]), float(r["ExitPrice"])
         stop = meta.get("initial_stop")
         target = meta.get("target")
-        risk = abs(entry - stop) if stop is not None else np.nan
+        risk = _risk(side, entry, stop)
         gross = side * (exit_ - entry) * size
         costs = float(r["Commission"])
         pnl = float(r["PnL"])
@@ -305,7 +321,9 @@ def _trade_table(t: pd.DataFrame, strat: LabStrategy, frame: pd.DataFrame) -> pd
             elif pd.notna(tp) and ((side > 0 and exit_ >= tp - 1e-9) or (side < 0 and exit_ <= tp + 1e-9)):
                 reason = "target"
             else:
-                reason = "end_of_data"
+                reason = "unclassified"   # should not occur; surfaced, never hidden
+        if stop is not None and np.isnan(risk):
+            reason = "stop_beyond_fill" if reason == "stop" else reason
         rows.append(dict(
             trade_id=tag, side="long" if side > 0 else "short", size=size,
             entry_time=pd.Timestamp(r["EntryTime"]).tz_localize("UTC"),
@@ -317,6 +335,7 @@ def _trade_table(t: pd.DataFrame, strat: LabStrategy, frame: pd.DataFrame) -> pd
             r_gross=(side * (exit_ - entry)) / risk if risk and risk > 0 else np.nan,
             exit_reason=reason, entry_reason=meta.get("entry_reason"),
             bars_held=int(r["ExitBar"] - r["EntryBar"]),
+            minutes_spanned=int(r["ExitBar"] - r["EntryBar"]) + 1,
             signal_start=meta.get("signal_start"), decision_time=meta.get("decision_time"),
         ))
     return pd.DataFrame(rows).sort_values("entry_time").reset_index(drop=True)

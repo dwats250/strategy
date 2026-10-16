@@ -43,7 +43,9 @@ what is visible but not stated. **—** = absent.
 | Stop | — | — | Not stated | Protective stop 1 tick beyond the signal bar's extreme, at least 5 bps from the signal close. Needed for R accounting; it is a lab choice. |
 | Sizing | — | — | Not stated. Option sizing is unrelated to share sizing anyway. | Lab default: 99.9% of equity notional, one position at a time |
 | Trade frequency / filters | — | — | Not stated | All crosses inside the entry window |
-| Time window | — | — | Not stated | Decisions on bars ending 09:33–15:30 ET; flat 5 min before the close |
+| Time window | — | — | Not stated | Decisions on bars ending 09:36–15:30 ET; flat 5 min before the close |
+| Cross on a session's first bar | — | — | On an RTH-only TradingView chart, `ta.crossover` compares with the prior bar even across sessions, so EMA (carried from yesterday) against a freshly reset VWAP often "crosses" on the first bar of the day | **Excluded**: no cross is evaluated on a session's first 3m bar, so the earliest decision is the bar ending 09:36. This is a lab choice and a **review decision**, because TradingView would draw it as a cross. The creator's short example (Sep 28, opening drop) is near the open. |
+| Bars with missing minutes | — | — | Masked bad prints shorten a 3m bar | No new entry on such a bar (8 bars under mask v1.0); exits are still evaluated |
 | Reversal | Implied by calls/puts on alternate crosses | I | Whether he flips immediately is unknown | No same-bar reversal. An exit and a new entry need separate signal bars. |
 
 ## What this interpretation is and is not
@@ -65,6 +67,7 @@ what is visible but not stated. **—** = absent.
    or the first close back across VWAP. Each implies a very different holding period.
 3. **Stop.** The creator gives no stop. Whether a signal-bar stop is acceptable for R accounting, or
    whether P0 should run with no stop and report P&L only, is the reviewer's call.
-4. **Anticipatory entry.** The creator enters "right before" the cross completes. A one-minute
+4. **First-bar cross.** Excluded by default (see table). Including it would add opening-gap trades.
+5. **Anticipatory entry.** The creator enters "right before" the cross completes. A one-minute
    look-inside (entering when the forming 3m bar's provisional EMA/VWAP cross occurs) is possible
    but would be a second interpretation (P1), not a fix.

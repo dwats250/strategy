@@ -37,6 +37,7 @@ def main(argv=None):
     r = sub.add_parser("run"); r.add_argument("config"); r.add_argument("--out"); r.add_argument("--no-ledger", action="store_true")
     rp = sub.add_parser("report"); rp.add_argument("run_dir")
     d = sub.add_parser("demo"); d.add_argument("--out")
+    sub.add_parser("identity", help="print the code identity a FROZEN config must pin")
     dd = sub.add_parser("data"); dsub = dd.add_subparsers(dest="dcmd", required=True)
     v = dsub.add_parser("verify"); v.add_argument("dataset_id")
     va = dsub.add_parser("validate"); va.add_argument("dataset_id"); va.add_argument("--mask")
@@ -47,10 +48,15 @@ def main(argv=None):
         p = run_experiment(Path(a.config), out_root=Path(a.out) if a.out else None, ledger=not a.no_ledger)
         print(p / "report.html")
     elif a.cmd == "report":
+        import datetime as _dt
         from .report.build import build_report
-        print(build_report(Path(a.run_dir)))
+        stamp = _dt.datetime.now(_dt.UTC).strftime("%Y%m%dT%H%M%SZ")
+        print(build_report(Path(a.run_dir), out_name=f"report_rebuild_{stamp}.html"))
     elif a.cmd == "demo":
         print(_demo(Path(a.out) if a.out else None) / "report.html")
+    elif a.cmd == "identity":
+        from .experiment import code_identity
+        print(json.dumps(code_identity(), indent=2))
     elif a.cmd == "data":
         from .data.store import resolve
         if a.dcmd == "verify":

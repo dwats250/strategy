@@ -57,8 +57,10 @@ Trade-blind validation of the corpus (`stratlab data validate`):
 
 ## Historical results and their status (preserved, not rewritten)
 
-From `studies/vwap-lab-2026-08/LEDGER.csv`: 20 rows. There were 18 development draws (VDC 15, FPC 1,
-MIM 1, ODR 1), 1 validation look and 0 holdout draws, covering 17 distinct development configurations.
+From `studies/vwap-lab-2026-08/LEDGER.csv`: 20 data rows. 19 are development rows (VDC 16, FPC 1,
+MIM 1, ODR 1). One of them (R1) is sealed and uninterpreted, which leaves **18 interpreted development
+draws** (VDC 15, FPC 1, MIM 1, ODR 1) over **17 distinct configurations** (R0, R1 and the PVAE unseal share
+one). There was 1 validation look and 0 holdout draws.
 Terminal dispositions: the VDC/continuation lane found **no edge** (VDC kept as a benchmark); long-only
 **failed validation**; FPC was **worse**; MIM and ODR were **family dead**; VMR was design only.
 
@@ -83,9 +85,14 @@ record):
 - **Lane 1 (orchestrator, Opus 5.5):** every repository write, git operation and synthesis.
 - **Lane 3 (mechanical, Haiku):** five read-only readers with non-overlapping scopes (engine, data,
   tearsheet, ledger/records, families). No repository writes; their claims were spot-checked.
-- **Lane 2 (review, Fable):** one skeptic per reader scope during recovery. One independent review of
-  the seam-1 packet follows.
-- **Model-version drift:** §j's table names Opus 5, Fable 5 and Haiku 4.5. This session ran Opus 5.5,
-  and the available Fable and Haiku models are newer point releases. The roles match. §j says a model
-  release changes the table by a one-line dated amendment; that amendment is **proposed, not made**,
-  because it is governance text outside this charge.
+- **Lane 2 (review, Fable):** one skeptic per reader scope during recovery, and one independent
+  review of the seam-1 packet (4 dimensions, each finding put to a separate refuter): 24 findings, all
+  confirmed, and all addressed in one correction cycle. The raw outputs are committed in
+  `docs/lab/reviews/` (`RECOVERY_RECON_2026-10-16.json`, `SEAM1_LANE2_REVIEW_2026-10-16.json`).
+- **Model-version drift (a §j stop condition, reported, not resolved here):** §j's table names Opus 5,
+  Fable 5 and Haiku 4.5. This session ran Opus 5.5, and the available Fable and Haiku models are newer
+  point releases. The roles match. Read literally, though, "a lane assigned differently from the table"
+  is a §j stop condition. I proceeded because Dustin's charge for this session explicitly directs the
+  work and the roles are unchanged. **Dustin's call:** adopt the one-line dated amendment §j itself
+  provides for model releases. It is drafted in `HANDOFF.md` and not committed to `conventions.md`,
+  because governance text is outside this charge.

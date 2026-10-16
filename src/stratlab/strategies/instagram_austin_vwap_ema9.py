@@ -21,7 +21,10 @@ ASSUMED here:
   * Exit when a later completed 3m bar closes back through EMA9 ("EMA9 manages exits").
   * Protective stop beyond the signal bar's extreme (min 5 bps from the signal close),
     so trades have a defined initial risk for R accounting.
-  * Entries only from 09:33 to 15:30 ET decision time; flat 5 minutes before the close.
+  * No cross is evaluated on a session's FIRST 3m bar (the previous bar belongs to the
+    prior session, and VWAP has just reset), so the earliest decision is the bar ending
+    09:36. Entries on bars ending up to 15:30 ET; flat 5 minutes before the close.
+  * No new entry on a signal bar with missing minutes (e.g. a masked bad print).
 """
 
 from __future__ import annotations
@@ -39,7 +42,7 @@ class InstagramAustinVwapEma9P0(LabStrategy):
     signal_minutes = 3
     vwap_source = "ohlc4"
     ema_length = 9
-    entry_start = "09:33"
+    entry_start = "09:36"
     entry_end = "15:30"
     stop_floor_bps = 5.0
     tick = 0.01
@@ -59,8 +62,10 @@ class InstagramAustinVwapEma9P0(LabStrategy):
             if (self.position.is_long and close < ema_) or (self.position.is_short and close > ema_):
                 self.exit_all("ema9_close_through")
             return
-        if self.has_pending_entry() or np.isnan(ema_p) or np.isnan(vwap_p):
+        if self.has_pending_entry() or not self.signal_bar_complete():
             return
+        if np.isnan(ema_p) or np.isnan(vwap_p):
+            return  # first bar of a session: no cross against a freshly reset VWAP
         t = self.f("sig_end_et_min")
         if not (hhmm_to_min(self.entry_start) <= t <= hhmm_to_min(self.entry_end)):
             return

@@ -84,7 +84,9 @@ def trade_metrics(trades: pd.DataFrame) -> dict:
         "median_r": float(r.median()) if len(r) else np.nan,
         "std_r": float(r.std(ddof=1)) if len(r) > 1 else np.nan,
         "t_stat_r": float(r.mean() / r.std(ddof=1) * math.sqrt(len(r))) if len(r) > 1 and r.std(ddof=1) > 0 else np.nan,
-        "avg_minutes_held": float(closed["bars_held"].mean()),
+        "avg_minutes_spanned": float(closed["minutes_spanned"].mean()) if "minutes_spanned" in closed else np.nan,
+        "stop_beyond_fill": int((closed["exit_reason"] == "stop_beyond_fill").sum()),
+        "r_undefined": int(closed["r_multiple"].isna().sum()),
         "long_trades": int((closed["side"] == "long").sum()),
         "short_trades": int((closed["side"] == "short").sum()),
         "expectancy_r_long": float(closed.loc[closed.side == "long", "r_multiple"].mean()) if (closed.side == "long").any() else np.nan,
@@ -100,12 +102,14 @@ def concentration(pnl: pd.Series, ks=(1, 5, 10)) -> dict:
     """How much of the result depends on a few large winners."""
     net = float(pnl.sum())
     s = pnl.sort_values(ascending=False)
+    winners = s[s > 0]
     out = {}
-    gross_profit = float(s[s > 0].sum())
+    gross_profit = float(winners.sum())
     for k in ks:
-        top = float(s.head(k).sum())
-        out[f"top{k}_share_of_gross_profit"] = top / gross_profit if gross_profit > 0 else np.nan
-        out[f"net_pnl_ex_top{k}"] = net - top
+        # share: the k largest WINNERS / gross profit (never diluted by losers)
+        out[f"top{k}_share_of_gross_profit"] = float(winners.head(k).sum()) / gross_profit if gross_profit > 0 else np.nan
+        # net with the k largest trades removed
+        out[f"net_pnl_ex_top{k}"] = net - float(s.head(k).sum())
     return out
 
 

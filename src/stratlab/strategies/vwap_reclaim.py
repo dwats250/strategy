@@ -10,7 +10,8 @@ One completed signal bar decides. For a LONG on bar t (shorts mirror it):
                 fixed_r:    target = close_t + target_r * (close_t - stop); no EMA exit
   window        entries only when the bar ENDS within [entry_start, entry_end] ET
 Always: one position at a time, fills at the next minute's open, flat 5 min before the
-session close (calendar close, so early closes are respected).
+session close (calendar close, so early closes are respected), no new entry on a signal
+bar with missing minutes, and no EMA/VWAP cross on a session's first bar.
 """
 
 from __future__ import annotations
@@ -69,7 +70,7 @@ class VwapReclaim(LabStrategy):
                 if (self.position.is_long and c < e) or (self.position.is_short and c > e):
                     self.exit_all("ema_close_through")
             return
-        if self.has_pending_entry():
+        if self.has_pending_entry() or not self.signal_bar_complete():
             return
         if self.trigger == "ema_vwap_cross" and (np.isnan(self.f("ema_prev")) or np.isnan(self.f("vwap_prev"))):
             return

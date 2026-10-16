@@ -72,3 +72,18 @@ def test_validate_frame_counts_problems():
     assert rep["duplicate_timestamps"] == 1
     assert rep["ohlc_violations"] == 1
     assert rep["sessions_not_starting_0930_et"] == []
+
+
+def test_replaced_file_is_rejected_even_with_same_size_and_mtime(tmp_path, monkeypatch):
+    import os
+    p = tmp_path / "X.csv.gz"
+    sha = _write_canonical(p, ["1735828200000,a,b,RTH,1,2,0.5,1.5,10,1.2,3"])
+    rec = store.DatasetRecord("x", "X.csv.gz", sha, 1, "august-canonical-v1", {"known_locations": []})
+    monkeypatch.setenv("STRATLAB_DATA_DIR", str(tmp_path))
+    monkeypatch.setattr(store, "DEFAULT_STORE", tmp_path / "nowhere")
+    store.resolve("x", {"x": rec})
+    st = p.stat()
+    _write_canonical(p, ["1735828200000,a,b,RTH,1,2,0.5,9.5,10,1.2,3"])
+    os.utime(p, (st.st_atime, st.st_mtime))
+    with pytest.raises(store.DatasetError, match="MISMATCH"):
+        store.resolve("x", {"x": rec})

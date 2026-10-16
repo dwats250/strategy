@@ -7,9 +7,10 @@ runs → an interactive report.**
 
 ```bash
 uv sync                       # pinned environment (uv.lock); Python 3.13
-uv run pytest                 # 50+ tests on synthetic fixtures; one parity test needs the local corpus
+uv run pytest                 # 61 tests; all but one (August parity, needs the local corpus) run on synthetic fixtures
 uv run stratlab demo          # SYNTHETIC end-to-end demo -> local_runs/<run>/report.html
-uv run stratlab run <experiment.toml>     # real data: baseline + variants -> studies/<study>/exports/runs/<run>/
+uv run stratlab identity      # code-tree SHA-256 that a FROZEN config must pin
+uv run stratlab run <experiment.toml>     # real data (FROZEN configs only) -> studies/<study>/exports/runs/<run>/
 uv run stratlab data verify  spy-1m-polygon-20240901-20260822-a4afaa70
 uv run stratlab data validate spy-1m-polygon-20240901-20260822-a4afaa70 --mask integrity-mask-v1.0
 ```
@@ -37,8 +38,9 @@ uv run stratlab data validate spy-1m-polygon-20240901-20260822-a4afaa70 --mask i
 2. Implement `build_features(sig_bars, **params)`, which is causal and computed on completed signal bars.
 3. Implement `on_signal_bar()`, using `self.f(...)`, `self.enter(side, stop, target)` and `self.exit_all(reason)`.
 4. Add tests with hand-built bars, like `tests/test_strategies.py`.
-5. Write the experiment TOML and freeze it as a versioned file. A config marked `status = "PROPOSED"`
-   refuses to run on real data.
+5. Write the experiment TOML, commit the code, then freeze the TOML as a versioned file with
+   `status = "FROZEN"` and `code_tree_sha256` taken from `stratlab identity`. Real-data runs refuse
+   anything else, including a tree that changed after the freeze or uncommitted `src/` edits.
 
 Accounting, sessions, costs, metrics and reporting need no changes.
 
