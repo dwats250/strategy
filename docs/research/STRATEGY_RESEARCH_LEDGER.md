@@ -157,5 +157,39 @@ manifest and findings; it does not restate them. The per-run record is each stud
 
 ---
 
+## Amendment 2026-10-27: statistical power, and the window nothing has scored
+
+Claude, owner work permit (WP3). This amendment is append-only. No status, run, manifest or verdict above changes, and no family reopens. It says how far each terminal label reaches.
+
+**Method.** Minimum detectable effect (MDE) at 80% power, two-sided α = 0.05: MDE = 2.8016 × SE. Each SE comes from the canonical record:
+- from the CI width ÷ 3.92 where only a CI is given;
+- from |estimate| ÷ t where a t is given.
+
+| Family / test | Estimate | SE | MDE | Recorded 95% upper bound | Reading |
+|---|---|---|---|---|---|
+| VDC long-only validation, n = 176 | −0.0187 R | 0.155 R | 0.43 R | +0.323 R (block bootstrap) | **Underpowered.** Expectancy up to about +0.3 R per trade is not excluded. "FAILS VALIDATION" is a failed point-estimate criterion (A: mean > 0), not evidence of no edge. |
+| VWR0 baseline, 2,428 trades | −0.038 R | 0.0345 R | 0.097 R | ≈ +0.030 R (normal) | Expectancy above about +0.03 R per trade is excluded. "Negative" stands for any edge of that size. |
+| MIM β > 0, N = 328 | β −0.0167 | 0.0317 | 0.089 | +0.045 (HC1) | The β-sign hypothesis is underpowered for β < 0.09. |
+| MIM sign strategy, gross | −0.59 bps | 1.32 bps | 3.7 bps | +1.98 bps (bootstrap) | A gross edge ≥ 5 bps (the cost-stress gate) is excluded; power at 5 bps ≈ 0.97. |
+| ODR β < 0, N = 328 | β −0.0357 | 0.0403 | 0.113 | +0.043 (HC1) | The β-sign hypothesis is underpowered for |β| < 0.11. |
+| ODR sign strategy, gross | −0.63 bps | 1.46 bps | 4.1 bps | +2.39 bps (bootstrap) | A gross edge ≥ 5 bps is excluded; power at 5 bps ≈ 0.93. |
+
+**How to read the labels from here**
+- **"FAMILY DEAD" (MIM, ODR)** means no executable edge on SPY in this window: a ≥ 5 bps gross sign-strategy edge is excluded with adequate power. It does not mean the regression effect is absent; small β of either sign is not excluded.
+- **"NO EDGE FOUND" / "FAILS VALIDATION" (VDC)** means not shown on 176 trades. The validation look is spent, so this cannot be rescued here; it is not a powered rejection.
+- **"Negative" (VWR0)** is a reasonably powered rejection of per-trade expectancy above about +0.03 R, on data that includes the unresolved 2025-04-23 prints. Excluding them: −0.032 R, t −0.92 (findings line 80).
+- These figures supersede the reconciliation note of 2026-10-26 that labelled all four "insufficient evidence". That note applied one rule to the β tests and the sign-strategy tests alike.
+
+**The window nothing has scored (2026-08-24 → 2026-10-15, 38 sessions).** It sits in capture `729dc4e9` (`datasets/REGISTRY.json`).
+- **What has touched it:** integrity checks only (row counts, OHLC validity, the overlap comparison in `docs/lab/DATA_QUALITY_2026-10-16.md`). No strategy has scored it, and no return-level inspection is recorded.
+- **Proposals that would spend it:** both are `PROPOSED` and not run.
+  - `VWR0_FRESH_EXTENSION_v0.1.toml` would spend it as descriptive fresh-historical evidence. Its own notes say the VWR0 gate (200 trades) will probably not be met.
+  - `VMRL_FAMILY_PROPOSAL_v0.1.md` would score the full 2024-10-16 → 2026-10-15 capture, re-spending consumed dates.
+- **Status under §g:** it is a deferred-inspection window, not a holdout. Its scored start (08-24) follows the fitted window's end (08-21) with no session between them. Unless every indicator resets each session, that is a zero-gap boundary, which the 2026-07-30 embargo amendment forbids. A one-session embargo would satisfy it for VWR's EMA9 on 5-minute bars.
+- **Forward data:** 2026-10-16 onward is not captured. It becomes a §g holdout only for a specification frozen before its collection.
+- **Reservation:** any use of either window is an owner decision, made before the run and recorded here first.
+
+---
+
 *Update this ledger whenever a family changes status, spends a config, or reaches a
 disposition. Link the canonical manifest; never restate its evidence here.*
