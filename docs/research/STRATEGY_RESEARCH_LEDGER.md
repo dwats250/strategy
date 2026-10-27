@@ -178,7 +178,7 @@ Claude, owner work permit (WP3). This amendment is append-only. No status, run, 
 - **"FAMILY DEAD" (MIM, ODR)** means no executable edge on SPY in this window: a ≥ 5 bps gross sign-strategy edge is excluded with adequate power. It does not mean the regression effect is absent; small β of either sign is not excluded.
 - **"NO EDGE FOUND" / "FAILS VALIDATION" (VDC)** means not shown on 176 trades. The validation look is spent, so this cannot be rescued here; it is not a powered rejection.
 - **"Negative" (VWR0)** is a reasonably powered rejection of per-trade expectancy above about +0.03 R, on data that includes the unresolved 2025-04-23 prints. Excluding them: −0.032 R, t −0.92 (findings line 80).
-- These figures supersede the reconciliation note of 2026-10-26 that labelled all four "insufficient evidence". That note applied one rule to the β tests and the sign-strategy tests alike.
+- These figures correct the external Assurance Review Reconciliation (2026-10-26, outside this repo). It labelled all four "insufficient evidence" by applying one rule to the β tests and the sign-strategy tests alike.
 
 **The window nothing has scored (2026-08-24 → 2026-10-15, 38 sessions).** It sits in capture `729dc4e9` (`datasets/REGISTRY.json`).
 - **What has touched it:** integrity checks only (row counts, OHLC validity, the overlap comparison in `docs/lab/DATA_QUALITY_2026-10-16.md`). No strategy has scored it, and no return-level inspection is recorded.
